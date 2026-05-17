@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { FileText, Users, CheckCircle2, Clock, AlertCircle, TrendingUp, UserPlus, ShieldAlert, Plane, Wrench } from "lucide-react";
+import { FileText, Users, CheckCircle2, Clock, AlertCircle, TrendingUp, UserPlus, ShieldAlert, Plane, Wrench, Activity } from "lucide-react";
 
 export const Route = createFileRoute("/cms/")({
   component: CmsDashboard,
@@ -167,6 +167,29 @@ function CmsDashboard() {
                 >
                   <Wrench className="h-3.5 w-3.5 text-white/40" />
                   Open Hangar Logs
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-6 space-y-6 backdrop-blur-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[oklch(0.55_0.22_270)]/20 text-[oklch(0.70_0.18_270)]">
+                <Activity className="h-6 w-6 animate-pulse" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-white">System Health & Traffic</h3>
+                <p className="mt-1 text-xs text-white/40 leading-relaxed">
+                  Monitor live active pageviews, route conversion percentages, and real-time backend PostgreSQL or client API bundle load exceptions.
+                </p>
+              </div>
+              <div className="space-y-2 pt-2">
+                <Link
+                  to="/cms/analytics"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-xs font-bold text-white transition-all hover:bg-white/10"
+                >
+                  <TrendingUp className="h-3.5 w-3.5 text-white/40" />
+                  View Live Health Analytics
                 </Link>
               </div>
             </div>

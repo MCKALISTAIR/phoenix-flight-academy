@@ -10,6 +10,7 @@ import {
   EyeOff,
   UserPlus,
   Plane,
+  Activity,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -129,6 +130,7 @@ function CmsLayout() {
     { to: "/cms/team", icon: Users, label: "Team & Instructors" },
     { to: "/cms/fleet", icon: Plane, label: "Fleet & Aircraft" },
     { to: "/cms/users", icon: UserPlus, label: "User Management" },
+    { to: "/cms/analytics", icon: Activity, label: "System Analytics" },
   ];
 
   return (
