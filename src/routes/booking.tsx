@@ -20,6 +20,11 @@ function BookingPortal() {
   const [registerType, setRegisterType] = useState<RegisterType>("student");
   const [submitted, setSubmitted] = useState<boolean>(false);
 
+  // Weather Console State
+  const [showDecoded, setShowDecoded] = useState(false);
+  const [windDir, setWindDir] = useState(240);
+  const [windSpeed, setWindSpeed] = useState(15);
+
   // Student Form State
   const [studentForm, setStudentForm] = useState({
     name: "",
@@ -49,6 +54,18 @@ function BookingPortal() {
     setStudentForm({ name: "", email: "", phone: "", course: "ppl", message: "" });
     setPilotForm({ name: "", email: "", license: "ppl", hours: "", medical: "current" });
   };
+
+  // Active Runway calculations for Cumbernauld (EGPG)
+  // Runway 26 (heading 260°) vs Runway 08 (heading 080°)
+  const diffTo26 = Math.min(Math.abs(windDir - 260), 360 - Math.abs(windDir - 260));
+  const diffTo08 = Math.min(Math.abs(windDir - 80), 360 - Math.abs(windDir - 80));
+  const activeRunway = diffTo26 < diffTo08 ? "26" : "08";
+  const activeHeading = activeRunway === "26" ? 260 : 80;
+  
+  // Angle difference in radians
+  const angleDiffRad = ((windDir - activeHeading) * Math.PI) / 180;
+  const headwind = Math.max(0, Math.round(windSpeed * Math.cos(angleDiffRad)));
+  const crosswind = Math.round(Math.abs(windSpeed * Math.sin(angleDiffRad)));
 
   return (
     <div className="flex min-h-screen flex-col bg-muted/30">
@@ -459,24 +476,103 @@ function BookingPortal() {
             
             {/* Weather widget */}
             <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-              <div className="border-b border-border bg-muted/50 px-6 py-4">
+              <div className="border-b border-border bg-muted/50 px-6 py-4 flex items-center justify-between">
                 <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
                   <Cloud className="h-5 w-5 text-blue-500" />
-                  Airport METAR
+                  Live Airfield Weather
                 </h2>
+                <button
+                  onClick={() => setShowDecoded(!showDecoded)}
+                  className="rounded-md bg-primary/10 px-2.5 py-1 text-xs font-bold text-primary transition-colors hover:bg-primary/20"
+                >
+                  {showDecoded ? "Show METAR" : "Decode Weather"}
+                </button>
               </div>
               <div className="p-6 space-y-6">
                 <div>
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Cumbernauld (Edinburgh Ref)</h3>
-                  <div className="mt-2 rounded-lg bg-slate-950 p-3 text-sm font-mono text-slate-100 border border-slate-800">
-                    EGPH 171120Z 24015KT 9999 FEW030 14/08 Q1012
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Cumbernauld EGPG</h3>
+                    <span className="inline-flex items-center rounded-full bg-blue-500/10 px-2 py-0.5 text-xs font-semibold text-blue-700 dark:text-blue-400">
+                      VFR Active
+                    </span>
+                  </div>
+
+                  {!showDecoded ? (
+                    <div className="mt-2 rounded-lg bg-slate-950 p-3.5 text-xs font-mono text-slate-100 border border-slate-800 leading-relaxed tracking-wide">
+                      EGPG 171120Z {windDir.toString().padStart(3, '0')}{windSpeed.toString().padStart(2, '0')}KT 9999 FEW030 14/08 Q1012
+                    </div>
+                  ) : (
+                    <div className="mt-2 rounded-lg bg-slate-950 p-3.5 text-xs font-mono text-slate-300 border border-slate-800 space-y-1.5 leading-relaxed">
+                      <p><span className="text-blue-400">WIND:</span> {windDir}° at {windSpeed} knots</p>
+                      <p><span className="text-blue-400">VISIBILITY:</span> 10km+ (Perfect Visual Range)</p>
+                      <p><span className="text-blue-400">CLOUDS:</span> Few Clouds at 3,000 ft</p>
+                      <p><span className="text-blue-400">TEMP/DEW:</span> 14°C / 08°C</p>
+                      <p><span className="text-blue-400">ALTIMETER:</span> QNH 1012 hPa (Standard)</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Wind Simulator Slider */}
+                <div className="space-y-4 border-t border-border pt-4">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Wind Simulator Controls</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <div className="flex justify-between text-[11px] font-mono text-muted-foreground mb-1">
+                        <span>Wind Direction: {windDir}°</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="359"
+                        value={windDir}
+                        onChange={(e) => setWindDir(Number(e.target.value))}
+                        className="w-full h-1 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
+                      />
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-[11px] font-mono text-muted-foreground mb-1">
+                        <span>Wind Speed: {windSpeed} kts</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="40"
+                        value={windSpeed}
+                        onChange={(e) => setWindSpeed(Number(e.target.value))}
+                        className="w-full h-1 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
+                      />
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Forecast TAF</h3>
-                  <div className="mt-2 rounded-lg bg-slate-950 p-3 text-sm font-mono text-slate-100 border border-slate-800">
-                    EGPH 171100Z 1712/1812 24015KT 9999 SCT030
+
+                {/* ATC Runway Status Console */}
+                <div className="rounded-xl bg-slate-950 border border-slate-800 p-4 font-mono text-xs space-y-2.5">
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <span className="text-slate-400 text-[10px] tracking-wider uppercase font-bold">EGPG Airfield Status</span>
+                    <span className="animate-pulse rounded bg-green-500/20 px-1 py-0.5 text-[9px] font-bold text-green-400 uppercase">
+                      Operational
+                    </span>
                   </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-400">ACTIVE RUNWAY:</span>
+                    <span className="text-sm font-bold text-primary">Runway {activeRunway}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-slate-300 text-[11px] bg-slate-900/50 p-2 rounded">
+                    <div>
+                      <span className="block text-slate-500 text-[9px] uppercase font-bold">Headwind</span>
+                      <span className="text-emerald-400 font-bold text-sm">{headwind} kts</span>
+                    </div>
+                    <div>
+                      <span className="block text-slate-500 text-[9px] uppercase font-bold">Crosswind</span>
+                      <span className={`font-bold text-sm ${crosswind > 15 ? "text-red-400" : "text-amber-500"}`}>{crosswind} kts</span>
+                    </div>
+                  </div>
+                  {crosswind > 15 && (
+                    <div className="text-[10px] bg-red-950/40 border border-red-900/30 text-red-400 p-2.5 rounded flex items-start gap-2 leading-relaxed">
+                      <span className="block h-2 w-2 shrink-0 mt-0.5 animate-pulse rounded-full bg-red-500" />
+                      <span>Warning: Crosswinds exceed safe 15 kts limit for student solo circuits. Dual instructions advised.</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
