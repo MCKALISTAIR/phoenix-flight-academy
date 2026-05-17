@@ -126,7 +126,9 @@ function RootComponent() {
       <div className="flex min-h-screen flex-col font-sans">
         {!isBookingRoute && <Navbar />}
         <main className="flex-1">
-          <Outlet />
+          <div key={location.pathname} className="animate-page-entrance">
+            <Outlet />
+          </div>
         </main>
         {!isBookingRoute && <Footer />}
       </div>
