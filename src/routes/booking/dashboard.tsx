@@ -80,7 +80,7 @@ function CustomerDashboard() {
                 <span className="text-3xl font-bold text-foreground">£0.00</span>
               </div>
               <p className="mt-1 text-sm text-muted-foreground">All flights are paid up to date.</p>
-              <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-foreground/90">
+              <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
                 <CreditCard className="h-4 w-4" />
                 Add Funds
               </button>

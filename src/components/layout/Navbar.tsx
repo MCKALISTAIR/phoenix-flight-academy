@@ -9,16 +9,18 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-transform group-hover:scale-105">
-                <PlaneTakeoff className="h-6 w-6" />
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-border p-1.5 shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:rotate-3 dark:bg-slate-950 dark:border-white/10">
+                <img
+                  src="/logo.png"
+                  alt="Phoenix Flight Academy Logo"
+                  className="h-full w-full object-contain"
+                />
               </div>
               <span className="text-xl font-bold tracking-tight text-foreground">
                 Phoenix Flight
               </span>
             </Link>
-          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:gap-8">

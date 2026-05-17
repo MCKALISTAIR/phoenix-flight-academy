@@ -53,18 +53,22 @@ function BookingPortal() {
   return (
     <div className="flex min-h-screen flex-col bg-muted/30">
       {/* Portal Header */}
-      <div className="bg-foreground py-12">
+      <div className="bg-[oklch(0.12_0.04_250)] py-12 border-b border-white/5">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                <PlaneTakeoff className="h-6 w-6" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white border border-white/10 p-1.5 shadow-sm">
+                <img
+                  src="/logo.png"
+                  alt="Phoenix Flight Academy Logo"
+                  className="h-full w-full object-contain"
+                />
               </div>
               <div>
-                <h1 className="text-3xl font-extrabold tracking-tight text-background">
+                <h1 className="text-3xl font-extrabold tracking-tight text-white">
                   Booking Portal
                 </h1>
-                <p className="text-sm text-background/80">
+                <p className="text-sm text-white/80">
                   Phoenix Flight Training Online System
                 </p>
               </div>
@@ -72,7 +76,7 @@ function BookingPortal() {
             <div>
               <Link
                 to="/"
-                className="inline-flex items-center gap-2 rounded-lg border border-background/25 bg-background/5 px-4 py-2.5 text-sm font-semibold text-background transition-colors hover:bg-background/10"
+                className="inline-flex items-center gap-2 rounded-lg border border-white/25 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to Website
@@ -138,7 +142,7 @@ function BookingPortal() {
                 {submitted ? (
                   /* Success Overlay */
                   <div className="text-center py-12 max-w-md mx-auto space-y-6">
-                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900/30">
+                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
                       <CheckCircle2 className="h-10 w-10" />
                     </div>
                     <div>
@@ -464,13 +468,13 @@ function BookingPortal() {
               <div className="p-6 space-y-6">
                 <div>
                   <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Cumbernauld (Edinburgh Ref)</h3>
-                  <div className="mt-2 rounded-lg bg-foreground p-3 text-sm font-mono text-background">
+                  <div className="mt-2 rounded-lg bg-slate-950 p-3 text-sm font-mono text-slate-100 border border-slate-800">
                     EGPH 171120Z 24015KT 9999 FEW030 14/08 Q1012
                   </div>
                 </div>
                 <div>
                   <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Forecast TAF</h3>
-                  <div className="mt-2 rounded-lg bg-foreground p-3 text-sm font-mono text-background">
+                  <div className="mt-2 rounded-lg bg-slate-950 p-3 text-sm font-mono text-slate-100 border border-slate-800">
                     EGPH 171100Z 1712/1812 24015KT 9999 SCT030
                   </div>
                 </div>

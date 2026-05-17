@@ -13,12 +13,12 @@ export const Route = createFileRoute("/terms")({
 function TermsPage() {
   return (
     <div className="flex flex-col bg-muted/10 pb-20">
-      <div className="bg-foreground py-16 text-background sm:py-20 relative overflow-hidden">
+      <div className="bg-[oklch(0.12_0.04_250)] py-16 text-white sm:py-20 relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(249,115,22,0.08),transparent)]" />
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <span className="text-sm font-semibold uppercase tracking-wider text-primary">Legal</span>
-          <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl">Terms of Service</h1>
-          <p className="mt-4 text-background/70 text-sm">Last updated: May 2026</p>
+          <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl text-white">Terms of Service</h1>
+          <p className="mt-4 text-white/70 text-sm">Last updated: May 2026</p>
         </div>
       </div>
 

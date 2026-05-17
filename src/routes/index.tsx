@@ -50,14 +50,14 @@ function Index() {
   return (
     <div className="flex flex-col overflow-hidden bg-background">
       {/* Hero Section */}
-      <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden bg-foreground py-20 lg:py-32">
+      <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden bg-[oklch(0.12_0.04_250)] py-20 lg:py-32">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=2000&auto=format&fit=crop"
             alt="Aircraft in flight"
             className="h-full w-full object-cover opacity-45 scale-105 animate-[pulse_8s_infinite_alternate]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/60 to-transparent" />
         </div>
         <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl animate-[fadeIn_1s_ease-out]">
@@ -65,11 +65,11 @@ function Index() {
               <Sparkles className="h-3.5 w-3.5" />
               Pilot Academy Cumbernauld
             </span>
-            <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-background sm:text-5xl lg:text-6xl xl:text-7xl">
+            <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl">
               Learn to fly at <br className="hidden sm:block" />
               <span className="bg-gradient-to-r from-primary to-orange-400 bg-clip-text text-transparent">Cumbernauld Airport</span>
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-background/85 sm:text-xl">
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85 sm:text-xl">
               Start your aviation journey with friendly instructors and unforgettable experiences. Explore the breathtaking skies of Scotland from your local flying school.
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -81,7 +81,7 @@ function Index() {
               </Link>
               <Link
                 to="/flying/learn-to-fly"
-                className="inline-flex h-14 items-center justify-center rounded-lg border-2 border-background bg-transparent px-8 text-base font-bold text-background transition-all hover:bg-background hover:text-foreground focus:outline-none"
+                className="inline-flex h-14 items-center justify-center rounded-lg border-2 border-white bg-transparent px-8 text-base font-bold text-white transition-all hover:bg-white hover:text-[oklch(0.12_0.04_250)] focus:outline-none"
               >
                 Discover Syllabus
               </Link>
@@ -187,7 +187,7 @@ function Index() {
           <div className="grid items-center gap-16 lg:grid-cols-2">
             
             {/* Image side */}
-            <div className={`relative aspect-[4/3] overflow-hidden rounded-3xl bg-foreground shadow-lg border border-border transition-all duration-1000 ease-out ${
+            <div className={`relative aspect-[4/3] overflow-hidden rounded-3xl bg-muted shadow-lg border border-border transition-all duration-1000 ease-out ${
               fleetVisible ? "opacity-100 translate-x-0 scale-100" : "opacity-0 -translate-x-12 scale-95"
             }`}>
                <img
@@ -214,7 +214,7 @@ function Index() {
               <div className="pt-4">
                 <Link
                   to="/fleet"
-                  className="inline-flex h-12 items-center justify-center rounded-lg bg-foreground px-6 text-sm font-bold text-background transition-all hover:bg-foreground/90 hover:scale-[1.02]"
+                  className="inline-flex h-12 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20 px-6 text-sm font-bold transition-all hover:bg-primary/20 hover:scale-[1.02]"
                 >
                   Explore Cockpit Specs
                 </Link>

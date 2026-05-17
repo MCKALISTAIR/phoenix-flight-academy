@@ -96,21 +96,21 @@ function LearnToFlyPage() {
   return (
     <div className="flex flex-col bg-muted/10 pb-20">
       {/* Hero Block with Background Image */}
-      <div className="bg-foreground py-20 text-background sm:py-28 relative overflow-hidden">
+      <div className="bg-[oklch(0.12_0.04_250)] py-20 text-white sm:py-28 relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=1600&auto=format&fit=crop"
             alt="Aircraft wing in high skies"
             className="h-full w-full object-cover opacity-20"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/60 to-transparent" />
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <span className="text-sm font-semibold uppercase tracking-wider text-primary">Licensing Roadmap</span>
           <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
             Learn to Fly at Cumbernauld
           </h1>
-          <p className="mt-6 max-w-2xl text-lg sm:text-xl text-background/85 leading-relaxed">
+          <p className="mt-6 max-w-2xl text-lg sm:text-xl text-white/85 leading-relaxed">
             Your step-by-step pathway to earning a Private Pilot License (PPL). Fully transparent, structured for safety, and designed for pure adventure.
           </p>
         </div>

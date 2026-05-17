@@ -77,21 +77,21 @@ function FleetPage() {
   return (
     <div className="flex flex-col bg-muted/10 pb-20">
       {/* Hero Header with real image */}
-      <div className="bg-foreground py-20 text-background sm:py-28 relative overflow-hidden">
+      <div className="bg-[oklch(0.12_0.04_250)] py-20 text-white sm:py-28 relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop"
             alt="Aircraft hangar row"
             className="h-full w-full object-cover opacity-20"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/60 to-transparent" />
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <span className="text-sm font-semibold uppercase tracking-wider text-primary">Airfield Fleet</span>
           <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
             Our Training & Hire Fleet
           </h1>
-          <p className="mt-6 max-w-2xl text-lg sm:text-xl text-background/85 leading-relaxed">
+          <p className="mt-6 max-w-2xl text-lg sm:text-xl text-white/85 leading-relaxed">
             Train and tour in aircraft optimised for maximum structural safety and mechanical reliability. Fully certified for flight operations at Cumbernauld.
           </p>
         </div>
@@ -123,7 +123,7 @@ function FleetPage() {
                       alt={plane.name}
                       className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute top-4 left-4 bg-foreground/90 backdrop-blur-sm text-background text-xs font-bold px-3 py-1.5 rounded-full border border-border/20">
+                    <div className="absolute top-4 left-4 bg-slate-900/90 backdrop-blur-sm text-slate-100 text-xs font-bold px-3 py-1.5 rounded-full border border-white/10">
                       Active Flight Status
                     </div>
                     {/* Shimmer overlay on hover */}

@@ -39,21 +39,21 @@ function ExperiencePage() {
   return (
     <div className="flex flex-col bg-muted/10 pb-20">
       {/* Hero Block with Visual Sky Backdrop */}
-      <div className="bg-foreground py-20 text-background sm:py-28 relative overflow-hidden">
+      <div className="bg-[oklch(0.12_0.04_250)] py-20 text-white sm:py-28 relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1600&auto=format&fit=crop"
             alt="Scenic flight landscape"
             className="h-full w-full object-cover opacity-30"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/60 to-transparent" />
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <span className="text-sm font-semibold uppercase tracking-wider text-primary">Gift Vouchers</span>
           <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
             Experience Flights
           </h1>
-          <p className="mt-6 max-w-2xl text-lg sm:text-xl text-background/85 leading-relaxed">
+          <p className="mt-6 max-w-2xl text-lg sm:text-xl text-white/85 leading-relaxed">
             Take the controls of a light aircraft for the first time. The perfect gift or introduction to the soaring world of flight training.
           </p>
         </div>
@@ -97,7 +97,7 @@ function ExperiencePage() {
               alt="Takeoff over landscape"
               className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
             />
-            <div className="absolute bottom-4 left-4 bg-foreground/90 backdrop-blur-sm px-4 py-2 rounded-xl text-xs font-semibold text-background border border-border/10 flex items-center gap-2">
+            <div className="absolute bottom-4 left-4 bg-slate-900/90 backdrop-blur-sm px-4 py-2 rounded-xl text-xs font-semibold text-slate-100 border border-white/10 flex items-center gap-2">
               <MapPin className="h-3.5 w-3.5 text-primary" />
               Cumbernauld Departure Skies
             </div>
