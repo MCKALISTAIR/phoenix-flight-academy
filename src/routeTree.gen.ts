@@ -23,6 +23,7 @@ import { Route as FlyingLearnToFlyRouteImport } from './routes/flying/learn-to-f
 import { Route as FlyingExperienceRouteImport } from './routes/flying/experience'
 import { Route as CmsUsersRouteImport } from './routes/cms/users'
 import { Route as CmsTeamRouteImport } from './routes/cms/team'
+import { Route as CmsFleetRouteImport } from './routes/cms/fleet'
 import { Route as CmsContentRouteImport } from './routes/cms/content'
 import { Route as BookingDashboardRouteImport } from './routes/booking/dashboard'
 import { Route as BookingAdminRouteImport } from './routes/booking/admin'
@@ -97,6 +98,11 @@ const CmsTeamRoute = CmsTeamRouteImport.update({
   path: '/team',
   getParentRoute: () => CmsRoute,
 } as any)
+const CmsFleetRoute = CmsFleetRouteImport.update({
+  id: '/fleet',
+  path: '/fleet',
+  getParentRoute: () => CmsRoute,
+} as any)
 const CmsContentRoute = CmsContentRouteImport.update({
   id: '/content',
   path: '/content',
@@ -125,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
   '/cms/content': typeof CmsContentRoute
+  '/cms/fleet': typeof CmsFleetRoute
   '/cms/team': typeof CmsTeamRoute
   '/cms/users': typeof CmsUsersRoute
   '/flying/experience': typeof FlyingExperienceRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
   '/cms/content': typeof CmsContentRoute
+  '/cms/fleet': typeof CmsFleetRoute
   '/cms/team': typeof CmsTeamRoute
   '/cms/users': typeof CmsUsersRoute
   '/flying/experience': typeof FlyingExperienceRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
   '/cms/content': typeof CmsContentRoute
+  '/cms/fleet': typeof CmsFleetRoute
   '/cms/team': typeof CmsTeamRoute
   '/cms/users': typeof CmsUsersRoute
   '/flying/experience': typeof FlyingExperienceRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
     | '/booking/admin'
     | '/booking/dashboard'
     | '/cms/content'
+    | '/cms/fleet'
     | '/cms/team'
     | '/cms/users'
     | '/flying/experience'
@@ -202,6 +212,7 @@ export interface FileRouteTypes {
     | '/booking/admin'
     | '/booking/dashboard'
     | '/cms/content'
+    | '/cms/fleet'
     | '/cms/team'
     | '/cms/users'
     | '/flying/experience'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/booking/admin'
     | '/booking/dashboard'
     | '/cms/content'
+    | '/cms/fleet'
     | '/cms/team'
     | '/cms/users'
     | '/flying/experience'
@@ -343,6 +355,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsTeamRouteImport
       parentRoute: typeof CmsRoute
     }
+    '/cms/fleet': {
+      id: '/cms/fleet'
+      path: '/fleet'
+      fullPath: '/cms/fleet'
+      preLoaderRoute: typeof CmsFleetRouteImport
+      parentRoute: typeof CmsRoute
+    }
     '/cms/content': {
       id: '/cms/content'
       path: '/content'
@@ -382,6 +401,7 @@ const BookingRouteWithChildren =
 
 interface CmsRouteChildren {
   CmsContentRoute: typeof CmsContentRoute
+  CmsFleetRoute: typeof CmsFleetRoute
   CmsTeamRoute: typeof CmsTeamRoute
   CmsUsersRoute: typeof CmsUsersRoute
   CmsIndexRoute: typeof CmsIndexRoute
@@ -389,6 +409,7 @@ interface CmsRouteChildren {
 
 const CmsRouteChildren: CmsRouteChildren = {
   CmsContentRoute: CmsContentRoute,
+  CmsFleetRoute: CmsFleetRoute,
   CmsTeamRoute: CmsTeamRoute,
   CmsUsersRoute: CmsUsersRoute,
   CmsIndexRoute: CmsIndexRoute,
