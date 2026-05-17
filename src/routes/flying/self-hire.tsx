@@ -169,6 +169,7 @@ function SelfHirePage() {
                 </Link>
                 <Link
                   to="/contact"
+                  search={{ subject: "self-hire" }}
                   className="inline-flex h-12 items-center justify-center rounded-lg border border-input bg-background text-sm font-bold text-foreground transition-colors hover:bg-muted/50"
                 >
                   Inquire About Checkout

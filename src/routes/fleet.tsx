@@ -19,7 +19,7 @@ function FleetPage() {
     {
       name: "Cessna 172 Skyhawk",
       tagline: "G-PHNX • The World's Most Trusted Flight Trainer",
-      image: "https://images.unsplash.com/photo-1555513220-410a69a03bc7?q=80&w=900&auto=format&fit=crop",
+      image: "/cessna172.png",
       desc: "The Cessna 172 is the gold standard of flight education. Incredibly stable, forgiving, and predictable. Our aircraft (G-PHNX) is exceptionally maintained and serves as both our primary PPL navigation platform and solo-hire cruiser.",
       specs: [
         { label: "Engine", value: "Lycoming O-320 (160 HP)" },

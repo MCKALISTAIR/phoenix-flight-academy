@@ -290,6 +290,7 @@ function LearnToFlyPage() {
                 </Link>
                 <Link
                   to="/contact"
+                  search={{ subject: "ppl" }}
                   className="inline-flex h-12 items-center justify-center rounded-lg border border-input bg-background text-sm font-bold text-foreground transition-colors hover:bg-muted/50"
                 >
                   Ask a Question
