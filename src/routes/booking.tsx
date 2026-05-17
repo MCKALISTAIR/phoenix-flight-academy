@@ -43,14 +43,59 @@ function BookingPortal() {
     medical: "current"
   });
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    // Simulates saving to Supabase queued operations
+    const newErrors: Record<string, string> = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (viewMode === "register") {
+      if (registerType === "student") {
+        if (!studentForm.name.trim()) {
+          newErrors.studentName = "Please enter your full name.";
+        }
+        if (!studentForm.email.trim()) {
+          newErrors.studentEmail = "Please enter your email address.";
+        } else if (!emailRegex.test(studentForm.email.trim())) {
+          newErrors.studentEmail = "Please enter a valid email address.";
+        }
+        if (!studentForm.phone.trim()) {
+          newErrors.studentPhone = "Please enter your contact phone number.";
+        }
+      } else {
+        // Pilot Form
+        if (!pilotForm.name.trim()) {
+          newErrors.pilotName = "Please enter your full name.";
+        }
+        if (!pilotForm.email.trim()) {
+          newErrors.pilotEmail = "Please enter your email address.";
+        } else if (!emailRegex.test(pilotForm.email.trim())) {
+          newErrors.pilotEmail = "Please enter a valid email address.";
+        }
+        if (!pilotForm.hours.trim()) {
+          newErrors.pilotHours = "Please enter your total flight hours.";
+        } else {
+          const hrs = Number(pilotForm.hours);
+          if (isNaN(hrs) || hrs < 0) {
+            newErrors.pilotHours = "Flight hours must be a valid positive number.";
+          }
+        }
+      }
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setSubmitted(false);
+    } else {
+      setErrors({});
+      setSubmitted(true);
+    }
   };
 
   const resetForm = () => {
     setSubmitted(false);
+    setErrors({});
     setStudentForm({ name: "", email: "", phone: "", course: "ppl", message: "" });
     setPilotForm({ name: "", email: "", license: "ppl", hours: "", medical: "current" });
   };
@@ -279,7 +324,7 @@ function BookingPortal() {
                         {/* Dynamically Rendered Form */}
                         {registerType === "student" ? (
                           /* Student Form */
-                          <form onSubmit={handleSubmit} className="space-y-5">
+                          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                             <div className="grid gap-5 sm:grid-cols-2">
                               <div>
                                 <label htmlFor="stName" className="block text-sm font-semibold text-foreground">
@@ -288,12 +333,17 @@ function BookingPortal() {
                                 <input
                                   type="text"
                                   id="stName"
-                                  required
                                   value={studentForm.name}
                                   onChange={(e) => setStudentForm({ ...studentForm, name: e.target.value })}
-                                  className="mt-1.5 block w-full rounded-lg border border-input bg-background px-3.5 py-2.5 shadow-sm focus:border-primary focus:outline-none"
+                                  className={`mt-1.5 block w-full rounded-lg border bg-background px-3.5 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${errors.studentName ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-input focus:border-primary focus:ring-primary"}`}
                                   placeholder="John Smith"
                                 />
+                                {errors.studentName && (
+                                  <p className="mt-1 text-xs font-semibold text-red-500 flex items-center gap-1">
+                                    <span className="h-1 w-1 rounded-full bg-red-500" />
+                                    {errors.studentName}
+                                  </p>
+                                )}
                               </div>
                               <div>
                                 <label htmlFor="stPhone" className="block text-sm font-semibold text-foreground">
@@ -302,28 +352,38 @@ function BookingPortal() {
                                 <input
                                   type="tel"
                                   id="stPhone"
-                                  required
                                   value={studentForm.phone}
                                   onChange={(e) => setStudentForm({ ...studentForm, phone: e.target.value })}
-                                  className="mt-1.5 block w-full rounded-lg border border-input bg-background px-3.5 py-2.5 shadow-sm focus:border-primary focus:outline-none"
+                                  className={`mt-1.5 block w-full rounded-lg border bg-background px-3.5 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${errors.studentPhone ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-input focus:border-primary focus:ring-primary"}`}
                                   placeholder="07123 456789"
                                 />
+                                {errors.studentPhone && (
+                                  <p className="mt-1 text-xs font-semibold text-red-500 flex items-center gap-1">
+                                    <span className="h-1 w-1 rounded-full bg-red-500" />
+                                    {errors.studentPhone}
+                                  </p>
+                                )}
                               </div>
                             </div>
 
                             <div>
                               <label htmlFor="stEmail" className="block text-sm font-semibold text-foreground">
-                                Email Address
+                                  Email Address
                               </label>
                               <input
                                 type="email"
                                 id="stEmail"
-                                required
                                 value={studentForm.email}
                                 onChange={(e) => setStudentForm({ ...studentForm, email: e.target.value })}
-                                className="mt-1.5 block w-full rounded-lg border border-input bg-background px-3.5 py-2.5 shadow-sm focus:border-primary focus:outline-none"
+                                className={`mt-1.5 block w-full rounded-lg border bg-background px-3.5 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${errors.studentEmail ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-input focus:border-primary focus:ring-primary"}`}
                                 placeholder="john@example.com"
                               />
+                              {errors.studentEmail && (
+                                <p className="mt-1 text-xs font-semibold text-red-500 flex items-center gap-1">
+                                  <span className="h-1 w-1 rounded-full bg-red-500" />
+                                  {errors.studentEmail}
+                                </p>
+                              )}
                             </div>
 
                             <div>
@@ -366,7 +426,7 @@ function BookingPortal() {
                           </form>
                         ) : (
                           /* Renter Form */
-                          <form onSubmit={handleSubmit} className="space-y-5">
+                          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                             <div className="grid gap-5 sm:grid-cols-2">
                               <div>
                                 <label htmlFor="pName" className="block text-sm font-semibold text-foreground">
@@ -375,12 +435,17 @@ function BookingPortal() {
                                 <input
                                   type="text"
                                   id="pName"
-                                  required
                                   value={pilotForm.name}
                                   onChange={(e) => setPilotForm({ ...pilotForm, name: e.target.value })}
-                                  className="mt-1.5 block w-full rounded-lg border border-input bg-background px-3.5 py-2.5 shadow-sm focus:border-primary focus:outline-none"
+                                  className={`mt-1.5 block w-full rounded-lg border bg-background px-3.5 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${errors.pilotName ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-input focus:border-primary focus:ring-primary"}`}
                                   placeholder="Sarah Jenkins"
                                 />
+                                {errors.pilotName && (
+                                  <p className="mt-1 text-xs font-semibold text-red-500 flex items-center gap-1">
+                                    <span className="h-1 w-1 rounded-full bg-red-500" />
+                                    {errors.pilotName}
+                                  </p>
+                                )}
                               </div>
                               <div>
                                 <label htmlFor="pHours" className="block text-sm font-semibold text-foreground">
@@ -389,12 +454,17 @@ function BookingPortal() {
                                 <input
                                   type="number"
                                   id="pHours"
-                                  required
                                   value={pilotForm.hours}
                                   onChange={(e) => setPilotForm({ ...pilotForm, hours: e.target.value })}
-                                  className="mt-1.5 block w-full rounded-lg border border-input bg-background px-3.5 py-2.5 shadow-sm focus:border-primary focus:outline-none"
+                                  className={`mt-1.5 block w-full rounded-lg border bg-background px-3.5 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${errors.pilotHours ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-input focus:border-primary focus:ring-primary"}`}
                                   placeholder="e.g. 150"
                                 />
+                                {errors.pilotHours && (
+                                  <p className="mt-1 text-xs font-semibold text-red-500 flex items-center gap-1">
+                                    <span className="h-1 w-1 rounded-full bg-red-500" />
+                                    {errors.pilotHours}
+                                  </p>
+                                )}
                               </div>
                             </div>
 
@@ -405,12 +475,17 @@ function BookingPortal() {
                               <input
                                 type="email"
                                 id="pEmail"
-                                required
                                 value={pilotForm.email}
                                 onChange={(e) => setPilotForm({ ...pilotForm, email: e.target.value })}
-                                className="mt-1.5 block w-full rounded-lg border border-input bg-background px-3.5 py-2.5 shadow-sm focus:border-primary focus:outline-none"
+                                className={`mt-1.5 block w-full rounded-lg border bg-background px-3.5 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${errors.pilotEmail ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-input focus:border-primary focus:ring-primary"}`}
                                 placeholder="sarah@example.com"
                               />
+                              {errors.pilotEmail && (
+                                <p className="mt-1 text-xs font-semibold text-red-500 flex items-center gap-1">
+                                  <span className="h-1 w-1 rounded-full bg-red-500" />
+                                  {errors.pilotEmail}
+                                </p>
+                              )}
                             </div>
 
                             <div className="grid gap-5 sm:grid-cols-2">
@@ -445,6 +520,15 @@ function BookingPortal() {
                                 </select>
                               </div>
                             </div>
+
+                            {pilotForm.medical === "lapsed" && (
+                              <div className="rounded-lg bg-red-500/10 p-4 border border-red-500/25 animate-in fade-in slide-in-from-top-1 duration-200">
+                                <p className="text-xs font-semibold text-red-700 dark:text-red-400 flex items-center gap-1.5">
+                                  <AlertCircle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400" />
+                                  Warning: Self-hire rentals require a current valid medical. Phoenix offers contact information for CAA AMEs if you need a renewal checkout.
+                                </p>
+                              </div>
+                            )}
 
                             <div className="rounded-lg bg-orange-500/10 p-4 border border-orange-500/25">
                               <p className="text-xs leading-relaxed text-orange-800 dark:text-orange-300">

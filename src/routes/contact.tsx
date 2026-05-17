@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Mail, MapPin, Phone, MessageSquare, Compass, Send, CheckCircle2 } from "lucide-react";
+import { Mail, MapPin, Phone, MessageSquare, Compass, Send, CheckCircle2, AlertTriangle } from "lucide-react";
 import { useState } from "react";
 
 type ContactSearch = {
@@ -44,9 +44,36 @@ function ContactPage() {
     }
   };
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name && email && message) {
+    const newErrors: Record<string, string> = {};
+
+    if (!name.trim()) {
+      newErrors.name = "Please enter your full name.";
+    } else if (name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters long.";
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim()) {
+      newErrors.email = "Please enter your email address.";
+    } else if (!emailRegex.test(email.trim())) {
+      newErrors.email = "Please enter a valid email address (e.g., name@example.com).";
+    }
+
+    if (!message.trim()) {
+      newErrors.message = "Please include some details about your enquiry.";
+    } else if (message.trim().length < 10) {
+      newErrors.message = "Message is too short. Please provide at least 10 characters so we can assist you better.";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setSubmitted(false);
+    } else {
+      setErrors({});
       setSubmitted(true);
     }
   };
@@ -178,7 +205,19 @@ function ContactPage() {
                   </div>
                 )}
                 
-                <form onSubmit={handleSubmit} className="space-y-5">
+                {Object.keys(errors).length > 0 && (
+                  <div className="mb-5 rounded-xl bg-red-500/10 border border-red-500/25 p-4 text-xs text-red-700 dark:text-red-400 space-y-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <p className="font-bold flex items-center gap-1.5 text-red-800 dark:text-red-300">
+                      <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400" /> 
+                      Please correct the following errors:
+                    </p>
+                    <ul className="list-disc list-inside pl-1 space-y-0.5">
+                      {Object.values(errors).map((err, i) => <li key={i}>{err}</li>)}
+                    </ul>
+                  </div>
+                )}
+                
+                <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                   <div>
                     <label htmlFor="subject" className="block text-sm font-semibold text-foreground">Enquiry Subject</label>
                     <select
@@ -198,36 +237,51 @@ function ContactPage() {
                     <input
                       type="text"
                       id="name"
-                      required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Capt. Alistair McKay"
-                      className="mt-2 block w-full rounded-lg border border-border bg-background px-4 py-2.5 shadow-sm text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                      className={`mt-2 block w-full rounded-lg border bg-background px-4 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${errors.name ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-border focus:border-primary focus:ring-primary"}`}
                     />
+                    {errors.name && (
+                      <p className="mt-1 text-xs font-semibold text-red-500 flex items-center gap-1">
+                        <span className="h-1 w-1 rounded-full bg-red-500" />
+                        {errors.name}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label htmlFor="email" className="block text-sm font-semibold text-foreground">Email Address</label>
                     <input
                       type="email"
                       id="email"
-                      required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="name@example.com"
-                      className="mt-2 block w-full rounded-lg border border-border bg-background px-4 py-2.5 shadow-sm text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                      className={`mt-2 block w-full rounded-lg border bg-background px-4 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-border focus:border-primary focus:ring-primary"}`}
                     />
+                    {errors.email && (
+                      <p className="mt-1 text-xs font-semibold text-red-500 flex items-center gap-1">
+                        <span className="h-1 w-1 rounded-full bg-red-500" />
+                        {errors.email}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <label htmlFor="message" className="block text-sm font-semibold text-foreground">Flight Request / Message</label>
                     <textarea
                       id="message"
-                      required
                       rows={5}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder="Let us know your training objectives, current licenses (if any), or experience voucher preferences..."
-                      className="mt-2 block w-full rounded-lg border border-border bg-background px-4 py-2.5 shadow-sm text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                      className={`mt-2 block w-full rounded-lg border bg-background px-4 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${errors.message ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-border focus:border-primary focus:ring-primary"}`}
                     ></textarea>
+                    {errors.message && (
+                      <p className="mt-1 text-xs font-semibold text-red-500 flex items-center gap-1">
+                        <span className="h-1 w-1 rounded-full bg-red-500" />
+                        {errors.message}
+                      </p>
+                    )}
                   </div>
                   <button
                     type="submit"
