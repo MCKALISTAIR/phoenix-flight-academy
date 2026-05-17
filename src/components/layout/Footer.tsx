@@ -19,12 +19,22 @@ export function Footer() {
               Start your aviation journey with friendly instructors and unforgettable experiences at Cumbernauld Airport.
             </p>
             <div className="flex items-center gap-4">
-              <a href="#" className="text-muted-foreground opacity-80 hover:text-primary transition-colors">
-                <span className="sr-only">Facebook</span>
+              <a
+                href="https://www.facebook.com/phoenixflighttraining"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Phoenix Flight Training on Facebook"
+                className="text-muted-foreground opacity-80 hover:text-primary hover:opacity-100 transition-colors"
+              >
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="text-muted-foreground opacity-80 hover:text-primary transition-colors">
-                <span className="sr-only">Instagram</span>
+              <a
+                href="https://www.instagram.com/phoenixflighttraining"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Phoenix Flight Training on Instagram"
+                className="text-muted-foreground opacity-80 hover:text-primary hover:opacity-100 transition-colors"
+              >
                 <Instagram className="h-5 w-5" />
               </a>
             </div>
@@ -35,35 +45,72 @@ export function Footer() {
             <h3 className="text-sm font-semibold uppercase tracking-wider text-primary">Explore</h3>
             <ul className="mt-6 space-y-4">
               <li>
-                <Link to="/about" className="text-sm text-muted-foreground opacity-80 hover:text-background transition-colors">About Us</Link>
+                <Link to="/about" className="text-sm text-muted-foreground opacity-80 hover:text-background hover:opacity-100 transition-colors">
+                  About Us
+                </Link>
               </li>
               <li>
-                <Link to="/fleet" className="text-sm text-muted-foreground opacity-80 hover:text-background transition-colors">Our Fleet</Link>
+                <Link to="/fleet" className="text-sm text-muted-foreground opacity-80 hover:text-background hover:opacity-100 transition-colors">
+                  Our Fleet
+                </Link>
               </li>
               <li>
-                <Link to="/flying/experience" className="text-sm text-muted-foreground opacity-80 hover:text-background transition-colors">Experience Flights</Link>
+                <Link to="/flying/experience" className="text-sm text-muted-foreground opacity-80 hover:text-background hover:opacity-100 transition-colors">
+                  Experience Flights
+                </Link>
               </li>
               <li>
-                <Link to="/flying/learn-to-fly" className="text-sm text-muted-foreground opacity-80 hover:text-background transition-colors">Learn to Fly</Link>
+                <Link to="/flying/learn-to-fly" className="text-sm text-muted-foreground opacity-80 hover:text-background hover:opacity-100 transition-colors">
+                  Learn to Fly
+                </Link>
+              </li>
+              <li>
+                <Link to="/flying/self-hire" className="text-sm text-muted-foreground opacity-80 hover:text-background hover:opacity-100 transition-colors">
+                  Self Hire
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-sm text-muted-foreground opacity-80 hover:text-background hover:opacity-100 transition-colors">
+                  Contact
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Contact — clickable tel/mailto */}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-primary">Contact</h3>
             <ul className="mt-6 space-y-4">
-              <li className="flex items-start gap-3 text-sm text-muted-foreground opacity-80">
-                <Phone className="h-5 w-5 shrink-0 text-primary" />
-                <span>07769 690041</span>
+              <li>
+                <a
+                  href="tel:07769690041"
+                  className="flex items-start gap-3 text-sm text-muted-foreground opacity-80 hover:text-background hover:opacity-100 transition-colors group"
+                >
+                  <Phone className="h-5 w-5 shrink-0 text-primary" />
+                  <span>07769 690041</span>
+                </a>
               </li>
-              <li className="flex items-start gap-3 text-sm text-muted-foreground opacity-80">
-                <Mail className="h-5 w-5 shrink-0 text-primary" />
-                <span>info@phoenixflighttraining.co.uk</span>
+              <li>
+                <a
+                  href="mailto:info@phoenixflighttraining.co.uk"
+                  className="flex items-start gap-3 text-sm text-muted-foreground opacity-80 hover:text-background hover:opacity-100 transition-colors"
+                >
+                  <Mail className="h-5 w-5 shrink-0 text-primary" />
+                  <span>info@phoenixflighttraining.co.uk</span>
+                </a>
               </li>
-              <li className="flex items-start gap-3 text-sm text-muted-foreground opacity-80">
-                <MapPin className="h-5 w-5 shrink-0 text-primary" />
-                <span>Cumbernauld Airport<br />G68 0PR</span>
+              <li>
+                <a
+                  href="https://maps.google.com/?q=Cumbernauld+Airport+G68+0PR"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-3 text-sm text-muted-foreground opacity-80 hover:text-background hover:opacity-100 transition-colors"
+                >
+                  <MapPin className="h-5 w-5 shrink-0 text-primary" />
+                  <span>
+                    Cumbernauld Airport<br />G68 0PR
+                  </span>
+                </a>
               </li>
             </ul>
           </div>
@@ -73,12 +120,20 @@ export function Footer() {
             <h3 className="text-sm font-semibold uppercase tracking-wider text-primary">Hours</h3>
             <ul className="mt-6 space-y-4">
               <li className="flex justify-between text-sm text-muted-foreground opacity-80">
-                <span>Mon - Fri</span>
-                <span>09:00 - 17:00</span>
+                <span>Mon – Fri</span>
+                <span>09:00 – 17:00</span>
               </li>
               <li className="flex justify-between text-sm text-muted-foreground opacity-80">
-                <span>Sat - Sun</span>
-                <span>10:00 - 16:00</span>
+                <span>Sat – Sun</span>
+                <span>10:00 – 16:00</span>
+              </li>
+              <li className="mt-6">
+                <Link
+                  to="/booking"
+                  className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:scale-[1.02]"
+                >
+                  Book a Flight →
+                </Link>
               </li>
             </ul>
           </div>
@@ -89,8 +144,12 @@ export function Footer() {
             &copy; {new Date().getFullYear()} Phoenix Flight Training. All rights reserved.
           </p>
           <div className="mt-4 flex gap-4 md:mt-0">
-            <Link to="/" className="text-xs text-muted-foreground opacity-80 hover:text-background transition-colors">Privacy Policy</Link>
-            <Link to="/" className="text-xs text-muted-foreground opacity-80 hover:text-background transition-colors">Terms of Service</Link>
+            <Link to="/privacy" className="text-xs text-muted-foreground opacity-80 hover:text-background hover:opacity-100 transition-colors">
+              Privacy Policy
+            </Link>
+            <Link to="/terms" className="text-xs text-muted-foreground opacity-80 hover:text-background hover:opacity-100 transition-colors">
+              Terms of Service
+            </Link>
           </div>
         </div>
       </div>

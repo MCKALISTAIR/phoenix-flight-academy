@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { CalendarDays, CheckCircle, Clock, Plane, Settings, Users, AlertTriangle } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { CalendarDays, CheckCircle, Clock, Plane, Settings, Users, AlertTriangle, Crown } from "lucide-react";
 
 export const Route = createFileRoute("/booking/admin")({
   component: AdminDashboard,
@@ -12,11 +12,12 @@ function AdminDashboard() {
   return (
     <div className="flex min-h-screen bg-muted/30">
       {/* Sidebar Navigation */}
-      <aside className="w-64 flex-shrink-0 border-r border-border bg-card">
-        <div className="flex h-16 items-center border-b border-border px-6">
+      <aside className="w-64 flex-shrink-0 border-r border-border bg-card flex flex-col">
+        <div className="flex h-16 items-center justify-between border-b border-border px-6">
           <span className="text-lg font-bold text-foreground">Admin Portal</span>
+          <span className="rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">Admin</span>
         </div>
-        <nav className="space-y-1 p-4">
+        <nav className="flex-1 space-y-1 p-4">
           <a href="#" className="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-sm font-medium text-primary">
             <CalendarDays className="h-5 w-5" />
             Master Calendar
@@ -38,6 +39,16 @@ function AdminDashboard() {
             System Settings
           </a>
         </nav>
+        {/* CMS Super Admin link */}
+        <div className="border-t border-border p-4">
+          <Link
+            to="/cms"
+            className="flex items-center gap-3 rounded-xl border border-[oklch(0.55_0.22_270)]/30 bg-[oklch(0.55_0.22_270)]/10 px-3 py-2.5 text-sm font-semibold text-[oklch(0.55_0.22_270)] transition-all hover:bg-[oklch(0.55_0.22_270)]/20"
+          >
+            <Crown className="h-4 w-4" />
+            CMS Editor
+          </Link>
+        </div>
       </aside>
 
       {/* Main Content */}
