@@ -8,6 +8,7 @@ import {
   Lock,
   Eye,
   EyeOff,
+  UserPlus,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -125,6 +126,7 @@ function CmsLayout() {
     { to: "/cms", icon: LayoutDashboard, label: "Overview", exact: true },
     { to: "/cms/content", icon: FileText, label: "Content Editor" },
     { to: "/cms/team", icon: Users, label: "Team & Instructors" },
+    { to: "/cms/users", icon: UserPlus, label: "User Management" },
   ];
 
   return (

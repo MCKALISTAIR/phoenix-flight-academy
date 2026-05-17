@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { FileText, Users, CheckCircle2, Clock, AlertCircle, TrendingUp } from "lucide-react";
+import { FileText, Users, CheckCircle2, Clock, AlertCircle, TrendingUp, UserPlus, ShieldAlert } from "lucide-react";
 
 export const Route = createFileRoute("/cms/")({
   component: CmsDashboard,
@@ -48,8 +48,8 @@ function CmsDashboard() {
   const stats = [
     { label: "Editable Sections", value: "6", icon: FileText, color: "text-[oklch(0.70_0.18_270)]" },
     { label: "Instructor Profiles", value: "3", icon: Users, color: "text-[oklch(0.70_0.18_270)]" },
-    { label: "Pending Changes", value: "0", icon: Clock, color: "text-yellow-400" },
-    { label: "Published", value: "Live", icon: TrendingUp, color: "text-green-400" },
+    { label: "Active Users / Roles", value: "6", icon: UserPlus, color: "text-[oklch(0.70_0.18_270)]" },
+    { label: "Published Status", value: "Live", icon: TrendingUp, color: "text-green-400" },
   ];
 
   return (
@@ -58,7 +58,7 @@ function CmsDashboard() {
       <div>
         <h1 className="text-2xl font-extrabold text-white">CMS Overview</h1>
         <p className="mt-1 text-sm text-white/50">
-          Manage all publicly-visible content across the Phoenix Flight Training website.
+          Manage all publicly-visible content and control user access roles across the platform.
         </p>
       </div>
 
@@ -81,43 +81,71 @@ function CmsDashboard() {
         })}
       </div>
 
-      {/* Content Blocks Grid */}
-      <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-base font-bold text-white">Content Sections</h2>
-          <Link
-            to="/cms/content"
-            className="text-xs font-semibold text-[oklch(0.70_0.18_270)] hover:underline"
-          >
-            Edit all →
-          </Link>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {sections.map((section, idx) => (
-            <div
-              key={idx}
-              className="group flex flex-col justify-between rounded-2xl border border-white/10 bg-white/5 p-5 transition-all hover:border-[oklch(0.55_0.22_270)]/40 hover:bg-white/8 backdrop-blur-sm"
+      {/* Access Control Quick Card & Content Blocks Grid */}
+      <div className="grid gap-8 lg:grid-cols-3">
+        {/* Left 2/3 for content sections */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold text-white">Content Sections</h2>
+            <Link
+              to="/cms/content"
+              className="text-xs font-semibold text-[oklch(0.70_0.18_270)] hover:underline"
             >
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-sm font-bold text-white">{section.label}</span>
-                  <p className="mt-1 text-xs text-white/40">{section.fields} editable fields</p>
+              Edit all →
+            </Link>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {sections.map((section, idx) => (
+              <div
+                key={idx}
+                className="group flex flex-col justify-between rounded-2xl border border-white/10 bg-white/5 p-5 transition-all hover:border-[oklch(0.55_0.22_270)]/40 hover:bg-white/8 backdrop-blur-sm"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <span className="text-sm font-bold text-white">{section.label}</span>
+                    <p className="mt-1 text-xs text-white/40">{section.fields} editable fields</p>
+                  </div>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full border border-white/10 bg-white/5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-white/20" />
+                  </div>
                 </div>
-                <div className="flex h-6 w-6 items-center justify-center rounded-full border border-white/10 bg-white/5">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-white/20" />
+                <div className="mt-5 flex items-center justify-between">
+                  <span className="text-xs text-white/30">Last edited: {section.lastEdited}</span>
+                  <Link
+                    to="/cms/content"
+                    className="rounded-lg border border-[oklch(0.55_0.22_270)]/30 bg-[oklch(0.55_0.22_270)]/10 px-3 py-1 text-xs font-semibold text-[oklch(0.70_0.18_270)] opacity-0 transition-all group-hover:opacity-100 hover:bg-[oklch(0.55_0.22_270)]/20"
+                  >
+                    Edit
+                  </Link>
                 </div>
               </div>
-              <div className="mt-5 flex items-center justify-between">
-                <span className="text-xs text-white/30">Last edited: {section.lastEdited}</span>
-                <Link
-                  to="/cms/content"
-                  className="rounded-lg border border-[oklch(0.55_0.22_270)]/30 bg-[oklch(0.55_0.22_270)]/10 px-3 py-1 text-xs font-semibold text-[oklch(0.70_0.18_270)] opacity-0 transition-all group-hover:opacity-100 hover:bg-[oklch(0.55_0.22_270)]/20"
-                >
-                  Edit
-                </Link>
-              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right 1/3 for quick user access */}
+        <div className="space-y-4">
+          <h2 className="text-base font-bold text-white">Access & Controls</h2>
+          <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-6 space-y-6 backdrop-blur-sm">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[oklch(0.55_0.22_270)]/20 text-[oklch(0.70_0.18_270)]">
+              <ShieldAlert className="h-6 w-6" />
             </div>
-          ))}
+            <div>
+              <h3 className="text-sm font-bold text-white">User Access & Roles</h3>
+              <p className="mt-1 text-xs text-white/40 leading-relaxed">
+                Configure access control for flight school staff, senior instructors, students, and self-hire pilots. Issue invitation keys to new team members.
+              </p>
+            </div>
+            <div className="space-y-2 pt-2">
+              <Link
+                to="/cms/users"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] py-3 text-xs font-bold text-white shadow-lg shadow-[oklch(0.55_0.22_270)]/20 transition-all hover:scale-[1.02] hover:bg-[oklch(0.60_0.22_270)]"
+              >
+                <UserPlus className="h-3.5 w-3.5" />
+                Manage User Access
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -127,7 +155,7 @@ function CmsDashboard() {
         <div>
           <p className="text-sm font-semibold text-yellow-300">Supabase Integration Pending</p>
           <p className="mt-1 text-xs text-yellow-400/70">
-            Content changes are currently stored in local component state. Once Supabase is wired in, saving here will write directly to the <code className="font-mono bg-yellow-500/10 px-1 rounded">cms_content</code> table and reflect live on the public site.
+            Content changes and role configurations are currently stored in local component state. Once Supabase is wired in, saving here will write directly to the <code className="font-mono bg-yellow-500/10 px-1 rounded">cms_content</code> and user schemas.
           </p>
         </div>
       </div>
