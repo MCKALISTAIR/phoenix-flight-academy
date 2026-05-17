@@ -115,11 +115,40 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
+import { useEffect } from "react";
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const location = useLocation();
   const isBookingRoute = location.pathname.startsWith("/booking");
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme") || "system";
+    const darkMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    const applyTheme = () => {
+      const isDark =
+        storedTheme === "dark" ||
+        (storedTheme === "system" && darkMediaQuery.matches);
+
+      if (isDark) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    applyTheme();
+
+    const handleSystemChange = () => {
+      if (localStorage.getItem("theme") === "system" || !localStorage.getItem("theme")) {
+        applyTheme();
+      }
+    };
+
+    darkMediaQuery.addEventListener("change", handleSystemChange);
+    return () => darkMediaQuery.removeEventListener("change", handleSystemChange);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
