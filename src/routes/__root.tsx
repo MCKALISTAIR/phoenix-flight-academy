@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useLocation,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -72,19 +73,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Phoenix Flight Training | Learn to Fly at Cumbernauld" },
+      { name: "description", content: "Friendly instructors, premium training, and unforgettable experience flights based at Cumbernauld Airport." },
+      { name: "author", content: "Phoenix Flight Training" },
+      { property: "og:title", content: "Phoenix Flight Training | Learn to Fly at Cumbernauld" },
+      { property: "og:description", content: "Friendly instructors, premium training, and unforgettable experience flights based at Cumbernauld Airport." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      {
+        rel: "icon",
+        type: "image/png",
+        href: "/favicon.png",
       },
     ],
   }),
@@ -108,12 +113,23 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+import { Navbar } from "../components/layout/Navbar";
+import { Footer } from "../components/layout/Footer";
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const location = useLocation();
+  const isBookingRoute = location.pathname.startsWith("/booking");
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <div className="flex min-h-screen flex-col font-sans">
+        {!isBookingRoute && <Navbar />}
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        {!isBookingRoute && <Footer />}
+      </div>
     </QueryClientProvider>
   );
 }

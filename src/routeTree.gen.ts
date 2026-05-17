@@ -9,38 +9,185 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as FleetRouteImport } from './routes/fleet'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BookingRouteImport } from './routes/booking'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FlyingSelfHireRouteImport } from './routes/flying/self-hire'
+import { Route as FlyingLearnToFlyRouteImport } from './routes/flying/learn-to-fly'
+import { Route as FlyingExperienceRouteImport } from './routes/flying/experience'
+import { Route as BookingDashboardRouteImport } from './routes/booking/dashboard'
+import { Route as BookingAdminRouteImport } from './routes/booking/admin'
 
+const FleetRoute = FleetRouteImport.update({
+  id: '/fleet',
+  path: '/fleet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookingRoute = BookingRouteImport.update({
+  id: '/booking',
+  path: '/booking',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FlyingSelfHireRoute = FlyingSelfHireRouteImport.update({
+  id: '/flying/self-hire',
+  path: '/flying/self-hire',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FlyingLearnToFlyRoute = FlyingLearnToFlyRouteImport.update({
+  id: '/flying/learn-to-fly',
+  path: '/flying/learn-to-fly',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FlyingExperienceRoute = FlyingExperienceRouteImport.update({
+  id: '/flying/experience',
+  path: '/flying/experience',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookingDashboardRoute = BookingDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => BookingRoute,
+} as any)
+const BookingAdminRoute = BookingAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => BookingRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/booking': typeof BookingRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/fleet': typeof FleetRoute
+  '/booking/admin': typeof BookingAdminRoute
+  '/booking/dashboard': typeof BookingDashboardRoute
+  '/flying/experience': typeof FlyingExperienceRoute
+  '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
+  '/flying/self-hire': typeof FlyingSelfHireRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/booking': typeof BookingRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/fleet': typeof FleetRoute
+  '/booking/admin': typeof BookingAdminRoute
+  '/booking/dashboard': typeof BookingDashboardRoute
+  '/flying/experience': typeof FlyingExperienceRoute
+  '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
+  '/flying/self-hire': typeof FlyingSelfHireRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/booking': typeof BookingRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/fleet': typeof FleetRoute
+  '/booking/admin': typeof BookingAdminRoute
+  '/booking/dashboard': typeof BookingDashboardRoute
+  '/flying/experience': typeof FlyingExperienceRoute
+  '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
+  '/flying/self-hire': typeof FlyingSelfHireRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/booking'
+    | '/contact'
+    | '/fleet'
+    | '/booking/admin'
+    | '/booking/dashboard'
+    | '/flying/experience'
+    | '/flying/learn-to-fly'
+    | '/flying/self-hire'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/booking'
+    | '/contact'
+    | '/fleet'
+    | '/booking/admin'
+    | '/booking/dashboard'
+    | '/flying/experience'
+    | '/flying/learn-to-fly'
+    | '/flying/self-hire'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/booking'
+    | '/contact'
+    | '/fleet'
+    | '/booking/admin'
+    | '/booking/dashboard'
+    | '/flying/experience'
+    | '/flying/learn-to-fly'
+    | '/flying/self-hire'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  BookingRoute: typeof BookingRouteWithChildren
+  ContactRoute: typeof ContactRoute
+  FleetRoute: typeof FleetRoute
+  FlyingExperienceRoute: typeof FlyingExperienceRoute
+  FlyingLearnToFlyRoute: typeof FlyingLearnToFlyRoute
+  FlyingSelfHireRoute: typeof FlyingSelfHireRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/fleet': {
+      id: '/fleet'
+      path: '/fleet'
+      fullPath: '/fleet'
+      preLoaderRoute: typeof FleetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/booking': {
+      id: '/booking'
+      path: '/booking'
+      fullPath: '/booking'
+      preLoaderRoute: typeof BookingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,12 +195,77 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/flying/self-hire': {
+      id: '/flying/self-hire'
+      path: '/flying/self-hire'
+      fullPath: '/flying/self-hire'
+      preLoaderRoute: typeof FlyingSelfHireRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/flying/learn-to-fly': {
+      id: '/flying/learn-to-fly'
+      path: '/flying/learn-to-fly'
+      fullPath: '/flying/learn-to-fly'
+      preLoaderRoute: typeof FlyingLearnToFlyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/flying/experience': {
+      id: '/flying/experience'
+      path: '/flying/experience'
+      fullPath: '/flying/experience'
+      preLoaderRoute: typeof FlyingExperienceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/booking/dashboard': {
+      id: '/booking/dashboard'
+      path: '/dashboard'
+      fullPath: '/booking/dashboard'
+      preLoaderRoute: typeof BookingDashboardRouteImport
+      parentRoute: typeof BookingRoute
+    }
+    '/booking/admin': {
+      id: '/booking/admin'
+      path: '/admin'
+      fullPath: '/booking/admin'
+      preLoaderRoute: typeof BookingAdminRouteImport
+      parentRoute: typeof BookingRoute
+    }
   }
 }
 
+interface BookingRouteChildren {
+  BookingAdminRoute: typeof BookingAdminRoute
+  BookingDashboardRoute: typeof BookingDashboardRoute
+}
+
+const BookingRouteChildren: BookingRouteChildren = {
+  BookingAdminRoute: BookingAdminRoute,
+  BookingDashboardRoute: BookingDashboardRoute,
+}
+
+const BookingRouteWithChildren =
+  BookingRoute._addFileChildren(BookingRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  BookingRoute: BookingRouteWithChildren,
+  ContactRoute: ContactRoute,
+  FleetRoute: FleetRoute,
+  FlyingExperienceRoute: FlyingExperienceRoute,
+  FlyingLearnToFlyRoute: FlyingLearnToFlyRoute,
+  FlyingSelfHireRoute: FlyingSelfHireRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
