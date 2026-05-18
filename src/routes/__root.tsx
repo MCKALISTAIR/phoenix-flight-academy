@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { supabase } from "@/integrations/supabase/client";
 
 function NotFoundComponent() {
   return (
@@ -120,7 +121,16 @@ import { useEffect } from "react";
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const location = useLocation();
+  const router = useRouter();
   const isBookingRoute = location.pathname.startsWith("/booking");
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      router.invalidate();
+      queryClient.invalidateQueries();
+    });
+    return () => subscription.unsubscribe();
+  }, [router, queryClient]);
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme") || "system";
