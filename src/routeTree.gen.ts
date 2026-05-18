@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as FleetRouteImport } from './routes/fleet'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CmsRouteImport } from './routes/cms'
@@ -34,9 +36,19 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FleetRoute = FleetRouteImport.update({
@@ -132,7 +144,9 @@ export interface FileRoutesByFullPath {
   '/cms': typeof CmsRouteWithChildren
   '/contact': typeof ContactRoute
   '/fleet': typeof FleetRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
@@ -152,7 +166,9 @@ export interface FileRoutesByTo {
   '/booking': typeof BookingRouteWithChildren
   '/contact': typeof ContactRoute
   '/fleet': typeof FleetRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
@@ -174,7 +190,9 @@ export interface FileRoutesById {
   '/cms': typeof CmsRouteWithChildren
   '/contact': typeof ContactRoute
   '/fleet': typeof FleetRoute
+  '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
@@ -197,7 +215,9 @@ export interface FileRouteTypes {
     | '/cms'
     | '/contact'
     | '/fleet'
+    | '/login'
     | '/privacy'
+    | '/reset-password'
     | '/terms'
     | '/booking/admin'
     | '/booking/dashboard'
@@ -217,7 +237,9 @@ export interface FileRouteTypes {
     | '/booking'
     | '/contact'
     | '/fleet'
+    | '/login'
     | '/privacy'
+    | '/reset-password'
     | '/terms'
     | '/booking/admin'
     | '/booking/dashboard'
@@ -238,7 +260,9 @@ export interface FileRouteTypes {
     | '/cms'
     | '/contact'
     | '/fleet'
+    | '/login'
     | '/privacy'
+    | '/reset-password'
     | '/terms'
     | '/booking/admin'
     | '/booking/dashboard'
@@ -260,7 +284,9 @@ export interface RootRouteChildren {
   CmsRoute: typeof CmsRouteWithChildren
   ContactRoute: typeof ContactRoute
   FleetRoute: typeof FleetRoute
+  LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
   FlyingExperienceRoute: typeof FlyingExperienceRoute
   FlyingLearnToFlyRoute: typeof FlyingLearnToFlyRoute
@@ -276,11 +302,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fleet': {
@@ -445,7 +485,9 @@ const rootRouteChildren: RootRouteChildren = {
   CmsRoute: CmsRouteWithChildren,
   ContactRoute: ContactRoute,
   FleetRoute: FleetRoute,
+  LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
   FlyingExperienceRoute: FlyingExperienceRoute,
   FlyingLearnToFlyRoute: FlyingLearnToFlyRoute,

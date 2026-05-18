@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Calendar, CreditCard, History, Plane, User, Compass, Clock, Gauge, AlertTriangle, CalendarPlus, Trash2, XCircle } from "lucide-react";
 import { useState } from "react";
+import { requireAuth } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/booking/dashboard")({
+  beforeLoad: ({ location }) => requireAuth(location.href),
   component: CustomerDashboard,
   head: () => ({
     meta: [{ title: "Student Dashboard | Phoenix Flight Training" }],
