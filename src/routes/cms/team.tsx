@@ -1,236 +1,146 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, Trash2, Save, User, CheckCircle2 } from "lucide-react";
-import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Plus, Trash2, Save, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
 export const Route = createFileRoute("/cms/team")({
   component: TeamEditor,
 });
 
-type Instructor = {
-  id: number;
-  name: string;
-  role: string;
-  hours: string;
-  bio: string;
-  image_url: string;
-};
-
-const INITIAL_TEAM: Instructor[] = [
-  {
-    id: 1,
-    name: "Captain Andrew McKay",
-    role: "CFI • Chief Flying Instructor",
-    hours: "4,500+ Hours",
-    bio: "Ex-commercial pilot with over 15 years teaching at Cumbernauld Airport. Andrew specialises in high-latitude cross-country navigation and advanced pilot training checkout safety.",
-    image_url: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop&crop=face",
-  },
-  {
-    id: 2,
-    name: "Captain Sarah Jenkins",
-    role: "Senior Flight Instructor",
-    hours: "2,800+ Hours",
-    bio: "Sarah is a specialist in solo-flight preparation, PPL ground-school instruction, and confidence-building training blocks. Her deep background is in flight deck meteorology.",
-    image_url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop&crop=face",
-  },
-  {
-    id: 3,
-    name: "Captain David Smith",
-    role: "Line Flight Instructor",
-    hours: "1,200+ Hours",
-    bio: "An expert on Piper low-wing ratings, cockpit avionics mapping, and trial lessons. David brings an enthusiastic, energetic, and checklist-driven approach to every flight hour.",
-    image_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop&crop=face",
-  },
-];
-
-function InstructorCard({
-  instructor,
-  onUpdate,
-  onDelete,
-}: {
-  instructor: Instructor;
-  onUpdate: (id: number, field: keyof Instructor, value: string) => void;
-  onDelete: (id: number) => void;
-}) {
-  const [saved, setSaved] = useState(false);
-
-  function handleSave() {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
-  }
-
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden backdrop-blur-sm transition-all hover:border-[oklch(0.55_0.22_270)]/30">
-      {/* Card header */}
-      <div className="flex items-center justify-between border-b border-white/10 bg-white/3 px-6 py-4">
-        <div className="flex items-center gap-3">
-          {instructor.image_url ? (
-            <img
-              src={instructor.image_url}
-              alt={instructor.name}
-              className="h-9 w-9 rounded-full object-cover object-top border border-white/10"
-            />
-          ) : (
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[oklch(0.55_0.22_270)]/20 text-[oklch(0.70_0.18_270)]">
-              <User className="h-4 w-4" />
-            </div>
-          )}
-          <div>
-            <span className="text-sm font-bold text-white">{instructor.name || "New Instructor"}</span>
-            <span className="block text-xs text-white/40">{instructor.role}</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          {saved && (
-            <span className="flex items-center gap-1 text-xs text-green-400">
-              <CheckCircle2 className="h-3.5 w-3.5" /> Saved
-            </span>
-          )}
-          <button
-            onClick={handleSave}
-            className="flex items-center gap-1.5 rounded-lg bg-[oklch(0.55_0.22_270)] px-3 py-1.5 text-xs font-bold text-white transition-all hover:bg-[oklch(0.60_0.22_270)]"
-          >
-            <Save className="h-3.5 w-3.5" /> Save
-          </button>
-          <button
-            onClick={() => onDelete(instructor.id)}
-            className="flex items-center gap-1.5 rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs font-bold text-red-400 transition-all hover:bg-red-500/20"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Editable fields */}
-      <div className="p-6 grid grid-cols-2 gap-5">
-        <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-white/40">Full Name</label>
-          <input
-            type="text"
-            value={instructor.name}
-            onChange={(e) => onUpdate(instructor.id, "name", e.target.value)}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none focus:border-[oklch(0.65_0.22_270)] focus:ring-1 focus:ring-[oklch(0.65_0.22_270)] transition-all"
-          />
-        </div>
-        <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-white/40">Role / Title</label>
-          <input
-            type="text"
-            value={instructor.role}
-            onChange={(e) => onUpdate(instructor.id, "role", e.target.value)}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none focus:border-[oklch(0.65_0.22_270)] focus:ring-1 focus:ring-[oklch(0.65_0.22_270)] transition-all"
-          />
-        </div>
-        <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-white/40">Flight Hours Badge</label>
-          <input
-            type="text"
-            value={instructor.hours}
-            onChange={(e) => onUpdate(instructor.id, "hours", e.target.value)}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none focus:border-[oklch(0.65_0.22_270)] focus:ring-1 focus:ring-[oklch(0.65_0.22_270)] transition-all"
-          />
-        </div>
-        <div className="space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-white/40">Photo URL</label>
-          <input
-            type="text"
-            value={instructor.image_url}
-            onChange={(e) => onUpdate(instructor.id, "image_url", e.target.value)}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none focus:border-[oklch(0.65_0.22_270)] focus:ring-1 focus:ring-[oklch(0.65_0.22_270)] transition-all font-mono text-xs"
-          />
-        </div>
-        <div className="col-span-2 space-y-1">
-          <label className="text-xs font-semibold uppercase tracking-wider text-white/40">Bio</label>
-          <textarea
-            rows={3}
-            value={instructor.bio}
-            onChange={(e) => onUpdate(instructor.id, "bio", e.target.value)}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none focus:border-[oklch(0.65_0.22_270)] focus:ring-1 focus:ring-[oklch(0.65_0.22_270)] transition-all resize-none"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
+type InstructorRow = Database["public"]["Tables"]["instructors"]["Row"];
 
 function TeamEditor() {
-  const [team, setTeam] = useState<Instructor[]>(INITIAL_TEAM);
-  const [nextId, setNextId] = useState(4);
+  const qc = useQueryClient();
+  const { data: team = [], isLoading } = useQuery({
+    queryKey: ["instructors", "cms"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("instructors").select("*").order("display_order");
+      if (error) throw error;
+      return data;
+    },
+  });
 
-  function updateInstructor(id: number, field: keyof Instructor, value: string) {
-    setTeam((prev) =>
-      prev.map((ins) => (ins.id === id ? { ...ins, [field]: value } : ins))
-    );
+  const [drafts, setDrafts] = useState<Record<string, Partial<InstructorRow>>>({});
+  useEffect(() => setDrafts({}), [team.length]);
+
+  const merged = team.map((i) => ({ ...i, ...(drafts[i.id] ?? {}) }));
+
+  function update(id: string, field: keyof InstructorRow, value: any) {
+    setDrafts((d) => ({ ...d, [id]: { ...d[id], [field]: value } }));
   }
 
-  function deleteInstructor(id: number) {
-    setTeam((prev) => prev.filter((ins) => ins.id !== id));
-  }
+  const saveMut = useMutation({
+    mutationFn: async (row: InstructorRow) => {
+      const { id, created_at, updated_at, ...patch } = row;
+      const { error } = await supabase.from("instructors").update(patch).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: (_d, row) => {
+      toast.success(`${row.name} saved`);
+      setDrafts((d) => { const c = { ...d }; delete c[row.id]; return c; });
+      qc.invalidateQueries({ queryKey: ["instructors"] });
+    },
+    onError: (e: any) => toast.error(e.message ?? "Save failed"),
+  });
 
-  function addInstructor() {
-    setTeam((prev) => [
-      ...prev,
-      {
-        id: nextId,
-        name: "",
-        role: "Line Flight Instructor",
-        hours: "0 Hours",
-        bio: "",
-        image_url: "",
-      },
-    ]);
-    setNextId((n) => n + 1);
-  }
+  const delMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("instructors").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("Removed"); qc.invalidateQueries({ queryKey: ["instructors"] }); },
+    onError: (e: any) => toast.error(e.message ?? "Delete failed"),
+  });
+
+  const addMut = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from("instructors").insert({
+        name: "New Instructor", role: "Flight Instructor", display_order: team.length,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => { toast.success("Instructor added"); qc.invalidateQueries({ queryKey: ["instructors"] }); },
+    onError: (e: any) => toast.error(e.message ?? "Insert failed"),
+  });
 
   return (
     <div className="p-8 space-y-8">
-      {/* Header */}
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-xl font-extrabold text-white">Team & Instructors</h2>
-          <p className="mt-1 text-xs text-white/40">
-            Manage instructor profiles displayed on the About page. Changes here reflect live once Supabase is connected.
-          </p>
+          <p className="mt-1 text-xs text-white/40">Live data from Lovable Cloud.</p>
         </div>
-        <button
-          onClick={addInstructor}
-          className="flex items-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-[oklch(0.55_0.22_270)]/20 transition-all hover:scale-[1.02] hover:bg-[oklch(0.60_0.22_270)]"
-        >
-          <Plus className="h-4 w-4" />
-          Add Instructor
+        <button onClick={() => addMut.mutate()} className="flex items-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] px-5 py-2.5 text-sm font-bold text-white shadow-lg transition-all hover:scale-[1.02]">
+          <Plus className="h-4 w-4" /> Add Instructor
         </button>
       </div>
 
-      {/* Instructor count badge */}
-      <div className="flex items-center gap-2">
-        <span className="rounded-full border border-[oklch(0.55_0.22_270)]/30 bg-[oklch(0.55_0.22_270)]/10 px-3 py-1 text-xs font-bold text-[oklch(0.70_0.18_270)]">
-          {team.length} instructor{team.length !== 1 ? "s" : ""}
-        </span>
-        <span className="text-xs text-white/30">Displayed as profile cards on the About page</span>
-      </div>
+      {isLoading && <p className="text-white/50 text-sm">Loading…</p>}
 
-      {/* Instructor cards */}
       <div className="space-y-6">
-        {team.map((instructor) => (
-          <InstructorCard
-            key={instructor.id}
-            instructor={instructor}
-            onUpdate={updateInstructor}
-            onDelete={deleteInstructor}
-          />
-        ))}
+        {merged.map((ins) => {
+          const isDirty = !!drafts[ins.id];
+          return (
+            <div key={ins.id} className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden backdrop-blur-sm">
+              <div className="flex items-center justify-between border-b border-white/10 bg-white/3 px-6 py-4">
+                <div className="flex items-center gap-3">
+                  {ins.image_url ? (
+                    <img src={ins.image_url} alt={ins.name} className="h-9 w-9 rounded-full object-cover border border-white/10" />
+                  ) : (
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[oklch(0.55_0.22_270)]/20 text-[oklch(0.70_0.18_270)]">
+                      <User className="h-4 w-4" />
+                    </div>
+                  )}
+                  <div>
+                    <span className="text-sm font-bold text-white">{ins.name || "New Instructor"}</span>
+                    <span className="block text-xs text-white/40">{ins.role}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {isDirty && <span className="text-[10px] text-amber-400 font-bold">Unsaved</span>}
+                  <button onClick={() => saveMut.mutate(ins)} disabled={!isDirty || saveMut.isPending}
+                    className="flex items-center gap-1.5 rounded-lg bg-[oklch(0.55_0.22_270)] px-3 py-1.5 text-xs font-bold text-white disabled:opacity-40">
+                    <Save className="h-3.5 w-3.5" /> Save
+                  </button>
+                  <button onClick={() => { if (confirm(`Delete ${ins.name}?`)) delMut.mutate(ins.id); }}
+                    className="flex items-center gap-1.5 rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs font-bold text-red-400">
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
 
-        {team.length === 0 && (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 py-20 text-center">
-            <User className="h-10 w-10 text-white/20 mb-3" />
-            <p className="text-sm font-semibold text-white/40">No instructors yet</p>
-            <button
-              onClick={addInstructor}
-              className="mt-4 text-xs font-semibold text-[oklch(0.70_0.18_270)] hover:underline"
-            >
-              + Add your first instructor
-            </button>
-          </div>
-        )}
+              <div className="p-6 grid grid-cols-2 gap-5">
+                {([
+                  ["name", "Full Name"],
+                  ["role", "Role / Title"],
+                  ["hours", "Hours Badge"],
+                  ["image_url", "Photo URL"],
+                ] as const).map(([f, label]) => (
+                  <div key={f} className="space-y-1">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-white/40">{label}</label>
+                    <input type="text" value={(ins as any)[f] ?? ""} onChange={(e) => update(ins.id, f, e.target.value)}
+                      className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none focus:border-[oklch(0.65_0.22_270)]" />
+                  </div>
+                ))}
+                <div className="col-span-2 space-y-1">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-white/40">Bio</label>
+                  <textarea rows={3} value={ins.bio ?? ""} onChange={(e) => update(ins.id, "bio", e.target.value)}
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none focus:border-[oklch(0.65_0.22_270)] resize-none" />
+                </div>
+                <div className="col-span-2 flex items-center justify-between pt-2 border-t border-white/5">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-white/40">Published</label>
+                  <button onClick={() => update(ins.id, "published", !ins.published)}
+                    className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${ins.published ? "bg-emerald-500/20 text-emerald-300" : "bg-white/5 text-white/40"}`}>
+                    {ins.published ? "Live on /about" : "Hidden"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
