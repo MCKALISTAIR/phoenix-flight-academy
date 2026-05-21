@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CheckCircle2, Cpu, Gauge } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/fleet")({
   component: FleetPage,
@@ -15,47 +17,32 @@ export const Route = createFileRoute("/fleet")({
 function FleetPage() {
   const [visiblePlanes, setVisiblePlanes] = useState<number[]>([]);
 
-  const fleet = [
-    {
-      name: "Cessna 172 Skyhawk",
-      tagline: "G-PHNX • The World's Most Trusted Flight Trainer",
-      image: "/cessna172.png",
-      desc: "The Cessna 172 is the gold standard of flight education. Incredibly stable, forgiving, and predictable. Our aircraft (G-PHNX) is exceptionally maintained and serves as both our primary PPL navigation platform and solo-hire cruiser.",
-      specs: [
-        { label: "Engine", value: "Lycoming O-320 (160 HP)" },
-        { label: "Cruising Speed", value: "105 kts (120 mph)" },
-        { label: "Max Seats", value: "4 (1 Pilot + 3 Pax)" },
-        { label: "Fuel Burn", value: "Approx. 30L / hour" }
-      ],
-      avionics: [
-        "Garmin GNS 430 WAAS GPS",
-        "Traditional Steam Gauges",
-        "Trig Mode S Transponder",
-        "Century II Autopilot",
-        "8.33kHz Compliant Radio",
-        "Dual Altimeters (IFR)"
-      ]
+  const { data: fleetRows = [] } = useQuery({
+    queryKey: ["aircraft", "public"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("aircraft")
+        .select("*")
+        .eq("published", true)
+        .order("display_order", { ascending: true });
+      if (error) throw error;
+      return data ?? [];
     },
-    {
-      name: "Piper PA28 Cherokee",
-      tagline: "G-BCDF • High-Performance Low-Wing Cruiser",
-      image: "https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=900&auto=format&fit=crop",
-      desc: "A low-wing alternative providing fantastic cruising visibility and responsive handling. Extremely popular for qualified pilots doing cross-country building across Scotland due to its high load carrying capacity and spacious cabin layout.",
-      specs: [
-        { label: "Engine", value: "Lycoming O-360 (180 HP)" },
-        { label: "Cruising Speed", value: "115 kts (132 mph)" },
-        { label: "Max Seats", value: "4 (1 Pilot + 3 Pax)" },
-        { label: "Fuel Burn", value: "Approx. 34L / hour" }
-      ],
-      avionics: [
-        "Traditional Steam Gauges Panel",
-        "Trig Mode S Transponder",
-        "8.33kHz Radio",
-        "Spacious Low-Wing Setup",
-        "Dual VOR / ILS Nav Indicators"
-      ]
-    }
-  ];
+  });
+
+  const fleet = fleetRows.map((a) => ({
+    name: a.model,
+    tagline: `${a.registration}${a.tagline ? ` • ${a.tagline}` : ""}`,
+    image: a.image_url || "https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=900&auto=format&fit=crop",
+    desc: a.description ?? "",
+    specs: [
+      { label: "Engine", value: a.engine ?? "—" },
+      { label: "Cruising Speed", value: a.cruise_speed ?? "—" },
+      { label: "Max Seats", value: a.max_seats ?? "—" },
+      { label: "Fuel Burn", value: a.fuel_burn ?? "—" },
+    ],
+    avionics: a.avionics ?? [],
+  }));
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -72,7 +59,7 @@ function FleetPage() {
     const cards = document.querySelectorAll("[data-plane-index]");
     cards.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [fleet.length]);
 
   return (
     <div className="flex flex-col bg-muted/10 pb-20">

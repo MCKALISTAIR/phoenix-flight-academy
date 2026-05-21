@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ShieldCheck, HeartHandshake, Compass } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/about")({
   component: AboutPage,
@@ -54,29 +56,26 @@ function AboutPage() {
     }
   ];
 
-  const instructors = [
-    {
-      name: "Captain Andrew McKay",
-      role: "CFI • Chief Flying Instructor",
-      hours: "4,500+ Hours",
-      image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop&crop=face",
-      bio: "Ex-commercial pilot with over 15 years teaching at Cumbernauld Airport. Andrew specialises in high-latitude cross-country navigation and advanced pilot training checkout safety."
+  const { data: instructorRows = [] } = useQuery({
+    queryKey: ["instructors", "public"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("instructors")
+        .select("*")
+        .eq("published", true)
+        .order("display_order", { ascending: true });
+      if (error) throw error;
+      return data ?? [];
     },
-    {
-      name: "Captain Sarah Jenkins",
-      role: "Senior Flight Instructor",
-      hours: "2,800+ Hours",
-      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop&crop=face",
-      bio: "Sarah is a specialist in solo-flight preparation, PPL ground-school instruction, and confidence-building training blocks. Her deep background is in flight deck meteorology."
-    },
-    {
-      name: "Captain David Smith",
-      role: "Line Flight Instructor",
-      hours: "1,200+ Hours",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop&crop=face",
-      bio: "An expert on Piper low-wing ratings, cockpit avionics mapping, and trial lessons. David brings an enthusiastic, energetic, and checklist-driven approach to every flight hour."
-    }
-  ];
+  });
+
+  const instructors = instructorRows.map((i) => ({
+    name: i.name,
+    role: i.role ?? "Flight Instructor",
+    hours: i.hours ?? "",
+    image: i.image_url ?? "",
+    bio: i.bio ?? "",
+  }));
 
   const visibleValues = useScrollReveal("[data-reveal-value]", values.length);
   const visibleInstructors = useScrollReveal("[data-reveal-instructor]", instructors.length);
