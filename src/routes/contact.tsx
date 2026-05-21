@@ -149,17 +149,19 @@ function ContactPage() {
               </div>
             </div>
 
-            {/* Cumbernauld Airfield Runway Map Graphic */}
+            {/* Embedded Google Map — Cumbernauld Airport */}
             <div className="relative aspect-video rounded-3xl overflow-hidden shadow-md border border-border">
-              <img
-                src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=800&auto=format&fit=crop"
-                alt="Runway approach overhead view"
-                className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2228.3!2d-3.979!3d55.975!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4888483020d5e64d%3A0x6ae29b7e6fd42e77!2sCumbernauld%20Airport!5e0!3m2!1sen!2suk!4v1!5m2!1sen!2suk"
+                className="h-full w-full border-0"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Cumbernauld Airport Location"
               />
-              <div className="absolute inset-0 bg-foreground/10 hover:bg-transparent transition-all duration-300" />
-              <div className="absolute bottom-4 left-4 bg-slate-900/90 backdrop-blur-sm px-4 py-2 rounded-xl text-xs font-semibold text-slate-100 border border-white/10 flex items-center gap-2">
-                <Compass className="h-3.5 w-3.5 text-primary animate-spin-slow" />
-                Runway 26/08 Tarmac Environment
+              <div className="absolute bottom-4 left-4 bg-slate-900/90 backdrop-blur-sm px-4 py-2 rounded-xl text-xs font-semibold text-slate-100 border border-white/10 flex items-center gap-2 pointer-events-none">
+                <Compass className="h-3.5 w-3.5 text-primary" />
+                EGPG — Cumbernauld Airport
               </div>
             </div>
           </div>

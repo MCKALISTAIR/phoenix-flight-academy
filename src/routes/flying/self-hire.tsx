@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plane, BadgeCheck, Scale, CalendarDays, DollarSign, ArrowRight, MapPin } from "lucide-react";
+import { BadgeCheck, Scale, CalendarDays, ArrowRight, MapPin, ChevronDown, ClipboardCheck, UserCheck, PlaneTakeoff, CircleCheckBig } from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/flying/self-hire")({
   component: SelfHirePage,
@@ -11,7 +12,59 @@ export const Route = createFileRoute("/flying/self-hire")({
   }),
 });
 
+const checkoutSteps = [
+  {
+    step: 1,
+    title: "Apply Online",
+    desc: "Submit your self-hire application via the booking portal with your license details and flight hours.",
+    icon: ClipboardCheck,
+  },
+  {
+    step: 2,
+    title: "Document Verification",
+    desc: "Bring your paper logbook, pilot license booklet, and valid medical certificate to the club for verification.",
+    icon: UserCheck,
+  },
+  {
+    step: 3,
+    title: "1-Hour Checkout Flight",
+    desc: "Complete a dual checkout flight with a Phoenix instructor covering circuits, emergencies, and local procedures.",
+    icon: PlaneTakeoff,
+  },
+  {
+    step: 4,
+    title: "Approved & Flying",
+    desc: "Once approved, book aircraft online anytime. You'll have full access to our Cessna 172 and Piper PA28 fleet.",
+    icon: CircleCheckBig,
+  },
+];
+
+const faqs = [
+  {
+    q: "What insurance is included?",
+    a: "Full hull and third-party liability insurance is included in the wet hire rate. There is no excess for normal operations. Negligent damage may be subject to the pilot's personal liability as per club terms."
+  },
+  {
+    q: "How is fuel handled?",
+    a: "Wet rates include standard Avgas uplift at Cumbernauld. If you refuel away from base, retain your receipt and we'll reimburse at the club fuel rate (currently £2.40/litre) up to the amount used."
+  },
+  {
+    q: "Can I fly overnight or multi-day trips?",
+    a: "Yes — multi-day hires are encouraged for cross-country touring. A minimum daily billing of 2 tachometer hours applies. Please book multi-day trips at least 7 days in advance."
+  },
+  {
+    q: "What license do I need?",
+    a: "You need a valid UK PPL(A), LAPL(A), or CPL/ATPL with a current Class 2 or LAPL medical. Student pilots are not eligible for self-hire but can book dual instruction flights."
+  },
+  {
+    q: "How far in advance can I book?",
+    a: "Aircraft can be booked up to 4 weeks in advance via the online portal. Cancellations within 24 hours of the booking may incur a £30 slot-holding fee."
+  },
+];
+
 function SelfHirePage() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
   const policies = [
     {
       title: "Checkout Flight",
@@ -32,7 +85,7 @@ function SelfHirePage() {
 
   return (
     <div className="flex flex-col bg-muted/10 pb-20">
-      {/* Hero Header with Dim Flight Backdrop */}
+      {/* Hero Header */}
       <div className="bg-[oklch(0.12_0.04_250)] py-20 text-white sm:py-28 relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
           <img
@@ -54,6 +107,42 @@ function SelfHirePage() {
       </div>
 
       <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
+
+        {/* Checkout Process Timeline */}
+        <div className="mb-20">
+          <div className="text-center max-w-xl mx-auto mb-12">
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">Getting Started</span>
+            <h2 className="mt-2 text-3xl font-extrabold text-foreground">Checkout Process</h2>
+            <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+              From application to approved renter in four straightforward steps.
+            </p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {checkoutSteps.map((s) => {
+              const Icon = s.icon;
+              return (
+                <div key={s.step} className="relative group">
+                  {s.step < 4 && (
+                    <div className="hidden lg:block absolute top-8 left-[calc(50%+28px)] w-[calc(100%-56px)] h-px bg-border z-0" />
+                  )}
+                  <div className="relative z-10 flex flex-col items-center text-center p-6 rounded-2xl border border-border bg-card shadow-sm transition-all hover:-translate-y-1 hover:shadow-md hover:border-primary/20">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground shadow-sm">
+                      <Icon className="h-7 w-7" />
+                    </div>
+                    <div className="mt-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground">
+                      {s.step}
+                    </div>
+                    <h3 className="mt-3 font-bold text-foreground">{s.title}</h3>
+                    <p className="mt-2 text-xs text-muted-foreground leading-relaxed">{s.desc}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Main Content Grid */}
         <div className="grid gap-16 lg:grid-cols-3">
           
           {/* Main Policies Column */}
@@ -69,7 +158,7 @@ function SelfHirePage() {
               {policies.map((policy, idx) => {
                 const Icon = policy.icon;
                 return (
-                  <div key={idx} className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+                  <div key={idx} className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/20 hover:-translate-y-1 hover:shadow-md">
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                       <Icon className="h-5 w-5" />
                     </div>
@@ -79,7 +168,6 @@ function SelfHirePage() {
                 );
               })}
 
-              {/* Quick Fleet link */}
               <div className="rounded-2xl border border-dashed border-border p-6 flex flex-col justify-between">
                 <div>
                   <h3 className="text-lg font-bold text-foreground">Equipped for Safety</h3>
@@ -97,7 +185,6 @@ function SelfHirePage() {
               </div>
             </div>
 
-            {/* Premium Secondary Image frame to satisfy visual audit */}
             <div className="relative aspect-video rounded-3xl overflow-hidden shadow-lg border border-border mt-8">
               <img
                 src="https://images.unsplash.com/photo-1555513220-410a69a03bc7?q=80&w=1200&auto=format&fit=crop"
@@ -132,7 +219,6 @@ function SelfHirePage() {
                   </div>
                   <span className="text-xl font-bold text-foreground">£175</span>
                 </div>
-
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="font-semibold text-foreground">Piper PA28 Solo Hire</span>
@@ -140,7 +226,6 @@ function SelfHirePage() {
                   </div>
                   <span className="text-xl font-bold text-foreground">£175</span>
                 </div>
-
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="font-semibold text-foreground">Annual Pilot Membership</span>
@@ -148,7 +233,6 @@ function SelfHirePage() {
                   </div>
                   <span className="text-xl font-bold text-foreground">£120</span>
                 </div>
-
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="font-semibold text-foreground">Club Checkout Flight</span>
@@ -179,6 +263,43 @@ function SelfHirePage() {
           </div>
 
         </div>
+
+        {/* FAQ Section */}
+        <div className="mt-24 max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">Self-Hire Questions</span>
+            <h2 className="mt-2 text-3xl font-extrabold text-foreground">Frequently Asked Questions</h2>
+          </div>
+
+          <div className="space-y-3">
+            {faqs.map((faq, idx) => (
+              <div
+                key={idx}
+                className="rounded-2xl border border-border bg-card overflow-hidden transition-all hover:border-primary/20"
+              >
+                <button
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  className="flex w-full items-center justify-between px-6 py-5 text-left"
+                >
+                  <span className="font-semibold text-foreground text-sm pr-4">{faq.q}</span>
+                  <ChevronDown
+                    className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 ${
+                      openFaq === idx ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                <div
+                  className={`overflow-hidden transition-all duration-300 ease-out ${
+                    openFaq === idx ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
+                  <p className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   );

@@ -84,6 +84,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       {
+        rel: "preconnect",
+        href: "https://fonts.googleapis.com",
+      },
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+      },
+      {
         rel: "stylesheet",
         href: appCss,
       },
@@ -116,13 +125,30 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+function ScrollProgress() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(docHeight > 0 ? (scrollTop / docHeight) * 100 : 0);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return <div className="scroll-progress" style={{ width: `${progress}%` }} />;
+}
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const location = useLocation();
   const router = useRouter();
   const isBookingRoute = location.pathname.startsWith("/booking");
+  const isLoginRoute = location.pathname === "/login" || location.pathname === "/reset-password";
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
@@ -162,14 +188,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ScrollProgress />
       <div className="flex min-h-screen flex-col font-sans">
-        {!isBookingRoute && <Navbar />}
+        {!isBookingRoute && !isLoginRoute && <Navbar />}
         <main className="flex-1">
           <div key={location.pathname} className="animate-page-entrance">
             <Outlet />
           </div>
         </main>
-        {!isBookingRoute && <Footer />}
+        {!isBookingRoute && !isLoginRoute && <Footer />}
       </div>
     </QueryClientProvider>
   );

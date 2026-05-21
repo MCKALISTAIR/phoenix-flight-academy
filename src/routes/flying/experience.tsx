@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Clock, ShieldCheck, Compass, MapPin, Sparkles, Navigation } from "lucide-react";
+import { ShieldCheck, MapPin, Sparkles, Navigation, ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/flying/experience")({
   component: ExperiencePage,
@@ -11,7 +12,32 @@ export const Route = createFileRoute("/flying/experience")({
   }),
 });
 
+const faqs = [
+  {
+    q: "What should I wear for my flight?",
+    a: "Dress comfortably — no special clothing is required. Flat-soled shoes are recommended for rudder pedal control. Sunglasses can help in bright conditions. We provide headsets."
+  },
+  {
+    q: "Can I bring passengers?",
+    a: "Yes! One passenger can sit in the rear of the Cessna 172 at no extra cost. They'll enjoy the same stunning views. Additional passengers may be possible depending on weight limits."
+  },
+  {
+    q: "What happens if the weather is bad?",
+    a: "Safety is our priority. If conditions are unsuitable for flying, we'll reschedule your flight at no extra charge. All vouchers include flexible rebooking and are valid for 12 months."
+  },
+  {
+    q: "Do I need any experience or medical?",
+    a: "None at all. Experience flights require no pilot license or medical certificate. You just need to be in reasonable health and over 14 years old (under-16s need parental consent)."
+  },
+  {
+    q: "Can this count towards my PPL?",
+    a: "Absolutely. Every trial lesson is logged as an official instructional flight. If you decide to pursue your PPL, these hours count towards your total required training time."
+  },
+];
+
 function ExperiencePage() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
   const packages = [
     {
       title: "30-Minute Trial Lesson",
@@ -38,7 +64,7 @@ function ExperiencePage() {
 
   return (
     <div className="flex flex-col bg-muted/10 pb-20">
-      {/* Hero Block with Visual Sky Backdrop */}
+      {/* Hero Block */}
       <div className="bg-[oklch(0.12_0.04_250)] py-20 text-white sm:py-28 relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
           <img
@@ -90,7 +116,6 @@ function ExperiencePage() {
             </div>
           </div>
 
-          {/* Styled graphic container filling previous blank space */}
           <div className="relative aspect-video rounded-3xl overflow-hidden shadow-lg border border-border">
             <img
               src="https://images.unsplash.com/photo-1555513220-410a69a03bc7?q=80&w=800&auto=format&fit=crop"
@@ -116,9 +141,17 @@ function ExperiencePage() {
             {packages.map((pkg, idx) => (
               <div
                 key={idx}
-                className="flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:shadow-md hover:border-primary/20"
+                className={`relative flex flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition-all hover:shadow-md hover:border-primary/20 ${
+                  idx === 1 ? "border-primary/40 ring-2 ring-primary/10" : "border-border"
+                }`}
               >
-                {/* Visual preview frame */}
+                {/* Most Popular badge */}
+                {idx === 1 && (
+                  <div className="absolute top-4 left-4 z-10 rounded-full bg-primary px-3 py-1 text-[10px] font-black uppercase tracking-wider text-primary-foreground shadow-md">
+                    Most Popular
+                  </div>
+                )}
+
                 <div className="aspect-[4/3] w-full bg-muted relative overflow-hidden">
                   <img src={pkg.image} alt={pkg.title} className="h-full w-full object-cover" />
                   <div className="absolute top-4 right-4 rounded-full bg-primary px-3.5 py-1.5 text-sm font-black text-primary-foreground shadow-sm">
@@ -130,9 +163,7 @@ function ExperiencePage() {
                   <div className="space-y-3">
                     <h3 className="text-xl font-bold text-foreground">{pkg.title}</h3>
                     <p className="text-sm leading-relaxed text-muted-foreground">{pkg.desc}</p>
-                    
                     <hr className="border-border !my-4" />
-                    
                     <ul className="space-y-2">
                       {pkg.features.map((feat, fIdx) => (
                         <li key={fIdx} className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -149,6 +180,42 @@ function ExperiencePage() {
                   >
                     Buy Voucher / Book
                   </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* FAQ Accordion */}
+        <div className="mt-24 max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">Common Questions</span>
+            <h2 className="mt-2 text-3xl font-extrabold text-foreground">Frequently Asked Questions</h2>
+          </div>
+
+          <div className="space-y-3">
+            {faqs.map((faq, idx) => (
+              <div
+                key={idx}
+                className="rounded-2xl border border-border bg-card overflow-hidden transition-all hover:border-primary/20"
+              >
+                <button
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  className="flex w-full items-center justify-between px-6 py-5 text-left"
+                >
+                  <span className="font-semibold text-foreground text-sm pr-4">{faq.q}</span>
+                  <ChevronDown
+                    className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 ${
+                      openFaq === idx ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                <div
+                  className={`overflow-hidden transition-all duration-300 ease-out ${
+                    openFaq === idx ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
+                  <p className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
                 </div>
               </div>
             ))}

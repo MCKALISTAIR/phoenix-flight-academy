@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap');
+
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -143,6 +145,12 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
   }
 }
 
@@ -157,10 +165,21 @@
   }
 }
 
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes pageEntrance {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -169,7 +188,65 @@
 }
 
 .animate-page-entrance {
-  animation: pageEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: pageEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Stagger delay utilities for hero entrance */
+.animate-stagger-1 { animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both; }
+.animate-stagger-2 { animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both; }
+.animate-stagger-3 { animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both; }
+.animate-stagger-4 { animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both; }
+
+/* Gradient shimmer for hero text */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 6s linear infinite;
+}
+
+/* Scroll progress bar */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--primary);
+  z-index: 9999;
+  transition: width 0.05s linear;
+}
+
+/* Count-up number flash */
+@keyframes countPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Floating ambient particles */
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  25% { transform: translateY(-12px) translateX(4px); }
+  50% { transform: translateY(-6px) translateX(-3px); }
+  75% { transform: translateY(-18px) translateX(2px); }
+}
+
+/* Testimonial slide */
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-slide {
+  animation: fadeSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -181,5 +258,3 @@
     scroll-behavior: auto !important;
   }
 }
-
-
