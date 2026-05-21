@@ -17,7 +17,7 @@ export const Route = createFileRoute("/fleet")({
 function FleetPage() {
   const [visiblePlanes, setVisiblePlanes] = useState<number[]>([]);
 
-  const { data: fleetRows = [], isLoading } = useQuery({
+  const { data: fleetRows = [] } = useQuery({
     queryKey: ["aircraft", "public"],
     queryFn: async () => {
       const { data, error } = await supabase
