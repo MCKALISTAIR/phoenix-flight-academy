@@ -14,6 +14,141 @@ export type Database = {
   }
   public: {
     Tables: {
+      aircraft: {
+        Row: {
+          avionics: string[]
+          created_at: string
+          cruise_speed: string | null
+          description: string | null
+          display_order: number
+          engine: string | null
+          fuel_burn: string | null
+          hours: number
+          id: string
+          image_url: string | null
+          max_seats: string | null
+          model: string
+          next_50hr: number | null
+          next_annual: string | null
+          published: boolean
+          rate_wet: number | null
+          registration: string
+          status: Database["public"]["Enums"]["aircraft_status"]
+          tagline: string | null
+          updated_at: string
+        }
+        Insert: {
+          avionics?: string[]
+          created_at?: string
+          cruise_speed?: string | null
+          description?: string | null
+          display_order?: number
+          engine?: string | null
+          fuel_burn?: string | null
+          hours?: number
+          id?: string
+          image_url?: string | null
+          max_seats?: string | null
+          model: string
+          next_50hr?: number | null
+          next_annual?: string | null
+          published?: boolean
+          rate_wet?: number | null
+          registration: string
+          status?: Database["public"]["Enums"]["aircraft_status"]
+          tagline?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avionics?: string[]
+          created_at?: string
+          cruise_speed?: string | null
+          description?: string | null
+          display_order?: number
+          engine?: string | null
+          fuel_burn?: string | null
+          hours?: number
+          id?: string
+          image_url?: string | null
+          max_seats?: string | null
+          model?: string
+          next_50hr?: number | null
+          next_annual?: string | null
+          published?: boolean
+          rate_wet?: number | null
+          registration?: string
+          status?: Database["public"]["Enums"]["aircraft_status"]
+          tagline?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      flying_status: {
+        Row: {
+          created_at: string
+          id: string
+          is_open: boolean
+          message: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_open?: boolean
+          message?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_open?: boolean
+          message?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      instructors: {
+        Row: {
+          bio: string | null
+          created_at: string
+          display_order: number
+          hours: string | null
+          id: string
+          image_url: string | null
+          name: string
+          published: boolean
+          role: string | null
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          display_order?: number
+          hours?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          published?: boolean
+          role?: string | null
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          display_order?: number
+          hours?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          published?: boolean
+          role?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -47,6 +182,33 @@ export type Database = {
           status?: Database["public"]["Enums"]["profile_status"]
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          created_at: string
+          data: Json
+          id: string
+          section_key: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          data?: Json
+          id?: string
+          section_key: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          id?: string
+          section_key?: string
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -85,6 +247,7 @@ export type Database = {
       }
     }
     Enums: {
+      aircraft_status: "serviceable" | "maintenance" | "inspection" | "retired"
       app_role: "super_admin" | "admin" | "instructor" | "student" | "pilot"
       profile_status: "active" | "pending" | "suspended"
     }
@@ -214,6 +377,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      aircraft_status: ["serviceable", "maintenance", "inspection", "retired"],
       app_role: ["super_admin", "admin", "instructor", "student", "pilot"],
       profile_status: ["active", "pending", "suspended"],
     },
