@@ -1,40 +1,28 @@
 import { Link } from "@tanstack/react-router";
 import { Phone, Mail, MapPin, Facebook, Instagram, ArrowUp } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 function useAirfieldStatus() {
-  const [status, setStatus] = useState<{ open: boolean; message: string }>({ open: false, message: "" });
+  const { data } = useQuery({
+    queryKey: ["flying_status"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("flying_status")
+        .select("is_open,message")
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    refetchInterval: 60_000,
+  });
 
-  useEffect(() => {
-    const check = () => {
-      const now = new Date();
-      const day = now.getDay(); // 0=Sun, 6=Sat
-      const hours = now.getHours();
-      const mins = now.getMinutes();
-      const time = hours * 60 + mins;
-
-      let open = false;
-      let message = "";
-
-      if (day >= 1 && day <= 5) {
-        // Mon-Fri: 09:00 – 17:00
-        open = time >= 540 && time < 1020;
-        message = open ? "Open now · Closes at 17:00" : "Closed · Opens weekday at 09:00";
-      } else {
-        // Sat-Sun: 10:00 – 16:00
-        open = time >= 600 && time < 960;
-        message = open ? "Open now · Closes at 16:00" : "Closed · Opens at 10:00";
-      }
-
-      setStatus({ open, message });
-    };
-
-    check();
-    const interval = setInterval(check, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return status;
+  const open = data?.is_open ?? false;
+  const message = data?.message || (open ? "Open now" : "Closed");
+  return { open, message };
 }
 
 export function Footer() {
