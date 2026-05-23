@@ -212,6 +212,30 @@ export type Database = {
         }
         Relationships: []
       }
+      site_content_revisions: {
+        Row: {
+          created_at: string
+          data: Json
+          id: string
+          section_key: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          id?: string
+          section_key: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          id?: string
+          section_key?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
