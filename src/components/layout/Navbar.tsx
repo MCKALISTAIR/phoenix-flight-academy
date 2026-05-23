@@ -80,7 +80,7 @@ export function Navbar() {
 
           <div className="hidden md:flex md:items-center md:gap-4">
             <Link
-              to="/booking"
+              to="/login"
               className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Portal Login
@@ -119,7 +119,7 @@ export function Navbar() {
           <MobileLink to="/fleet">Our Fleet</MobileLink>
           <MobileLink to="/contact">Contact</MobileLink>
           <Link
-            to="/booking"
+            to="/login"
             className="mt-4 block w-full rounded-md bg-primary px-3 py-2 text-center text-base font-medium text-primary-foreground"
           >
             Portal Login

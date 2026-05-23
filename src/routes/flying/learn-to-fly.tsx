@@ -283,7 +283,7 @@ function LearnToFlyPage() {
 
               <div className="flex flex-col gap-3 pt-2">
                 <Link
-                  to="/booking"
+                  to="/login"
                   className="inline-flex h-12 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground shadow-md transition-transform hover:scale-[1.01]"
                 >
                   Enroll Now

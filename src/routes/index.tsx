@@ -206,7 +206,7 @@ function Index() {
 
             <div className="animate-stagger-4 mt-10 flex flex-wrap items-center gap-4">
               <Link
-                to="/booking"
+                to="/login"
                 className="inline-flex h-14 items-center justify-center rounded-lg bg-primary px-8 text-base font-bold text-primary-foreground shadow-lg transition-all hover:scale-105 hover:bg-primary/95 hover:shadow-xl focus:outline-none"
               >
                 Access Flight Portal

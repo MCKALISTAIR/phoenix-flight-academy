@@ -225,12 +225,12 @@ function CustomerDashboard() {
                     Keep your pilot training active and complete your syllabus hours! Schedule your next instruction lesson or self-hire checkride.
                   </p>
                   <div className="mt-4 flex gap-3">
-                    <Link
-                      to="/booking"
+                    <button
+                      onClick={() => alert("Simulated: Open Booking Schedule Dialog")}
                       className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow hover:bg-primary/95 transition-transform hover:scale-[1.01]"
                     >
                       <CalendarPlus className="h-3.5 w-3.5" /> Book Flight Lesson
-                    </Link>
+                    </button>
                   </div>
                 </div>
               )}
