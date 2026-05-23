@@ -1,11 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect, isRedirect } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Save, CheckCircle2, AlertCircle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { requireSuperAdmin } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/cms/content")({
+  beforeLoad: async ({ location }) => {
+    try {
+      await requireSuperAdmin(location.href);
+    } catch (error) {
+      if (isRedirect(error)) throw error;
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
+  },
   component: ContentEditor,
 });
 

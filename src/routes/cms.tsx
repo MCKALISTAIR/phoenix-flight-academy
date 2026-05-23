@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, useLocation, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation, useNavigate, redirect, isRedirect } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   FileText,
@@ -10,10 +10,17 @@ import {
   Activity,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { requireRole } from "@/lib/auth-guards";
+import { requireSuperAdmin } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/cms")({
-  beforeLoad: ({ location }) => requireRole(location.href, ["super_admin"]),
+  beforeLoad: async ({ location }) => {
+    try {
+      await requireSuperAdmin(location.href);
+    } catch (error) {
+      if (isRedirect(error)) throw error;
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
+  },
   component: CmsLayout,
   head: () => ({
     meta: [{ title: "CMS Editor | Phoenix Flight Training" }],

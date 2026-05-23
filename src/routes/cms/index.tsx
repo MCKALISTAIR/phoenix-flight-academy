@@ -1,7 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, isRedirect } from "@tanstack/react-router";
 import { FileText, Users, CheckCircle2, Clock, AlertCircle, TrendingUp, UserPlus, ShieldAlert, Plane, Wrench, Activity } from "lucide-react";
+import { requireSuperAdmin } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/cms/")({
+  beforeLoad: async ({ location }) => {
+    try {
+      await requireSuperAdmin(location.href);
+    } catch (error) {
+      if (isRedirect(error)) throw error;
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
+  },
   component: CmsDashboard,
 });
 

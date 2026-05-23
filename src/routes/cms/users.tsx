@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect, isRedirect } from "@tanstack/react-router";
 import {
   UserPlus,
   Mail,
@@ -15,8 +15,17 @@ import {
   Trash2,
 } from "lucide-react";
 import { useState } from "react";
+import { requireSuperAdmin } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/cms/users")({
+  beforeLoad: async ({ location }) => {
+    try {
+      await requireSuperAdmin(location.href);
+    } catch (error) {
+      if (isRedirect(error)) throw error;
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
+  },
   component: UserManager,
 });
 

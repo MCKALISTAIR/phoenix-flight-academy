@@ -1,12 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect, isRedirect } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plane, AlertTriangle, CheckCircle, Wrench, Plus, Save, Trash2, Gauge, Clock, Coins } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { requireSuperAdmin } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/cms/fleet")({
+  beforeLoad: async ({ location }) => {
+    try {
+      await requireSuperAdmin(location.href);
+    } catch (error) {
+      if (isRedirect(error)) throw error;
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
+  },
   component: CmsFleetManager,
 });
 
