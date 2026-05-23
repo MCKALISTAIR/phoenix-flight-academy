@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-ro
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
-import { PlaneTakeoff, Mail, Lock, AlertCircle, CheckCircle2 } from "lucide-react";
+import { PlaneTakeoff, Mail, Lock, AlertCircle, CheckCircle2, Shield, User } from "lucide-react";
+import { ensureTestUser } from "@/lib/test-auth.functions";
 
 type LoginSearch = { redirect?: string };
 
@@ -86,6 +87,26 @@ function LoginPage() {
       navigate({ to: search.redirect ?? "/booking/dashboard" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Google sign-in failed.");
+      setBusy(false);
+    }
+  }
+
+  async function handleTestLogin(kind: "admin" | "user") {
+    setBusy(true);
+    setError("");
+    setInfo("");
+    try {
+      const creds = await ensureTestUser({ data: { kind } });
+      const { error } = await supabase.auth.signInWithPassword({
+        email: creds.email,
+        password: creds.password,
+      });
+      if (error) throw error;
+      navigate({
+        to: search.redirect ?? (kind === "admin" ? "/cms" : "/booking/dashboard"),
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Test sign-in failed.");
       setBusy(false);
     }
   }
@@ -215,6 +236,30 @@ function LoginPage() {
             <button type="button" onClick={() => { setMode("signin"); setError(""); setInfo(""); }} className="font-semibold text-primary hover:underline">Back to sign in</button>
           )}
           <Link to="/" className="mt-2 hover:text-foreground">← Back home</Link>
+        </div>
+
+        <div className="mt-6 border-t border-dashed border-border pt-5">
+          <p className="mb-3 text-center text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+            Test sign-in (dev only)
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => handleTestLogin("admin")}
+              disabled={busy}
+              className="flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-50"
+            >
+              <Shield className="h-3.5 w-3.5" /> Sign in as Admin
+            </button>
+            <button
+              type="button"
+              onClick={() => handleTestLogin("user")}
+              disabled={busy}
+              className="flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-50"
+            >
+              <User className="h-3.5 w-3.5" /> Sign in as User
+            </button>
+          </div>
         </div>
       </div>
     </div>
