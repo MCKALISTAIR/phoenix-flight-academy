@@ -1,10 +1,17 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, isRedirect } from "@tanstack/react-router";
 import { Calendar, CreditCard, History, Plane, User, Compass, Clock, Gauge, AlertTriangle, CalendarPlus, Trash2, XCircle } from "lucide-react";
 import { useState } from "react";
 import { requireAuth } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/booking/dashboard")({
-  beforeLoad: ({ location }) => requireAuth(location.href),
+  beforeLoad: async ({ location }) => {
+    try {
+      await requireAuth(location.href);
+    } catch (error) {
+      if (isRedirect(error)) throw error;
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
+  },
   component: CustomerDashboard,
   head: () => ({
     meta: [{ title: "Student Dashboard | Phoenix Flight Training" }],
