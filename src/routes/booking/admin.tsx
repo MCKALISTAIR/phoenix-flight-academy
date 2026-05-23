@@ -1,9 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, isRedirect } from "@tanstack/react-router";
 import { CalendarDays, CheckCircle, Clock, Plane, Settings, Users, AlertTriangle, Crown } from "lucide-react";
-import { requireRole } from "@/lib/auth-guards";
+import { requireAdmin } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/booking/admin")({
-  beforeLoad: ({ location }) => requireRole(location.href, ["admin", "super_admin"]),
+  beforeLoad: async ({ location }) => {
+    try {
+      await requireAdmin(location.href);
+    } catch (error) {
+      if (isRedirect(error)) throw error;
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
+  },
   component: AdminDashboard,
   head: () => ({
     meta: [{ title: "Admin Portal | Phoenix Flight Training" }],
