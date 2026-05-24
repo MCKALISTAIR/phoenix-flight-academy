@@ -189,6 +189,9 @@ export type Database = {
         Row: {
           created_at: string
           data: Json
+          draft_data: Json | null
+          draft_updated_at: string | null
+          draft_updated_by: string | null
           id: string
           section_key: string
           updated_at: string
@@ -197,6 +200,9 @@ export type Database = {
         Insert: {
           created_at?: string
           data?: Json
+          draft_data?: Json | null
+          draft_updated_at?: string | null
+          draft_updated_by?: string | null
           id?: string
           section_key: string
           updated_at?: string
@@ -205,6 +211,9 @@ export type Database = {
         Update: {
           created_at?: string
           data?: Json
+          draft_data?: Json | null
+          draft_updated_at?: string | null
+          draft_updated_by?: string | null
           id?: string
           section_key?: string
           updated_at?: string
