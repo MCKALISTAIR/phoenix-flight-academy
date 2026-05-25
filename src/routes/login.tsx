@@ -359,6 +359,9 @@ function LoginPage() {
                             <a href="#" className="text-xs font-semibold text-primary hover:underline">
                               Forgotten Password?
                             </a>
+                            <Link to="/request-admin" className="text-xs font-semibold text-primary hover:underline">
+                              Request CMS access
+                            </Link>
                           </div>
 
                           {error && (

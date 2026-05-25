@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_requests: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          requested_user_id: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["admin_request_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          requested_user_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["admin_request_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          requested_user_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["admin_request_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       aircraft: {
         Row: {
           avionics: string[]
@@ -280,6 +316,7 @@ export type Database = {
       }
     }
     Enums: {
+      admin_request_status: "pending" | "approved" | "rejected"
       aircraft_status: "serviceable" | "maintenance" | "inspection" | "retired"
       app_role: "super_admin" | "admin" | "instructor" | "student" | "pilot"
       profile_status: "active" | "pending" | "suspended"
@@ -410,6 +447,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      admin_request_status: ["pending", "approved", "rejected"],
       aircraft_status: ["serviceable", "maintenance", "inspection", "retired"],
       app_role: ["super_admin", "admin", "instructor", "student", "pilot"],
       profile_status: ["active", "pending", "suspended"],

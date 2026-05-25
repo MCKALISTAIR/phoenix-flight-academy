@@ -16,6 +16,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { requireSuperAdmin } from "@/lib/auth-guards";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { listAdminRequests, reviewAdminRequest } from "@/lib/admin-requests.functions";
 
 export const Route = createFileRoute("/cms/users")({
   beforeLoad: async ({ location }) => {
@@ -256,6 +259,8 @@ function UserManager() {
         </button>
       </div>
 
+      <AdminRequestsPanel />
+
       {/* Stats row */}
       <div className="grid grid-cols-5 gap-3">
         {ROLES.map((r) => {
@@ -495,6 +500,134 @@ function UserManager() {
             )}
           </div>
         </div>
+      )}
+    </div>
+  );
+}
+
+function AdminRequestsPanel() {
+  const fetchRequests = useServerFn(listAdminRequests);
+  const reviewFn = useServerFn(reviewAdminRequest);
+  const qc = useQueryClient();
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["admin_requests"],
+    queryFn: () => fetchRequests(),
+  });
+
+  const review = useMutation({
+    mutationFn: (vars: { id: string; action: "approve" | "reject" }) =>
+      reviewFn({ data: vars }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin_requests"] }),
+  });
+
+  const pending = (data?.requests ?? []).filter((r) => r.status === "pending");
+  const recent = (data?.requests ?? []).filter((r) => r.status !== "pending").slice(0, 5);
+
+  return (
+    <div className="rounded-2xl border border-[oklch(0.55_0.22_270)]/25 bg-[oklch(0.55_0.22_270)]/[0.05] p-6">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h3 className="flex items-center gap-2 text-sm font-bold text-white">
+            <ShieldCheck className="h-4 w-4 text-[oklch(0.75_0.18_270)]" />
+            Pending super-admin requests
+          </h3>
+          <p className="mt-0.5 text-xs text-white/40">
+            Submitted via the public <code className="rounded bg-white/10 px-1">/request-admin</code> form.
+          </p>
+        </div>
+        <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-xs font-bold text-white/70">
+          {pending.length} pending
+        </span>
+      </div>
+
+      {isLoading && <p className="text-xs text-white/40">Loading…</p>}
+      {error && (
+        <p className="text-xs text-red-400">
+          {error instanceof Error ? error.message : "Failed to load requests."}
+        </p>
+      )}
+
+      {!isLoading && pending.length === 0 && (
+        <p className="text-xs text-white/40">No pending requests.</p>
+      )}
+
+      <ul className="space-y-2">
+        {pending.map((r) => (
+          <li
+            key={r.id}
+            className="flex items-start gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4"
+          >
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <Mail className="h-3.5 w-3.5 text-white/40" />
+                <span className="text-sm font-semibold text-white">{r.email}</span>
+                {!r.requested_user_id && (
+                  <span className="rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-300">
+                    no account yet
+                  </span>
+                )}
+              </div>
+              {r.message && (
+                <p className="mt-1.5 text-xs text-white/60 line-clamp-3">{r.message}</p>
+              )}
+              <p className="mt-1 text-[11px] text-white/30">
+                {new Date(r.created_at).toLocaleString()}
+              </p>
+            </div>
+            <div className="flex shrink-0 gap-2">
+              <button
+                disabled={review.isPending}
+                onClick={() => review.mutate({ id: r.id, action: "approve" })}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-300 transition-all hover:bg-emerald-500/20 disabled:opacity-50"
+              >
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                Approve
+              </button>
+              <button
+                disabled={review.isPending}
+                onClick={() => review.mutate({ id: r.id, action: "reject" })}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold text-white/60 transition-all hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50"
+              >
+                <XCircle className="h-3.5 w-3.5" />
+                Reject
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      {review.error && (
+        <p className="mt-3 text-xs text-red-400">
+          {review.error instanceof Error ? review.error.message : "Action failed."}
+        </p>
+      )}
+
+      {recent.length > 0 && (
+        <details className="mt-4">
+          <summary className="cursor-pointer text-xs font-semibold text-white/40 hover:text-white/70">
+            Recently reviewed ({recent.length})
+          </summary>
+          <ul className="mt-2 space-y-1.5">
+            {recent.map((r) => (
+              <li
+                key={r.id}
+                className="flex items-center justify-between rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2 text-xs"
+              >
+                <span className="text-white/60">{r.email}</span>
+                <span
+                  className={
+                    r.status === "approved"
+                      ? "font-bold text-emerald-400"
+                      : "font-bold text-white/40"
+                  }
+                >
+                  {r.status}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </details>
       )}
     </div>
   );
