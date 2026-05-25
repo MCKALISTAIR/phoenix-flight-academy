@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RequestAdminRouteImport } from './routes/request-admin'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FleetRouteImport } from './routes/fleet'
@@ -45,6 +46,11 @@ const TermsRoute = TermsRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RequestAdminRoute = RequestAdminRouteImport.update({
+  id: '/request-admin',
+  path: '/request-admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/request-admin': typeof RequestAdminRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/unauthorized': typeof UnauthorizedRoute
@@ -175,6 +182,7 @@ export interface FileRoutesByTo {
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/request-admin': typeof RequestAdminRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/unauthorized': typeof UnauthorizedRoute
@@ -200,6 +208,7 @@ export interface FileRoutesById {
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
   '/privacy': typeof PrivacyRoute
+  '/request-admin': typeof RequestAdminRoute
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/unauthorized': typeof UnauthorizedRoute
@@ -226,6 +235,7 @@ export interface FileRouteTypes {
     | '/fleet'
     | '/login'
     | '/privacy'
+    | '/request-admin'
     | '/reset-password'
     | '/terms'
     | '/unauthorized'
@@ -249,6 +259,7 @@ export interface FileRouteTypes {
     | '/fleet'
     | '/login'
     | '/privacy'
+    | '/request-admin'
     | '/reset-password'
     | '/terms'
     | '/unauthorized'
@@ -273,6 +284,7 @@ export interface FileRouteTypes {
     | '/fleet'
     | '/login'
     | '/privacy'
+    | '/request-admin'
     | '/reset-password'
     | '/terms'
     | '/unauthorized'
@@ -298,6 +310,7 @@ export interface RootRouteChildren {
   FleetRoute: typeof FleetRoute
   LoginRoute: typeof LoginRoute
   PrivacyRoute: typeof PrivacyRoute
+  RequestAdminRoute: typeof RequestAdminRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
@@ -327,6 +340,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/request-admin': {
+      id: '/request-admin'
+      path: '/request-admin'
+      fullPath: '/request-admin'
+      preLoaderRoute: typeof RequestAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -507,6 +527,7 @@ const rootRouteChildren: RootRouteChildren = {
   FleetRoute: FleetRoute,
   LoginRoute: LoginRoute,
   PrivacyRoute: PrivacyRoute,
+  RequestAdminRoute: RequestAdminRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
   UnauthorizedRoute: UnauthorizedRoute,
@@ -517,3 +538,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
