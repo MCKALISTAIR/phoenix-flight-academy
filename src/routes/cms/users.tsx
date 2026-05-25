@@ -259,6 +259,8 @@ function UserManager() {
         </button>
       </div>
 
+      <AdminRequestsPanel />
+
       {/* Stats row */}
       <div className="grid grid-cols-5 gap-3">
         {ROLES.map((r) => {
