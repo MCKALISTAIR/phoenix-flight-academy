@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Anyone can submit an admin request" ON public.admin_requests;
