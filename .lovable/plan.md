@@ -1,75 +1,100 @@
-# Cloud Backend Plan — Phoenix Flight Training
+# UK CAA Logbook & Student Progress System
 
-The app currently runs on local state and seeded mock data. Below is everything that needs real backend support, grouped by feature area.
+Build a digital logbook + student progress tracker aligned with **UK CAA / Part-FCL** pilot logbook requirements (CAP 804 / ANO Schedule 8), so the 2-instructor team can record every flight with everything the CAA expects and see each student's training picture at a glance.
 
-## 1. Authentication & Roles
+## What the CAA requires per logbook entry
 
-**Auth methods**
-- Email + password (signup, login, password reset at `/reset-password`)
-- Google sign-in (managed)
+Captured as columns on every flight record:
 
-**Login surfaces**
-- `/booking` — unified portal login + student/pilot self-registration
-- `/booking/dashboard` — protected (any authenticated user)
-- `/booking/admin` — protected (admin or super_admin)
-- `/cms` and all `/cms/*` pages — protected (super_admin only)
+- Date (UTC)
+- Aircraft: make/model + registration
+- Departure aerodrome + time (UTC, off-blocks)
+- Arrival aerodrome + time (UTC, on-blocks)
+- Total flight time (block time)
+- Pilot-in-Command name
+- Holder's operating capacity: **PIC / Dual / P-u/t / PICUS / Instructor**
+- Landings: **day** + **night** counts
+- Conditions: **night time**, **IFR time**
+- Function times: **single-pilot SE**, **single-pilot ME**, **multi-pilot**, **dual received**, **instructor given**
+- FSTD (simulator) time + type
+- Remarks / exercises covered / endorsements
+- Instructor signature (for dual flights)
 
-**Roles** (5 distinct roles already shown in `cms/users.tsx`): `super_admin`, `admin`, `instructor`, `student`, `pilot`.
+## New database tables
 
-Roles stored in a dedicated `user_roles` table (never on profiles) with a `has_role()` security-definer helper for RLS.
+| Table | Purpose |
+|---|---|
+| `syllabus_exercises` | Reference list of PPL exercises Ex 1–19 (Air Law, Effects of Controls, … Skills Test) |
+| `students` | Per-student training record: license type sought (PPL/LAPL/NPPL), start date, primary instructor, status |
+| `flight_log_entries` | One row per flight — all CAA fields above, linked to student + aircraft + instructor |
+| `flight_log_exercises` | Many-to-many: which exercises were covered on which flight, with grade (intro / practiced / competent) |
+| `student_documents` | Medical (Class 1/2/LAPL), Student Pilot License, R/T license, passport, ID — with expiry dates |
+| `student_endorsements` | Solo sign-offs, first solo, solo nav, solo cross-country, type endorsements — who signed, when |
+| `theory_exam_results` | 9 PPL written exams: Air Law, Met, Nav, Human Performance, etc. — pass date, score |
 
-## 2. Database Tables
+All tables RLS-protected: instructors + admins + super_admins read/write; students read their own records only.
 
-| Table | Purpose | Key fields (beyond id/timestamps) |
-|---|---|---|
-| `profiles` | Per-user profile (auto-created on signup via trigger) | user_id, display_name, phone, avatar_url, status (active/pending/suspended), last_active_at |
-| `user_roles` | Role assignments | user_id, role (enum) |
-| `student_registrations` | Prospective student signups from `/booking` register form | name, email, phone, course, message, status |
-| `pilot_registrations` | Prospective renter/pilot signups | name, email, license, hours, medical, status |
-| `aircraft` | Fleet managed in `/cms/fleet` and shown publicly | reg, model, status, hours, rate_wet, next_annual, next_50hr, avionics_count, image_url |
-| `instructors` | Team shown publicly and edited in `/cms/team` | name, role, hours, bio, image_url, display_order |
-| `bookings` | Student/pilot flight bookings (dashboard + admin) | user_id, aircraft_id, instructor_id, start_at, end_at, purpose, status (pending/confirmed/cancelled/completed), notes |
-| `flight_logs` | Completed flight history shown in dashboard | booking_id, user_id, hobbs_start, hobbs_end, notes |
-| `site_content` | Editable copy from `/cms/content` (home, about, fleet blurbs, pricing, experience, contact) | section_key, content (jsonb) |
-| `contact_messages` | Submissions from `/contact` form | name, email, subject, message, status |
-| `flying_status` | Single-row global GO/NO-GO toggle from admin | status, reason, updated_by |
-| `error_logs` | Backend error feed shown in `/cms/analytics` | level, message, route, code, stack, resolved |
+## New CMS pages (instructor area)
 
-## 3. Row-Level Security (high level)
+```text
+/cms/students                    -> list of all students with progress bars + alerts
+/cms/students/$studentId         -> single student dashboard (tabs below)
+  Tab: Overview      -> hours summary, syllabus progress, next lesson, alerts
+  Tab: Flight log    -> CAA logbook table, "Add flight" button
+  Tab: Syllabus      -> Ex 1–19 with status per exercise, last flown, grade
+  Tab: Documents     -> medicals/licenses with expiry traffic lights
+  Tab: Endorsements  -> solo sign-offs and type endorsements
+  Tab: Theory        -> 9 exam results
+/cms/logbook                     -> school-wide logbook feed (all flights, filterable)
+/cms/expiries                    -> dashboard: medicals/licenses expiring in 30/60/90 days
+```
 
-- **Public read** (anonymous): `aircraft`, `instructors`, `site_content`, `flying_status`
-- **Self-only**: `profiles`, `bookings`, `flight_logs` (user sees their own; admins see all)
-- **Insert-only by public**: `student_registrations`, `pilot_registrations`, `contact_messages` (public can create; only admin/super_admin can read/update)
-- **Admin/super_admin only**: write access to `aircraft`, `instructors`, `site_content`, `flying_status`, `error_logs`, role assignments
+## "Add flight" form (the workhorse)
 
-## 4. Server Functions (TanStack `createServerFn`)
+A single form that captures one CAA-compliant log entry in ~30 seconds:
 
-- `submitContactMessage`, `submitStudentRegistration`, `submitPilotRegistration` — public
-- `listMyBookings`, `createBooking`, `cancelBooking` — authenticated user
-- `listAllBookings`, `confirmBooking`, `setFlyingStatus` — admin
-- `upsertAircraft`, `upsertInstructor`, `upsertSiteContent`, `inviteUser`, `setUserRole`, `setUserStatus` — super_admin / admin
-- Public reads (fleet, instructors, content) can use the browser Supabase client directly against RLS.
+- Student + Aircraft (dropdowns) → autofill registration + type
+- Date, Dep aerodrome + off-blocks, Arr aerodrome + on-blocks → auto-compute total time
+- Capacity (Dual / PIC / P-u/t / PICUS / Instructor)
+- Landings day + night, night minutes, IFR minutes
+- Function time auto-derived from capacity + aircraft class (editable)
+- Exercises covered (multi-select Ex 1–19) + grade per exercise
+- Remarks
+- Instructor signs by submitting (logged-in user recorded as signatory)
 
-## 5. Storage Buckets
+Saving updates the student's syllabus progress + hours summary automatically.
 
-- `avatars` (public) — profile/instructor photos
-- `aircraft-images` (public) — fleet photos uploaded from CMS
+## Student-facing additions (later, optional)
 
-## 6. Frontend Wiring Order (suggested)
+Students can view (read-only) their own logbook, syllabus progress, and document expiries inside `/booking/dashboard`. Not in this first build — flagged for follow-up.
 
-1. Auth: login/signup/reset pages, `_authenticated` and `_admin` layout guards, root `onAuthStateChange` listener.
-2. Profiles + roles + `has_role()` helper + trigger.
-3. Public content tables (`aircraft`, `instructors`, `site_content`) — wire `/fleet`, `/about`, home, and CMS editors.
-4. Registrations + contact form + admin inbox.
-5. Bookings + flight logs + admin dashboard + flying status toggle.
-6. User management (`/cms/users`) and error log feed.
+## Suggested build order
 
-## 7. Out of Scope (for now)
+1. **Migration**: create the 7 tables + RLS + seed `syllabus_exercises` (Ex 1–19) + standard PPL theory exams
+2. **Student management**: `/cms/students` list + `/cms/students/$id` overview tab
+3. **Flight log**: "Add flight" form + logbook table view on student page
+4. **Syllabus tracking**: exercise progress driven by flight entries
+5. **Documents + expiry dashboard**: `/cms/expiries`
+6. **Endorsements + theory exams** tabs
+7. **Polish**: school-wide `/cms/logbook` feed + CSV export (for CAA inspection / personal logbook reconciliation)
 
-- Payments (Stripe) — would be a later step for course/membership purchases.
-- Email notifications (booking confirmations, contact acks) — add after Email domain is set up.
-- Realtime updates on the admin dashboard — optional polish.
+## Technical notes
+
+- Server functions in `src/lib/students.functions.ts`, `flight-log.functions.ts`, `documents.functions.ts` using `requireSupabaseAuth` + Zod validation on every input.
+- Times stored as UTC; total time computed server-side from off/on-blocks to avoid client clock drift.
+- Function-time auto-derivation: e.g. capacity=Dual + aircraft class=SE → `dual_received_min = total_min`, `single_pilot_se_min = total_min`. Editable to handle edge cases (multi-crew, IFR portions).
+- Aircraft already has `registration` + `model` — reuse.
+- "Instructor signature" = `signed_by_user_id` + `signed_at` (auditable; we can add cryptographic signature later if CAA inspection ever needs it, but a timestamped user record satisfies digital logbook practice for school records).
+- CSV export uses standard CAA logbook column order so students can transcribe into their personal paper/EASA logbook.
+
+## Out of scope for now
+
+- Booking → auto-create flight entry on completion (nice future link)
+- Aircraft tech log / defects
+- Student self-service logbook view
+- Digital signature with cryptographic verification
+- Email reminders for expiring documents
 
 ---
 
-Approve this and I'll start with **step 1 (auth + roles + profiles)**, then walk through the rest one chunk at a time so each piece can be reviewed before moving on.
+Approve and I'll start with **step 1 (migration + seed data)**, then walk through each chunk so you can review the UI before moving on.

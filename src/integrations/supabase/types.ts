@@ -119,6 +119,162 @@ export type Database = {
         }
         Relationships: []
       }
+      flight_log_entries: {
+        Row: {
+          aircraft_id: string | null
+          aircraft_model: string
+          aircraft_registration: string
+          arrival_aerodrome: string
+          capacity: Database["public"]["Enums"]["flight_capacity"]
+          created_at: string
+          departure_aerodrome: string
+          dual_received_minutes: number
+          flight_date: string
+          fstd_minutes: number
+          fstd_type: string | null
+          id: string
+          ifr_minutes: number
+          instructor_given_minutes: number
+          instructor_user_id: string | null
+          landings_day: number
+          landings_night: number
+          multi_pilot_minutes: number
+          night_minutes: number
+          off_blocks_at: string
+          on_blocks_at: string
+          pic_name: string
+          remarks: string | null
+          signed_at: string | null
+          signed_by_user_id: string | null
+          single_pilot_me_minutes: number
+          single_pilot_se_minutes: number
+          student_id: string
+          total_minutes: number
+          updated_at: string
+        }
+        Insert: {
+          aircraft_id?: string | null
+          aircraft_model: string
+          aircraft_registration: string
+          arrival_aerodrome: string
+          capacity: Database["public"]["Enums"]["flight_capacity"]
+          created_at?: string
+          departure_aerodrome: string
+          dual_received_minutes?: number
+          flight_date: string
+          fstd_minutes?: number
+          fstd_type?: string | null
+          id?: string
+          ifr_minutes?: number
+          instructor_given_minutes?: number
+          instructor_user_id?: string | null
+          landings_day?: number
+          landings_night?: number
+          multi_pilot_minutes?: number
+          night_minutes?: number
+          off_blocks_at: string
+          on_blocks_at: string
+          pic_name: string
+          remarks?: string | null
+          signed_at?: string | null
+          signed_by_user_id?: string | null
+          single_pilot_me_minutes?: number
+          single_pilot_se_minutes?: number
+          student_id: string
+          total_minutes: number
+          updated_at?: string
+        }
+        Update: {
+          aircraft_id?: string | null
+          aircraft_model?: string
+          aircraft_registration?: string
+          arrival_aerodrome?: string
+          capacity?: Database["public"]["Enums"]["flight_capacity"]
+          created_at?: string
+          departure_aerodrome?: string
+          dual_received_minutes?: number
+          flight_date?: string
+          fstd_minutes?: number
+          fstd_type?: string | null
+          id?: string
+          ifr_minutes?: number
+          instructor_given_minutes?: number
+          instructor_user_id?: string | null
+          landings_day?: number
+          landings_night?: number
+          multi_pilot_minutes?: number
+          night_minutes?: number
+          off_blocks_at?: string
+          on_blocks_at?: string
+          pic_name?: string
+          remarks?: string | null
+          signed_at?: string | null
+          signed_by_user_id?: string | null
+          single_pilot_me_minutes?: number
+          single_pilot_se_minutes?: number
+          student_id?: string
+          total_minutes?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flight_log_entries_aircraft_id_fkey"
+            columns: ["aircraft_id"]
+            isOneToOne: false
+            referencedRelation: "aircraft"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flight_log_entries_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flight_log_exercises: {
+        Row: {
+          created_at: string
+          exercise_id: string
+          flight_log_entry_id: string
+          grade: Database["public"]["Enums"]["exercise_grade"]
+          id: string
+          notes: string | null
+        }
+        Insert: {
+          created_at?: string
+          exercise_id: string
+          flight_log_entry_id: string
+          grade?: Database["public"]["Enums"]["exercise_grade"]
+          id?: string
+          notes?: string | null
+        }
+        Update: {
+          created_at?: string
+          exercise_id?: string
+          flight_log_entry_id?: string
+          grade?: Database["public"]["Enums"]["exercise_grade"]
+          id?: string
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flight_log_exercises_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "syllabus_exercises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flight_log_exercises_flight_log_entry_id_fkey"
+            columns: ["flight_log_entry_id"]
+            isOneToOne: false
+            referencedRelation: "flight_log_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       flying_status: {
         Row: {
           created_at: string
@@ -281,6 +437,210 @@ export type Database = {
         }
         Relationships: []
       }
+      student_documents: {
+        Row: {
+          created_at: string
+          document_number: string | null
+          document_type: Database["public"]["Enums"]["document_type"]
+          expires_on: string | null
+          id: string
+          issued_on: string | null
+          issuing_authority: string | null
+          notes: string | null
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          document_number?: string | null
+          document_type: Database["public"]["Enums"]["document_type"]
+          expires_on?: string | null
+          id?: string
+          issued_on?: string | null
+          issuing_authority?: string | null
+          notes?: string | null
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          document_number?: string | null
+          document_type?: Database["public"]["Enums"]["document_type"]
+          expires_on?: string | null
+          id?: string
+          issued_on?: string | null
+          issuing_authority?: string | null
+          notes?: string | null
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_documents_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_endorsements: {
+        Row: {
+          created_at: string
+          details: string | null
+          endorsement_type: Database["public"]["Enums"]["endorsement_type"]
+          id: string
+          signed_at: string
+          signed_by_user_id: string
+          student_id: string
+          title: string
+          valid_until: string | null
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          endorsement_type: Database["public"]["Enums"]["endorsement_type"]
+          id?: string
+          signed_at?: string
+          signed_by_user_id: string
+          student_id: string
+          title: string
+          valid_until?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          endorsement_type?: Database["public"]["Enums"]["endorsement_type"]
+          id?: string
+          signed_at?: string
+          signed_by_user_id?: string
+          student_id?: string
+          title?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_endorsements_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      students: {
+        Row: {
+          created_at: string
+          id: string
+          license_sought: Database["public"]["Enums"]["license_sought"]
+          notes: string | null
+          primary_instructor_id: string | null
+          start_date: string | null
+          status: Database["public"]["Enums"]["student_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          license_sought?: Database["public"]["Enums"]["license_sought"]
+          notes?: string | null
+          primary_instructor_id?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["student_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          license_sought?: Database["public"]["Enums"]["license_sought"]
+          notes?: string | null
+          primary_instructor_id?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["student_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      syllabus_exercises: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          display_order: number
+          exercise_number: number
+          id: string
+          title: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          exercise_number: number
+          id?: string
+          title: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          exercise_number?: number
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      theory_exam_results: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          recorded_by_user_id: string | null
+          result: Database["public"]["Enums"]["exam_result"]
+          score: number | null
+          student_id: string
+          subject: string
+          taken_on: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          recorded_by_user_id?: string | null
+          result?: Database["public"]["Enums"]["exam_result"]
+          score?: number | null
+          student_id: string
+          subject: string
+          taken_on?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          recorded_by_user_id?: string | null
+          result?: Database["public"]["Enums"]["exam_result"]
+          score?: number | null
+          student_id?: string
+          subject?: string
+          taken_on?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "theory_exam_results_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -319,7 +679,40 @@ export type Database = {
       admin_request_status: "pending" | "approved" | "rejected"
       aircraft_status: "serviceable" | "maintenance" | "inspection" | "retired"
       app_role: "super_admin" | "admin" | "instructor" | "student" | "pilot"
+      document_type:
+        | "medical_class1"
+        | "medical_class2"
+        | "medical_lapl"
+        | "student_pilot_license"
+        | "ppl"
+        | "lapl"
+        | "rt_license"
+        | "passport"
+        | "photo_id"
+        | "language_proficiency"
+        | "other"
+      endorsement_type:
+        | "first_solo"
+        | "solo_circuits"
+        | "solo_local"
+        | "solo_nav"
+        | "solo_cross_country"
+        | "type_endorsement"
+        | "night_rating"
+        | "differences_training"
+        | "other"
+      exam_result: "pass" | "fail" | "pending"
+      exercise_grade: "intro" | "practiced" | "competent" | "review"
+      flight_capacity:
+        | "dual"
+        | "pic"
+        | "put"
+        | "picus"
+        | "instructor"
+        | "examiner"
+      license_sought: "PPL" | "LAPL" | "NPPL" | "CPL" | "IR" | "Other"
       profile_status: "active" | "pending" | "suspended"
+      student_status: "active" | "paused" | "completed" | "withdrawn"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -450,7 +843,43 @@ export const Constants = {
       admin_request_status: ["pending", "approved", "rejected"],
       aircraft_status: ["serviceable", "maintenance", "inspection", "retired"],
       app_role: ["super_admin", "admin", "instructor", "student", "pilot"],
+      document_type: [
+        "medical_class1",
+        "medical_class2",
+        "medical_lapl",
+        "student_pilot_license",
+        "ppl",
+        "lapl",
+        "rt_license",
+        "passport",
+        "photo_id",
+        "language_proficiency",
+        "other",
+      ],
+      endorsement_type: [
+        "first_solo",
+        "solo_circuits",
+        "solo_local",
+        "solo_nav",
+        "solo_cross_country",
+        "type_endorsement",
+        "night_rating",
+        "differences_training",
+        "other",
+      ],
+      exam_result: ["pass", "fail", "pending"],
+      exercise_grade: ["intro", "practiced", "competent", "review"],
+      flight_capacity: [
+        "dual",
+        "pic",
+        "put",
+        "picus",
+        "instructor",
+        "examiner",
+      ],
+      license_sought: ["PPL", "LAPL", "NPPL", "CPL", "IR", "Other"],
       profile_status: ["active", "pending", "suspended"],
+      student_status: ["active", "paused", "completed", "withdrawn"],
     },
   },
 } as const

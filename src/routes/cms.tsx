@@ -8,6 +8,8 @@ import {
   UserPlus,
   Plane,
   Activity,
+  GraduationCap,
+  CalendarClock,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireSuperAdmin } from "@/lib/auth-guards";
@@ -41,6 +43,8 @@ function CmsLayout() {
     { to: "/cms/content", icon: FileText, label: "Content Editor" },
     { to: "/cms/team", icon: Users, label: "Team & Instructors" },
     { to: "/cms/fleet", icon: Plane, label: "Fleet & Aircraft" },
+    { to: "/cms/students", icon: GraduationCap, label: "Students & Logbook" },
+    { to: "/cms/expiries", icon: CalendarClock, label: "Expiries" },
     { to: "/cms/users", icon: UserPlus, label: "User Management" },
     { to: "/cms/analytics", icon: Activity, label: "System Analytics" },
   ];
