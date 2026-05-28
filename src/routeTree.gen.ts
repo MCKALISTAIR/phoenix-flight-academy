@@ -27,6 +27,7 @@ import { Route as FlyingLearnToFlyRouteImport } from './routes/flying/learn-to-f
 import { Route as FlyingExperienceRouteImport } from './routes/flying/experience'
 import { Route as CmsUsersRouteImport } from './routes/cms/users'
 import { Route as CmsTeamRouteImport } from './routes/cms/team'
+import { Route as CmsStudentsRouteImport } from './routes/cms/students'
 import { Route as CmsFleetRouteImport } from './routes/cms/fleet'
 import { Route as CmsContentRouteImport } from './routes/cms/content'
 import { Route as CmsAnalyticsRouteImport } from './routes/cms/analytics'
@@ -123,6 +124,11 @@ const CmsTeamRoute = CmsTeamRouteImport.update({
   path: '/team',
   getParentRoute: () => CmsRoute,
 } as any)
+const CmsStudentsRoute = CmsStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => CmsRoute,
+} as any)
 const CmsFleetRoute = CmsFleetRouteImport.update({
   id: '/fleet',
   path: '/fleet',
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/cms/analytics': typeof CmsAnalyticsRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/students': typeof CmsStudentsRoute
   '/cms/team': typeof CmsTeamRoute
   '/cms/users': typeof CmsUsersRoute
   '/flying/experience': typeof FlyingExperienceRoute
@@ -191,6 +198,7 @@ export interface FileRoutesByTo {
   '/cms/analytics': typeof CmsAnalyticsRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/students': typeof CmsStudentsRoute
   '/cms/team': typeof CmsTeamRoute
   '/cms/users': typeof CmsUsersRoute
   '/flying/experience': typeof FlyingExperienceRoute
@@ -217,6 +225,7 @@ export interface FileRoutesById {
   '/cms/analytics': typeof CmsAnalyticsRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/students': typeof CmsStudentsRoute
   '/cms/team': typeof CmsTeamRoute
   '/cms/users': typeof CmsUsersRoute
   '/flying/experience': typeof FlyingExperienceRoute
@@ -244,6 +253,7 @@ export interface FileRouteTypes {
     | '/cms/analytics'
     | '/cms/content'
     | '/cms/fleet'
+    | '/cms/students'
     | '/cms/team'
     | '/cms/users'
     | '/flying/experience'
@@ -268,6 +278,7 @@ export interface FileRouteTypes {
     | '/cms/analytics'
     | '/cms/content'
     | '/cms/fleet'
+    | '/cms/students'
     | '/cms/team'
     | '/cms/users'
     | '/flying/experience'
@@ -293,6 +304,7 @@ export interface FileRouteTypes {
     | '/cms/analytics'
     | '/cms/content'
     | '/cms/fleet'
+    | '/cms/students'
     | '/cms/team'
     | '/cms/users'
     | '/flying/experience'
@@ -447,6 +459,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsTeamRouteImport
       parentRoute: typeof CmsRoute
     }
+    '/cms/students': {
+      id: '/cms/students'
+      path: '/students'
+      fullPath: '/cms/students'
+      preLoaderRoute: typeof CmsStudentsRouteImport
+      parentRoute: typeof CmsRoute
+    }
     '/cms/fleet': {
       id: '/cms/fleet'
       path: '/fleet'
@@ -502,6 +521,7 @@ interface CmsRouteChildren {
   CmsAnalyticsRoute: typeof CmsAnalyticsRoute
   CmsContentRoute: typeof CmsContentRoute
   CmsFleetRoute: typeof CmsFleetRoute
+  CmsStudentsRoute: typeof CmsStudentsRoute
   CmsTeamRoute: typeof CmsTeamRoute
   CmsUsersRoute: typeof CmsUsersRoute
   CmsIndexRoute: typeof CmsIndexRoute
@@ -511,6 +531,7 @@ const CmsRouteChildren: CmsRouteChildren = {
   CmsAnalyticsRoute: CmsAnalyticsRoute,
   CmsContentRoute: CmsContentRoute,
   CmsFleetRoute: CmsFleetRoute,
+  CmsStudentsRoute: CmsStudentsRoute,
   CmsTeamRoute: CmsTeamRoute,
   CmsUsersRoute: CmsUsersRoute,
   CmsIndexRoute: CmsIndexRoute,
@@ -538,3 +559,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
