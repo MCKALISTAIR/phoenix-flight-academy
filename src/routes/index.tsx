@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, BookOpen, Compass, PlaneTakeoff, Sparkles, Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")(
   {
@@ -16,24 +18,30 @@ export const Route = createFileRoute("/")(
 // --- Animated counter hook ---
 function useCounter(target: number, duration: number, isVisible: boolean) {
   const [count, setCount] = useState(0);
-  const hasAnimated = useRef(false);
-
   useEffect(() => {
-    if (!isVisible || hasAnimated.current) return;
-    hasAnimated.current = true;
+    if (!isVisible) return;
+    let raf = 0;
     const startTime = performance.now();
     const step = (now: number) => {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      // Ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
       setCount(Math.round(eased * target));
-      if (progress < 1) requestAnimationFrame(step);
+      if (progress < 1) raf = requestAnimationFrame(step);
     };
-    requestAnimationFrame(step);
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
   }, [isVisible, target, duration]);
-
   return count;
+}
+
+// Parse a stat string like "4500+" into a numeric value and trailing suffix.
+function parseStat(value: string | undefined, fallback: number): { num: number; suffix: string } {
+  const v = (value ?? "").trim();
+  if (!v) return { num: fallback, suffix: "" };
+  const m = v.match(/^(-?\d[\d,]*)(.*)$/);
+  if (!m) return { num: fallback, suffix: "" };
+  return { num: Number(m[1].replace(/,/g, "")), suffix: m[2].trim() };
 }
 
 // --- Rotating badge messages ---
