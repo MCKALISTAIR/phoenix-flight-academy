@@ -327,10 +327,10 @@ function Index() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
             {[
-              { value: hoursCount, suffix: "+", label: "Flight Hours Logged", prefix: "" },
-              { value: studentsCount, suffix: "+", label: "Students Trained", prefix: "" },
-              { value: yearsCount, suffix: "+", label: "Years at Cumbernauld", prefix: "" },
-              { value: aircraftCount, suffix: "", label: "Training Aircraft", prefix: "" },
+              { value: hoursCount, suffix: hoursStat.suffix, label: "Flight Hours Logged", prefix: "" },
+              { value: studentsCount, suffix: studentsStat.suffix, label: "Students Trained", prefix: "" },
+              { value: yearsCount, suffix: yearsStat.suffix, label: "Years at Cumbernauld", prefix: "" },
+              { value: aircraftCount, suffix: aircraftStat.suffix, label: "Training Aircraft", prefix: "" },
             ].map((stat, idx) => (
               <div
                 key={stat.label}
