@@ -170,8 +170,8 @@ function Index() {
         {/* Background image with slow zoom */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=2000&auto=format&fit=crop"
-            alt="Aircraft in flight"
+            src="https://images.unsplash.com/photo-1583373834259-46cc92173cb7?q=80&w=2000&auto=format&fit=crop"
+            alt="Cessna 172 light aircraft on the apron"
             className="h-full w-full object-cover opacity-40 scale-105 animate-[pulse_8s_infinite_alternate]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/60 to-transparent" />
