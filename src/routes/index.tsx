@@ -101,10 +101,26 @@ function Index() {
   const [isPaused, setIsPaused] = useState(false);
 
   // Animated stat counters
-  const hoursCount = useCounter(4500, 2000, statsVisible);
-  const studentsCount = useCounter(250, 1800, statsVisible);
-  const yearsCount = useCounter(15, 1500, statsVisible);
-  const aircraftCount = useCounter(3, 1200, statsVisible);
+  const { data: homeContent } = useQuery({
+    queryKey: ["site_content", "home"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("site_content")
+        .select("data")
+        .eq("section_key", "home")
+        .maybeSingle();
+      if (error) throw error;
+      return (data?.data as Record<string, string> | null) ?? {};
+    },
+  });
+  const hoursStat = parseStat(homeContent?.stat_flight_hours, 4500);
+  const studentsStat = parseStat(homeContent?.stat_students, 250);
+  const yearsStat = parseStat(homeContent?.stat_years, 15);
+  const aircraftStat = parseStat(homeContent?.stat_aircraft, 2);
+  const hoursCount = useCounter(hoursStat.num, 2000, statsVisible);
+  const studentsCount = useCounter(studentsStat.num, 1800, statsVisible);
+  const yearsCount = useCounter(yearsStat.num, 1500, statsVisible);
+  const aircraftCount = useCounter(aircraftStat.num, 1200, statsVisible);
 
   // --- Badge rotation timer ---
   useEffect(() => {
