@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, ShieldCheck, Award, Compass, Sparkles, HelpCircle, ArrowRight } from "lucide-react";
+import { BookOpen, ShieldCheck, Award, Compass, Plane, HelpCircle, ArrowRight } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 export const Route = createFileRoute("/flying/learn-to-fly")({
@@ -21,7 +21,7 @@ function LearnToFlyPage() {
       num: "01",
       title: "The Trial Flight",
       desc: "Take the controls for the very first time. Get a comprehensive pre-flight briefing, fly with a CAA-certified instructor, and experience the pure joy of aviation.",
-      icon: Sparkles,
+      icon: Plane,
       time: "Hour 1"
     },
     {
