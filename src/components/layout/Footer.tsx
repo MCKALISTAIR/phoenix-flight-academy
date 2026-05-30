@@ -139,7 +139,7 @@ export function Footer() {
                   className="flex items-start gap-3 text-sm text-white/60 hover:text-white transition-colors"
                 >
                   <Mail className="h-5 w-5 shrink-0 text-primary" />
-                  <span>info@phoenixflighttraining.co.uk</span>
+                  <span className="break-all">info@phoenixflighttraining.co.uk</span>
                 </a>
               </li>
               <li>
