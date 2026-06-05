@@ -22,12 +22,12 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireAdmin } from "@/lib/auth-guards";
-import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/cms")({
   beforeLoad: async ({ location }) => {
     try {
-      await requireAdmin(location.href);
+      const { roles } = await requireAdmin(location.href);
+      return { cmsRoles: roles };
     } catch (error) {
       if (isRedirect(error)) throw error;
       throw redirect({ to: "/login", search: { redirect: location.href } });
@@ -42,25 +42,8 @@ export const Route = createFileRoute("/cms")({
 function CmsLayout() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return;
-      const { data: rolesData } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userData.user.id);
-      if (cancelled) return;
-      const roles = (rolesData ?? []).map((r) => r.role as string);
-      setIsSuperAdmin(roles.includes("super_admin"));
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const { cmsRoles } = Route.useRouteContext();
+  const isSuperAdmin = (cmsRoles ?? []).includes("super_admin");
 
   async function handleSignOut() {
     await supabase.auth.signOut();
