@@ -1,12 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect, isRedirect } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { CreditCard, Loader2, AlertCircle, CheckCircle2, XCircle, Search } from "lucide-react";
 import { listAllBookings } from "@/lib/bookings.functions";
 import { completeMockPayment, getCheckoutSession } from "@/lib/mock-payments.functions";
+import { requireAdmin } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/cms/mock-payments")({
+  beforeLoad: async ({ location }) => {
+    try {
+      await requireAdmin(location.href);
+    } catch (e) {
+      if (isRedirect(e)) throw e;
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
+  },
   component: MockPaymentsPage,
   head: () => ({ meta: [{ title: "Mock Payments | CMS" }] }),
 });
