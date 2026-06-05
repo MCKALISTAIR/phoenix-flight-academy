@@ -41,6 +41,7 @@ import { Route as BookingDashboardRouteImport } from './routes/booking/dashboard
 import { Route as BookingAdminRouteImport } from './routes/booking/admin'
 import { Route as CmsStudentsStudentIdRouteImport } from './routes/cms/students.$studentId'
 import { Route as BookingConfirmIdRouteImport } from './routes/booking/confirm.$id'
+import { Route as BookingCheckoutIdRouteImport } from './routes/booking/checkout.$id'
 import { Route as BookingBookSlugRouteImport } from './routes/booking/book.$slug'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
@@ -203,6 +204,11 @@ const BookingConfirmIdRoute = BookingConfirmIdRouteImport.update({
   path: '/confirm/$id',
   getParentRoute: () => BookingRoute,
 } as any)
+const BookingCheckoutIdRoute = BookingCheckoutIdRouteImport.update({
+  id: '/checkout/$id',
+  path: '/checkout/$id',
+  getParentRoute: () => BookingRoute,
+} as any)
 const BookingBookSlugRoute = BookingBookSlugRouteImport.update({
   id: '/book/$slug',
   path: '/book/$slug',
@@ -241,6 +247,7 @@ export interface FileRoutesByFullPath {
   '/booking/': typeof BookingIndexRoute
   '/cms/': typeof CmsIndexRoute
   '/booking/book/$slug': typeof BookingBookSlugRoute
+  '/booking/checkout/$id': typeof BookingCheckoutIdRoute
   '/booking/confirm/$id': typeof BookingConfirmIdRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
 }
@@ -274,6 +281,7 @@ export interface FileRoutesByTo {
   '/booking': typeof BookingIndexRoute
   '/cms': typeof CmsIndexRoute
   '/booking/book/$slug': typeof BookingBookSlugRoute
+  '/booking/checkout/$id': typeof BookingCheckoutIdRoute
   '/booking/confirm/$id': typeof BookingConfirmIdRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
 }
@@ -310,6 +318,7 @@ export interface FileRoutesById {
   '/booking/': typeof BookingIndexRoute
   '/cms/': typeof CmsIndexRoute
   '/booking/book/$slug': typeof BookingBookSlugRoute
+  '/booking/checkout/$id': typeof BookingCheckoutIdRoute
   '/booking/confirm/$id': typeof BookingConfirmIdRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
 }
@@ -347,6 +356,7 @@ export interface FileRouteTypes {
     | '/booking/'
     | '/cms/'
     | '/booking/book/$slug'
+    | '/booking/checkout/$id'
     | '/booking/confirm/$id'
     | '/cms/students/$studentId'
   fileRoutesByTo: FileRoutesByTo
@@ -380,6 +390,7 @@ export interface FileRouteTypes {
     | '/booking'
     | '/cms'
     | '/booking/book/$slug'
+    | '/booking/checkout/$id'
     | '/booking/confirm/$id'
     | '/cms/students/$studentId'
   id:
@@ -415,6 +426,7 @@ export interface FileRouteTypes {
     | '/booking/'
     | '/cms/'
     | '/booking/book/$slug'
+    | '/booking/checkout/$id'
     | '/booking/confirm/$id'
     | '/cms/students/$studentId'
   fileRoutesById: FileRoutesById
@@ -663,6 +675,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookingConfirmIdRouteImport
       parentRoute: typeof BookingRoute
     }
+    '/booking/checkout/$id': {
+      id: '/booking/checkout/$id'
+      path: '/checkout/$id'
+      fullPath: '/booking/checkout/$id'
+      preLoaderRoute: typeof BookingCheckoutIdRouteImport
+      parentRoute: typeof BookingRoute
+    }
     '/booking/book/$slug': {
       id: '/booking/book/$slug'
       path: '/book/$slug'
@@ -678,6 +697,7 @@ interface BookingRouteChildren {
   BookingDashboardRoute: typeof BookingDashboardRoute
   BookingIndexRoute: typeof BookingIndexRoute
   BookingBookSlugRoute: typeof BookingBookSlugRoute
+  BookingCheckoutIdRoute: typeof BookingCheckoutIdRoute
   BookingConfirmIdRoute: typeof BookingConfirmIdRoute
 }
 
@@ -686,6 +706,7 @@ const BookingRouteChildren: BookingRouteChildren = {
   BookingDashboardRoute: BookingDashboardRoute,
   BookingIndexRoute: BookingIndexRoute,
   BookingBookSlugRoute: BookingBookSlugRoute,
+  BookingCheckoutIdRoute: BookingCheckoutIdRoute,
   BookingConfirmIdRoute: BookingConfirmIdRoute,
 }
 
