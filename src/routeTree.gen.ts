@@ -36,6 +36,7 @@ import { Route as CmsAnalyticsRouteImport } from './routes/cms/analytics'
 import { Route as BookingDashboardRouteImport } from './routes/booking/dashboard'
 import { Route as BookingAdminRouteImport } from './routes/booking/admin'
 import { Route as CmsStudentsStudentIdRouteImport } from './routes/cms/students.$studentId'
+import { Route as BookingBookSlugRouteImport } from './routes/booking/book.$slug'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
@@ -172,6 +173,11 @@ const CmsStudentsStudentIdRoute = CmsStudentsStudentIdRouteImport.update({
   path: '/$studentId',
   getParentRoute: () => CmsStudentsRoute,
 } as any)
+const BookingBookSlugRoute = BookingBookSlugRouteImport.update({
+  id: '/book/$slug',
+  path: '/book/$slug',
+  getParentRoute: () => BookingRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/flying/self-hire': typeof FlyingSelfHireRoute
   '/booking/': typeof BookingIndexRoute
   '/cms/': typeof CmsIndexRoute
+  '/booking/book/$slug': typeof BookingBookSlugRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
 }
 export interface FileRoutesByTo {
@@ -227,6 +234,7 @@ export interface FileRoutesByTo {
   '/flying/self-hire': typeof FlyingSelfHireRoute
   '/booking': typeof BookingIndexRoute
   '/cms': typeof CmsIndexRoute
+  '/booking/book/$slug': typeof BookingBookSlugRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
 }
 export interface FileRoutesById {
@@ -257,6 +265,7 @@ export interface FileRoutesById {
   '/flying/self-hire': typeof FlyingSelfHireRoute
   '/booking/': typeof BookingIndexRoute
   '/cms/': typeof CmsIndexRoute
+  '/booking/book/$slug': typeof BookingBookSlugRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
 }
 export interface FileRouteTypes {
@@ -288,6 +297,7 @@ export interface FileRouteTypes {
     | '/flying/self-hire'
     | '/booking/'
     | '/cms/'
+    | '/booking/book/$slug'
     | '/cms/students/$studentId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -315,6 +325,7 @@ export interface FileRouteTypes {
     | '/flying/self-hire'
     | '/booking'
     | '/cms'
+    | '/booking/book/$slug'
     | '/cms/students/$studentId'
   id:
     | '__root__'
@@ -344,6 +355,7 @@ export interface FileRouteTypes {
     | '/flying/self-hire'
     | '/booking/'
     | '/cms/'
+    | '/booking/book/$slug'
     | '/cms/students/$studentId'
   fileRoutesById: FileRoutesById
 }
@@ -556,6 +568,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsStudentsStudentIdRouteImport
       parentRoute: typeof CmsStudentsRoute
     }
+    '/booking/book/$slug': {
+      id: '/booking/book/$slug'
+      path: '/book/$slug'
+      fullPath: '/booking/book/$slug'
+      preLoaderRoute: typeof BookingBookSlugRouteImport
+      parentRoute: typeof BookingRoute
+    }
   }
 }
 
@@ -563,12 +582,14 @@ interface BookingRouteChildren {
   BookingAdminRoute: typeof BookingAdminRoute
   BookingDashboardRoute: typeof BookingDashboardRoute
   BookingIndexRoute: typeof BookingIndexRoute
+  BookingBookSlugRoute: typeof BookingBookSlugRoute
 }
 
 const BookingRouteChildren: BookingRouteChildren = {
   BookingAdminRoute: BookingAdminRoute,
   BookingDashboardRoute: BookingDashboardRoute,
   BookingIndexRoute: BookingIndexRoute,
+  BookingBookSlugRoute: BookingBookSlugRoute,
 }
 
 const BookingRouteWithChildren =
