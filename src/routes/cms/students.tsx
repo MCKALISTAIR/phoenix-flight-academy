@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { GraduationCap, Plus, Clock, Plane, ChevronRight, UserPlus2 } from "lucide-react";
-import { requireSuperAdmin } from "@/lib/auth-guards";
+import { requireAdmin } from "@/lib/auth-guards";
 import {
   listStudents,
   listEligibleStudentUsers,
@@ -13,7 +13,7 @@ import {
 export const Route = createFileRoute("/cms/students")({
   beforeLoad: async ({ location }) => {
     try {
-      await requireSuperAdmin(location.href);
+      await requireAdmin(location.href);
     } catch (error) {
       if (isRedirect(error)) throw error;
       throw redirect({ to: "/login", search: { redirect: location.href } });

@@ -30,10 +30,13 @@ import { Route as CmsUsersRouteImport } from './routes/cms/users'
 import { Route as CmsTeamRouteImport } from './routes/cms/team'
 import { Route as CmsStudentsRouteImport } from './routes/cms/students'
 import { Route as CmsSelfHireApprovalsRouteImport } from './routes/cms/self-hire-approvals'
+import { Route as CmsResourceBlocksRouteImport } from './routes/cms/resource-blocks'
 import { Route as CmsMockPaymentsRouteImport } from './routes/cms/mock-payments'
+import { Route as CmsFlyingStatusRouteImport } from './routes/cms/flying-status'
 import { Route as CmsFleetRouteImport } from './routes/cms/fleet'
 import { Route as CmsExpiriesRouteImport } from './routes/cms/expiries'
 import { Route as CmsContentRouteImport } from './routes/cms/content'
+import { Route as CmsClosedDatesRouteImport } from './routes/cms/closed-dates'
 import { Route as CmsCalendarSettingsRouteImport } from './routes/cms/calendar-settings'
 import { Route as CmsBookingsRouteImport } from './routes/cms/bookings'
 import { Route as CmsBookingProductsRouteImport } from './routes/cms/booking-products'
@@ -150,9 +153,19 @@ const CmsSelfHireApprovalsRoute = CmsSelfHireApprovalsRouteImport.update({
   path: '/self-hire-approvals',
   getParentRoute: () => CmsRoute,
 } as any)
+const CmsResourceBlocksRoute = CmsResourceBlocksRouteImport.update({
+  id: '/resource-blocks',
+  path: '/resource-blocks',
+  getParentRoute: () => CmsRoute,
+} as any)
 const CmsMockPaymentsRoute = CmsMockPaymentsRouteImport.update({
   id: '/mock-payments',
   path: '/mock-payments',
+  getParentRoute: () => CmsRoute,
+} as any)
+const CmsFlyingStatusRoute = CmsFlyingStatusRouteImport.update({
+  id: '/flying-status',
+  path: '/flying-status',
   getParentRoute: () => CmsRoute,
 } as any)
 const CmsFleetRoute = CmsFleetRouteImport.update({
@@ -168,6 +181,11 @@ const CmsExpiriesRoute = CmsExpiriesRouteImport.update({
 const CmsContentRoute = CmsContentRouteImport.update({
   id: '/content',
   path: '/content',
+  getParentRoute: () => CmsRoute,
+} as any)
+const CmsClosedDatesRoute = CmsClosedDatesRouteImport.update({
+  id: '/closed-dates',
+  path: '/closed-dates',
   getParentRoute: () => CmsRoute,
 } as any)
 const CmsCalendarSettingsRoute = CmsCalendarSettingsRouteImport.update({
@@ -240,10 +258,13 @@ export interface FileRoutesByFullPath {
   '/cms/booking-products': typeof CmsBookingProductsRoute
   '/cms/bookings': typeof CmsBookingsRoute
   '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
+  '/cms/closed-dates': typeof CmsClosedDatesRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/flying-status': typeof CmsFlyingStatusRoute
   '/cms/mock-payments': typeof CmsMockPaymentsRoute
+  '/cms/resource-blocks': typeof CmsResourceBlocksRoute
   '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
   '/cms/team': typeof CmsTeamRoute
@@ -275,10 +296,13 @@ export interface FileRoutesByTo {
   '/cms/booking-products': typeof CmsBookingProductsRoute
   '/cms/bookings': typeof CmsBookingsRoute
   '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
+  '/cms/closed-dates': typeof CmsClosedDatesRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/flying-status': typeof CmsFlyingStatusRoute
   '/cms/mock-payments': typeof CmsMockPaymentsRoute
+  '/cms/resource-blocks': typeof CmsResourceBlocksRoute
   '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
   '/cms/team': typeof CmsTeamRoute
@@ -313,10 +337,13 @@ export interface FileRoutesById {
   '/cms/booking-products': typeof CmsBookingProductsRoute
   '/cms/bookings': typeof CmsBookingsRoute
   '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
+  '/cms/closed-dates': typeof CmsClosedDatesRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/flying-status': typeof CmsFlyingStatusRoute
   '/cms/mock-payments': typeof CmsMockPaymentsRoute
+  '/cms/resource-blocks': typeof CmsResourceBlocksRoute
   '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
   '/cms/team': typeof CmsTeamRoute
@@ -352,10 +379,13 @@ export interface FileRouteTypes {
     | '/cms/booking-products'
     | '/cms/bookings'
     | '/cms/calendar-settings'
+    | '/cms/closed-dates'
     | '/cms/content'
     | '/cms/expiries'
     | '/cms/fleet'
+    | '/cms/flying-status'
     | '/cms/mock-payments'
+    | '/cms/resource-blocks'
     | '/cms/self-hire-approvals'
     | '/cms/students'
     | '/cms/team'
@@ -387,10 +417,13 @@ export interface FileRouteTypes {
     | '/cms/booking-products'
     | '/cms/bookings'
     | '/cms/calendar-settings'
+    | '/cms/closed-dates'
     | '/cms/content'
     | '/cms/expiries'
     | '/cms/fleet'
+    | '/cms/flying-status'
     | '/cms/mock-payments'
+    | '/cms/resource-blocks'
     | '/cms/self-hire-approvals'
     | '/cms/students'
     | '/cms/team'
@@ -424,10 +457,13 @@ export interface FileRouteTypes {
     | '/cms/booking-products'
     | '/cms/bookings'
     | '/cms/calendar-settings'
+    | '/cms/closed-dates'
     | '/cms/content'
     | '/cms/expiries'
     | '/cms/fleet'
+    | '/cms/flying-status'
     | '/cms/mock-payments'
+    | '/cms/resource-blocks'
     | '/cms/self-hire-approvals'
     | '/cms/students'
     | '/cms/team'
@@ -610,11 +646,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsSelfHireApprovalsRouteImport
       parentRoute: typeof CmsRoute
     }
+    '/cms/resource-blocks': {
+      id: '/cms/resource-blocks'
+      path: '/resource-blocks'
+      fullPath: '/cms/resource-blocks'
+      preLoaderRoute: typeof CmsResourceBlocksRouteImport
+      parentRoute: typeof CmsRoute
+    }
     '/cms/mock-payments': {
       id: '/cms/mock-payments'
       path: '/mock-payments'
       fullPath: '/cms/mock-payments'
       preLoaderRoute: typeof CmsMockPaymentsRouteImport
+      parentRoute: typeof CmsRoute
+    }
+    '/cms/flying-status': {
+      id: '/cms/flying-status'
+      path: '/flying-status'
+      fullPath: '/cms/flying-status'
+      preLoaderRoute: typeof CmsFlyingStatusRouteImport
       parentRoute: typeof CmsRoute
     }
     '/cms/fleet': {
@@ -636,6 +686,13 @@ declare module '@tanstack/react-router' {
       path: '/content'
       fullPath: '/cms/content'
       preLoaderRoute: typeof CmsContentRouteImport
+      parentRoute: typeof CmsRoute
+    }
+    '/cms/closed-dates': {
+      id: '/cms/closed-dates'
+      path: '/closed-dates'
+      fullPath: '/cms/closed-dates'
+      preLoaderRoute: typeof CmsClosedDatesRouteImport
       parentRoute: typeof CmsRoute
     }
     '/cms/calendar-settings': {
@@ -749,10 +806,13 @@ interface CmsRouteChildren {
   CmsBookingProductsRoute: typeof CmsBookingProductsRoute
   CmsBookingsRoute: typeof CmsBookingsRoute
   CmsCalendarSettingsRoute: typeof CmsCalendarSettingsRoute
+  CmsClosedDatesRoute: typeof CmsClosedDatesRoute
   CmsContentRoute: typeof CmsContentRoute
   CmsExpiriesRoute: typeof CmsExpiriesRoute
   CmsFleetRoute: typeof CmsFleetRoute
+  CmsFlyingStatusRoute: typeof CmsFlyingStatusRoute
   CmsMockPaymentsRoute: typeof CmsMockPaymentsRoute
+  CmsResourceBlocksRoute: typeof CmsResourceBlocksRoute
   CmsSelfHireApprovalsRoute: typeof CmsSelfHireApprovalsRoute
   CmsStudentsRoute: typeof CmsStudentsRouteWithChildren
   CmsTeamRoute: typeof CmsTeamRoute
@@ -765,10 +825,13 @@ const CmsRouteChildren: CmsRouteChildren = {
   CmsBookingProductsRoute: CmsBookingProductsRoute,
   CmsBookingsRoute: CmsBookingsRoute,
   CmsCalendarSettingsRoute: CmsCalendarSettingsRoute,
+  CmsClosedDatesRoute: CmsClosedDatesRoute,
   CmsContentRoute: CmsContentRoute,
   CmsExpiriesRoute: CmsExpiriesRoute,
   CmsFleetRoute: CmsFleetRoute,
+  CmsFlyingStatusRoute: CmsFlyingStatusRoute,
   CmsMockPaymentsRoute: CmsMockPaymentsRoute,
+  CmsResourceBlocksRoute: CmsResourceBlocksRoute,
   CmsSelfHireApprovalsRoute: CmsSelfHireApprovalsRoute,
   CmsStudentsRoute: CmsStudentsRouteWithChildren,
   CmsTeamRoute: CmsTeamRoute,

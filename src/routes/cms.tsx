@@ -15,14 +15,19 @@ import {
   ClipboardList,
   KeyRound,
   CreditCard,
+  CloudSun,
+  CalendarX,
+  Ban,
+  Shield,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { requireSuperAdmin } from "@/lib/auth-guards";
+import { requireAdmin } from "@/lib/auth-guards";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/cms")({
   beforeLoad: async ({ location }) => {
     try {
-      await requireSuperAdmin(location.href);
+      await requireAdmin(location.href);
     } catch (error) {
       if (isRedirect(error)) throw error;
       throw redirect({ to: "/login", search: { redirect: location.href } });
@@ -37,27 +42,50 @@ export const Route = createFileRoute("/cms")({
 function CmsLayout() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) return;
+      const { data: rolesData } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userData.user.id);
+      if (cancelled) return;
+      const roles = (rolesData ?? []).map((r) => r.role as string);
+      setIsSuperAdmin(roles.includes("super_admin"));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function handleSignOut() {
     await supabase.auth.signOut();
     navigate({ to: "/login" });
   }
 
-  const navItems = [
-    { to: "/cms", icon: LayoutDashboard, label: "Overview", exact: true },
-    { to: "/cms/content", icon: FileText, label: "Content Editor" },
-    { to: "/cms/team", icon: Users, label: "Team & Instructors" },
-    { to: "/cms/fleet", icon: Plane, label: "Fleet & Aircraft" },
-    { to: "/cms/students", icon: GraduationCap, label: "Students & Logbook" },
-    { to: "/cms/expiries", icon: CalendarClock, label: "Expiries" },
-    { to: "/cms/bookings", icon: ClipboardList, label: "Bookings" },
-    { to: "/cms/booking-products", icon: PackageOpen, label: "Booking Products" },
-    { to: "/cms/calendar-settings", icon: CalendarDays, label: "Calendar Settings" },
-    { to: "/cms/self-hire-approvals", icon: KeyRound, label: "Self-Hire Approvals" },
-    { to: "/cms/mock-payments", icon: CreditCard, label: "Mock Payments" },
-    { to: "/cms/users", icon: UserPlus, label: "User Management" },
-    { to: "/cms/analytics", icon: Activity, label: "System Analytics" },
+  const allNavItems = [
+    { to: "/cms", icon: LayoutDashboard, label: "Overview", exact: true, superOnly: false },
+    { to: "/cms/content", icon: FileText, label: "Content Editor", superOnly: true },
+    { to: "/cms/team", icon: Users, label: "Team & Instructors", superOnly: true },
+    { to: "/cms/fleet", icon: Plane, label: "Fleet & Aircraft", superOnly: true },
+    { to: "/cms/students", icon: GraduationCap, label: "Students & Logbook", superOnly: false },
+    { to: "/cms/expiries", icon: CalendarClock, label: "Expiries", superOnly: false },
+    { to: "/cms/bookings", icon: ClipboardList, label: "Bookings", superOnly: false },
+    { to: "/cms/booking-products", icon: PackageOpen, label: "Booking Products", superOnly: true },
+    { to: "/cms/calendar-settings", icon: CalendarDays, label: "Calendar Settings", superOnly: true },
+    { to: "/cms/closed-dates", icon: CalendarX, label: "Closed Dates", superOnly: false },
+    { to: "/cms/resource-blocks", icon: Ban, label: "Resource Blocks", superOnly: false },
+    { to: "/cms/flying-status", icon: CloudSun, label: "Airfield Status", superOnly: false },
+    { to: "/cms/self-hire-approvals", icon: KeyRound, label: "Self-Hire Approvals", superOnly: false },
+    { to: "/cms/mock-payments", icon: CreditCard, label: "Mock Payments", superOnly: false },
+    { to: "/cms/users", icon: UserPlus, label: "User Management", superOnly: true },
+    { to: "/cms/analytics", icon: Activity, label: "System Analytics", superOnly: true },
   ];
+  const navItems = allNavItems.filter((i) => !i.superOnly || isSuperAdmin);
 
   return (
     <div className="flex min-h-screen bg-[oklch(0.13_0.03_270)]">
@@ -66,11 +94,11 @@ function CmsLayout() {
         {/* Logo */}
         <div className="flex items-center gap-3 border-b border-white/10 px-6 py-5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[oklch(0.55_0.22_270)]">
-            <Crown className="h-4 w-4 text-white" />
+            {isSuperAdmin ? <Crown className="h-4 w-4 text-white" /> : <Shield className="h-4 w-4 text-white" />}
           </div>
           <div>
             <span className="block text-sm font-bold text-white">CMS Editor</span>
-            <span className="block text-xs text-white/40">Super Admin</span>
+            <span className="block text-xs text-white/40">{isSuperAdmin ? "Super Admin" : "Admin"}</span>
           </div>
         </div>
 

@@ -3,13 +3,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Plus, XCircle, CheckCircle2 } from "lucide-react";
-import { requireSuperAdmin } from "@/lib/auth-guards";
+import { requireAdmin } from "@/lib/auth-guards";
 import { listSelfHireApprovals, approveSelfHire, revokeSelfHire } from "@/lib/self-hire.functions";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/cms/self-hire-approvals")({
   beforeLoad: async ({ location }) => {
-    try { await requireSuperAdmin(location.href); } catch (e) { if (isRedirect(e)) throw e; throw redirect({ to: "/login", search: { redirect: location.href } }); }
+    try { await requireAdmin(location.href); } catch (e) { if (isRedirect(e)) throw e; throw redirect({ to: "/login", search: { redirect: location.href } }); }
   },
   component: SelfHireAdmin,
 });
