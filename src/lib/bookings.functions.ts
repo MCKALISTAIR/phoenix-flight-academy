@@ -207,7 +207,13 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ data, context }) => {
-    const patch: Record<string, unknown> = { status: data.status };
+    const patch: {
+      status: typeof data.status;
+      approved_at?: string;
+      approved_by?: string;
+      cancelled_at?: string;
+      cancellation_reason?: string | null;
+    } = { status: data.status };
     if (data.status === "confirmed") {
       patch.approved_at = new Date().toISOString();
       patch.approved_by = context.userId;
