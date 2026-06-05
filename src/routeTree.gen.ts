@@ -30,6 +30,7 @@ import { Route as CmsUsersRouteImport } from './routes/cms/users'
 import { Route as CmsTeamRouteImport } from './routes/cms/team'
 import { Route as CmsStudentsRouteImport } from './routes/cms/students'
 import { Route as CmsSelfHireApprovalsRouteImport } from './routes/cms/self-hire-approvals'
+import { Route as CmsMockPaymentsRouteImport } from './routes/cms/mock-payments'
 import { Route as CmsFleetRouteImport } from './routes/cms/fleet'
 import { Route as CmsExpiriesRouteImport } from './routes/cms/expiries'
 import { Route as CmsContentRouteImport } from './routes/cms/content'
@@ -149,6 +150,11 @@ const CmsSelfHireApprovalsRoute = CmsSelfHireApprovalsRouteImport.update({
   path: '/self-hire-approvals',
   getParentRoute: () => CmsRoute,
 } as any)
+const CmsMockPaymentsRoute = CmsMockPaymentsRouteImport.update({
+  id: '/mock-payments',
+  path: '/mock-payments',
+  getParentRoute: () => CmsRoute,
+} as any)
 const CmsFleetRoute = CmsFleetRouteImport.update({
   id: '/fleet',
   path: '/fleet',
@@ -237,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/cms/content': typeof CmsContentRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/mock-payments': typeof CmsMockPaymentsRoute
   '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
   '/cms/team': typeof CmsTeamRoute
@@ -271,6 +278,7 @@ export interface FileRoutesByTo {
   '/cms/content': typeof CmsContentRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/mock-payments': typeof CmsMockPaymentsRoute
   '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
   '/cms/team': typeof CmsTeamRoute
@@ -308,6 +316,7 @@ export interface FileRoutesById {
   '/cms/content': typeof CmsContentRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/mock-payments': typeof CmsMockPaymentsRoute
   '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
   '/cms/team': typeof CmsTeamRoute
@@ -346,6 +355,7 @@ export interface FileRouteTypes {
     | '/cms/content'
     | '/cms/expiries'
     | '/cms/fleet'
+    | '/cms/mock-payments'
     | '/cms/self-hire-approvals'
     | '/cms/students'
     | '/cms/team'
@@ -380,6 +390,7 @@ export interface FileRouteTypes {
     | '/cms/content'
     | '/cms/expiries'
     | '/cms/fleet'
+    | '/cms/mock-payments'
     | '/cms/self-hire-approvals'
     | '/cms/students'
     | '/cms/team'
@@ -416,6 +427,7 @@ export interface FileRouteTypes {
     | '/cms/content'
     | '/cms/expiries'
     | '/cms/fleet'
+    | '/cms/mock-payments'
     | '/cms/self-hire-approvals'
     | '/cms/students'
     | '/cms/team'
@@ -598,6 +610,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsSelfHireApprovalsRouteImport
       parentRoute: typeof CmsRoute
     }
+    '/cms/mock-payments': {
+      id: '/cms/mock-payments'
+      path: '/mock-payments'
+      fullPath: '/cms/mock-payments'
+      preLoaderRoute: typeof CmsMockPaymentsRouteImport
+      parentRoute: typeof CmsRoute
+    }
     '/cms/fleet': {
       id: '/cms/fleet'
       path: '/fleet'
@@ -733,6 +752,7 @@ interface CmsRouteChildren {
   CmsContentRoute: typeof CmsContentRoute
   CmsExpiriesRoute: typeof CmsExpiriesRoute
   CmsFleetRoute: typeof CmsFleetRoute
+  CmsMockPaymentsRoute: typeof CmsMockPaymentsRoute
   CmsSelfHireApprovalsRoute: typeof CmsSelfHireApprovalsRoute
   CmsStudentsRoute: typeof CmsStudentsRouteWithChildren
   CmsTeamRoute: typeof CmsTeamRoute
@@ -748,6 +768,7 @@ const CmsRouteChildren: CmsRouteChildren = {
   CmsContentRoute: CmsContentRoute,
   CmsExpiriesRoute: CmsExpiriesRoute,
   CmsFleetRoute: CmsFleetRoute,
+  CmsMockPaymentsRoute: CmsMockPaymentsRoute,
   CmsSelfHireApprovalsRoute: CmsSelfHireApprovalsRoute,
   CmsStudentsRoute: CmsStudentsRouteWithChildren,
   CmsTeamRoute: CmsTeamRoute,
