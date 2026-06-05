@@ -29,9 +29,11 @@ import { Route as FlyingExperienceRouteImport } from './routes/flying/experience
 import { Route as CmsUsersRouteImport } from './routes/cms/users'
 import { Route as CmsTeamRouteImport } from './routes/cms/team'
 import { Route as CmsStudentsRouteImport } from './routes/cms/students'
+import { Route as CmsSelfHireApprovalsRouteImport } from './routes/cms/self-hire-approvals'
 import { Route as CmsFleetRouteImport } from './routes/cms/fleet'
 import { Route as CmsExpiriesRouteImport } from './routes/cms/expiries'
 import { Route as CmsContentRouteImport } from './routes/cms/content'
+import { Route as CmsCalendarSettingsRouteImport } from './routes/cms/calendar-settings'
 import { Route as CmsBookingsRouteImport } from './routes/cms/bookings'
 import { Route as CmsBookingProductsRouteImport } from './routes/cms/booking-products'
 import { Route as CmsAnalyticsRouteImport } from './routes/cms/analytics'
@@ -141,6 +143,11 @@ const CmsStudentsRoute = CmsStudentsRouteImport.update({
   path: '/students',
   getParentRoute: () => CmsRoute,
 } as any)
+const CmsSelfHireApprovalsRoute = CmsSelfHireApprovalsRouteImport.update({
+  id: '/self-hire-approvals',
+  path: '/self-hire-approvals',
+  getParentRoute: () => CmsRoute,
+} as any)
 const CmsFleetRoute = CmsFleetRouteImport.update({
   id: '/fleet',
   path: '/fleet',
@@ -154,6 +161,11 @@ const CmsExpiriesRoute = CmsExpiriesRouteImport.update({
 const CmsContentRoute = CmsContentRouteImport.update({
   id: '/content',
   path: '/content',
+  getParentRoute: () => CmsRoute,
+} as any)
+const CmsCalendarSettingsRoute = CmsCalendarSettingsRouteImport.update({
+  id: '/calendar-settings',
+  path: '/calendar-settings',
   getParentRoute: () => CmsRoute,
 } as any)
 const CmsBookingsRoute = CmsBookingsRouteImport.update({
@@ -215,9 +227,11 @@ export interface FileRoutesByFullPath {
   '/cms/analytics': typeof CmsAnalyticsRoute
   '/cms/booking-products': typeof CmsBookingProductsRoute
   '/cms/bookings': typeof CmsBookingsRoute
+  '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
   '/cms/team': typeof CmsTeamRoute
   '/cms/users': typeof CmsUsersRoute
@@ -246,9 +260,11 @@ export interface FileRoutesByTo {
   '/cms/analytics': typeof CmsAnalyticsRoute
   '/cms/booking-products': typeof CmsBookingProductsRoute
   '/cms/bookings': typeof CmsBookingsRoute
+  '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
   '/cms/team': typeof CmsTeamRoute
   '/cms/users': typeof CmsUsersRoute
@@ -280,9 +296,11 @@ export interface FileRoutesById {
   '/cms/analytics': typeof CmsAnalyticsRoute
   '/cms/booking-products': typeof CmsBookingProductsRoute
   '/cms/bookings': typeof CmsBookingsRoute
+  '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
   '/cms/team': typeof CmsTeamRoute
   '/cms/users': typeof CmsUsersRoute
@@ -315,9 +333,11 @@ export interface FileRouteTypes {
     | '/cms/analytics'
     | '/cms/booking-products'
     | '/cms/bookings'
+    | '/cms/calendar-settings'
     | '/cms/content'
     | '/cms/expiries'
     | '/cms/fleet'
+    | '/cms/self-hire-approvals'
     | '/cms/students'
     | '/cms/team'
     | '/cms/users'
@@ -346,9 +366,11 @@ export interface FileRouteTypes {
     | '/cms/analytics'
     | '/cms/booking-products'
     | '/cms/bookings'
+    | '/cms/calendar-settings'
     | '/cms/content'
     | '/cms/expiries'
     | '/cms/fleet'
+    | '/cms/self-hire-approvals'
     | '/cms/students'
     | '/cms/team'
     | '/cms/users'
@@ -379,9 +401,11 @@ export interface FileRouteTypes {
     | '/cms/analytics'
     | '/cms/booking-products'
     | '/cms/bookings'
+    | '/cms/calendar-settings'
     | '/cms/content'
     | '/cms/expiries'
     | '/cms/fleet'
+    | '/cms/self-hire-approvals'
     | '/cms/students'
     | '/cms/team'
     | '/cms/users'
@@ -555,6 +579,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsStudentsRouteImport
       parentRoute: typeof CmsRoute
     }
+    '/cms/self-hire-approvals': {
+      id: '/cms/self-hire-approvals'
+      path: '/self-hire-approvals'
+      fullPath: '/cms/self-hire-approvals'
+      preLoaderRoute: typeof CmsSelfHireApprovalsRouteImport
+      parentRoute: typeof CmsRoute
+    }
     '/cms/fleet': {
       id: '/cms/fleet'
       path: '/fleet'
@@ -574,6 +605,13 @@ declare module '@tanstack/react-router' {
       path: '/content'
       fullPath: '/cms/content'
       preLoaderRoute: typeof CmsContentRouteImport
+      parentRoute: typeof CmsRoute
+    }
+    '/cms/calendar-settings': {
+      id: '/cms/calendar-settings'
+      path: '/calendar-settings'
+      fullPath: '/cms/calendar-settings'
+      preLoaderRoute: typeof CmsCalendarSettingsRouteImport
       parentRoute: typeof CmsRoute
     }
     '/cms/bookings': {
@@ -670,9 +708,11 @@ interface CmsRouteChildren {
   CmsAnalyticsRoute: typeof CmsAnalyticsRoute
   CmsBookingProductsRoute: typeof CmsBookingProductsRoute
   CmsBookingsRoute: typeof CmsBookingsRoute
+  CmsCalendarSettingsRoute: typeof CmsCalendarSettingsRoute
   CmsContentRoute: typeof CmsContentRoute
   CmsExpiriesRoute: typeof CmsExpiriesRoute
   CmsFleetRoute: typeof CmsFleetRoute
+  CmsSelfHireApprovalsRoute: typeof CmsSelfHireApprovalsRoute
   CmsStudentsRoute: typeof CmsStudentsRouteWithChildren
   CmsTeamRoute: typeof CmsTeamRoute
   CmsUsersRoute: typeof CmsUsersRoute
@@ -683,9 +723,11 @@ const CmsRouteChildren: CmsRouteChildren = {
   CmsAnalyticsRoute: CmsAnalyticsRoute,
   CmsBookingProductsRoute: CmsBookingProductsRoute,
   CmsBookingsRoute: CmsBookingsRoute,
+  CmsCalendarSettingsRoute: CmsCalendarSettingsRoute,
   CmsContentRoute: CmsContentRoute,
   CmsExpiriesRoute: CmsExpiriesRoute,
   CmsFleetRoute: CmsFleetRoute,
+  CmsSelfHireApprovalsRoute: CmsSelfHireApprovalsRoute,
   CmsStudentsRoute: CmsStudentsRouteWithChildren,
   CmsTeamRoute: CmsTeamRoute,
   CmsUsersRoute: CmsUsersRoute,
@@ -714,3 +756,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
