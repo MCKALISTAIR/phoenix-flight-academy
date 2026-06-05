@@ -94,7 +94,9 @@ function LoginPage() {
         password: loginPassword,
       });
       if (error) throw error;
-      navigate({ to: search.redirect ?? "/booking/dashboard" });
+      const { data: userData } = await supabase.auth.getUser();
+      const dest = search.redirect ?? (userData.user ? await defaultDestinationFor(userData.user.id) : "/booking/dashboard");
+      navigate({ to: dest });
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Invalid credentials.");
     } finally {
@@ -133,9 +135,8 @@ function LoginPage() {
         password: creds.password,
       });
       if (error) throw error;
-      navigate({
-        to: search.redirect ?? (kind === "admin" ? "/cms" : "/booking/dashboard"),
-      });
+      const dest = search.redirect ?? (kind === "admin" ? "/cms" : "/booking/dashboard");
+      navigate({ to: dest });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Test sign-in failed.");
       setBusy(false);
