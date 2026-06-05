@@ -237,7 +237,11 @@ function BookingFlow() {
           notes: notes || null,
         },
       });
-      navigate({ to: "/booking/confirm/$id", params: { id: res.id } });
+      if (res.paymentMode !== "invoice") {
+        navigate({ to: "/booking/checkout/$id", params: { id: res.id } });
+      } else {
+        navigate({ to: "/booking/confirm/$id", params: { id: res.id } });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Booking failed.");
     } finally {
