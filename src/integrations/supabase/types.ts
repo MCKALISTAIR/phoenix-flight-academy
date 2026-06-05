@@ -119,6 +119,292 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_calendar_settings: {
+        Row: {
+          buffer_minutes: number
+          close_time: string
+          created_at: string
+          id: string
+          open_time: string
+          slot_minutes: number
+          timezone: string
+          updated_at: string
+          updated_by: string | null
+          weekday_mask: string
+        }
+        Insert: {
+          buffer_minutes?: number
+          close_time?: string
+          created_at?: string
+          id?: string
+          open_time?: string
+          slot_minutes?: number
+          timezone?: string
+          updated_at?: string
+          updated_by?: string | null
+          weekday_mask?: string
+        }
+        Update: {
+          buffer_minutes?: number
+          close_time?: string
+          created_at?: string
+          id?: string
+          open_time?: string
+          slot_minutes?: number
+          timezone?: string
+          updated_at?: string
+          updated_by?: string | null
+          weekday_mask?: string
+        }
+        Relationships: []
+      }
+      booking_closed_dates: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          ends_on: string
+          id: string
+          reason: string | null
+          starts_on: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          ends_on: string
+          id?: string
+          reason?: string | null
+          starts_on: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          ends_on?: string
+          id?: string
+          reason?: string | null
+          starts_on?: string
+        }
+        Relationships: []
+      }
+      booking_products: {
+        Row: {
+          cancellation_hours: number
+          created_at: string
+          deposit_pct: number
+          description: string | null
+          display_order: number
+          duration_minutes: number
+          id: string
+          instructor_fee_per_hour_cents: number | null
+          kind: Database["public"]["Enums"]["booking_product_kind"]
+          max_advance_days: number
+          min_notice_hours: number
+          name: string
+          package_price_cents: number | null
+          payment_mode: Database["public"]["Enums"]["booking_payment_mode"]
+          published: boolean
+          requires_approval: boolean
+          slug: string
+          tagline: string | null
+          updated_at: string
+        }
+        Insert: {
+          cancellation_hours?: number
+          created_at?: string
+          deposit_pct?: number
+          description?: string | null
+          display_order?: number
+          duration_minutes: number
+          id?: string
+          instructor_fee_per_hour_cents?: number | null
+          kind: Database["public"]["Enums"]["booking_product_kind"]
+          max_advance_days?: number
+          min_notice_hours?: number
+          name: string
+          package_price_cents?: number | null
+          payment_mode?: Database["public"]["Enums"]["booking_payment_mode"]
+          published?: boolean
+          requires_approval?: boolean
+          slug: string
+          tagline?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cancellation_hours?: number
+          created_at?: string
+          deposit_pct?: number
+          description?: string | null
+          display_order?: number
+          duration_minutes?: number
+          id?: string
+          instructor_fee_per_hour_cents?: number | null
+          kind?: Database["public"]["Enums"]["booking_product_kind"]
+          max_advance_days?: number
+          min_notice_hours?: number
+          name?: string
+          package_price_cents?: number | null
+          payment_mode?: Database["public"]["Enums"]["booking_payment_mode"]
+          published?: boolean
+          requires_approval?: boolean
+          slug?: string
+          tagline?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      booking_resource_blocks: {
+        Row: {
+          aircraft_id: string | null
+          created_at: string
+          created_by: string | null
+          ends_at: string
+          id: string
+          instructor_id: string | null
+          reason: string | null
+          resource_kind: Database["public"]["Enums"]["booking_resource_kind"]
+          starts_at: string
+        }
+        Insert: {
+          aircraft_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          ends_at: string
+          id?: string
+          instructor_id?: string | null
+          reason?: string | null
+          resource_kind: Database["public"]["Enums"]["booking_resource_kind"]
+          starts_at: string
+        }
+        Update: {
+          aircraft_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          ends_at?: string
+          id?: string
+          instructor_id?: string | null
+          reason?: string | null
+          resource_kind?: Database["public"]["Enums"]["booking_resource_kind"]
+          starts_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_resource_blocks_aircraft_id_fkey"
+            columns: ["aircraft_id"]
+            isOneToOne: false
+            referencedRelation: "aircraft"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_resource_blocks_instructor_id_fkey"
+            columns: ["instructor_id"]
+            isOneToOne: false
+            referencedRelation: "instructors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bookings: {
+        Row: {
+          aircraft_id: string | null
+          amount_paid_cents: number
+          approved_at: string | null
+          approved_by: string | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string | null
+          deposit_due_cents: number
+          ends_at: string
+          id: string
+          instructor_id: string | null
+          notes: string | null
+          payment_status: Database["public"]["Enums"]["booking_payment_status"]
+          price_total_cents: number
+          product_id: string
+          starts_at: string
+          status: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          aircraft_id?: string | null
+          amount_paid_cents?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          customer_phone?: string | null
+          deposit_due_cents?: number
+          ends_at: string
+          id?: string
+          instructor_id?: string | null
+          notes?: string | null
+          payment_status?: Database["public"]["Enums"]["booking_payment_status"]
+          price_total_cents?: number
+          product_id: string
+          starts_at: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          aircraft_id?: string | null
+          amount_paid_cents?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string | null
+          deposit_due_cents?: number
+          ends_at?: string
+          id?: string
+          instructor_id?: string | null
+          notes?: string | null
+          payment_status?: Database["public"]["Enums"]["booking_payment_status"]
+          price_total_cents?: number
+          product_id?: string
+          starts_at?: string
+          status?: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_aircraft_id_fkey"
+            columns: ["aircraft_id"]
+            isOneToOne: false
+            referencedRelation: "aircraft"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_instructor_id_fkey"
+            columns: ["instructor_id"]
+            isOneToOne: false
+            referencedRelation: "instructors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "booking_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       flight_log_entries: {
         Row: {
           aircraft_id: string | null
@@ -372,6 +658,42 @@ export type Database = {
           last_active_at?: string | null
           phone?: string | null
           status?: Database["public"]["Enums"]["profile_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      self_hire_approvals: {
+        Row: {
+          approved_at: string
+          approved_by: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          notes: string | null
+          revoked_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved_at?: string
+          approved_by: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          revoked_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved_at?: string
+          approved_by?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          revoked_at?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -679,6 +1001,21 @@ export type Database = {
       admin_request_status: "pending" | "approved" | "rejected"
       aircraft_status: "serviceable" | "maintenance" | "inspection" | "retired"
       app_role: "super_admin" | "admin" | "instructor" | "student" | "pilot"
+      booking_payment_mode: "full" | "deposit" | "invoice"
+      booking_payment_status:
+        | "unpaid"
+        | "deposit_paid"
+        | "paid"
+        | "refunded"
+        | "partial_refund"
+      booking_product_kind: "experience" | "lesson" | "self_hire"
+      booking_resource_kind: "aircraft" | "instructor"
+      booking_status:
+        | "pending"
+        | "confirmed"
+        | "cancelled"
+        | "completed"
+        | "no_show"
       document_type:
         | "medical_class1"
         | "medical_class2"
@@ -843,6 +1180,23 @@ export const Constants = {
       admin_request_status: ["pending", "approved", "rejected"],
       aircraft_status: ["serviceable", "maintenance", "inspection", "retired"],
       app_role: ["super_admin", "admin", "instructor", "student", "pilot"],
+      booking_payment_mode: ["full", "deposit", "invoice"],
+      booking_payment_status: [
+        "unpaid",
+        "deposit_paid",
+        "paid",
+        "refunded",
+        "partial_refund",
+      ],
+      booking_product_kind: ["experience", "lesson", "self_hire"],
+      booking_resource_kind: ["aircraft", "instructor"],
+      booking_status: [
+        "pending",
+        "confirmed",
+        "cancelled",
+        "completed",
+        "no_show",
+      ],
       document_type: [
         "medical_class1",
         "medical_class2",

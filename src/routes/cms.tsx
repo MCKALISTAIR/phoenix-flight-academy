@@ -10,6 +10,10 @@ import {
   Activity,
   GraduationCap,
   CalendarClock,
+  CalendarDays,
+  PackageOpen,
+  ClipboardList,
+  KeyRound,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireSuperAdmin } from "@/lib/auth-guards";
@@ -45,6 +49,10 @@ function CmsLayout() {
     { to: "/cms/fleet", icon: Plane, label: "Fleet & Aircraft" },
     { to: "/cms/students", icon: GraduationCap, label: "Students & Logbook" },
     { to: "/cms/expiries", icon: CalendarClock, label: "Expiries" },
+    { to: "/cms/bookings", icon: ClipboardList, label: "Bookings" },
+    { to: "/cms/booking-products", icon: PackageOpen, label: "Booking Products" },
+    { to: "/cms/calendar-settings", icon: CalendarDays, label: "Calendar Settings" },
+    { to: "/cms/self-hire-approvals", icon: KeyRound, label: "Self-Hire Approvals" },
     { to: "/cms/users", icon: UserPlus, label: "User Management" },
     { to: "/cms/analytics", icon: Activity, label: "System Analytics" },
   ];

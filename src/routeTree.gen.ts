@@ -22,19 +22,26 @@ import { Route as BookingRouteImport } from './routes/booking'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CmsIndexRouteImport } from './routes/cms/index'
+import { Route as BookingIndexRouteImport } from './routes/booking/index'
 import { Route as FlyingSelfHireRouteImport } from './routes/flying/self-hire'
 import { Route as FlyingLearnToFlyRouteImport } from './routes/flying/learn-to-fly'
 import { Route as FlyingExperienceRouteImport } from './routes/flying/experience'
 import { Route as CmsUsersRouteImport } from './routes/cms/users'
 import { Route as CmsTeamRouteImport } from './routes/cms/team'
 import { Route as CmsStudentsRouteImport } from './routes/cms/students'
+import { Route as CmsSelfHireApprovalsRouteImport } from './routes/cms/self-hire-approvals'
 import { Route as CmsFleetRouteImport } from './routes/cms/fleet'
 import { Route as CmsExpiriesRouteImport } from './routes/cms/expiries'
 import { Route as CmsContentRouteImport } from './routes/cms/content'
+import { Route as CmsCalendarSettingsRouteImport } from './routes/cms/calendar-settings'
+import { Route as CmsBookingsRouteImport } from './routes/cms/bookings'
+import { Route as CmsBookingProductsRouteImport } from './routes/cms/booking-products'
 import { Route as CmsAnalyticsRouteImport } from './routes/cms/analytics'
 import { Route as BookingDashboardRouteImport } from './routes/booking/dashboard'
 import { Route as BookingAdminRouteImport } from './routes/booking/admin'
 import { Route as CmsStudentsStudentIdRouteImport } from './routes/cms/students.$studentId'
+import { Route as BookingConfirmIdRouteImport } from './routes/booking/confirm.$id'
+import { Route as BookingBookSlugRouteImport } from './routes/booking/book.$slug'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
@@ -101,6 +108,11 @@ const CmsIndexRoute = CmsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => CmsRoute,
 } as any)
+const BookingIndexRoute = BookingIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BookingRoute,
+} as any)
 const FlyingSelfHireRoute = FlyingSelfHireRouteImport.update({
   id: '/flying/self-hire',
   path: '/flying/self-hire',
@@ -131,6 +143,11 @@ const CmsStudentsRoute = CmsStudentsRouteImport.update({
   path: '/students',
   getParentRoute: () => CmsRoute,
 } as any)
+const CmsSelfHireApprovalsRoute = CmsSelfHireApprovalsRouteImport.update({
+  id: '/self-hire-approvals',
+  path: '/self-hire-approvals',
+  getParentRoute: () => CmsRoute,
+} as any)
 const CmsFleetRoute = CmsFleetRouteImport.update({
   id: '/fleet',
   path: '/fleet',
@@ -144,6 +161,21 @@ const CmsExpiriesRoute = CmsExpiriesRouteImport.update({
 const CmsContentRoute = CmsContentRouteImport.update({
   id: '/content',
   path: '/content',
+  getParentRoute: () => CmsRoute,
+} as any)
+const CmsCalendarSettingsRoute = CmsCalendarSettingsRouteImport.update({
+  id: '/calendar-settings',
+  path: '/calendar-settings',
+  getParentRoute: () => CmsRoute,
+} as any)
+const CmsBookingsRoute = CmsBookingsRouteImport.update({
+  id: '/bookings',
+  path: '/bookings',
+  getParentRoute: () => CmsRoute,
+} as any)
+const CmsBookingProductsRoute = CmsBookingProductsRouteImport.update({
+  id: '/booking-products',
+  path: '/booking-products',
   getParentRoute: () => CmsRoute,
 } as any)
 const CmsAnalyticsRoute = CmsAnalyticsRouteImport.update({
@@ -166,6 +198,16 @@ const CmsStudentsStudentIdRoute = CmsStudentsStudentIdRouteImport.update({
   path: '/$studentId',
   getParentRoute: () => CmsStudentsRoute,
 } as any)
+const BookingConfirmIdRoute = BookingConfirmIdRouteImport.update({
+  id: '/confirm/$id',
+  path: '/confirm/$id',
+  getParentRoute: () => BookingRoute,
+} as any)
+const BookingBookSlugRoute = BookingBookSlugRouteImport.update({
+  id: '/book/$slug',
+  path: '/book/$slug',
+  getParentRoute: () => BookingRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -183,22 +225,28 @@ export interface FileRoutesByFullPath {
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
   '/cms/analytics': typeof CmsAnalyticsRoute
+  '/cms/booking-products': typeof CmsBookingProductsRoute
+  '/cms/bookings': typeof CmsBookingsRoute
+  '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
   '/cms/team': typeof CmsTeamRoute
   '/cms/users': typeof CmsUsersRoute
   '/flying/experience': typeof FlyingExperienceRoute
   '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
   '/flying/self-hire': typeof FlyingSelfHireRoute
+  '/booking/': typeof BookingIndexRoute
   '/cms/': typeof CmsIndexRoute
+  '/booking/book/$slug': typeof BookingBookSlugRoute
+  '/booking/confirm/$id': typeof BookingConfirmIdRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/booking': typeof BookingRouteWithChildren
   '/contact': typeof ContactRoute
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
@@ -210,16 +258,23 @@ export interface FileRoutesByTo {
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
   '/cms/analytics': typeof CmsAnalyticsRoute
+  '/cms/booking-products': typeof CmsBookingProductsRoute
+  '/cms/bookings': typeof CmsBookingsRoute
+  '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
   '/cms/team': typeof CmsTeamRoute
   '/cms/users': typeof CmsUsersRoute
   '/flying/experience': typeof FlyingExperienceRoute
   '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
   '/flying/self-hire': typeof FlyingSelfHireRoute
+  '/booking': typeof BookingIndexRoute
   '/cms': typeof CmsIndexRoute
+  '/booking/book/$slug': typeof BookingBookSlugRoute
+  '/booking/confirm/$id': typeof BookingConfirmIdRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
 }
 export interface FileRoutesById {
@@ -239,16 +294,23 @@ export interface FileRoutesById {
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
   '/cms/analytics': typeof CmsAnalyticsRoute
+  '/cms/booking-products': typeof CmsBookingProductsRoute
+  '/cms/bookings': typeof CmsBookingsRoute
+  '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
+  '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
   '/cms/team': typeof CmsTeamRoute
   '/cms/users': typeof CmsUsersRoute
   '/flying/experience': typeof FlyingExperienceRoute
   '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
   '/flying/self-hire': typeof FlyingSelfHireRoute
+  '/booking/': typeof BookingIndexRoute
   '/cms/': typeof CmsIndexRoute
+  '/booking/book/$slug': typeof BookingBookSlugRoute
+  '/booking/confirm/$id': typeof BookingConfirmIdRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
 }
 export interface FileRouteTypes {
@@ -269,22 +331,28 @@ export interface FileRouteTypes {
     | '/booking/admin'
     | '/booking/dashboard'
     | '/cms/analytics'
+    | '/cms/booking-products'
+    | '/cms/bookings'
+    | '/cms/calendar-settings'
     | '/cms/content'
     | '/cms/expiries'
     | '/cms/fleet'
+    | '/cms/self-hire-approvals'
     | '/cms/students'
     | '/cms/team'
     | '/cms/users'
     | '/flying/experience'
     | '/flying/learn-to-fly'
     | '/flying/self-hire'
+    | '/booking/'
     | '/cms/'
+    | '/booking/book/$slug'
+    | '/booking/confirm/$id'
     | '/cms/students/$studentId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/booking'
     | '/contact'
     | '/fleet'
     | '/login'
@@ -296,16 +364,23 @@ export interface FileRouteTypes {
     | '/booking/admin'
     | '/booking/dashboard'
     | '/cms/analytics'
+    | '/cms/booking-products'
+    | '/cms/bookings'
+    | '/cms/calendar-settings'
     | '/cms/content'
     | '/cms/expiries'
     | '/cms/fleet'
+    | '/cms/self-hire-approvals'
     | '/cms/students'
     | '/cms/team'
     | '/cms/users'
     | '/flying/experience'
     | '/flying/learn-to-fly'
     | '/flying/self-hire'
+    | '/booking'
     | '/cms'
+    | '/booking/book/$slug'
+    | '/booking/confirm/$id'
     | '/cms/students/$studentId'
   id:
     | '__root__'
@@ -324,16 +399,23 @@ export interface FileRouteTypes {
     | '/booking/admin'
     | '/booking/dashboard'
     | '/cms/analytics'
+    | '/cms/booking-products'
+    | '/cms/bookings'
+    | '/cms/calendar-settings'
     | '/cms/content'
     | '/cms/expiries'
     | '/cms/fleet'
+    | '/cms/self-hire-approvals'
     | '/cms/students'
     | '/cms/team'
     | '/cms/users'
     | '/flying/experience'
     | '/flying/learn-to-fly'
     | '/flying/self-hire'
+    | '/booking/'
     | '/cms/'
+    | '/booking/book/$slug'
+    | '/booking/confirm/$id'
     | '/cms/students/$studentId'
   fileRoutesById: FileRoutesById
 }
@@ -448,6 +530,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsIndexRouteImport
       parentRoute: typeof CmsRoute
     }
+    '/booking/': {
+      id: '/booking/'
+      path: '/'
+      fullPath: '/booking/'
+      preLoaderRoute: typeof BookingIndexRouteImport
+      parentRoute: typeof BookingRoute
+    }
     '/flying/self-hire': {
       id: '/flying/self-hire'
       path: '/flying/self-hire'
@@ -490,6 +579,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsStudentsRouteImport
       parentRoute: typeof CmsRoute
     }
+    '/cms/self-hire-approvals': {
+      id: '/cms/self-hire-approvals'
+      path: '/self-hire-approvals'
+      fullPath: '/cms/self-hire-approvals'
+      preLoaderRoute: typeof CmsSelfHireApprovalsRouteImport
+      parentRoute: typeof CmsRoute
+    }
     '/cms/fleet': {
       id: '/cms/fleet'
       path: '/fleet'
@@ -509,6 +605,27 @@ declare module '@tanstack/react-router' {
       path: '/content'
       fullPath: '/cms/content'
       preLoaderRoute: typeof CmsContentRouteImport
+      parentRoute: typeof CmsRoute
+    }
+    '/cms/calendar-settings': {
+      id: '/cms/calendar-settings'
+      path: '/calendar-settings'
+      fullPath: '/cms/calendar-settings'
+      preLoaderRoute: typeof CmsCalendarSettingsRouteImport
+      parentRoute: typeof CmsRoute
+    }
+    '/cms/bookings': {
+      id: '/cms/bookings'
+      path: '/bookings'
+      fullPath: '/cms/bookings'
+      preLoaderRoute: typeof CmsBookingsRouteImport
+      parentRoute: typeof CmsRoute
+    }
+    '/cms/booking-products': {
+      id: '/cms/booking-products'
+      path: '/booking-products'
+      fullPath: '/cms/booking-products'
+      preLoaderRoute: typeof CmsBookingProductsRouteImport
       parentRoute: typeof CmsRoute
     }
     '/cms/analytics': {
@@ -539,17 +656,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsStudentsStudentIdRouteImport
       parentRoute: typeof CmsStudentsRoute
     }
+    '/booking/confirm/$id': {
+      id: '/booking/confirm/$id'
+      path: '/confirm/$id'
+      fullPath: '/booking/confirm/$id'
+      preLoaderRoute: typeof BookingConfirmIdRouteImport
+      parentRoute: typeof BookingRoute
+    }
+    '/booking/book/$slug': {
+      id: '/booking/book/$slug'
+      path: '/book/$slug'
+      fullPath: '/booking/book/$slug'
+      preLoaderRoute: typeof BookingBookSlugRouteImport
+      parentRoute: typeof BookingRoute
+    }
   }
 }
 
 interface BookingRouteChildren {
   BookingAdminRoute: typeof BookingAdminRoute
   BookingDashboardRoute: typeof BookingDashboardRoute
+  BookingIndexRoute: typeof BookingIndexRoute
+  BookingBookSlugRoute: typeof BookingBookSlugRoute
+  BookingConfirmIdRoute: typeof BookingConfirmIdRoute
 }
 
 const BookingRouteChildren: BookingRouteChildren = {
   BookingAdminRoute: BookingAdminRoute,
   BookingDashboardRoute: BookingDashboardRoute,
+  BookingIndexRoute: BookingIndexRoute,
+  BookingBookSlugRoute: BookingBookSlugRoute,
+  BookingConfirmIdRoute: BookingConfirmIdRoute,
 }
 
 const BookingRouteWithChildren =
@@ -569,9 +706,13 @@ const CmsStudentsRouteWithChildren = CmsStudentsRoute._addFileChildren(
 
 interface CmsRouteChildren {
   CmsAnalyticsRoute: typeof CmsAnalyticsRoute
+  CmsBookingProductsRoute: typeof CmsBookingProductsRoute
+  CmsBookingsRoute: typeof CmsBookingsRoute
+  CmsCalendarSettingsRoute: typeof CmsCalendarSettingsRoute
   CmsContentRoute: typeof CmsContentRoute
   CmsExpiriesRoute: typeof CmsExpiriesRoute
   CmsFleetRoute: typeof CmsFleetRoute
+  CmsSelfHireApprovalsRoute: typeof CmsSelfHireApprovalsRoute
   CmsStudentsRoute: typeof CmsStudentsRouteWithChildren
   CmsTeamRoute: typeof CmsTeamRoute
   CmsUsersRoute: typeof CmsUsersRoute
@@ -580,9 +721,13 @@ interface CmsRouteChildren {
 
 const CmsRouteChildren: CmsRouteChildren = {
   CmsAnalyticsRoute: CmsAnalyticsRoute,
+  CmsBookingProductsRoute: CmsBookingProductsRoute,
+  CmsBookingsRoute: CmsBookingsRoute,
+  CmsCalendarSettingsRoute: CmsCalendarSettingsRoute,
   CmsContentRoute: CmsContentRoute,
   CmsExpiriesRoute: CmsExpiriesRoute,
   CmsFleetRoute: CmsFleetRoute,
+  CmsSelfHireApprovalsRoute: CmsSelfHireApprovalsRoute,
   CmsStudentsRoute: CmsStudentsRouteWithChildren,
   CmsTeamRoute: CmsTeamRoute,
   CmsUsersRoute: CmsUsersRoute,
@@ -611,3 +756,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
