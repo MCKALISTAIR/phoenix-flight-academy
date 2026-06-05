@@ -72,28 +72,22 @@ export const completeMockPayment = createServerFn({ method: "POST" })
     const requiresApproval = product?.requires_approval ?? false;
 
     if (data.outcome === "failed") {
-      const { error } = await supabaseAdmin
-        .from("bookings")
-        .update({ payment_status: "failed" })
-        .eq("id", data.bookingId);
-      if (error) throw new Error(error.message);
-      return { ok: true, status: row.status, paymentStatus: "failed" as const };
+      // Leave booking unpaid; surface failure via UI. No enum value for "failed".
+      return { ok: true, status: row.status, paymentStatus: "unpaid" as const };
     }
 
     // Paid path
     const amountPaid =
       mode === "deposit" ? row.deposit_due_cents ?? 0 : row.price_total_cents ?? 0;
-    const paymentStatus = mode === "deposit" ? "deposit_paid" : "paid";
-    const status = requiresApproval ? "pending" : "confirmed";
+    const paymentStatus = (mode === "deposit" ? "deposit_paid" : "paid") as "deposit_paid" | "paid";
+    const status = (requiresApproval ? "pending" : "confirmed") as "pending" | "confirmed";
 
-    const patch: Record<string, unknown> = {
+    const patch = {
       payment_status: paymentStatus,
       amount_paid_cents: amountPaid,
       status,
+      ...(status === "confirmed" ? { approved_at: new Date().toISOString() } : {}),
     };
-    if (status === "confirmed") {
-      patch.approved_at = new Date().toISOString();
-    }
     const { error } = await supabaseAdmin.from("bookings").update(patch).eq("id", data.bookingId);
     if (error) throw new Error(error.message);
     return { ok: true, status, paymentStatus };
