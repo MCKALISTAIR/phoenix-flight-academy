@@ -81,13 +81,13 @@ export function Navbar() {
           <div className="hidden md:flex md:items-center md:gap-4">
             <Link
               to="/booking"
-              className="inline-flex h-10 items-center justify-center rounded-lg border border-primary/30 bg-primary/10 px-5 text-sm font-semibold text-primary transition-all hover:bg-primary/15"
+              className="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-lg border border-primary/30 bg-primary/10 px-5 text-sm font-semibold text-primary transition-all hover:bg-primary/15"
             >
               Book a Flight
             </Link>
             <Link
               to="/login"
-              className="inline-flex h-10 items-center justify-center rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Portal Login
             </Link>
