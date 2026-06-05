@@ -22,6 +22,7 @@ import { Route as BookingRouteImport } from './routes/booking'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CmsIndexRouteImport } from './routes/cms/index'
+import { Route as BookingIndexRouteImport } from './routes/booking/index'
 import { Route as FlyingSelfHireRouteImport } from './routes/flying/self-hire'
 import { Route as FlyingLearnToFlyRouteImport } from './routes/flying/learn-to-fly'
 import { Route as FlyingExperienceRouteImport } from './routes/flying/experience'
@@ -100,6 +101,11 @@ const CmsIndexRoute = CmsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => CmsRoute,
+} as any)
+const BookingIndexRoute = BookingIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BookingRoute,
 } as any)
 const FlyingSelfHireRoute = FlyingSelfHireRouteImport.update({
   id: '/flying/self-hire',
@@ -192,13 +198,13 @@ export interface FileRoutesByFullPath {
   '/flying/experience': typeof FlyingExperienceRoute
   '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
   '/flying/self-hire': typeof FlyingSelfHireRoute
+  '/booking/': typeof BookingIndexRoute
   '/cms/': typeof CmsIndexRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/booking': typeof BookingRouteWithChildren
   '/contact': typeof ContactRoute
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
@@ -219,6 +225,7 @@ export interface FileRoutesByTo {
   '/flying/experience': typeof FlyingExperienceRoute
   '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
   '/flying/self-hire': typeof FlyingSelfHireRoute
+  '/booking': typeof BookingIndexRoute
   '/cms': typeof CmsIndexRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
 }
@@ -248,6 +255,7 @@ export interface FileRoutesById {
   '/flying/experience': typeof FlyingExperienceRoute
   '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
   '/flying/self-hire': typeof FlyingSelfHireRoute
+  '/booking/': typeof BookingIndexRoute
   '/cms/': typeof CmsIndexRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
 }
@@ -278,13 +286,13 @@ export interface FileRouteTypes {
     | '/flying/experience'
     | '/flying/learn-to-fly'
     | '/flying/self-hire'
+    | '/booking/'
     | '/cms/'
     | '/cms/students/$studentId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/booking'
     | '/contact'
     | '/fleet'
     | '/login'
@@ -305,6 +313,7 @@ export interface FileRouteTypes {
     | '/flying/experience'
     | '/flying/learn-to-fly'
     | '/flying/self-hire'
+    | '/booking'
     | '/cms'
     | '/cms/students/$studentId'
   id:
@@ -333,6 +342,7 @@ export interface FileRouteTypes {
     | '/flying/experience'
     | '/flying/learn-to-fly'
     | '/flying/self-hire'
+    | '/booking/'
     | '/cms/'
     | '/cms/students/$studentId'
   fileRoutesById: FileRoutesById
@@ -448,6 +458,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsIndexRouteImport
       parentRoute: typeof CmsRoute
     }
+    '/booking/': {
+      id: '/booking/'
+      path: '/'
+      fullPath: '/booking/'
+      preLoaderRoute: typeof BookingIndexRouteImport
+      parentRoute: typeof BookingRoute
+    }
     '/flying/self-hire': {
       id: '/flying/self-hire'
       path: '/flying/self-hire'
@@ -545,11 +562,13 @@ declare module '@tanstack/react-router' {
 interface BookingRouteChildren {
   BookingAdminRoute: typeof BookingAdminRoute
   BookingDashboardRoute: typeof BookingDashboardRoute
+  BookingIndexRoute: typeof BookingIndexRoute
 }
 
 const BookingRouteChildren: BookingRouteChildren = {
   BookingAdminRoute: BookingAdminRoute,
   BookingDashboardRoute: BookingDashboardRoute,
+  BookingIndexRoute: BookingIndexRoute,
 }
 
 const BookingRouteWithChildren =
@@ -611,3 +630,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
