@@ -18,7 +18,7 @@ export const Route = createFileRoute("/login")({
   beforeLoad: async ({ search }) => {
     const { data } = await supabase.auth.getSession();
     if (data.session) {
-      throw redirect({ to: search.redirect ?? "/booking/dashboard" });
+      throw redirect({ to: search.redirect ?? (await defaultDestinationFor(data.session.user.id)) });
     }
   },
   component: LoginPage,
@@ -32,6 +32,16 @@ export const Route = createFileRoute("/login")({
 
 type ViewMode = "login" | "register";
 type RegisterType = "student" | "pilot";
+
+async function defaultDestinationFor(userId: string): Promise<string> {
+  const { data } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId);
+  const roles = (data ?? []).map((r) => r.role as string);
+  if (roles.includes("super_admin") || roles.includes("admin")) return "/cms";
+  return "/booking/dashboard";
+}
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -84,7 +94,9 @@ function LoginPage() {
         password: loginPassword,
       });
       if (error) throw error;
-      navigate({ to: search.redirect ?? "/booking/dashboard" });
+      const { data: userData } = await supabase.auth.getUser();
+      const dest = search.redirect ?? (userData.user ? await defaultDestinationFor(userData.user.id) : "/booking/dashboard");
+      navigate({ to: dest });
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Invalid credentials.");
     } finally {
@@ -123,9 +135,8 @@ function LoginPage() {
         password: creds.password,
       });
       if (error) throw error;
-      navigate({
-        to: search.redirect ?? (kind === "admin" ? "/cms" : "/booking/dashboard"),
-      });
+      const dest = search.redirect ?? (kind === "admin" ? "/cms" : "/booking/dashboard");
+      navigate({ to: dest });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Test sign-in failed.");
       setBusy(false);
