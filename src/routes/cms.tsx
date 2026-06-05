@@ -14,6 +14,7 @@ import {
   PackageOpen,
   ClipboardList,
   KeyRound,
+  CreditCard,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireSuperAdmin } from "@/lib/auth-guards";
@@ -53,6 +54,7 @@ function CmsLayout() {
     { to: "/cms/booking-products", icon: PackageOpen, label: "Booking Products" },
     { to: "/cms/calendar-settings", icon: CalendarDays, label: "Calendar Settings" },
     { to: "/cms/self-hire-approvals", icon: KeyRound, label: "Self-Hire Approvals" },
+    { to: "/cms/mock-payments", icon: CreditCard, label: "Mock Payments" },
     { to: "/cms/users", icon: UserPlus, label: "User Management" },
     { to: "/cms/analytics", icon: Activity, label: "System Analytics" },
   ];
