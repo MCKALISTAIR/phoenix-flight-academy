@@ -3,7 +3,11 @@ import { AlertCircle, Cloud, PlaneTakeoff, Lock, ArrowLeft, Send, CheckCircle2, 
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
-import { ensureTestUser } from "@/lib/test-auth.functions";
+
+const TEST_ACCOUNTS = {
+  admin: { email: "e2e-admin@test.lovable.dev", password: "TestPass!2026" },
+  user: { email: "e2e-user@test.lovable.dev", password: "TestPass!2026" },
+} as const;
 
 type LoginSearch = { redirect?: string };
 
@@ -113,7 +117,7 @@ function LoginPage() {
     setError("");
     setInfo("");
     try {
-      const creds = await ensureTestUser({ data: { kind } });
+      const creds = TEST_ACCOUNTS[kind];
       const { error } = await supabase.auth.signInWithPassword({
         email: creds.email,
         password: creds.password,
@@ -393,17 +397,27 @@ function LoginPage() {
                               type="button"
                               onClick={() => handleTestLogin("admin")}
                               disabled={busy}
-                              className="flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-50"
+                              className="flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-background px-3 py-2.5 text-xs font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-50"
                             >
-                              <Shield className="h-3.5 w-3.5" /> Sign in as Admin
+                              <span className="flex items-center gap-1.5">
+                                <Shield className="h-3.5 w-3.5" /> Admin
+                              </span>
+                              <span className="text-[10px] font-normal text-muted-foreground">
+                                {TEST_ACCOUNTS.admin.email}
+                              </span>
                             </button>
                             <button
                               type="button"
                               onClick={() => handleTestLogin("user")}
                               disabled={busy}
-                              className="flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-50"
+                              className="flex flex-col items-center justify-center gap-1 rounded-lg border border-border bg-background px-3 py-2.5 text-xs font-medium text-foreground transition-colors hover:bg-accent disabled:opacity-50"
                             >
-                              <User className="h-3.5 w-3.5" /> Sign in as User
+                              <span className="flex items-center gap-1.5">
+                                <User className="h-3.5 w-3.5" /> User
+                              </span>
+                              <span className="text-[10px] font-normal text-muted-foreground">
+                                {TEST_ACCOUNTS.user.email}
+                              </span>
                             </button>
                           </div>
                         </div>
