@@ -3,12 +3,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { CheckCircle2, XCircle, Clock, AlertCircle } from "lucide-react";
-import { requireSuperAdmin } from "@/lib/auth-guards";
+import { requireAdmin } from "@/lib/auth-guards";
 import { listAllBookings, updateBookingStatus } from "@/lib/bookings.functions";
 
 export const Route = createFileRoute("/cms/bookings")({
   beforeLoad: async ({ location }) => {
-    try { await requireSuperAdmin(location.href); } catch (e) { if (isRedirect(e)) throw e; throw redirect({ to: "/login", search: { redirect: location.href } }); }
+    try { await requireAdmin(location.href); } catch (e) { if (isRedirect(e)) throw e; throw redirect({ to: "/login", search: { redirect: location.href } }); }
   },
   component: BookingsAdmin,
 });

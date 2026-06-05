@@ -2,13 +2,13 @@ import { createFileRoute, Link, redirect, isRedirect } from "@tanstack/react-rou
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { CalendarClock, AlertTriangle } from "lucide-react";
-import { requireSuperAdmin } from "@/lib/auth-guards";
+import { requireAdmin } from "@/lib/auth-guards";
 import { listExpiringDocuments } from "@/lib/students.functions";
 
 export const Route = createFileRoute("/cms/expiries")({
   beforeLoad: async ({ location }) => {
     try {
-      await requireSuperAdmin(location.href);
+      await requireAdmin(location.href);
     } catch (error) {
       if (isRedirect(error)) throw error;
       throw redirect({ to: "/login", search: { redirect: location.href } });

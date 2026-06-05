@@ -16,7 +16,7 @@ import {
   CheckCircle2,
   XCircle,
 } from "lucide-react";
-import { requireSuperAdmin } from "@/lib/auth-guards";
+import { requireAdmin } from "@/lib/auth-guards";
 import { getStudent, updateStudent } from "@/lib/students.functions";
 import {
   listSyllabus,
@@ -35,7 +35,7 @@ import {
 export const Route = createFileRoute("/cms/students/$studentId")({
   beforeLoad: async ({ location }) => {
     try {
-      await requireSuperAdmin(location.href);
+      await requireAdmin(location.href);
     } catch (error) {
       if (isRedirect(error)) throw error;
       throw redirect({ to: "/login", search: { redirect: location.href } });
