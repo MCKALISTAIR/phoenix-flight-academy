@@ -405,6 +405,36 @@ export type Database = {
           },
         ]
       }
+      customer_profiles: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          qualified_at: string | null
+          tier: Database["public"]["Enums"]["customer_tier"] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          qualified_at?: string | null
+          tier?: Database["public"]["Enums"]["customer_tier"] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          qualified_at?: string | null
+          tier?: Database["public"]["Enums"]["customer_tier"] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       flight_log_entries: {
         Row: {
           aircraft_id: string | null
@@ -1000,7 +1030,13 @@ export type Database = {
     Enums: {
       admin_request_status: "pending" | "approved" | "rejected"
       aircraft_status: "serviceable" | "maintenance" | "inspection" | "retired"
-      app_role: "super_admin" | "admin" | "instructor" | "student" | "pilot"
+      app_role:
+        | "super_admin"
+        | "admin"
+        | "instructor"
+        | "student"
+        | "pilot"
+        | "customer"
       booking_payment_mode: "full" | "deposit" | "invoice"
       booking_payment_status:
         | "unpaid"
@@ -1016,6 +1052,7 @@ export type Database = {
         | "cancelled"
         | "completed"
         | "no_show"
+      customer_tier: "student" | "pilot"
       document_type:
         | "medical_class1"
         | "medical_class2"
@@ -1179,7 +1216,14 @@ export const Constants = {
     Enums: {
       admin_request_status: ["pending", "approved", "rejected"],
       aircraft_status: ["serviceable", "maintenance", "inspection", "retired"],
-      app_role: ["super_admin", "admin", "instructor", "student", "pilot"],
+      app_role: [
+        "super_admin",
+        "admin",
+        "instructor",
+        "student",
+        "pilot",
+        "customer",
+      ],
       booking_payment_mode: ["full", "deposit", "invoice"],
       booking_payment_status: [
         "unpaid",
@@ -1197,6 +1241,7 @@ export const Constants = {
         "completed",
         "no_show",
       ],
+      customer_tier: ["student", "pilot"],
       document_type: [
         "medical_class1",
         "medical_class2",
