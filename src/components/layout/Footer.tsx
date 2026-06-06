@@ -183,9 +183,20 @@ export function Footer() {
         </div>
 
         <div className="mt-16 flex flex-col items-center justify-between border-t border-white/10 pt-8 md:flex-row">
-          <p className="text-sm text-white/40">
-            &copy; {new Date().getFullYear()} Phoenix Flight Training. All rights reserved.
-          </p>
+          <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-4">
+            <p className="text-sm text-white/40">
+              &copy; {new Date().getFullYear()} Phoenix Flight Training. All rights reserved.
+            </p>
+            <span className="hidden text-white/20 md:inline">·</span>
+            <a
+              href="https://alistairmckay.com?utm_source=phoenix-flight-training&utm_medium=portfolio&utm_campaign=built-by"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-white/30 transition-colors hover:text-white/60"
+            >
+              Built by Alistair McKay
+            </a>
+          </div>
           <div className="mt-4 flex items-center gap-4 md:mt-0">
             <Link to="/privacy" className="text-xs text-white/40 hover:text-white transition-colors">
               Privacy Policy
