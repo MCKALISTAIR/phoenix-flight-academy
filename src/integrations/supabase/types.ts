@@ -251,6 +251,54 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_promotions: {
+        Row: {
+          active_from: string
+          active_until: string | null
+          applies_to_kinds: string[]
+          code: string
+          created_at: string
+          discount_type: string
+          discount_value: number
+          id: string
+          max_uses: number | null
+          name: string
+          published: boolean
+          updated_at: string
+          uses_count: number
+        }
+        Insert: {
+          active_from?: string
+          active_until?: string | null
+          applies_to_kinds?: string[]
+          code: string
+          created_at?: string
+          discount_type: string
+          discount_value: number
+          id?: string
+          max_uses?: number | null
+          name: string
+          published?: boolean
+          updated_at?: string
+          uses_count?: number
+        }
+        Update: {
+          active_from?: string
+          active_until?: string | null
+          applies_to_kinds?: string[]
+          code?: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          max_uses?: number | null
+          name?: string
+          published?: boolean
+          updated_at?: string
+          uses_count?: number
+        }
+        Relationships: []
+      }
       booking_resource_blocks: {
         Row: {
           aircraft_id: string | null
@@ -315,6 +363,7 @@ export type Database = {
           customer_name: string
           customer_phone: string | null
           deposit_due_cents: number
+          discount_applied_cents: number
           ends_at: string
           id: string
           instructor_id: string | null
@@ -322,6 +371,7 @@ export type Database = {
           payment_status: Database["public"]["Enums"]["booking_payment_status"]
           price_total_cents: number
           product_id: string
+          promo_code: string | null
           starts_at: string
           status: Database["public"]["Enums"]["booking_status"]
           stripe_payment_intent_id: string | null
@@ -341,6 +391,7 @@ export type Database = {
           customer_name: string
           customer_phone?: string | null
           deposit_due_cents?: number
+          discount_applied_cents?: number
           ends_at: string
           id?: string
           instructor_id?: string | null
@@ -348,6 +399,7 @@ export type Database = {
           payment_status?: Database["public"]["Enums"]["booking_payment_status"]
           price_total_cents?: number
           product_id: string
+          promo_code?: string | null
           starts_at: string
           status?: Database["public"]["Enums"]["booking_status"]
           stripe_payment_intent_id?: string | null
@@ -367,6 +419,7 @@ export type Database = {
           customer_name?: string
           customer_phone?: string | null
           deposit_due_cents?: number
+          discount_applied_cents?: number
           ends_at?: string
           id?: string
           instructor_id?: string | null
@@ -374,6 +427,7 @@ export type Database = {
           payment_status?: Database["public"]["Enums"]["booking_payment_status"]
           price_total_cents?: number
           product_id?: string
+          promo_code?: string | null
           starts_at?: string
           status?: Database["public"]["Enums"]["booking_status"]
           stripe_payment_intent_id?: string | null
