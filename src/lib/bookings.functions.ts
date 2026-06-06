@@ -159,7 +159,7 @@ export const createBooking = createServerFn({ method: "POST" })
 
     const { totalCents, depositCents, discountAppliedCents } = computePrice(product, aircraft, appliedDiscount);
 
-    const status =
+    const status: "pending" =
       product.payment_mode === "invoice"
         ? "pending"
         : product.requires_approval
