@@ -1,4 +1,6 @@
 import { createFileRoute, redirect, isRedirect } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import {
   TrendingUp,
   Activity,
@@ -20,9 +22,11 @@ import {
   Shield,
   Layers,
   Sparkle,
+  PoundSterling,
 } from "lucide-react";
 import { useState } from "react";
 import { requireSuperAdmin } from "@/lib/auth-guards";
+import { listAllBookings } from "@/lib/bookings.functions";
 
 export const Route = createFileRoute("/cms/analytics")({
   beforeLoad: async ({ location }) => {
@@ -100,12 +104,18 @@ const PAGES_VISITS = [
 ];
 
 function AnalyticsDashboard() {
-  const [activeTab, setActiveTab] = useState<"traffic" | "exceptions" | "accessibility">("traffic");
+  const [activeTab, setActiveTab] = useState<"traffic" | "exceptions" | "accessibility" | "payroll">("traffic");
   const [errors, setErrors] = useState<ErrorLog[]>(INITIAL_ERRORS);
   const [expandedError, setExpandedError] = useState<string | null>(null);
   const [errorFilter, setErrorFilter] = useState<"all" | "critical" | "warning" | "info">("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [successAnimation, setSuccessAnimation] = useState(false);
+
+  const fetchAllBookings = useServerFn(listAllBookings);
+  const { data: bookings = [], isLoading: bookingsLoading } = useQuery({
+    queryKey: ["all-bookings-analytics"],
+    queryFn: () => fetchAllBookings({ data: { status: null } }),
+  });
 
   // Accessibility Auditor State
   const [isAuditing, setIsAuditing] = useState(false);
@@ -186,6 +196,44 @@ function AnalyticsDashboard() {
 
   const activeErrorsCount = errors.filter((e) => !e.resolved).length;
   const criticalCount = errors.filter((e) => e.level === "critical" && !e.resolved).length;
+
+  // Instructor Payroll Calculations
+  const completedLessons = bookings.filter(
+    (b) =>
+      b.status === "completed" &&
+      b.instructor_id &&
+      b.booking_products?.kind === "lesson",
+  );
+
+  const instructorPayrollMap = new Map<string, {
+    name: string;
+    totalHours: number;
+    totalPayoutCents: number;
+    lessonsCount: number;
+  }>();
+
+  completedLessons.forEach((b) => {
+    const instId = b.instructor_id!;
+    const instName = b.instructors?.name || "Unknown Instructor";
+    const durationHours = (b.booking_products?.duration_minutes || 0) / 60;
+    const rateCents = b.booking_products?.instructor_fee_per_hour_cents ?? 0;
+    const payoutCents = Math.round(durationHours * rateCents);
+
+    const existing = instructorPayrollMap.get(instId) ?? {
+      name: instName,
+      totalHours: 0,
+      totalPayoutCents: 0,
+      lessonsCount: 0,
+    };
+
+    existing.totalHours += durationHours;
+    existing.totalPayoutCents += payoutCents;
+    existing.lessonsCount += 1;
+
+    instructorPayrollMap.set(instId, existing);
+  });
+
+  const payrollSummaryList = Array.from(instructorPayrollMap.values());
 
   return (
     <div className="p-8 space-y-8">
@@ -277,6 +325,17 @@ function AnalyticsDashboard() {
         >
           <Shield className="h-4 w-4" />
           WCAG Accessibility Auditor
+        </button>
+        <button
+          onClick={() => setActiveTab("payroll")}
+          className={`flex items-center gap-2 border-b-2 px-6 py-3 text-sm font-bold transition-all ${
+            activeTab === "payroll"
+              ? "border-[oklch(0.55_0.22_270)] text-[oklch(0.70_0.18_270)]"
+              : "border-transparent text-white/40 hover:text-white/70"
+          }`}
+        >
+          <PoundSterling className="h-4 w-4" />
+          Instructor Payroll
         </button>
       </div>
 
@@ -747,6 +806,56 @@ function AnalyticsDashboard() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {activeTab === "payroll" && (
+        <div className="space-y-6 animate-fade-in">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-6">
+            <div>
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <PoundSterling className="h-5 w-5 text-emerald-400" />
+                Instructor Payroll Payout Summary
+              </h3>
+              <p className="text-xs text-white/40 mt-1">
+                Calculated automatically based on completed lesson bookings and their configured instructor hourly fee.
+              </p>
+            </div>
+
+            {bookingsLoading ? (
+              <p className="text-sm text-white/40">Loading bookings data...</p>
+            ) : payrollSummaryList.length === 0 ? (
+              <div className="text-center py-12">
+                <Users className="mx-auto mb-3 h-10 w-10 text-white/10" />
+                <p className="text-sm text-white/40">No completed lessons found for payroll calculation.</p>
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead className="border-b border-white/10 text-left text-xs uppercase tracking-wider text-white/40 bg-white/3">
+                    <tr>
+                      <th className="px-5 py-4">Instructor</th>
+                      <th className="px-5 py-4">Completed Lessons</th>
+                      <th className="px-5 py-4">Flight Hours Taught</th>
+                      <th className="px-5 py-4 text-right">Total Payout</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5 text-white">
+                    {payrollSummaryList.map((row, idx) => (
+                      <tr key={idx} className="hover:bg-white/2 transition-colors">
+                        <td className="px-5 py-4 font-bold">{row.name}</td>
+                        <td className="px-5 py-4 text-white/60">{row.lessonsCount} lessons</td>
+                        <td className="px-5 py-4 font-mono text-white/80">{row.totalHours.toFixed(1)} hrs</td>
+                        <td className="px-5 py-4 text-right font-bold text-emerald-400">
+                          £{(row.totalPayoutCents / 100).toFixed(2)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

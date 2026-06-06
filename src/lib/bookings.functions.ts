@@ -243,13 +243,56 @@ export const listAllBookings = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     let q = context.supabase
       .from("bookings")
-      .select("*, booking_products(name, kind, payment_mode), aircraft(registration, model), instructors(name)")
+      .select("*, booking_products(name, kind, payment_mode, duration_minutes, instructor_fee_per_hour_cents), aircraft(registration, model), instructors(name)")
       .order("starts_at", { ascending: false })
       .limit(500);
     if (data.status) q = q.eq("status", data.status);
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
-    return rows ?? [];
+    if (!rows || rows.length === 0) return [];
+
+    const userIds = Array.from(new Set(rows.map((r) => r.user_id).filter(Boolean))) as string[];
+    const expiredDocsMap = new Map<string, string[]>();
+
+    if (userIds.length > 0) {
+      const { data: studentsData } = await context.supabase
+        .from("students")
+        .select("id, user_id")
+        .in("user_id", userIds);
+
+      if (studentsData && studentsData.length > 0) {
+        const studentIds = studentsData.map((s) => s.id);
+        const studentToUser = new Map(studentsData.map((s) => [s.id, s.user_id]));
+
+        const { data: docsData } = await context.supabase
+          .from("student_documents")
+          .select("student_id, document_type, expires_on")
+          .in("student_id", studentIds);
+
+        if (docsData) {
+          const nowStr = new Date().toISOString().slice(0, 10);
+          docsData.forEach((doc) => {
+            if (doc.expires_on && doc.expires_on < nowStr) {
+              const uId = studentToUser.get(doc.student_id);
+              if (uId) {
+                const list = expiredDocsMap.get(uId) ?? [];
+                list.push(doc.document_type);
+                expiredDocsMap.set(uId, list);
+              }
+            }
+          });
+        }
+      }
+    }
+
+    return (rows ?? []).map((row) => {
+      const expired = row.user_id ? (expiredDocsMap.get(row.user_id) ?? []) : [];
+      return {
+        ...row,
+        safety_flag: expired.length > 0,
+        expired_documents: expired,
+      };
+    });
   });
 
 export const updateBookingStatus = createServerFn({ method: "POST" })

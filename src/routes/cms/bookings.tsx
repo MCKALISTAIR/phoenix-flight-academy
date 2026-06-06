@@ -2,7 +2,7 @@ import { createFileRoute, redirect, isRedirect } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { CheckCircle2, XCircle, Clock, AlertCircle } from "lucide-react";
+import { CheckCircle2, XCircle, Clock, AlertCircle, Coins, TrendingUp, CreditCard } from "lucide-react";
 import { requireAdmin } from "@/lib/auth-guards";
 import { listAllBookings, updateBookingStatus } from "@/lib/bookings.functions";
 
@@ -16,15 +16,29 @@ export const Route = createFileRoute("/cms/bookings")({
 const STATUSES = ["all", "pending", "confirmed", "cancelled", "completed", "no_show"] as const;
 type StatusFilter = typeof STATUSES[number];
 
+function formatDocType(type: string): string {
+  const mapping: Record<string, string> = {
+    medical_class1: "Medical Class 1",
+    medical_class2: "Medical Class 2",
+    medical_lapl: "LAPL Medical",
+    student_pilot_license: "Student License",
+    ppl: "PPL License",
+    lapl: "LAPL License",
+    rt_license: "RT License",
+    language_proficiency: "ELP",
+  };
+  return mapping[type] || type.replace(/_/g, " ");
+}
+
 function BookingsAdmin() {
   const [filter, setFilter] = useState<StatusFilter>("pending");
   const qc = useQueryClient();
   const fetchAll = useServerFn(listAllBookings);
   const updateStatus = useServerFn(updateBookingStatus);
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["cms-bookings", filter],
-    queryFn: () => fetchAll({ data: { status: filter === "all" ? null : filter } }),
+  const { data: allBookings = [], isLoading } = useQuery({
+    queryKey: ["cms-bookings"],
+    queryFn: () => fetchAll({ data: { status: null } }),
   });
 
   const mut = useMutation({
@@ -32,14 +46,59 @@ function BookingsAdmin() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["cms-bookings"] }),
   });
 
+  // Financial Metrics computations
+  const totalBookedValue = allBookings
+    .filter((b) => b.status !== "cancelled")
+    .reduce((sum, b) => sum + b.price_total_cents, 0);
+
+  const collectedRevenue = allBookings
+    .reduce((sum, b) => sum + (b.amount_paid_cents || 0), 0);
+
+  const outstandingInvoiceValue = allBookings
+    .filter((b) => b.status !== "cancelled")
+    .reduce((sum, b) => sum + Math.max(0, b.price_total_cents - (b.amount_paid_cents || 0)), 0);
+
+  // Client-side filtering
+  const filteredData = filter === "all" ? allBookings : allBookings.filter((b) => b.status === filter);
+
   return (
     <div className="p-8 space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-white">Bookings</h1>
-        <p className="mt-1 text-sm text-white/50">Approve, cancel, or mark bookings complete.</p>
+        <h1 className="text-2xl font-extrabold text-white">Bookings & Operations Management</h1>
+        <p className="mt-1 text-sm text-white/50">Approve, cancel, or track bookings and financials.</p>
       </div>
 
-      <div className="flex flex-wrap gap-2">
+      {/* Financial Metrics Banner */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <div className="flex items-center justify-between text-white/40">
+            <span className="text-xs font-semibold uppercase tracking-wider">Total Booked Value</span>
+            <TrendingUp className="h-4 w-4 text-[oklch(0.70_0.18_270)]" />
+          </div>
+          <p className="mt-3 text-2xl font-black text-white">£{(totalBookedValue / 100).toFixed(2)}</p>
+          <span className="text-[10px] text-white/30 font-medium">Excluding cancelled bookings</span>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <div className="flex items-center justify-between text-white/40">
+            <span className="text-xs font-semibold uppercase tracking-wider">Collected Revenue</span>
+            <Coins className="h-4 w-4 text-emerald-400" />
+          </div>
+          <p className="mt-3 text-2xl font-black text-emerald-400">£{(collectedRevenue / 100).toFixed(2)}</p>
+          <span className="text-[10px] text-white/30 font-medium">Slipped deposits & full payments</span>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <div className="flex items-center justify-between text-white/40">
+            <span className="text-xs font-semibold uppercase tracking-wider">Outstanding Invoices</span>
+            <CreditCard className="h-4 w-4 text-amber-400" />
+          </div>
+          <p className="mt-3 text-2xl font-black text-amber-400">£{(outstandingInvoiceValue / 100).toFixed(2)}</p>
+          <span className="text-[10px] text-white/30 font-medium">Awaiting final reconciliation</span>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2 pt-2">
         {STATUSES.map((s) => (
           <button
             key={s}
@@ -58,7 +117,7 @@ function BookingsAdmin() {
       <div className="rounded-2xl border border-white/10 bg-white/5">
         {isLoading ? (
           <div className="p-8 text-white/40">Loading…</div>
-        ) : !data || data.length === 0 ? (
+        ) : filteredData.length === 0 ? (
           <div className="p-8 text-white/40">No bookings match this filter.</div>
         ) : (
           <table className="w-full text-sm">
@@ -75,17 +134,37 @@ function BookingsAdmin() {
               </tr>
             </thead>
             <tbody>
-              {data.map((b) => {
+              {filteredData.map((b) => {
                 const prod = (b as { booking_products: { name: string } | null }).booking_products;
                 const ac = (b as { aircraft: { registration: string } | null }).aircraft;
                 const promoCode = (b as { promo_code?: string }).promo_code;
                 const discountCents = (b as { discount_applied_cents?: number }).discount_applied_cents ?? 0;
+                const safetyFlag = (b as any).safety_flag;
+                const expiredDocs = (b as any).expired_documents ?? [];
                 return (
-                  <tr key={b.id} className="border-b border-white/5 text-white">
+                  <tr key={b.id} className="border-b border-white/5 text-white hover:bg-white/2 transition-colors">
                     <td className="px-4 py-3 text-white/70">{new Date(b.starts_at).toLocaleString("en-GB")}</td>
                     <td className="px-4 py-3">
-                      <p className="font-semibold">{b.customer_name}</p>
-                      <p className="text-xs text-white/50">{b.customer_email}</p>
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold">{b.customer_name}</span>
+                          {safetyFlag && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-red-500/15 px-2 py-0.5 text-[9px] font-black text-red-400 border border-red-500/20">
+                              <AlertCircle className="h-2.5 w-2.5" /> Safety Review
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-xs text-white/50">{b.customer_email}</span>
+                        {expiredDocs.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-0.5">
+                            {expiredDocs.map((doc: string) => (
+                              <span key={doc} className="inline-flex items-center rounded-md bg-red-500/10 px-1.5 py-0.5 text-[9px] font-medium text-red-300 border border-red-500/20">
+                                ⚠️ Expired {formatDocType(doc)}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-white/70">{prod?.name ?? "—"}</td>
                     <td className="px-4 py-3 text-white/70">{ac?.registration ?? "—"}</td>

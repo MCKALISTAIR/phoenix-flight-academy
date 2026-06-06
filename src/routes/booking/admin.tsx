@@ -39,6 +39,20 @@ function money(cents: number) {
   return `£${(cents / 100).toFixed(2)}`;
 }
 
+function formatDocType(type: string): string {
+  const mapping: Record<string, string> = {
+    medical_class1: "Medical Class 1",
+    medical_class2: "Medical Class 2",
+    medical_lapl: "LAPL Medical",
+    student_pilot_license: "Student License",
+    ppl: "PPL License",
+    lapl: "LAPL License",
+    rt_license: "RT License",
+    language_proficiency: "ELP",
+  };
+  return mapping[type] || type.replace(/_/g, " ");
+}
+
 function AdminDashboard() {
   const qc = useQueryClient();
   const fetchAll = useServerFn(listAllBookings);
@@ -235,6 +249,7 @@ function AdminDashboard() {
                     const prod = (b as { booking_products: { name: string } | null }).booking_products;
                     const ac = (b as { aircraft: { registration: string } | null }).aircraft;
                     const safetyFlag = (b as { safety_flag?: boolean }).safety_flag;
+                    const expiredDocs = (b as any).expired_documents ?? [];
                     const discountCents = (b as { discount_applied_cents?: number }).discount_applied_cents ?? 0;
                     const promoCode = (b as { promo_code?: string }).promo_code;
                     return (
@@ -253,7 +268,16 @@ function AdminDashboard() {
                               </span>
                             )}
                           </div>
-                          <p className="mt-0.5 text-xs text-white/50">
+                          {expiredDocs.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {expiredDocs.map((doc: string) => (
+                                <span key={doc} className="inline-flex items-center rounded-md bg-red-500/10 px-1.5 py-0.5 text-[9px] font-medium text-red-300 border border-red-500/20">
+                                  ⚠️ Expired {formatDocType(doc)}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                          <p className="mt-1 text-xs text-white/50">
                             {prod?.name ?? "—"} · {ac?.registration ?? "—"} · {new Date(b.starts_at).toLocaleString("en-GB")}
                           </p>
                           <p className="mt-1 text-sm font-semibold text-white/70">{money(b.price_total_cents)}</p>
