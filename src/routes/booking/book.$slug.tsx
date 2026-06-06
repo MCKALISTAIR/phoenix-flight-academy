@@ -2,12 +2,13 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Calendar as CalendarIcon, Plane, User as UserIcon, CreditCard, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar as CalendarIcon, Plane, User as UserIcon, CreditCard, AlertCircle, CheckCircle2, Loader2, Tag } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { getBookingProductBySlug } from "@/lib/booking-products.functions";
 import { getAvailableSlots } from "@/lib/booking-calendar.functions";
 import { createBooking } from "@/lib/bookings.functions";
 import { getMySelfHireStatus } from "@/lib/self-hire.functions";
+import { checkPromoCode } from "@/lib/promotions.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -89,6 +90,13 @@ function BookingFlow() {
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Promo code state
+  const applyPromo = useServerFn(checkPromoCode);
+  const [promoInput, setPromoInput] = useState("");
+  const [promoStatus, setPromoStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
+  const [promoMessage, setPromoMessage] = useState("");
+  const [promoDiscount, setPromoDiscount] = useState<{ discountType: "percentage" | "fixed_amount"; discountValue: number } | null>(null);
 
   // Prefill from auth
   useEffect(() => {
@@ -180,19 +188,29 @@ function BookingFlow() {
     if (!product) return null;
     const hours = product.duration_minutes / 60;
     const wet = selectedAircraft?.rate_wet ? Number(selectedAircraft.rate_wet) * 100 : 0;
-    let total = 0;
-    if (product.kind === "experience") total = product.package_price_cents ?? 0;
-    else if (product.kind === "lesson") total = wet * hours + (product.instructor_fee_per_hour_cents ?? 0) * hours;
-    else total = wet * hours;
-    total = Math.round(total);
+    let base = 0;
+    if (product.kind === "experience") base = product.package_price_cents ?? 0;
+    else if (product.kind === "lesson") base = wet * hours + (product.instructor_fee_per_hour_cents ?? 0) * hours;
+    else base = wet * hours;
+    base = Math.round(base);
+
+    let discountCents = 0;
+    if (promoDiscount) {
+      if (promoDiscount.discountType === "percentage") {
+        discountCents = Math.round((base * promoDiscount.discountValue) / 100);
+      } else {
+        discountCents = Math.min(promoDiscount.discountValue, base);
+      }
+    }
+    const total = Math.max(0, base - discountCents);
     const deposit =
       product.payment_mode === "deposit"
         ? Math.round((total * product.deposit_pct) / 100)
         : product.payment_mode === "full"
         ? total
         : 0;
-    return { total, deposit };
-  }, [product, selectedAircraft]);
+    return { base, total, deposit, discountCents };
+  }, [product, selectedAircraft, promoDiscount]);
 
   if (productLoading) {
     return <div className="min-h-screen bg-[oklch(0.13_0.03_270)] p-8 text-white/60">Loading…</div>;
@@ -235,6 +253,7 @@ function BookingFlow() {
           customerEmail: email,
           customerPhone: phone || null,
           notes: notes || null,
+          promoCode: promoStatus === "valid" ? promoInput.toUpperCase() : null,
         },
       });
       if (res.paymentMode !== "invoice") {
@@ -486,6 +505,20 @@ function BookingFlow() {
                 <div className="my-3 border-t border-white/10" />
                 {pricePreview && (
                   <>
+                    {pricePreview.discountCents > 0 && (
+                      <>
+                        <div className="flex justify-between">
+                          <dt className="text-white/50">Subtotal</dt>
+                          <dd className="font-medium">{money(pricePreview.base)}</dd>
+                        </div>
+                        <div className="flex justify-between text-emerald-400">
+                          <dt className="flex items-center gap-1">
+                            <Tag className="h-3 w-3" /> {promoInput.toUpperCase()}
+                          </dt>
+                          <dd className="font-semibold">−{money(pricePreview.discountCents)}</dd>
+                        </div>
+                      </>
+                    )}
                     <div className="flex justify-between">
                       <dt className="text-white/50">Total</dt>
                       <dd className="font-bold">{money(pricePreview.total)}</dd>
@@ -502,6 +535,56 @@ function BookingFlow() {
                   </>
                 )}
               </dl>
+
+              {/* Promo code */}
+              <div className="mt-4">
+                <p className="mb-1.5 text-xs font-semibold text-white/40 uppercase tracking-wider">Promo Code</p>
+                <div className="flex gap-2">
+                  <input
+                    value={promoInput}
+                    onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoStatus("idle"); setPromoDiscount(null); }}
+                    placeholder="ENTER CODE"
+                    className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-mono text-white placeholder-white/20 focus:border-[oklch(0.65_0.22_270)] outline-none"
+                  />
+                  <button
+                    type="button"
+                    disabled={promoStatus === "checking" || !promoInput}
+                    onClick={async () => {
+                      if (!promoInput || !product) return;
+                      setPromoStatus("checking");
+                      try {
+                        const res = await applyPromo({ data: { code: promoInput, productKind: product.kind } });
+                        if (res.valid) {
+                          setPromoStatus("valid");
+                          setPromoMessage(res.discountType === "percentage" ? `${res.discountValue}% off applied!` : `£${(res.discountValue / 100).toFixed(2)} off applied!`);
+                          setPromoDiscount({ discountType: res.discountType, discountValue: res.discountValue });
+                        } else {
+                          setPromoStatus("invalid");
+                          setPromoMessage(res.reason ?? "Invalid code.");
+                          setPromoDiscount(null);
+                        }
+                      } catch {
+                        setPromoStatus("invalid");
+                        setPromoMessage("Could not validate code.");
+                        setPromoDiscount(null);
+                      }
+                    }}
+                    className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-white/60 hover:bg-white/10 disabled:opacity-40 transition-all"
+                  >
+                    {promoStatus === "checking" ? "…" : "Apply"}
+                  </button>
+                </div>
+                {promoStatus === "valid" && (
+                  <p className="mt-1.5 flex items-center gap-1 text-xs text-emerald-400 font-semibold">
+                    <CheckCircle2 className="h-3.5 w-3.5" /> {promoMessage}
+                  </p>
+                )}
+                {promoStatus === "invalid" && (
+                  <p className="mt-1.5 flex items-center gap-1 text-xs text-red-400">
+                    <AlertCircle className="h-3.5 w-3.5" /> {promoMessage}
+                  </p>
+                )}
+              </div>
 
               {error && (
                 <div className="mt-4 flex items-start gap-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-300">

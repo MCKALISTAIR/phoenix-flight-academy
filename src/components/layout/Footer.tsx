@@ -172,7 +172,7 @@ export function Footer() {
               </li>
               <li className="mt-6">
                 <Link
-                  to="/login"
+                  to="/booking"
                   className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:scale-[1.02]"
                 >
                   Book a Flight →

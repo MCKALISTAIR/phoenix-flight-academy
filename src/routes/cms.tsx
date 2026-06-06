@@ -19,6 +19,7 @@ import {
   CalendarX,
   Ban,
   Shield,
+  Tag,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireAdmin } from "@/lib/auth-guards";
@@ -65,6 +66,7 @@ function CmsLayout() {
     { to: "/cms/flying-status", icon: CloudSun, label: "Airfield Status", superOnly: false },
     { to: "/cms/self-hire-approvals", icon: KeyRound, label: "Self-Hire Approvals", superOnly: false },
     { to: "/cms/mock-payments", icon: CreditCard, label: "Mock Payments", superOnly: false },
+    { to: "/cms/promotions", icon: Tag, label: "Promotions", superOnly: true },
     { to: "/cms/users", icon: UserPlus, label: "User Management", superOnly: true },
     { to: "/cms/analytics", icon: Activity, label: "System Analytics", superOnly: true },
   ];

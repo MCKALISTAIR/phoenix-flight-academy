@@ -9,11 +9,12 @@ const TEST_ACCOUNTS = {
   user: { email: "e2e-user@test.lovable.dev", password: "TestPass!2026" },
 } as const;
 
-type LoginSearch = { redirect?: string };
+type LoginSearch = { redirect?: string; tab?: string };
 
 export const Route = createFileRoute("/login")({
   validateSearch: (search: Record<string, unknown>): LoginSearch => ({
     redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+    tab: typeof search.tab === "string" ? search.tab : undefined,
   }),
   beforeLoad: async ({ search }) => {
     const { data } = await supabase.auth.getSession();
@@ -47,7 +48,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const search = Route.useSearch();
 
-  const [viewMode, setViewMode] = useState<ViewMode>("login");
+  const [viewMode, setViewMode] = useState<ViewMode>(search.tab === "register" ? "register" : "login");
   const [registerType, setRegisterType] = useState<RegisterType>("student");
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [busy, setBusy] = useState(false);

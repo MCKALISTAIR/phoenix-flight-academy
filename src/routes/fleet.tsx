@@ -171,7 +171,7 @@ function FleetPage() {
 
                   <div className="flex gap-4 pt-2">
                     <Link
-                      to="/login"
+                      to="/booking"
                       className="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-sm font-bold text-primary-foreground shadow-md transition-all hover:scale-[1.02] hover:shadow-lg"
                     >
                       Book This Plane

@@ -69,6 +69,7 @@ function BookingsAdmin() {
                 <th className="px-4 py-3">Product</th>
                 <th className="px-4 py-3">Aircraft</th>
                 <th className="px-4 py-3">Price</th>
+                <th className="px-4 py-3">Promo</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
@@ -77,6 +78,8 @@ function BookingsAdmin() {
               {data.map((b) => {
                 const prod = (b as { booking_products: { name: string } | null }).booking_products;
                 const ac = (b as { aircraft: { registration: string } | null }).aircraft;
+                const promoCode = (b as { promo_code?: string }).promo_code;
+                const discountCents = (b as { discount_applied_cents?: number }).discount_applied_cents ?? 0;
                 return (
                   <tr key={b.id} className="border-b border-white/5 text-white">
                     <td className="px-4 py-3 text-white/70">{new Date(b.starts_at).toLocaleString("en-GB")}</td>
@@ -86,7 +89,19 @@ function BookingsAdmin() {
                     </td>
                     <td className="px-4 py-3 text-white/70">{prod?.name ?? "—"}</td>
                     <td className="px-4 py-3 text-white/70">{ac?.registration ?? "—"}</td>
-                    <td className="px-4 py-3 text-white/70">£{(b.price_total_cents / 100).toFixed(2)}</td>
+                    <td className="px-4 py-3">
+                      <span className="font-semibold text-white">£{(b.price_total_cents / 100).toFixed(2)}</span>
+                      {discountCents > 0 && (
+                        <p className="text-[10px] text-emerald-400">−£{(discountCents / 100).toFixed(2)} off</p>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {promoCode ? (
+                        <span className="font-mono text-xs font-bold text-[oklch(0.75_0.18_270)]">{promoCode}</span>
+                      ) : (
+                        <span className="text-white/20">—</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       <StatusPill status={b.status} />
                     </td>

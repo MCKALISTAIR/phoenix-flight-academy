@@ -175,7 +175,7 @@ function ExperiencePage() {
                   </div>
 
                   <Link
-                    to="/login"
+                    to="/booking"
                     className="inline-flex h-11 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground shadow-md transition-transform hover:scale-[1.01]"
                   >
                     Buy Voucher / Book

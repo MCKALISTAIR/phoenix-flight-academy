@@ -13,24 +13,36 @@ function computePrice(
     deposit_pct: number;
   },
   aircraft: { rate_wet: number | null } | null,
-): { totalCents: number; depositCents: number } {
+  discount?: { discountType: "percentage" | "fixed_amount"; discountValue: number } | null,
+): { totalCents: number; depositCents: number; discountAppliedCents: number } {
   const hours = product.duration_minutes / 60;
   const wetCents = aircraft?.rate_wet ? Math.round(Number(aircraft.rate_wet) * 100) : 0;
-  let totalCents = 0;
+  let baseCents = 0;
   if (product.kind === "experience") {
-    totalCents = product.package_price_cents ?? 0;
+    baseCents = product.package_price_cents ?? 0;
   } else if (product.kind === "lesson") {
-    totalCents = Math.round(wetCents * hours + (product.instructor_fee_per_hour_cents ?? 0) * hours);
+    baseCents = Math.round(wetCents * hours + (product.instructor_fee_per_hour_cents ?? 0) * hours);
   } else {
-    totalCents = Math.round(wetCents * hours);
+    baseCents = Math.round(wetCents * hours);
   }
+
+  let discountAppliedCents = 0;
+  if (discount) {
+    if (discount.discountType === "percentage") {
+      discountAppliedCents = Math.round((baseCents * discount.discountValue) / 100);
+    } else {
+      discountAppliedCents = Math.min(discount.discountValue, baseCents);
+    }
+  }
+  const totalCents = Math.max(0, baseCents - discountAppliedCents);
+
   const depositCents =
     product.payment_mode === "deposit"
       ? Math.round((totalCents * product.deposit_pct) / 100)
       : product.payment_mode === "full"
       ? totalCents
       : 0;
-  return { totalCents, depositCents };
+  return { totalCents, depositCents, discountAppliedCents };
 }
 
 const createSchema = z.object({
@@ -42,6 +54,7 @@ const createSchema = z.object({
   customerEmail: z.string().email().max(255),
   customerPhone: z.string().max(40).nullable().optional(),
   notes: z.string().max(500).nullable().optional(),
+  promoCode: z.string().max(40).nullable().optional(),
 });
 
 export const createBooking = createServerFn({ method: "POST" })
@@ -119,7 +132,32 @@ export const createBooking = createServerFn({ method: "POST" })
       if ((c.data ?? []).length) throw new Error("That instructor is no longer available for the selected slot");
     }
 
-    const { totalCents, depositCents } = computePrice(product, aircraft);
+    // Validate promo code if supplied
+    let appliedDiscount: { discountType: "percentage" | "fixed_amount"; discountValue: number; promoId: string } | null = null;
+    let validatedPromoCode: string | null = null;
+    if (data.promoCode) {
+      const code = data.promoCode.toUpperCase();
+      const now = new Date();
+      const { data: promo, error: promoErr } = await supabase
+        .from("booking_promotions")
+        .select("id, code, discount_type, discount_value, applies_to_kinds, active_from, active_until, max_uses, uses_count, published")
+        .eq("code", code)
+        .eq("published", true)
+        .maybeSingle();
+      if (!promoErr && promo) {
+        const kinds = (promo.applies_to_kinds ?? []) as string[];
+        const notExpired = !promo.active_until || new Date(promo.active_until) > now;
+        const notStarted = new Date(promo.active_from) > now;
+        const notExhausted = promo.max_uses === null || promo.uses_count < promo.max_uses;
+        const kindMatch = kinds.length === 0 || kinds.includes(product.kind);
+        if (!notStarted && notExpired && notExhausted && kindMatch) {
+          appliedDiscount = { discountType: promo.discount_type as "percentage" | "fixed_amount", discountValue: promo.discount_value, promoId: promo.id };
+          validatedPromoCode = code;
+        }
+      }
+    }
+
+    const { totalCents, depositCents, discountAppliedCents } = computePrice(product, aircraft, appliedDiscount);
 
     const status =
       product.payment_mode === "invoice"
@@ -127,7 +165,7 @@ export const createBooking = createServerFn({ method: "POST" })
         : product.requires_approval
         ? "pending"
         : product.payment_mode === "full"
-        ? "pending" // will flip to confirmed once Stripe webhook lands; for now pending until paid
+        ? "pending" // will flip to confirmed once Stripe webhook lands
         : "pending";
 
     const insertPayload = {
@@ -145,16 +183,35 @@ export const createBooking = createServerFn({ method: "POST" })
       price_total_cents: totalCents,
       deposit_due_cents: depositCents,
       notes: data.notes ?? null,
-    } as const;
+      promo_code: validatedPromoCode,
+      discount_applied_cents: discountAppliedCents,
+    };
 
     const ins = await supabase.from("bookings").insert(insertPayload).select("id").single();
     if (ins.error) throw new Error(ins.error.message);
+
+    // Increment uses_count on the promo (read-then-write; safe for low concurrency flight school volume)
+    if (appliedDiscount) {
+      const { data: cur } = await supabase
+        .from("booking_promotions")
+        .select("uses_count")
+        .eq("id", appliedDiscount.promoId)
+        .maybeSingle();
+      if (cur) {
+        await supabase
+          .from("booking_promotions")
+          .update({ uses_count: cur.uses_count + 1 })
+          .eq("id", appliedDiscount.promoId);
+      }
+    }
 
     return {
       id: ins.data.id,
       paymentMode: product.payment_mode,
       totalCents,
       depositCents,
+      discountAppliedCents,
+      promoCode: validatedPromoCode,
       requiresApproval: product.requires_approval,
     };
   });

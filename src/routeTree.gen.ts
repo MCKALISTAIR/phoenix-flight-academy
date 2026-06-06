@@ -31,6 +31,7 @@ import { Route as CmsTeamRouteImport } from './routes/cms/team'
 import { Route as CmsStudentsRouteImport } from './routes/cms/students'
 import { Route as CmsSelfHireApprovalsRouteImport } from './routes/cms/self-hire-approvals'
 import { Route as CmsResourceBlocksRouteImport } from './routes/cms/resource-blocks'
+import { Route as CmsPromotionsRouteImport } from './routes/cms/promotions'
 import { Route as CmsMockPaymentsRouteImport } from './routes/cms/mock-payments'
 import { Route as CmsFlyingStatusRouteImport } from './routes/cms/flying-status'
 import { Route as CmsFleetRouteImport } from './routes/cms/fleet'
@@ -159,6 +160,11 @@ const CmsResourceBlocksRoute = CmsResourceBlocksRouteImport.update({
   path: '/resource-blocks',
   getParentRoute: () => CmsRoute,
 } as any)
+const CmsPromotionsRoute = CmsPromotionsRouteImport.update({
+  id: '/promotions',
+  path: '/promotions',
+  getParentRoute: () => CmsRoute,
+} as any)
 const CmsMockPaymentsRoute = CmsMockPaymentsRouteImport.update({
   id: '/mock-payments',
   path: '/mock-payments',
@@ -271,6 +277,7 @@ export interface FileRoutesByFullPath {
   '/cms/fleet': typeof CmsFleetRoute
   '/cms/flying-status': typeof CmsFlyingStatusRoute
   '/cms/mock-payments': typeof CmsMockPaymentsRoute
+  '/cms/promotions': typeof CmsPromotionsRoute
   '/cms/resource-blocks': typeof CmsResourceBlocksRoute
   '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
@@ -310,6 +317,7 @@ export interface FileRoutesByTo {
   '/cms/fleet': typeof CmsFleetRoute
   '/cms/flying-status': typeof CmsFlyingStatusRoute
   '/cms/mock-payments': typeof CmsMockPaymentsRoute
+  '/cms/promotions': typeof CmsPromotionsRoute
   '/cms/resource-blocks': typeof CmsResourceBlocksRoute
   '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
@@ -352,6 +360,7 @@ export interface FileRoutesById {
   '/cms/fleet': typeof CmsFleetRoute
   '/cms/flying-status': typeof CmsFlyingStatusRoute
   '/cms/mock-payments': typeof CmsMockPaymentsRoute
+  '/cms/promotions': typeof CmsPromotionsRoute
   '/cms/resource-blocks': typeof CmsResourceBlocksRoute
   '/cms/self-hire-approvals': typeof CmsSelfHireApprovalsRoute
   '/cms/students': typeof CmsStudentsRouteWithChildren
@@ -395,6 +404,7 @@ export interface FileRouteTypes {
     | '/cms/fleet'
     | '/cms/flying-status'
     | '/cms/mock-payments'
+    | '/cms/promotions'
     | '/cms/resource-blocks'
     | '/cms/self-hire-approvals'
     | '/cms/students'
@@ -434,6 +444,7 @@ export interface FileRouteTypes {
     | '/cms/fleet'
     | '/cms/flying-status'
     | '/cms/mock-payments'
+    | '/cms/promotions'
     | '/cms/resource-blocks'
     | '/cms/self-hire-approvals'
     | '/cms/students'
@@ -475,6 +486,7 @@ export interface FileRouteTypes {
     | '/cms/fleet'
     | '/cms/flying-status'
     | '/cms/mock-payments'
+    | '/cms/promotions'
     | '/cms/resource-blocks'
     | '/cms/self-hire-approvals'
     | '/cms/students'
@@ -665,6 +677,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsResourceBlocksRouteImport
       parentRoute: typeof CmsRoute
     }
+    '/cms/promotions': {
+      id: '/cms/promotions'
+      path: '/promotions'
+      fullPath: '/cms/promotions'
+      preLoaderRoute: typeof CmsPromotionsRouteImport
+      parentRoute: typeof CmsRoute
+    }
     '/cms/mock-payments': {
       id: '/cms/mock-payments'
       path: '/mock-payments'
@@ -832,6 +851,7 @@ interface CmsRouteChildren {
   CmsFleetRoute: typeof CmsFleetRoute
   CmsFlyingStatusRoute: typeof CmsFlyingStatusRoute
   CmsMockPaymentsRoute: typeof CmsMockPaymentsRoute
+  CmsPromotionsRoute: typeof CmsPromotionsRoute
   CmsResourceBlocksRoute: typeof CmsResourceBlocksRoute
   CmsSelfHireApprovalsRoute: typeof CmsSelfHireApprovalsRoute
   CmsStudentsRoute: typeof CmsStudentsRouteWithChildren
@@ -852,6 +872,7 @@ const CmsRouteChildren: CmsRouteChildren = {
   CmsFleetRoute: CmsFleetRoute,
   CmsFlyingStatusRoute: CmsFlyingStatusRoute,
   CmsMockPaymentsRoute: CmsMockPaymentsRoute,
+  CmsPromotionsRoute: CmsPromotionsRoute,
   CmsResourceBlocksRoute: CmsResourceBlocksRoute,
   CmsSelfHireApprovalsRoute: CmsSelfHireApprovalsRoute,
   CmsStudentsRoute: CmsStudentsRouteWithChildren,
@@ -882,3 +903,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
