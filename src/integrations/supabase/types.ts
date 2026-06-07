@@ -711,6 +711,63 @@ export type Database = {
         }
         Relationships: []
       }
+      pilot_verification_requests: {
+        Row: {
+          created_at: string
+          document_path: string | null
+          id: string
+          issuing_authority: string
+          licence_expiry: string | null
+          licence_number: string
+          medical_document_path: string | null
+          medical_expiry: string | null
+          ratings: string | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["pilot_verification_status"]
+          submitted_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          document_path?: string | null
+          id?: string
+          issuing_authority: string
+          licence_expiry?: string | null
+          licence_number: string
+          medical_document_path?: string | null
+          medical_expiry?: string | null
+          ratings?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["pilot_verification_status"]
+          submitted_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          document_path?: string | null
+          id?: string
+          issuing_authority?: string
+          licence_expiry?: string | null
+          licence_number?: string
+          medical_document_path?: string | null
+          medical_expiry?: string | null
+          ratings?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["pilot_verification_status"]
+          submitted_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1080,6 +1137,24 @@ export type Database = {
         }
         Returns: boolean
       }
+      set_self_as_student: {
+        Args: never
+        Returns: {
+          created_at: string
+          id: string
+          notes: string | null
+          qualified_at: string | null
+          tier: Database["public"]["Enums"]["customer_tier"] | null
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "customer_profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       admin_request_status: "pending" | "approved" | "rejected"
@@ -1139,6 +1214,11 @@ export type Database = {
         | "instructor"
         | "examiner"
       license_sought: "PPL" | "LAPL" | "NPPL" | "CPL" | "IR" | "Other"
+      pilot_verification_status:
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "withdrawn"
       profile_status: "active" | "pending" | "suspended"
       student_status: "active" | "paused" | "completed" | "withdrawn"
     }
@@ -1331,6 +1411,12 @@ export const Constants = {
         "examiner",
       ],
       license_sought: ["PPL", "LAPL", "NPPL", "CPL", "IR", "Other"],
+      pilot_verification_status: [
+        "pending",
+        "approved",
+        "rejected",
+        "withdrawn",
+      ],
       profile_status: ["active", "pending", "suspended"],
       student_status: ["active", "paused", "completed", "withdrawn"],
     },
