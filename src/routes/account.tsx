@@ -91,7 +91,7 @@ function AccountPage() {
               </div>
             )}
 
-            {tier !== "pilot" && !pending && (tier !== null || tier === null) && (
+            {tier !== "pilot" && !pending && (
               <PilotVerificationForm onSubmit={(payload) => submitFn({ data: payload })} />
             )}
 
