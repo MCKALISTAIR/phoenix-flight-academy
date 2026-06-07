@@ -19,6 +19,7 @@ import { Route as FleetRouteImport } from './routes/fleet'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CmsRouteImport } from './routes/cms'
 import { Route as BookingRouteImport } from './routes/booking'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CmsIndexRouteImport } from './routes/cms/index'
@@ -98,6 +99,11 @@ const CmsRoute = CmsRouteImport.update({
 const BookingRoute = BookingRouteImport.update({
   id: '/booking',
   path: '/booking',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -254,6 +260,7 @@ const BookingBookSlugRoute = BookingBookSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/booking': typeof BookingRouteWithChildren
   '/cms': typeof CmsRouteWithChildren
   '/contact': typeof ContactRoute
@@ -296,6 +303,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/contact': typeof ContactRoute
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
@@ -337,6 +345,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/booking': typeof BookingRouteWithChildren
   '/cms': typeof CmsRouteWithChildren
   '/contact': typeof ContactRoute
@@ -381,6 +390,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/account'
     | '/booking'
     | '/cms'
     | '/contact'
@@ -423,6 +433,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/account'
     | '/contact'
     | '/fleet'
     | '/login'
@@ -463,6 +474,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/account'
     | '/booking'
     | '/cms'
     | '/contact'
@@ -506,6 +518,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRoute
   BookingRoute: typeof BookingRouteWithChildren
   CmsRoute: typeof CmsRouteWithChildren
   ContactRoute: typeof ContactRoute
@@ -591,6 +604,13 @@ declare module '@tanstack/react-router' {
       path: '/booking'
       fullPath: '/booking'
       preLoaderRoute: typeof BookingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -886,6 +906,7 @@ const CmsRouteWithChildren = CmsRoute._addFileChildren(CmsRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AccountRoute: AccountRoute,
   BookingRoute: BookingRouteWithChildren,
   CmsRoute: CmsRouteWithChildren,
   ContactRoute: ContactRoute,
