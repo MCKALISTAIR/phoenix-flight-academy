@@ -75,6 +75,15 @@ function CheckoutPage() {
             {new Date(session.startsAt).toLocaleString("en-GB")}
           </p>
 
+          {(session as any).blockCount > 1 && (
+            <div className="mt-4 rounded-xl border border-[oklch(0.55_0.22_270)]/20 bg-[oklch(0.55_0.22_270)]/5 p-4 text-sm text-white/80">
+              <span className="font-bold text-[oklch(0.75_0.18_270)] block text-xs tracking-wide uppercase">Block Booking Series</span>
+              <p className="text-xs text-white/60 mt-1">
+                You are paying for **Lesson 1 of {(session as any).blockCount}** scheduled slots. The remaining {(session as any).blockCount - 1} slots are reserved and will be paid individually.
+              </p>
+            </div>
+          )}
+
           <dl className="mt-6 space-y-2 text-sm">
             <Row label="Customer" value={`${session.customerName} (${session.customerEmail})`} />
             <Row label="Booking total" value={money(session.priceTotalCents)} />

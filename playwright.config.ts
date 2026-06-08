@@ -19,9 +19,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev",
+    command: "npm run dev -- --port 8083",
     port: 8083,
     reuseExistingServer: true,
-    timeout: 30000,
+    timeout: 90000,
   },
 });

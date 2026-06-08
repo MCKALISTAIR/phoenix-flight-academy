@@ -1,9 +1,70 @@
 import { test, expect } from "@playwright/test";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.SUPABASE_URL || "https://bulrhflllebnjlacxdji.supabase.co";
+const supabaseAnonKey = process.env.SUPABASE_PUBLISHABLE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1bHJoZmxsbGVibmpsYWN4ZGppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwODkyMTYsImV4cCI6MjA5NDY2NTIxNn0.uk2MWb3LRSc3QFa6zX61BPhPIQioWpAKbN_iGE-Dcds";
+
+async function cleanUpBookings() {
+  const client = createClient(supabaseUrl, supabaseAnonKey);
+  const { data } = await client.auth.signInWithPassword({
+    email: "e2e-admin@test.lovable.dev",
+    password: "TestPass!2026",
+  });
+  if (!data?.session) return;
+  const authClient = createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: `Bearer ${data.session.access_token}` } },
+    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+  });
+  const { data: bookings } = await authClient
+    .from("bookings")
+    .select("id, status");
+  if (bookings && bookings.length > 0) {
+    for (const b of bookings) {
+      if (b.status !== "cancelled") {
+        await authClient
+          .from("bookings")
+          .update({ status: "cancelled", cancellation_reason: "Cleaned up by E2E test run" })
+          .eq("id", b.id);
+      }
+    }
+  }
+}
 
 test.describe("Phoenix Flight Academy Smoke Tests", () => {
+  test.beforeAll(async () => {
+    await cleanUpBookings();
+  });
+
+  test.afterAll(async () => {
+    await cleanUpBookings();
+  });
+
   test.beforeEach(async ({ page }) => {
+    page.on("console", (msg) => {
+      if (msg.type() === "error" || msg.type() === "warning") {
+        console.log(`[Browser Console ${msg.type()}] ${msg.text()}`);
+      }
+    });
+    page.on("pageerror", (err) => {
+      console.log(`[Browser PageError] ${err.message}`);
+    });
+    page.on("requestfailed", (req) => {
+      // Don't log expected aborted requests for blocked third-party resources
+      const url = req.url();
+      if (!url.includes("fonts.googleapis.com") && !url.includes("fonts.gstatic.com") && !url.includes("unsplash.com")) {
+        console.log(`[Browser RequestFailed] ${url} - ${req.failure()?.errorText}`);
+      }
+    });
+
+    // Abort third-party fonts and images to prevent slow page load and timeouts in test environment
+    await page.route(/fonts\.googleapis\.com/, (route) => route.abort());
+    await page.route(/fonts\.gstatic\.com/, (route) => route.abort());
+    await page.route(/unsplash\.com/, (route) => route.abort());
+
     // Clear storage state to start fresh
     await page.context().clearCookies();
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    await page.evaluate(() => window.localStorage.clear());
   });
 
   test("Homepage loads and contains primary headings and navigation links", async ({ page }) => {
@@ -36,6 +97,8 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
 
   for (const { name, path, heading } of publicPages) {
     test(`Public page - ${name} loads successfully`, async ({ page }) => {
+      // Increase timeout per test — Vite needs extra time on cold-compilation of each route
+      test.setTimeout(90000);
       await page.goto(path, { waitUntil: "domcontentloaded" });
       await expect(page.locator("h1").first()).toContainText(heading);
     });
@@ -143,5 +206,69 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
 
     // Verify dashboard content is present (Welcome back, Alex)
     await expect(page.locator("h1").first()).toContainText("Welcome back");
+  });
+
+  test("Test student block booking flow and checkout redirect", async ({ page }) => {
+    test.setTimeout(90000);
+    // 1. Log in as student
+    await page.goto("/login", { waitUntil: "domcontentloaded" });
+    const userBtn = page.getByRole("button", { name: "User e2e-user@test.lovable.dev" });
+    await expect(userBtn).toBeVisible();
+    await userBtn.click();
+    await page.waitForURL("**/booking/dashboard");
+
+    // 2. Go to book a flight lesson page
+    await page.goto("/booking/book/ppl-lesson", { waitUntil: "domcontentloaded" });
+    await page.waitForURL("**/booking/book/ppl-lesson");
+
+    // 3. Fill out booking form
+    // Wait for the aircraft selection button to be visible, then click the first one
+    const aircraftBtn = page.locator("section:has-text('Aircraft') button").first();
+    await expect(aircraftBtn).toBeVisible();
+    await aircraftBtn.click();
+
+    // Click the first instructor button
+    const instructorBtn = page.locator("section:has-text('Instructor') button").first();
+    await expect(instructorBtn).toBeVisible();
+    await instructorBtn.click();
+
+    // Select the second date button (tomorrow) which will have availability
+    const dateBtn = page.locator("section:has-text('Date & time') button").nth(1);
+    await expect(dateBtn).toBeVisible();
+    await dateBtn.click();
+
+    // Wait for slot loading/times to be visible and select the first available time slot button
+    // Use data-testid to precisely target the slot grid (not the date picker buttons above it)
+    const slotBtn = page.locator("[data-testid='slot-grid'] button:not([disabled])").first();
+    await expect(slotBtn).toBeVisible({ timeout: 15000 });
+    await slotBtn.click();
+
+    // Now set recurrence to weekly
+    const patternSelect = page.locator("label:has-text('Schedule Pattern') + select");
+    await expect(patternSelect).toBeVisible();
+    await patternSelect.selectOption("weekly");
+
+    // Set occurrences count to 5 lessons
+    const occurrencesSelect = page.locator("label:has-text('Number of Lessons') + select");
+    await expect(occurrencesSelect).toBeVisible();
+    await occurrencesSelect.selectOption("5");
+
+    // Fill out customer details
+    await page.locator("label:has-text('Full name') + input").fill("Alex Student");
+    await page.locator("label:has-text('Email') + input").fill("e2e-user@test.lovable.dev");
+
+    // Submit booking
+    const submitBtn = page.getByRole("button", { name: "Request booking" });
+    await expect(submitBtn).toBeVisible();
+    await submitBtn.click();
+
+    // ppl-lesson uses payment_mode=invoice — no upfront payment, so the app
+    // routes to /booking/confirm (not /booking/checkout).
+    await page.waitForURL("**/booking/confirm/*", { timeout: 30000 });
+    await expect(page).toHaveURL(/.*\/booking\/confirm\/.*/);
+
+    // Verify the confirmation page acknowledges the booking
+    await expect(page.locator("h1").first()).toContainText("Booking received");
+    await expect(page.locator("text=PPL Training Lesson")).toBeVisible();
   });
 });

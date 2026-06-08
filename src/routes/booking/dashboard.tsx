@@ -1,7 +1,10 @@
 import { createFileRoute, Link, redirect, isRedirect } from "@tanstack/react-router";
 import { Calendar, CreditCard, History, Plane, User, Compass, Clock, Gauge, AlertTriangle, CalendarPlus, Trash2, XCircle } from "lucide-react";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { requireAuth } from "@/lib/auth-guards";
+import { listMyBookings } from "@/lib/bookings.functions";
 
 export const Route = createFileRoute("/booking/dashboard")({
   beforeLoad: async ({ location }) => {
@@ -94,6 +97,30 @@ function CustomerDashboard() {
   });
   const [confirmCancel, setConfirmCancel] = useState(false);
 
+  const fetchMyBookings = useServerFn(listMyBookings);
+  const { data: bookings = [] } = useQuery({
+    queryKey: ["my-bookings"],
+    queryFn: () => fetchMyBookings(),
+  });
+
+  const now = new Date().toISOString();
+  const upcoming = bookings.filter((b) => b.starts_at > now && b.status !== "cancelled");
+  
+  const dbNextFlight = upcoming
+    .filter((b) => b.status === "confirmed")
+    .sort((a, b) => a.starts_at.localeCompare(b.starts_at))[0];
+
+  const dbNextFlightFormatted = dbNextFlight ? {
+    month: new Date(dbNextFlight.starts_at).toLocaleString("en-GB", { month: "short" }),
+    day: new Date(dbNextFlight.starts_at).toLocaleString("en-GB", { day: "numeric" }),
+    title: dbNextFlight.booking_products?.name || "Flight Lesson",
+    time: `${new Date(dbNextFlight.starts_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} - ${new Date(dbNextFlight.ends_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`,
+    aircraft: dbNextFlight.aircraft ? `${dbNextFlight.aircraft.registration} (${dbNextFlight.aircraft.model})` : "No aircraft"
+  } : null;
+
+  const currentNextFlight = dbNextFlightFormatted || nextFlight;
+  const unpaidBookings = upcoming.filter((b) => b.payment_status === "unpaid");
+
   const dest = destinations[selectedDest as keyof typeof destinations];
   const plane = planes[selectedPlane as keyof typeof planes];
 
@@ -147,7 +174,7 @@ function CustomerDashboard() {
           <div className="col-span-2 overflow-hidden rounded-2xl border border-border bg-card shadow-sm flex flex-col justify-between">
             <div className="border-b border-border bg-muted/50 px-6 py-4 flex items-center justify-between">
               <h2 className="font-semibold text-foreground">Next Scheduled Flight</h2>
-              {!nextFlight && (
+              {!currentNextFlight && (
                 <button
                   onClick={() => setNextFlight({
                     month: "May",
@@ -163,17 +190,17 @@ function CustomerDashboard() {
               )}
             </div>
             <div className="p-6 flex-1 flex flex-col justify-center">
-              {nextFlight ? (
+              {currentNextFlight ? (
                 <div>
                   <div className="flex items-center justify-between rounded-xl border border-border p-4 bg-muted/20">
                     <div className="flex items-center gap-4">
                       <div className="flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
-                        <span className="text-[10px] font-bold uppercase">{nextFlight.month}</span>
-                        <span className="text-lg font-bold leading-none">{nextFlight.day}</span>
+                        <span className="text-[10px] font-bold uppercase">{currentNextFlight.month}</span>
+                        <span className="text-lg font-bold leading-none">{currentNextFlight.day}</span>
                       </div>
                       <div>
-                        <h3 className="font-medium text-foreground">{nextFlight.title}</h3>
-                        <p className="text-sm text-muted-foreground">{nextFlight.time} • {nextFlight.aircraft}</p>
+                        <h3 className="font-medium text-foreground">{currentNextFlight.title}</h3>
+                        <p className="text-sm text-muted-foreground">{currentNextFlight.time} • {currentNextFlight.aircraft}</p>
                       </div>
                     </div>
                     <div className="text-right flex items-center gap-3">
@@ -244,13 +271,50 @@ function CustomerDashboard() {
             </div>
             <div className="p-6">
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-foreground">£0.00</span>
+                <span className="text-3xl font-bold text-foreground">
+                  £{unpaidBookings.length > 0 ? (unpaidBookings.reduce((sum, b) => sum + (b.price_total_cents || 0), 0) / 100).toFixed(2) : "0.00"}
+                </span>
               </div>
-              <p className="mt-1 text-sm text-muted-foreground">All flights are paid up to date.</p>
-              <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/95 shadow">
-                <CreditCard className="h-4 w-4" />
-                Add Funds
-              </button>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {unpaidBookings.length > 0 ? "Outstanding balance for block lessons." : "All flights are paid up to date."}
+              </p>
+              
+              {unpaidBookings.length > 0 ? (
+                <div className="mt-6 space-y-3 pt-6 border-t border-border">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Unpaid Lessons</h3>
+                  <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                    {unpaidBookings.map((b) => {
+                      const dateStr = new Date(b.starts_at).toLocaleDateString("en-GB", {
+                        day: "numeric",
+                        month: "short",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      });
+                      return (
+                        <div key={b.id} className="flex items-center justify-between gap-3 text-xs bg-muted/20 p-2.5 rounded-lg border border-border">
+                          <div className="min-w-0 flex-1">
+                            <p className="font-semibold text-foreground truncate">{b.booking_products?.name || "Flight Lesson"}</p>
+                            <p className="text-muted-foreground">{dateStr}</p>
+                            <p className="font-medium text-foreground">£{((b.price_total_cents || 0) / 100).toFixed(2)}</p>
+                          </div>
+                          <Link
+                            to="/booking/checkout/$id"
+                            params={{ id: b.id }}
+                            className="shrink-0 rounded bg-primary px-2.5 py-1.5 font-bold text-primary-foreground hover:bg-primary/90 transition-colors"
+                          >
+                            Pay Now
+                          </Link>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : (
+                <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/95 shadow">
+                  <CreditCard className="h-4 w-4" />
+                  Add Funds
+                </button>
+              )}
             </div>
           </div>
 

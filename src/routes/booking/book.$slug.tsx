@@ -98,6 +98,22 @@ function BookingFlow() {
   const [promoMessage, setPromoMessage] = useState("");
   const [promoDiscount, setPromoDiscount] = useState<{ discountType: "percentage" | "fixed_amount"; discountValue: number } | null>(null);
 
+  // Block Booking state
+  const [recurrence, setRecurrence] = useState<"weekly" | "fortnightly" | "none">("none");
+  const [occurrences, setOccurrences] = useState<number>(5);
+
+  const projectedSlots = useMemo(() => {
+    if (!selectedSlot || recurrence === "none" || occurrences <= 1) return [];
+    const dates = [];
+    const startsDate = new Date(selectedSlot);
+    for (let i = 1; i < occurrences; i++) {
+      const offsetDays = i * (recurrence === "weekly" ? 7 : 14);
+      const nextDate = new Date(startsDate.getTime() + offsetDays * 24 * 60 * 60 * 1000);
+      dates.push(nextDate);
+    }
+    return dates;
+  }, [selectedSlot, recurrence, occurrences]);
+
   // Prefill from auth
   useEffect(() => {
     if (user) {
@@ -254,6 +270,8 @@ function BookingFlow() {
           customerPhone: phone || null,
           notes: notes || null,
           promoCode: promoStatus === "valid" ? promoInput.toUpperCase() : null,
+          recurrence,
+          occurrences,
         },
       });
       if (res.paymentMode !== "invoice") {
@@ -406,7 +424,7 @@ function BookingFlow() {
                 {slotsLoading ? (
                   <p className="text-sm text-white/40">Loading times…</p>
                 ) : (
-                  <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+                  <div data-testid="slot-grid" className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
                     {(slotsByDate[selectedDate] ?? []).map((s) => (
                       <button
                         type="button"
@@ -432,6 +450,75 @@ function BookingFlow() {
                 )}
               </div>
             </section>
+
+            {/* Recurring block bookings section */}
+            {product.kind === "lesson" && (
+              <section className="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-4">
+                <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-white/60">
+                  <CalendarIcon className="h-4 w-4" /> Block Booking
+                </h2>
+                <div className="space-y-3">
+                  <p className="text-xs text-white/50 leading-relaxed">
+                    Reserve your preferred instructor and aircraft slot in advance for future lessons. 
+                    You pay only for the first lesson now; future slots will be billed individually.
+                  </p>
+                  
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-xs text-white/50">Schedule Pattern</label>
+                      <select
+                        value={recurrence}
+                        onChange={(e) => setRecurrence(e.target.value as any)}
+                        className="w-full rounded-lg border border-white/10 bg-[oklch(0.13_0.03_270)] px-3 py-2 text-sm text-white"
+                      >
+                        <option value="none">One-off booking</option>
+                        <option value="weekly">Repeat weekly</option>
+                        <option value="fortnightly">Repeat bi-weekly</option>
+                      </select>
+                    </div>
+
+                    {recurrence !== "none" && (
+                      <div>
+                        <label className="mb-1 block text-xs text-white/50">Number of Lessons</label>
+                        <select
+                          value={occurrences}
+                          onChange={(e) => setOccurrences(Number(e.target.value))}
+                          className="w-full rounded-lg border border-white/10 bg-[oklch(0.13_0.03_270)] px-3 py-2 text-sm text-white"
+                        >
+                          {[2, 3, 4, 5, 6, 8, 10, 12].map((num) => (
+                            <option key={num} value={num}>
+                              {num} Lessons total
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                  </div>
+
+                  {recurrence !== "none" && projectedSlots.length > 0 && (
+                    <div className="mt-4 rounded-xl border border-white/5 bg-white/2 p-4 space-y-2">
+                      <p className="text-xs font-bold text-white/70">Projected Future Lesson Slots:</p>
+                      <div className="divide-y divide-white/5 text-xs text-white/50 max-h-48 overflow-y-auto pr-1">
+                        <div className="py-1.5 flex justify-between">
+                          <span>Lesson 1 (Secure & pay now)</span>
+                          <span className="font-semibold text-white/80">
+                            {selectedSlot ? new Date(selectedSlot).toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—"}
+                          </span>
+                        </div>
+                        {projectedSlots.map((date, idx) => (
+                          <div key={idx} className="py-1.5 flex justify-between">
+                            <span>Lesson {idx + 2} (Slot reserved)</span>
+                            <span className="font-semibold text-white/80">
+                              {date.toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
 
             {/* Customer details */}
             <section className="rounded-2xl border border-white/10 bg-white/5 p-6">

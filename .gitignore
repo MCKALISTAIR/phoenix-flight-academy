@@ -30,3 +30,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright test results
+test-results/
+
+# Supabase CLI temp cache
+supabase/.temp/

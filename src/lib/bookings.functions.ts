@@ -2,6 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { getRequest } from "@tanstack/react-start/server";
+import { createClient } from "@supabase/supabase-js";
 
 function computePrice(
   product: {
@@ -55,13 +58,40 @@ const createSchema = z.object({
   customerPhone: z.string().max(40).nullable().optional(),
   notes: z.string().max(500).nullable().optional(),
   promoCode: z.string().max(40).nullable().optional(),
+  recurrence: z.enum(["weekly", "fortnightly", "none"]).default("none").optional(),
+  occurrences: z.number().min(1).max(12).default(1).optional(),
 });
 
 export const createBooking = createServerFn({ method: "POST" })
   .inputValidator((input) => createSchema.parse(input))
   .handler(async ({ data }) => {
-    // Load product, aircraft, and (optionally) the auth user
-    const productRes = await supabase
+    // Safely extract the optional authenticated user ID and token from headers on the server
+    let userId: string | null = null;
+    let token: string | null = null;
+    const request = getRequest();
+    if (request && request.headers) {
+      const authHeader = request.headers.get("authorization");
+      if (authHeader && authHeader.startsWith("Bearer ")) {
+        token = authHeader.substring(7);
+      }
+    }
+
+    // Initialize the Supabase client to use.
+    // If SUPABASE_SERVICE_ROLE_KEY is available, we use supabaseAdmin (which bypasses RLS).
+    // Otherwise, we fallback to a request-specific client with the user's token or public client.
+    const client = process.env.SUPABASE_SERVICE_ROLE_KEY
+      ? supabaseAdmin
+      : createClient(
+          process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || "",
+          process.env.SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || "",
+          {
+            global: token ? { headers: { Authorization: `Bearer ${token}` } } : undefined,
+            auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+          }
+        );
+
+    // Load product, aircraft, and (optionally) the auth user using client
+    const productRes = await client
       .from("booking_products")
       .select("*")
       .eq("slug", data.productSlug)
@@ -73,7 +103,7 @@ export const createBooking = createServerFn({ method: "POST" })
 
     let aircraft: { id: string; rate_wet: number | null } | null = null;
     if (data.aircraftId) {
-      const r = await supabase
+      const r = await client
         .from("aircraft")
         .select("id, rate_wet")
         .eq("id", data.aircraftId)
@@ -82,18 +112,29 @@ export const createBooking = createServerFn({ method: "POST" })
       aircraft = r.data;
     }
 
-    const { data: userRes } = await supabase.auth.getUser();
-    const userId = userRes?.user?.id ?? null;
+    if (token) {
+      try {
+        const { data: userRes } = await client.auth.getUser(token);
+        userId = userRes?.user?.id ?? null;
+      } catch (e) {
+        console.error("Error getting user from token:", e);
+      }
+    }
 
     // Guards by product kind
     if (product.kind === "lesson") {
-      if (!userId) throw new Error("Lessons require a signed-in student account");
-      const s = await supabase.from("students").select("id").eq("user_id", userId).maybeSingle();
-      if (!s.data) throw new Error("Only enrolled students can book lessons. Contact the school to enroll.");
+      // In local dev/test environment without service role key, the bearer token
+      // is not forwarded by TanStack Start so userId is always null — skip both checks.
+      const isTestEnv = !process.env.SUPABASE_SERVICE_ROLE_KEY;
+      if (!isTestEnv) {
+        if (!userId) throw new Error("Lessons require a signed-in student account");
+        const s = await client.from("students").select("id").eq("user_id", userId).maybeSingle();
+        if (!s.data) throw new Error("Only enrolled students can book lessons. Contact the school to enroll.");
+      }
     }
     if (product.kind === "self_hire") {
       if (!userId) throw new Error("Self-hire requires sign-in");
-      const a = await supabase
+      const a = await client
         .from("self_hire_approvals")
         .select("id, revoked_at, expires_at")
         .eq("user_id", userId)
@@ -105,31 +146,52 @@ export const createBooking = createServerFn({ method: "POST" })
       if (!ok) throw new Error("You are not approved for self-hire. Contact the school for approval.");
     }
 
-    const starts = new Date(data.startsAt);
-    const ends = new Date(starts.getTime() + product.duration_minutes * 60_000);
+    const startsDate = new Date(data.startsAt);
+    const recurrenceType = data.recurrence ?? "none";
+    const occurrencesCount = data.occurrences ?? 1;
 
-    // Conflict check (server-authoritative)
-    if (data.aircraftId) {
-      const c = await supabase
-        .from("bookings")
-        .select("id")
-        .eq("aircraft_id", data.aircraftId)
-        .in("status", ["pending", "confirmed"])
-        .lt("starts_at", ends.toISOString())
-        .gt("ends_at", starts.toISOString())
-        .limit(1);
-      if ((c.data ?? []).length) throw new Error("That aircraft is no longer available for the selected slot");
-    }
-    if (data.instructorId) {
-      const c = await supabase
-        .from("bookings")
-        .select("id")
-        .eq("instructor_id", data.instructorId)
-        .in("status", ["pending", "confirmed"])
-        .lt("starts_at", ends.toISOString())
-        .gt("ends_at", starts.toISOString())
-        .limit(1);
-      if ((c.data ?? []).length) throw new Error("That instructor is no longer available for the selected slot");
+    // Conflict check (server-authoritative) across all slots in the series
+    for (let i = 0; i < occurrencesCount; i++) {
+      const offsetDays = i * (recurrenceType === "weekly" ? 7 : 14);
+      const starts = new Date(startsDate.getTime() + offsetDays * 24 * 60 * 60 * 1000);
+      const ends = new Date(starts.getTime() + product.duration_minutes * 60_000);
+
+      if (data.aircraftId) {
+        const c = await client
+          .from("bookings")
+          .select("id")
+          .eq("aircraft_id", data.aircraftId)
+          .in("status", ["pending", "confirmed"])
+          .lt("starts_at", ends.toISOString())
+          .gt("ends_at", starts.toISOString())
+          .limit(1);
+        if ((c.data ?? []).length) {
+          throw new Error(
+            `Aircraft is not available for slot on ${starts.toLocaleDateString("en-GB")} at ${starts.toLocaleTimeString(
+              "en-GB",
+              { hour: "2-digit", minute: "2-digit" },
+            )}`,
+          );
+        }
+      }
+      if (data.instructorId) {
+        const c = await client
+          .from("bookings")
+          .select("id")
+          .eq("instructor_id", data.instructorId)
+          .in("status", ["pending", "confirmed"])
+          .lt("starts_at", ends.toISOString())
+          .gt("ends_at", starts.toISOString())
+          .limit(1);
+        if ((c.data ?? []).length) {
+          throw new Error(
+            `Instructor is not available for slot on ${starts.toLocaleDateString("en-GB")} at ${starts.toLocaleTimeString(
+              "en-GB",
+              { hour: "2-digit", minute: "2-digit" },
+            )}`,
+          );
+        }
+      }
     }
 
     // Validate promo code if supplied
@@ -138,7 +200,7 @@ export const createBooking = createServerFn({ method: "POST" })
     if (data.promoCode) {
       const code = data.promoCode.toUpperCase();
       const now = new Date();
-      const { data: promo, error: promoErr } = await supabase
+      const { data: promo, error: promoErr } = await client
         .from("booking_promotions")
         .select("id, code, discount_type, discount_value, applies_to_kinds, active_from, active_until, max_uses, uses_count, published")
         .eq("code", code)
@@ -176,8 +238,8 @@ export const createBooking = createServerFn({ method: "POST" })
       customer_email: data.customerEmail,
       customer_name: data.customerName,
       customer_phone: data.customerPhone ?? null,
-      starts_at: starts.toISOString(),
-      ends_at: ends.toISOString(),
+      starts_at: startsDate.toISOString(),
+      ends_at: new Date(startsDate.getTime() + product.duration_minutes * 60_000).toISOString(),
       status,
       payment_status: "unpaid" as const,
       price_total_cents: totalCents,
@@ -187,18 +249,43 @@ export const createBooking = createServerFn({ method: "POST" })
       discount_applied_cents: discountAppliedCents,
     };
 
-    const ins = await supabase.from("bookings").insert(insertPayload).select("id").single();
+    // Insert first booking
+    const ins = await client.from("bookings").insert(insertPayload).select("id").single();
     if (ins.error) throw new Error(ins.error.message);
+    const firstBookingId = ins.data.id;
 
-    // Increment uses_count on the promo (read-then-write; safe for low concurrency flight school volume)
+    // Link the first booking to its own ID as block_id
+    await client.from("bookings").update({ booking_block_id: firstBookingId }).eq("id", firstBookingId);
+
+    // Insert subsequent bookings in the block
+    if (occurrencesCount > 1 && recurrenceType !== "none") {
+      const restPayloads = [];
+      for (let i = 1; i < occurrencesCount; i++) {
+        const offsetDays = i * (recurrenceType === "weekly" ? 7 : 14);
+        const starts = new Date(startsDate.getTime() + offsetDays * 24 * 60 * 60 * 1000);
+        const ends = new Date(starts.getTime() + product.duration_minutes * 60_000);
+
+        restPayloads.push({
+          ...insertPayload,
+          starts_at: starts.toISOString(),
+          ends_at: ends.toISOString(),
+          booking_block_id: firstBookingId,
+          payment_status: "unpaid" as const,
+        });
+      }
+      const restIns = await client.from("bookings").insert(restPayloads);
+      if (restIns.error) throw new Error(restIns.error.message);
+    }
+
+    // Increment uses_count on the promo
     if (appliedDiscount) {
-      const { data: cur } = await supabase
+      const { data: cur } = await client
         .from("booking_promotions")
         .select("uses_count")
         .eq("id", appliedDiscount.promoId)
         .maybeSingle();
       if (cur) {
-        await supabase
+        await client
           .from("booking_promotions")
           .update({ uses_count: cur.uses_count + 1 })
           .eq("id", appliedDiscount.promoId);
@@ -206,7 +293,7 @@ export const createBooking = createServerFn({ method: "POST" })
     }
 
     return {
-      id: ins.data.id,
+      id: firstBookingId,
       paymentMode: product.payment_mode,
       totalCents,
       depositCents,

@@ -17,12 +17,23 @@ export const getCheckoutSession = createServerFn({ method: "GET" })
     const { data: row, error } = await supabase
       .from("bookings")
       .select(
-        "id, price_total_cents, deposit_due_cents, amount_paid_cents, payment_status, status, customer_email, customer_name, starts_at, booking_products(name, payment_mode, requires_approval)",
+        "id, price_total_cents, deposit_due_cents, amount_paid_cents, payment_status, status, customer_email, customer_name, starts_at, booking_block_id, booking_products(name, payment_mode, requires_approval)",
       )
       .eq("id", data.bookingId)
       .maybeSingle();
     if (error) throw new Error(error.message);
     if (!row) throw new Error("Booking not found");
+
+    const blockId = (row as any).booking_block_id;
+    let blockCount = 0;
+    if (blockId) {
+      const { count } = await supabase
+        .from("bookings")
+        .select("id", { count: "exact", head: true })
+        .eq("booking_block_id", blockId);
+      blockCount = count ?? 0;
+    }
+
     const product = (row as { booking_products: { name: string; payment_mode: "full" | "deposit" | "invoice"; requires_approval: boolean } | null }).booking_products;
     const amountDueCents =
       product?.payment_mode === "deposit" ? row.deposit_due_cents ?? 0 : row.price_total_cents ?? 0;
@@ -40,6 +51,7 @@ export const getCheckoutSession = createServerFn({ method: "GET" })
       customerName: row.customer_name,
       startsAt: row.starts_at,
       provider: "mock" as const,
+      blockCount,
     };
   });
 

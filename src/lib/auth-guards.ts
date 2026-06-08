@@ -5,11 +5,11 @@ import type { Database } from "@/integrations/supabase/types";
 type AppRole = Database["public"]["Enums"]["app_role"];
 
 export async function requireAuth(href: string) {
-  const { data, error } = await supabase.auth.getUser();
-  if (error || !data.user) {
+  const { data, error } = await supabase.auth.getSession();
+  if (error || !data.session?.user) {
     throw redirect({ to: "/login", search: { redirect: href } });
   }
-  return data.user;
+  return data.session.user;
 }
 
 export async function requireRole(
