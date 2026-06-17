@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnauthorizedRouteImport } from './routes/unauthorized'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RequestAdminRouteImport } from './routes/request-admin'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -21,9 +22,17 @@ import { Route as CmsRouteImport } from './routes/cms'
 import { Route as BookingRouteImport } from './routes/booking'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as MarketingRouteRouteImport } from './routes/marketing/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MarketingIndexRouteImport } from './routes/marketing/index'
 import { Route as CmsIndexRouteImport } from './routes/cms/index'
 import { Route as BookingIndexRouteImport } from './routes/booking/index'
+import { Route as MarketingPricingRouteImport } from './routes/marketing/pricing'
+import { Route as MarketingForSchoolsRouteImport } from './routes/marketing/for-schools'
+import { Route as MarketingFeaturesRouteImport } from './routes/marketing/features'
+import { Route as MarketingContactRouteImport } from './routes/marketing/contact'
+import { Route as MarketingBlogRouteImport } from './routes/marketing/blog'
+import { Route as MarketingAboutRouteImport } from './routes/marketing/about'
 import { Route as FlyingSelfHireRouteImport } from './routes/flying/self-hire'
 import { Route as FlyingLearnToFlyRouteImport } from './routes/flying/learn-to-fly'
 import { Route as FlyingExperienceRouteImport } from './routes/flying/experience'
@@ -47,6 +56,8 @@ import { Route as CmsAnalyticsRouteImport } from './routes/cms/analytics'
 import { Route as CmsSplatRouteImport } from './routes/cms/$'
 import { Route as BookingDashboardRouteImport } from './routes/booking/dashboard'
 import { Route as BookingAdminRouteImport } from './routes/booking/admin'
+import { Route as MarketingLegalTermsRouteImport } from './routes/marketing/legal.terms'
+import { Route as MarketingLegalPrivacyRouteImport } from './routes/marketing/legal.privacy'
 import { Route as CmsStudentsStudentIdRouteImport } from './routes/cms/students.$studentId'
 import { Route as BookingConfirmIdRouteImport } from './routes/booking/confirm.$id'
 import { Route as BookingCheckoutIdRouteImport } from './routes/booking/checkout.$id'
@@ -60,6 +71,11 @@ const UnauthorizedRoute = UnauthorizedRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -112,10 +128,20 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MarketingRouteRoute = MarketingRouteRouteImport.update({
+  id: '/marketing',
+  path: '/marketing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const MarketingIndexRoute = MarketingIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MarketingRouteRoute,
 } as any)
 const CmsIndexRoute = CmsIndexRouteImport.update({
   id: '/',
@@ -126,6 +152,36 @@ const BookingIndexRoute = BookingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => BookingRoute,
+} as any)
+const MarketingPricingRoute = MarketingPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => MarketingRouteRoute,
+} as any)
+const MarketingForSchoolsRoute = MarketingForSchoolsRouteImport.update({
+  id: '/for-schools',
+  path: '/for-schools',
+  getParentRoute: () => MarketingRouteRoute,
+} as any)
+const MarketingFeaturesRoute = MarketingFeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => MarketingRouteRoute,
+} as any)
+const MarketingContactRoute = MarketingContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => MarketingRouteRoute,
+} as any)
+const MarketingBlogRoute = MarketingBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => MarketingRouteRoute,
+} as any)
+const MarketingAboutRoute = MarketingAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => MarketingRouteRoute,
 } as any)
 const FlyingSelfHireRoute = FlyingSelfHireRouteImport.update({
   id: '/flying/self-hire',
@@ -242,6 +298,16 @@ const BookingAdminRoute = BookingAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => BookingRoute,
 } as any)
+const MarketingLegalTermsRoute = MarketingLegalTermsRouteImport.update({
+  id: '/legal/terms',
+  path: '/legal/terms',
+  getParentRoute: () => MarketingRouteRoute,
+} as any)
+const MarketingLegalPrivacyRoute = MarketingLegalPrivacyRouteImport.update({
+  id: '/legal/privacy',
+  path: '/legal/privacy',
+  getParentRoute: () => MarketingRouteRoute,
+} as any)
 const CmsStudentsStudentIdRoute = CmsStudentsStudentIdRouteImport.update({
   id: '/$studentId',
   path: '/$studentId',
@@ -265,6 +331,7 @@ const BookingBookSlugRoute = BookingBookSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/marketing': typeof MarketingRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/booking': typeof BookingRouteWithChildren
@@ -275,6 +342,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/request-admin': typeof RequestAdminRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/booking/admin': typeof BookingAdminRoute
@@ -300,12 +368,21 @@ export interface FileRoutesByFullPath {
   '/flying/experience': typeof FlyingExperienceRoute
   '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
   '/flying/self-hire': typeof FlyingSelfHireRoute
+  '/marketing/about': typeof MarketingAboutRoute
+  '/marketing/blog': typeof MarketingBlogRoute
+  '/marketing/contact': typeof MarketingContactRoute
+  '/marketing/features': typeof MarketingFeaturesRoute
+  '/marketing/for-schools': typeof MarketingForSchoolsRoute
+  '/marketing/pricing': typeof MarketingPricingRoute
   '/booking/': typeof BookingIndexRoute
   '/cms/': typeof CmsIndexRoute
+  '/marketing/': typeof MarketingIndexRoute
   '/booking/book/$slug': typeof BookingBookSlugRoute
   '/booking/checkout/$id': typeof BookingCheckoutIdRoute
   '/booking/confirm/$id': typeof BookingConfirmIdRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
+  '/marketing/legal/privacy': typeof MarketingLegalPrivacyRoute
+  '/marketing/legal/terms': typeof MarketingLegalTermsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -317,6 +394,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/request-admin': typeof RequestAdminRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/booking/admin': typeof BookingAdminRoute
@@ -342,16 +420,26 @@ export interface FileRoutesByTo {
   '/flying/experience': typeof FlyingExperienceRoute
   '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
   '/flying/self-hire': typeof FlyingSelfHireRoute
+  '/marketing/about': typeof MarketingAboutRoute
+  '/marketing/blog': typeof MarketingBlogRoute
+  '/marketing/contact': typeof MarketingContactRoute
+  '/marketing/features': typeof MarketingFeaturesRoute
+  '/marketing/for-schools': typeof MarketingForSchoolsRoute
+  '/marketing/pricing': typeof MarketingPricingRoute
   '/booking': typeof BookingIndexRoute
   '/cms': typeof CmsIndexRoute
+  '/marketing': typeof MarketingIndexRoute
   '/booking/book/$slug': typeof BookingBookSlugRoute
   '/booking/checkout/$id': typeof BookingCheckoutIdRoute
   '/booking/confirm/$id': typeof BookingConfirmIdRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
+  '/marketing/legal/privacy': typeof MarketingLegalPrivacyRoute
+  '/marketing/legal/terms': typeof MarketingLegalTermsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/marketing': typeof MarketingRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/booking': typeof BookingRouteWithChildren
@@ -362,6 +450,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/request-admin': typeof RequestAdminRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/unauthorized': typeof UnauthorizedRoute
   '/booking/admin': typeof BookingAdminRoute
@@ -387,17 +476,27 @@ export interface FileRoutesById {
   '/flying/experience': typeof FlyingExperienceRoute
   '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
   '/flying/self-hire': typeof FlyingSelfHireRoute
+  '/marketing/about': typeof MarketingAboutRoute
+  '/marketing/blog': typeof MarketingBlogRoute
+  '/marketing/contact': typeof MarketingContactRoute
+  '/marketing/features': typeof MarketingFeaturesRoute
+  '/marketing/for-schools': typeof MarketingForSchoolsRoute
+  '/marketing/pricing': typeof MarketingPricingRoute
   '/booking/': typeof BookingIndexRoute
   '/cms/': typeof CmsIndexRoute
+  '/marketing/': typeof MarketingIndexRoute
   '/booking/book/$slug': typeof BookingBookSlugRoute
   '/booking/checkout/$id': typeof BookingCheckoutIdRoute
   '/booking/confirm/$id': typeof BookingConfirmIdRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
+  '/marketing/legal/privacy': typeof MarketingLegalPrivacyRoute
+  '/marketing/legal/terms': typeof MarketingLegalTermsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/marketing'
     | '/about'
     | '/account'
     | '/booking'
@@ -408,6 +507,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/request-admin'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/terms'
     | '/unauthorized'
     | '/booking/admin'
@@ -433,12 +533,21 @@ export interface FileRouteTypes {
     | '/flying/experience'
     | '/flying/learn-to-fly'
     | '/flying/self-hire'
+    | '/marketing/about'
+    | '/marketing/blog'
+    | '/marketing/contact'
+    | '/marketing/features'
+    | '/marketing/for-schools'
+    | '/marketing/pricing'
     | '/booking/'
     | '/cms/'
+    | '/marketing/'
     | '/booking/book/$slug'
     | '/booking/checkout/$id'
     | '/booking/confirm/$id'
     | '/cms/students/$studentId'
+    | '/marketing/legal/privacy'
+    | '/marketing/legal/terms'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -450,6 +559,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/request-admin'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/terms'
     | '/unauthorized'
     | '/booking/admin'
@@ -475,15 +585,25 @@ export interface FileRouteTypes {
     | '/flying/experience'
     | '/flying/learn-to-fly'
     | '/flying/self-hire'
+    | '/marketing/about'
+    | '/marketing/blog'
+    | '/marketing/contact'
+    | '/marketing/features'
+    | '/marketing/for-schools'
+    | '/marketing/pricing'
     | '/booking'
     | '/cms'
+    | '/marketing'
     | '/booking/book/$slug'
     | '/booking/checkout/$id'
     | '/booking/confirm/$id'
     | '/cms/students/$studentId'
+    | '/marketing/legal/privacy'
+    | '/marketing/legal/terms'
   id:
     | '__root__'
     | '/'
+    | '/marketing'
     | '/about'
     | '/account'
     | '/booking'
@@ -494,6 +614,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/request-admin'
     | '/reset-password'
+    | '/sitemap.xml'
     | '/terms'
     | '/unauthorized'
     | '/booking/admin'
@@ -519,16 +640,26 @@ export interface FileRouteTypes {
     | '/flying/experience'
     | '/flying/learn-to-fly'
     | '/flying/self-hire'
+    | '/marketing/about'
+    | '/marketing/blog'
+    | '/marketing/contact'
+    | '/marketing/features'
+    | '/marketing/for-schools'
+    | '/marketing/pricing'
     | '/booking/'
     | '/cms/'
+    | '/marketing/'
     | '/booking/book/$slug'
     | '/booking/checkout/$id'
     | '/booking/confirm/$id'
     | '/cms/students/$studentId'
+    | '/marketing/legal/privacy'
+    | '/marketing/legal/terms'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MarketingRouteRoute: typeof MarketingRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
   BookingRoute: typeof BookingRouteWithChildren
@@ -539,6 +670,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   RequestAdminRoute: typeof RequestAdminRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
   FlyingExperienceRoute: typeof FlyingExperienceRoute
@@ -560,6 +692,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -632,12 +771,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/marketing': {
+      id: '/marketing'
+      path: '/marketing'
+      fullPath: '/marketing'
+      preLoaderRoute: typeof MarketingRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/marketing/': {
+      id: '/marketing/'
+      path: '/'
+      fullPath: '/marketing/'
+      preLoaderRoute: typeof MarketingIndexRouteImport
+      parentRoute: typeof MarketingRouteRoute
     }
     '/cms/': {
       id: '/cms/'
@@ -652,6 +805,48 @@ declare module '@tanstack/react-router' {
       fullPath: '/booking/'
       preLoaderRoute: typeof BookingIndexRouteImport
       parentRoute: typeof BookingRoute
+    }
+    '/marketing/pricing': {
+      id: '/marketing/pricing'
+      path: '/pricing'
+      fullPath: '/marketing/pricing'
+      preLoaderRoute: typeof MarketingPricingRouteImport
+      parentRoute: typeof MarketingRouteRoute
+    }
+    '/marketing/for-schools': {
+      id: '/marketing/for-schools'
+      path: '/for-schools'
+      fullPath: '/marketing/for-schools'
+      preLoaderRoute: typeof MarketingForSchoolsRouteImport
+      parentRoute: typeof MarketingRouteRoute
+    }
+    '/marketing/features': {
+      id: '/marketing/features'
+      path: '/features'
+      fullPath: '/marketing/features'
+      preLoaderRoute: typeof MarketingFeaturesRouteImport
+      parentRoute: typeof MarketingRouteRoute
+    }
+    '/marketing/contact': {
+      id: '/marketing/contact'
+      path: '/contact'
+      fullPath: '/marketing/contact'
+      preLoaderRoute: typeof MarketingContactRouteImport
+      parentRoute: typeof MarketingRouteRoute
+    }
+    '/marketing/blog': {
+      id: '/marketing/blog'
+      path: '/blog'
+      fullPath: '/marketing/blog'
+      preLoaderRoute: typeof MarketingBlogRouteImport
+      parentRoute: typeof MarketingRouteRoute
+    }
+    '/marketing/about': {
+      id: '/marketing/about'
+      path: '/about'
+      fullPath: '/marketing/about'
+      preLoaderRoute: typeof MarketingAboutRouteImport
+      parentRoute: typeof MarketingRouteRoute
     }
     '/flying/self-hire': {
       id: '/flying/self-hire'
@@ -814,6 +1009,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookingAdminRouteImport
       parentRoute: typeof BookingRoute
     }
+    '/marketing/legal/terms': {
+      id: '/marketing/legal/terms'
+      path: '/legal/terms'
+      fullPath: '/marketing/legal/terms'
+      preLoaderRoute: typeof MarketingLegalTermsRouteImport
+      parentRoute: typeof MarketingRouteRoute
+    }
+    '/marketing/legal/privacy': {
+      id: '/marketing/legal/privacy'
+      path: '/legal/privacy'
+      fullPath: '/marketing/legal/privacy'
+      preLoaderRoute: typeof MarketingLegalPrivacyRouteImport
+      parentRoute: typeof MarketingRouteRoute
+    }
     '/cms/students/$studentId': {
       id: '/cms/students/$studentId'
       path: '/$studentId'
@@ -844,6 +1053,34 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface MarketingRouteRouteChildren {
+  MarketingAboutRoute: typeof MarketingAboutRoute
+  MarketingBlogRoute: typeof MarketingBlogRoute
+  MarketingContactRoute: typeof MarketingContactRoute
+  MarketingFeaturesRoute: typeof MarketingFeaturesRoute
+  MarketingForSchoolsRoute: typeof MarketingForSchoolsRoute
+  MarketingPricingRoute: typeof MarketingPricingRoute
+  MarketingIndexRoute: typeof MarketingIndexRoute
+  MarketingLegalPrivacyRoute: typeof MarketingLegalPrivacyRoute
+  MarketingLegalTermsRoute: typeof MarketingLegalTermsRoute
+}
+
+const MarketingRouteRouteChildren: MarketingRouteRouteChildren = {
+  MarketingAboutRoute: MarketingAboutRoute,
+  MarketingBlogRoute: MarketingBlogRoute,
+  MarketingContactRoute: MarketingContactRoute,
+  MarketingFeaturesRoute: MarketingFeaturesRoute,
+  MarketingForSchoolsRoute: MarketingForSchoolsRoute,
+  MarketingPricingRoute: MarketingPricingRoute,
+  MarketingIndexRoute: MarketingIndexRoute,
+  MarketingLegalPrivacyRoute: MarketingLegalPrivacyRoute,
+  MarketingLegalTermsRoute: MarketingLegalTermsRoute,
+}
+
+const MarketingRouteRouteWithChildren = MarketingRouteRoute._addFileChildren(
+  MarketingRouteRouteChildren,
+)
 
 interface BookingRouteChildren {
   BookingAdminRoute: typeof BookingAdminRoute
@@ -926,6 +1163,7 @@ const CmsRouteWithChildren = CmsRoute._addFileChildren(CmsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MarketingRouteRoute: MarketingRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,
   BookingRoute: BookingRouteWithChildren,
@@ -936,6 +1174,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   RequestAdminRoute: RequestAdminRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   UnauthorizedRoute: UnauthorizedRoute,
   FlyingExperienceRoute: FlyingExperienceRoute,
@@ -945,3 +1184,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

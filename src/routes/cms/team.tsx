@@ -4,6 +4,7 @@ import { Plus, Trash2, Save, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 import type { Database } from "@/integrations/supabase/types";
 import { requireSuperAdmin } from "@/lib/auth-guards";
 
@@ -68,6 +69,7 @@ function TeamEditor() {
     mutationFn: async () => {
       const { error } = await supabase.from("instructors").insert({
         name: "New Instructor", role: "Flight Instructor", display_order: team.length,
+        organization_id: DEFAULT_ORG_ID,
       });
       if (error) throw error;
     },

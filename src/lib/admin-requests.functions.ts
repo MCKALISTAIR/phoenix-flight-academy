@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 
 const emailSchema = z.string().trim().email().max(255);
 
@@ -43,6 +44,7 @@ export const submitAdminRequest = createServerFn({ method: "POST" })
       email,
       message: data.message ?? null,
       requested_user_id: requestedUserId,
+      organization_id: DEFAULT_ORG_ID,
     });
     if (error) throw new Error(error.message);
 

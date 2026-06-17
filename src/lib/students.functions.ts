@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 
 const STAFF_ROLES = ["super_admin", "admin", "instructor"] as const;
 
@@ -106,6 +107,7 @@ export const createStudent = createServerFn({ method: "POST" })
         license_sought: data.license_sought,
         start_date: data.start_date || null,
         notes: data.notes || null,
+        organization_id: DEFAULT_ORG_ID,
       })
       .select()
       .single();

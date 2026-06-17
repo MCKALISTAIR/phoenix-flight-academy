@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 
 export const getCalendarSettings = createServerFn({ method: "GET" }).handler(async () => {
   const { data, error } = await supabase
@@ -61,7 +62,7 @@ export const addClosedDate = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("booking_closed_dates")
-      .insert({ ...data, created_by: context.userId });
+      .insert({ ...data, created_by: context.userId, organization_id: DEFAULT_ORG_ID });
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -104,7 +105,7 @@ export const addResourceBlock = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase
       .from("booking_resource_blocks")
-      .insert({ ...data, created_by: context.userId });
+      .insert({ ...data, created_by: context.userId, organization_id: DEFAULT_ORG_ID });
     if (error) throw new Error(error.message);
     return { ok: true };
   });

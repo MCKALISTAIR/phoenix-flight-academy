@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 
 export const getMySelfHireStatus = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -55,6 +56,7 @@ export const approveSelfHire = createServerFn({ method: "POST" })
         expires_at: data.expires_at ?? null,
         revoked_at: null,
         notes: data.notes ?? null,
+        organization_id: DEFAULT_ORG_ID,
       },
       { onConflict: "user_id" },
     );
