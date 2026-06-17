@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -75,7 +76,7 @@ export const upsertPromotion = createServerFn({ method: "POST" })
     } else {
       const { error } = await context.supabase
         .from("booking_promotions")
-        .insert(payload);
+        .insert({ ...payload, organization_id: DEFAULT_ORG_ID });
       if (error) throw new Error(error.message);
       return { ok: true };
     }

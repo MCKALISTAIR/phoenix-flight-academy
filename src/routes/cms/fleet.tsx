@@ -4,6 +4,7 @@ import { Plane, AlertTriangle, CheckCircle, Wrench, Plus, Save, Trash2, Gauge, C
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 import type { Database } from "@/integrations/supabase/types";
 import { requireSuperAdmin } from "@/lib/auth-guards";
 
@@ -84,6 +85,7 @@ function CmsFleetManager() {
         hours: 0,
         avionics: [],
         display_order: fleet.length,
+        organization_id: DEFAULT_ORG_ID,
       });
       if (error) throw error;
     },

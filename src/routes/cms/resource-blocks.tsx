@@ -2,6 +2,7 @@ import { createFileRoute, redirect, isRedirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Ban, Loader2, Trash2, Plus, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 import { requireAdmin } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/cms/resource-blocks")({
@@ -82,6 +83,7 @@ function ResourceBlocksPage() {
       ends_at: new Date(endsAt).toISOString(),
       reason: reason || null,
       created_by: userData.user?.id ?? null,
+      organization_id: DEFAULT_ORG_ID,
     });
     setSaving(false);
     if (error) {

@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 
 export const listPublishedBookingProducts = createServerFn({ method: "GET" }).handler(async () => {
   const { data, error } = await supabase
@@ -71,7 +72,7 @@ export const upsertBookingProduct = createServerFn({ method: "POST" })
     }
     const { data: inserted, error } = await supabase
       .from("booking_products")
-      .insert(rest)
+      .insert({ ...rest, organization_id: DEFAULT_ORG_ID })
       .select("id")
       .single();
     if (error) throw new Error(error.message);

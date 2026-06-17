@@ -5,6 +5,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { getRequest } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 
 function computePrice(
   product: {
@@ -247,15 +248,13 @@ export const createBooking = createServerFn({ method: "POST" })
       notes: data.notes ?? null,
       promo_code: validatedPromoCode,
       discount_applied_cents: discountAppliedCents,
+      organization_id: DEFAULT_ORG_ID,
     };
 
     // Insert first booking
     const ins = await client.from("bookings").insert(insertPayload).select("id").single();
     if (ins.error) throw new Error(ins.error.message);
     const firstBookingId = ins.data.id;
-
-    // Link the first booking to its own ID as block_id
-    await client.from("bookings").update({ booking_block_id: firstBookingId }).eq("id", firstBookingId);
 
     // Insert subsequent bookings in the block
     if (occurrencesCount > 1 && recurrenceType !== "none") {
@@ -269,7 +268,6 @@ export const createBooking = createServerFn({ method: "POST" })
           ...insertPayload,
           starts_at: starts.toISOString(),
           ends_at: ends.toISOString(),
-          booking_block_id: firstBookingId,
           payment_status: "unpaid" as const,
         });
       }

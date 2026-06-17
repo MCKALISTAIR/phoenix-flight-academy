@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 
 const uuid = z.string().uuid();
 
@@ -76,6 +77,7 @@ export const submitPilotVerification = createServerFn({ method: "POST" })
         document_path: data.document_path ?? null,
         medical_document_path: data.medical_document_path ?? null,
         status: "pending",
+        organization_id: DEFAULT_ORG_ID,
       })
       .select()
       .single();

@@ -20,6 +20,7 @@ export type Database = {
           email: string
           id: string
           message: string | null
+          organization_id: string
           requested_user_id: string | null
           reviewed_at: string | null
           reviewed_by: string | null
@@ -31,6 +32,7 @@ export type Database = {
           email: string
           id?: string
           message?: string | null
+          organization_id: string
           requested_user_id?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
@@ -42,13 +44,22 @@ export type Database = {
           email?: string
           id?: string
           message?: string | null
+          organization_id?: string
           requested_user_id?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: Database["public"]["Enums"]["admin_request_status"]
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "admin_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       aircraft: {
         Row: {
@@ -66,6 +77,7 @@ export type Database = {
           model: string
           next_50hr: number | null
           next_annual: string | null
+          organization_id: string
           published: boolean
           rate_wet: number | null
           registration: string
@@ -88,6 +100,7 @@ export type Database = {
           model: string
           next_50hr?: number | null
           next_annual?: string | null
+          organization_id: string
           published?: boolean
           rate_wet?: number | null
           registration: string
@@ -110,6 +123,7 @@ export type Database = {
           model?: string
           next_50hr?: number | null
           next_annual?: string | null
+          organization_id?: string
           published?: boolean
           rate_wet?: number | null
           registration?: string
@@ -117,7 +131,15 @@ export type Database = {
           tagline?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "aircraft_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       booking_calendar_settings: {
         Row: {
@@ -126,6 +148,7 @@ export type Database = {
           created_at: string
           id: string
           open_time: string
+          organization_id: string
           slot_minutes: number
           timezone: string
           updated_at: string
@@ -138,6 +161,7 @@ export type Database = {
           created_at?: string
           id?: string
           open_time?: string
+          organization_id: string
           slot_minutes?: number
           timezone?: string
           updated_at?: string
@@ -150,13 +174,22 @@ export type Database = {
           created_at?: string
           id?: string
           open_time?: string
+          organization_id?: string
           slot_minutes?: number
           timezone?: string
           updated_at?: string
           updated_by?: string | null
           weekday_mask?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "booking_calendar_settings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       booking_closed_dates: {
         Row: {
@@ -164,6 +197,7 @@ export type Database = {
           created_by: string | null
           ends_on: string
           id: string
+          organization_id: string
           reason: string | null
           starts_on: string
         }
@@ -172,6 +206,7 @@ export type Database = {
           created_by?: string | null
           ends_on: string
           id?: string
+          organization_id: string
           reason?: string | null
           starts_on: string
         }
@@ -180,10 +215,19 @@ export type Database = {
           created_by?: string | null
           ends_on?: string
           id?: string
+          organization_id?: string
           reason?: string | null
           starts_on?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "booking_closed_dates_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       booking_products: {
         Row: {
@@ -199,6 +243,7 @@ export type Database = {
           max_advance_days: number
           min_notice_hours: number
           name: string
+          organization_id: string
           package_price_cents: number | null
           payment_mode: Database["public"]["Enums"]["booking_payment_mode"]
           published: boolean
@@ -220,6 +265,7 @@ export type Database = {
           max_advance_days?: number
           min_notice_hours?: number
           name: string
+          organization_id: string
           package_price_cents?: number | null
           payment_mode?: Database["public"]["Enums"]["booking_payment_mode"]
           published?: boolean
@@ -241,6 +287,7 @@ export type Database = {
           max_advance_days?: number
           min_notice_hours?: number
           name?: string
+          organization_id?: string
           package_price_cents?: number | null
           payment_mode?: Database["public"]["Enums"]["booking_payment_mode"]
           published?: boolean
@@ -249,7 +296,15 @@ export type Database = {
           tagline?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "booking_products_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       booking_promotions: {
         Row: {
@@ -263,6 +318,7 @@ export type Database = {
           id: string
           max_uses: number | null
           name: string
+          organization_id: string
           published: boolean
           updated_at: string
           uses_count: number
@@ -278,6 +334,7 @@ export type Database = {
           id?: string
           max_uses?: number | null
           name: string
+          organization_id: string
           published?: boolean
           updated_at?: string
           uses_count?: number
@@ -293,11 +350,20 @@ export type Database = {
           id?: string
           max_uses?: number | null
           name?: string
+          organization_id?: string
           published?: boolean
           updated_at?: string
           uses_count?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "booking_promotions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       booking_resource_blocks: {
         Row: {
@@ -307,6 +373,7 @@ export type Database = {
           ends_at: string
           id: string
           instructor_id: string | null
+          organization_id: string
           reason: string | null
           resource_kind: Database["public"]["Enums"]["booking_resource_kind"]
           starts_at: string
@@ -318,6 +385,7 @@ export type Database = {
           ends_at: string
           id?: string
           instructor_id?: string | null
+          organization_id: string
           reason?: string | null
           resource_kind: Database["public"]["Enums"]["booking_resource_kind"]
           starts_at: string
@@ -329,6 +397,7 @@ export type Database = {
           ends_at?: string
           id?: string
           instructor_id?: string | null
+          organization_id?: string
           reason?: string | null
           resource_kind?: Database["public"]["Enums"]["booking_resource_kind"]
           starts_at?: string
@@ -346,6 +415,13 @@ export type Database = {
             columns: ["instructor_id"]
             isOneToOne: false
             referencedRelation: "instructors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_resource_blocks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -368,6 +444,7 @@ export type Database = {
           id: string
           instructor_id: string | null
           notes: string | null
+          organization_id: string
           payment_status: Database["public"]["Enums"]["booking_payment_status"]
           price_total_cents: number
           product_id: string
@@ -396,6 +473,7 @@ export type Database = {
           id?: string
           instructor_id?: string | null
           notes?: string | null
+          organization_id: string
           payment_status?: Database["public"]["Enums"]["booking_payment_status"]
           price_total_cents?: number
           product_id: string
@@ -424,6 +502,7 @@ export type Database = {
           id?: string
           instructor_id?: string | null
           notes?: string | null
+          organization_id?: string
           payment_status?: Database["public"]["Enums"]["booking_payment_status"]
           price_total_cents?: number
           product_id?: string
@@ -451,6 +530,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "bookings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "bookings_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
@@ -459,11 +545,42 @@ export type Database = {
           },
         ]
       }
+      contact_submissions: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          source: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          source?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          source?: string | null
+        }
+        Relationships: []
+      }
       customer_profiles: {
         Row: {
           created_at: string
           id: string
           notes: string | null
+          organization_id: string
           qualified_at: string | null
           tier: Database["public"]["Enums"]["customer_tier"] | null
           updated_at: string
@@ -473,6 +590,7 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
+          organization_id: string
           qualified_at?: string | null
           tier?: Database["public"]["Enums"]["customer_tier"] | null
           updated_at?: string
@@ -482,12 +600,21 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
+          organization_id?: string
           qualified_at?: string | null
           tier?: Database["public"]["Enums"]["customer_tier"] | null
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "customer_profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       flight_log_entries: {
         Row: {
@@ -512,6 +639,7 @@ export type Database = {
           night_minutes: number
           off_blocks_at: string
           on_blocks_at: string
+          organization_id: string
           pic_name: string
           remarks: string | null
           signed_at: string | null
@@ -544,6 +672,7 @@ export type Database = {
           night_minutes?: number
           off_blocks_at: string
           on_blocks_at: string
+          organization_id: string
           pic_name: string
           remarks?: string | null
           signed_at?: string | null
@@ -576,6 +705,7 @@ export type Database = {
           night_minutes?: number
           off_blocks_at?: string
           on_blocks_at?: string
+          organization_id?: string
           pic_name?: string
           remarks?: string | null
           signed_at?: string | null
@@ -595,6 +725,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "flight_log_entries_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "flight_log_entries_student_id_fkey"
             columns: ["student_id"]
             isOneToOne: false
@@ -611,6 +748,7 @@ export type Database = {
           grade: Database["public"]["Enums"]["exercise_grade"]
           id: string
           notes: string | null
+          organization_id: string
         }
         Insert: {
           created_at?: string
@@ -619,6 +757,7 @@ export type Database = {
           grade?: Database["public"]["Enums"]["exercise_grade"]
           id?: string
           notes?: string | null
+          organization_id: string
         }
         Update: {
           created_at?: string
@@ -627,6 +766,7 @@ export type Database = {
           grade?: Database["public"]["Enums"]["exercise_grade"]
           id?: string
           notes?: string | null
+          organization_id?: string
         }
         Relationships: [
           {
@@ -643,6 +783,13 @@ export type Database = {
             referencedRelation: "flight_log_entries"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "flight_log_exercises_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
         ]
       }
       flying_status: {
@@ -651,6 +798,7 @@ export type Database = {
           id: string
           is_open: boolean
           message: string | null
+          organization_id: string
           updated_at: string
           updated_by: string | null
         }
@@ -659,6 +807,7 @@ export type Database = {
           id?: string
           is_open?: boolean
           message?: string | null
+          organization_id: string
           updated_at?: string
           updated_by?: string | null
         }
@@ -667,10 +816,19 @@ export type Database = {
           id?: string
           is_open?: boolean
           message?: string | null
+          organization_id?: string
           updated_at?: string
           updated_by?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "flying_status_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       instructors: {
         Row: {
@@ -681,6 +839,7 @@ export type Database = {
           id: string
           image_url: string | null
           name: string
+          organization_id: string
           published: boolean
           role: string | null
           updated_at: string
@@ -693,6 +852,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           name: string
+          organization_id: string
           published?: boolean
           role?: string | null
           updated_at?: string
@@ -705,8 +865,147 @@ export type Database = {
           id?: string
           image_url?: string | null
           name?: string
+          organization_id?: string
           published?: boolean
           role?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "instructors_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_invites: {
+        Row: {
+          accepted_at: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string | null
+          organization_id: string
+          role: Database["public"]["Enums"]["org_role"]
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          organization_id: string
+          role?: Database["public"]["Enums"]["org_role"]
+          token?: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          organization_id?: string
+          role?: Database["public"]["Enums"]["org_role"]
+          token?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_invites_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_members: {
+        Row: {
+          created_at: string
+          id: string
+          invited_by: string | null
+          joined_at: string
+          organization_id: string
+          role: Database["public"]["Enums"]["org_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          invited_by?: string | null
+          joined_at?: string
+          organization_id: string
+          role?: Database["public"]["Enums"]["org_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          invited_by?: string | null
+          joined_at?: string
+          organization_id?: string
+          role?: Database["public"]["Enums"]["org_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_members_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          branding: Json
+          created_at: string
+          currency: string
+          icao_code: string | null
+          id: string
+          name: string
+          slug: string
+          subscription_tier: Database["public"]["Enums"]["org_subscription_tier"]
+          timezone: string
+          trial_ends_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          branding?: Json
+          created_at?: string
+          currency?: string
+          icao_code?: string | null
+          id?: string
+          name: string
+          slug: string
+          subscription_tier?: Database["public"]["Enums"]["org_subscription_tier"]
+          timezone?: string
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          branding?: Json
+          created_at?: string
+          currency?: string
+          icao_code?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          subscription_tier?: Database["public"]["Enums"]["org_subscription_tier"]
+          timezone?: string
+          trial_ends_at?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -721,6 +1020,7 @@ export type Database = {
           licence_number: string
           medical_document_path: string | null
           medical_expiry: string | null
+          organization_id: string
           ratings: string | null
           review_notes: string | null
           reviewed_at: string | null
@@ -739,6 +1039,7 @@ export type Database = {
           licence_number: string
           medical_document_path?: string | null
           medical_expiry?: string | null
+          organization_id: string
           ratings?: string | null
           review_notes?: string | null
           reviewed_at?: string | null
@@ -757,6 +1058,7 @@ export type Database = {
           licence_number?: string
           medical_document_path?: string | null
           medical_expiry?: string | null
+          organization_id?: string
           ratings?: string | null
           review_notes?: string | null
           reviewed_at?: string | null
@@ -766,7 +1068,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pilot_verification_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -812,6 +1122,7 @@ export type Database = {
           expires_at: string | null
           id: string
           notes: string | null
+          organization_id: string
           revoked_at: string | null
           updated_at: string
           user_id: string
@@ -823,6 +1134,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           notes?: string | null
+          organization_id: string
           revoked_at?: string | null
           updated_at?: string
           user_id: string
@@ -834,11 +1146,20 @@ export type Database = {
           expires_at?: string | null
           id?: string
           notes?: string | null
+          organization_id?: string
           revoked_at?: string | null
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "self_hire_approvals_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       site_content: {
         Row: {
@@ -848,6 +1169,7 @@ export type Database = {
           draft_updated_at: string | null
           draft_updated_by: string | null
           id: string
+          organization_id: string
           section_key: string
           updated_at: string
           updated_by: string | null
@@ -859,6 +1181,7 @@ export type Database = {
           draft_updated_at?: string | null
           draft_updated_by?: string | null
           id?: string
+          organization_id: string
           section_key: string
           updated_at?: string
           updated_by?: string | null
@@ -870,17 +1193,27 @@ export type Database = {
           draft_updated_at?: string | null
           draft_updated_by?: string | null
           id?: string
+          organization_id?: string
           section_key?: string
           updated_at?: string
           updated_by?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "site_content_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       site_content_revisions: {
         Row: {
           created_at: string
           data: Json
           id: string
+          organization_id: string
           section_key: string
           updated_by: string | null
         }
@@ -888,6 +1221,7 @@ export type Database = {
           created_at?: string
           data: Json
           id?: string
+          organization_id: string
           section_key: string
           updated_by?: string | null
         }
@@ -895,10 +1229,19 @@ export type Database = {
           created_at?: string
           data?: Json
           id?: string
+          organization_id?: string
           section_key?: string
           updated_by?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "site_content_revisions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       student_documents: {
         Row: {
@@ -910,6 +1253,7 @@ export type Database = {
           issued_on: string | null
           issuing_authority: string | null
           notes: string | null
+          organization_id: string
           student_id: string
           updated_at: string
         }
@@ -922,6 +1266,7 @@ export type Database = {
           issued_on?: string | null
           issuing_authority?: string | null
           notes?: string | null
+          organization_id: string
           student_id: string
           updated_at?: string
         }
@@ -934,10 +1279,18 @@ export type Database = {
           issued_on?: string | null
           issuing_authority?: string | null
           notes?: string | null
+          organization_id?: string
           student_id?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "student_documents_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "student_documents_student_id_fkey"
             columns: ["student_id"]
@@ -953,6 +1306,7 @@ export type Database = {
           details: string | null
           endorsement_type: Database["public"]["Enums"]["endorsement_type"]
           id: string
+          organization_id: string
           signed_at: string
           signed_by_user_id: string
           student_id: string
@@ -964,6 +1318,7 @@ export type Database = {
           details?: string | null
           endorsement_type: Database["public"]["Enums"]["endorsement_type"]
           id?: string
+          organization_id: string
           signed_at?: string
           signed_by_user_id: string
           student_id: string
@@ -975,6 +1330,7 @@ export type Database = {
           details?: string | null
           endorsement_type?: Database["public"]["Enums"]["endorsement_type"]
           id?: string
+          organization_id?: string
           signed_at?: string
           signed_by_user_id?: string
           student_id?: string
@@ -982,6 +1338,13 @@ export type Database = {
           valid_until?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "student_endorsements_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "student_endorsements_student_id_fkey"
             columns: ["student_id"]
@@ -997,6 +1360,7 @@ export type Database = {
           id: string
           license_sought: Database["public"]["Enums"]["license_sought"]
           notes: string | null
+          organization_id: string
           primary_instructor_id: string | null
           start_date: string | null
           status: Database["public"]["Enums"]["student_status"]
@@ -1008,6 +1372,7 @@ export type Database = {
           id?: string
           license_sought?: Database["public"]["Enums"]["license_sought"]
           notes?: string | null
+          organization_id: string
           primary_instructor_id?: string | null
           start_date?: string | null
           status?: Database["public"]["Enums"]["student_status"]
@@ -1019,13 +1384,22 @@ export type Database = {
           id?: string
           license_sought?: Database["public"]["Enums"]["license_sought"]
           notes?: string | null
+          organization_id?: string
           primary_instructor_id?: string | null
           start_date?: string | null
           status?: Database["public"]["Enums"]["student_status"]
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "students_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       syllabus_exercises: {
         Row: {
@@ -1035,6 +1409,7 @@ export type Database = {
           display_order: number
           exercise_number: number
           id: string
+          organization_id: string
           title: string
         }
         Insert: {
@@ -1044,6 +1419,7 @@ export type Database = {
           display_order?: number
           exercise_number: number
           id?: string
+          organization_id: string
           title: string
         }
         Update: {
@@ -1053,15 +1429,25 @@ export type Database = {
           display_order?: number
           exercise_number?: number
           id?: string
+          organization_id?: string
           title?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "syllabus_exercises_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       theory_exam_results: {
         Row: {
           created_at: string
           id: string
           notes: string | null
+          organization_id: string
           recorded_by_user_id: string | null
           result: Database["public"]["Enums"]["exam_result"]
           score: number | null
@@ -1074,6 +1460,7 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
+          organization_id: string
           recorded_by_user_id?: string | null
           result?: Database["public"]["Enums"]["exam_result"]
           score?: number | null
@@ -1086,6 +1473,7 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
+          organization_id?: string
           recorded_by_user_id?: string | null
           result?: Database["public"]["Enums"]["exam_result"]
           score?: number | null
@@ -1095,6 +1483,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "theory_exam_results_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "theory_exam_results_student_id_fkey"
             columns: ["student_id"]
@@ -1130,6 +1525,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_org_role: {
+        Args: {
+          _org_id: string
+          _role: Database["public"]["Enums"]["org_role"]
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1137,12 +1539,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_org_admin: { Args: { _org_id: string }; Returns: boolean }
+      is_org_member: { Args: { _org_id: string }; Returns: boolean }
       set_self_as_student: {
         Args: never
         Returns: {
           created_at: string
           id: string
           notes: string | null
+          organization_id: string
           qualified_at: string | null
           tier: Database["public"]["Enums"]["customer_tier"] | null
           updated_at: string
@@ -1155,6 +1560,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      user_orgs: { Args: { _user_id: string }; Returns: string[] }
     }
     Enums: {
       admin_request_status: "pending" | "approved" | "rejected"
@@ -1214,6 +1620,8 @@ export type Database = {
         | "instructor"
         | "examiner"
       license_sought: "PPL" | "LAPL" | "NPPL" | "CPL" | "IR" | "Other"
+      org_role: "owner" | "admin" | "staff"
+      org_subscription_tier: "trial" | "starter" | "pro" | "enterprise"
       pilot_verification_status:
         | "pending"
         | "approved"
@@ -1411,6 +1819,8 @@ export const Constants = {
         "examiner",
       ],
       license_sought: ["PPL", "LAPL", "NPPL", "CPL", "IR", "Other"],
+      org_role: ["owner", "admin", "staff"],
+      org_subscription_tier: ["trial", "starter", "pro", "enterprise"],
       pilot_verification_status: [
         "pending",
         "approved",

@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 
 const STAFF_ROLES = ["super_admin", "admin", "instructor"] as const;
 
@@ -94,6 +95,7 @@ export const createFlightLogEntry = createServerFn({ method: "POST" })
         instructor_user_id: context.userId,
         signed_by_user_id: context.userId,
         signed_at: new Date().toISOString(),
+        organization_id: DEFAULT_ORG_ID,
       })
       .select()
       .single();
@@ -106,6 +108,7 @@ export const createFlightLogEntry = createServerFn({ method: "POST" })
           exercise_id: e.exercise_id,
           grade: e.grade,
           notes: e.notes ?? null,
+          organization_id: DEFAULT_ORG_ID,
         })),
       );
       if (exErr) throw new Error(exErr.message);
@@ -161,7 +164,9 @@ export const upsertStudentDocument = createServerFn({ method: "POST" })
       const { error } = await supabaseAdmin.from("student_documents").update(patch).eq("id", id);
       if (error) throw new Error(error.message);
     } else {
-      const { error } = await supabaseAdmin.from("student_documents").insert(data);
+      const { error } = await supabaseAdmin
+        .from("student_documents")
+        .insert({ ...data, organization_id: DEFAULT_ORG_ID });
       if (error) throw new Error(error.message);
     }
     return { ok: true };
@@ -207,6 +212,7 @@ export const createEndorsement = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin.from("student_endorsements").insert({
       ...data,
       signed_by_user_id: context.userId,
+      organization_id: DEFAULT_ORG_ID,
     });
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -248,7 +254,7 @@ export const upsertTheoryResult = createServerFn({ method: "POST" })
     } else {
       const { error } = await supabaseAdmin
         .from("theory_exam_results")
-        .insert({ ...data, recorded_by_user_id: context.userId });
+        .insert({ ...data, recorded_by_user_id: context.userId, organization_id: DEFAULT_ORG_ID });
       if (error) throw new Error(error.message);
     }
     return { ok: true };

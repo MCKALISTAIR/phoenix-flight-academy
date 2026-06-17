@@ -2,6 +2,7 @@ import { createFileRoute, redirect, isRedirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { CloudSun, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 import { requireAdmin } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/cms/flying-status")({
@@ -55,7 +56,7 @@ function FlyingStatusPage() {
       } else {
         const { data, error } = await supabase
           .from("flying_status")
-          .insert({ is_open: isOpen, message: message || null })
+          .insert({ is_open: isOpen, message: message || null, organization_id: DEFAULT_ORG_ID })
           .select("id")
           .single();
         if (error) throw error;

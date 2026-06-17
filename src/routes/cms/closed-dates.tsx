@@ -2,6 +2,7 @@ import { createFileRoute, redirect, isRedirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { CalendarX, Loader2, Trash2, Plus, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { DEFAULT_ORG_ID } from "@/lib/constants";
 import { requireAdmin } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/cms/closed-dates")({
@@ -58,6 +59,7 @@ function ClosedDatesPage() {
       ends_on: endsOn,
       reason: reason || null,
       created_by: userData.user?.id ?? null,
+      organization_id: DEFAULT_ORG_ID,
     });
     setSaving(false);
     if (error) {
