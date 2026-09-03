@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Mail, MapPin, Phone, MessageSquare, Compass, Send, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Mail, MapPin, Phone, MessageSquare, Compass, Send, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 type ContactSearch = {
   subject?: string;
@@ -30,6 +31,8 @@ function ContactPage() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const getSubjectLabel = () => {
     switch (subject) {
@@ -46,7 +49,7 @@ function ContactPage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
 
@@ -72,9 +75,36 @@ function ContactPage() {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       setSubmitted(false);
-    } else {
-      setErrors({});
+      return;
+    }
+
+    setErrors({});
+    setSubmitting(true);
+    setServerError(null);
+
+    try {
+      const subjectLabel = getSubjectLabel();
+      const formattedMessage = `[Subject: ${subjectLabel}]\n\n${message.trim()}`;
+      const { error: insertError } = await supabase.from("contact_submissions").insert({
+        name: name.trim(),
+        email: email.trim(),
+        company: subjectLabel,
+        message: formattedMessage,
+        source: "contact_page",
+      });
+
+      if (insertError) {
+        throw new Error(insertError.message);
+      }
       setSubmitted(true);
+    } catch (err) {
+      setServerError(
+        err instanceof Error
+          ? err.message
+          : "Failed to send your message. Please try again or contact operations directly."
+      );
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -183,6 +213,7 @@ function ContactPage() {
                   type="button"
                   onClick={() => {
                     setSubmitted(false);
+                    setServerError(null);
                     setName("");
                     setEmail("");
                     setMessage("");
@@ -204,6 +235,16 @@ function ContactPage() {
                 {search.subject && (
                   <div className="mb-5 rounded-lg bg-primary/5 border border-primary/20 px-4 py-3 text-xs text-primary font-medium">
                     🔍 Pre-selected route: <strong className="uppercase">{getSubjectLabel()}</strong>
+                  </div>
+                )}
+
+                {serverError && (
+                  <div className="mb-5 rounded-xl bg-destructive/10 border border-destructive/30 p-4 text-xs text-destructive space-y-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <p className="font-bold flex items-center gap-1.5">
+                      <AlertTriangle className="h-4 w-4 shrink-0 text-destructive" />
+                      Submission Error
+                    </p>
+                    <p>{serverError}</p>
                   </div>
                 )}
                 
@@ -287,10 +328,20 @@ function ContactPage() {
                   </div>
                   <button
                     type="submit"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-md hover:bg-primary/95 transition-transform hover:scale-[1.01] focus:outline-none"
+                    disabled={submitting}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-md hover:bg-primary/95 transition-transform hover:scale-[1.01] focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    <Send className="h-4 w-4" />
-                    Submit {getSubjectLabel()} Inquiry
+                    {submitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Transmitting Inquiry...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        Submit {getSubjectLabel()} Inquiry
+                      </>
+                    )}
                   </button>
                 </form>
               </>

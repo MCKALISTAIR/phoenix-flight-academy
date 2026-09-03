@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
-import { AlertCircle, Cloud, PlaneTakeoff, Lock, ArrowLeft, Send, CheckCircle2, UserPlus, GraduationCap, Compass, Shield, User, Mail } from "lucide-react";
+import { AlertCircle, Cloud, PlaneTakeoff, Lock, ArrowLeft, Send, CheckCircle2, UserPlus, GraduationCap, Compass, Shield, User, Mail, X, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
@@ -56,6 +56,13 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
 
+  // Forgot password modal state
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotBusy, setForgotBusy] = useState(false);
+  const [forgotMsg, setForgotMsg] = useState("");
+  const [forgotErr, setForgotErr] = useState("");
+
   // Login inputs
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
@@ -69,6 +76,8 @@ function LoginPage() {
   const [studentForm, setStudentForm] = useState({
     name: "",
     email: "",
+    password: "",
+    confirmPassword: "",
     phone: "",
     course: "ppl",
     message: ""
@@ -78,6 +87,8 @@ function LoginPage() {
   const [pilotForm, setPilotForm] = useState({
     name: "",
     email: "",
+    password: "",
+    confirmPassword: "",
     license: "ppl",
     hours: "",
     medical: "current"
@@ -145,30 +156,36 @@ function LoginPage() {
     }
   }
 
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isStudent = registerType === "student";
 
-    if (registerType === "student") {
-      if (!studentForm.name.trim()) {
+    const name = isStudent ? studentForm.name.trim() : pilotForm.name.trim();
+    const email = isStudent ? studentForm.email.trim() : pilotForm.email.trim();
+    const password = isStudent ? studentForm.password : pilotForm.password;
+    const confirmPassword = isStudent ? studentForm.confirmPassword : pilotForm.confirmPassword;
+
+    if (isStudent) {
+      if (!name) {
         newErrors.studentName = "Please enter your full name.";
       }
-      if (!studentForm.email.trim()) {
+      if (!email) {
         newErrors.studentEmail = "Please enter your email address.";
-      } else if (!emailRegex.test(studentForm.email.trim())) {
+      } else if (!emailRegex.test(email)) {
         newErrors.studentEmail = "Please enter a valid email address.";
       }
       if (!studentForm.phone.trim()) {
         newErrors.studentPhone = "Please enter your contact phone number.";
       }
     } else {
-      if (!pilotForm.name.trim()) {
+      if (!name) {
         newErrors.pilotName = "Please enter your full name.";
       }
-      if (!pilotForm.email.trim()) {
+      if (!email) {
         newErrors.pilotEmail = "Please enter your email address.";
-      } else if (!emailRegex.test(pilotForm.email.trim())) {
+      } else if (!emailRegex.test(email)) {
         newErrors.pilotEmail = "Please enter a valid email address.";
       }
       if (!pilotForm.hours.trim()) {
@@ -181,12 +198,70 @@ function LoginPage() {
       }
     }
 
+    if (!password) {
+      newErrors.password = "Please enter a password.";
+    } else if (password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters.";
+    }
+
+    if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match.";
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setFormErrors(newErrors);
       setSubmitted(false);
-    } else {
-      setFormErrors({});
-      setSubmitted(true);
+      return;
+    }
+
+    setFormErrors({});
+    setBusy(true);
+    setError("");
+    setInfo("");
+
+    try {
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            display_name: name,
+            role: registerType,
+          },
+        },
+      });
+
+      if (signUpError) throw signUpError;
+
+      // Persist additional application / registration background info
+      const notes = isStudent
+        ? `Course Sought: ${studentForm.course.toUpperCase()}\nPhone: ${studentForm.phone}\nMessage: ${studentForm.message || "None"}`
+        : `License Held: ${pilotForm.license.toUpperCase()}\nLogged Flight Hours: ${pilotForm.hours}\nMedical Status: ${pilotForm.medical}`;
+
+      await supabase.from("contact_submissions").insert({
+        name,
+        email,
+        company: isStudent ? "Student Pilot Enrollment" : "Qualified Pilot Registration",
+        message: notes,
+        source: isStudent ? "registration_student" : "registration_pilot",
+      });
+
+      if (signUpData.session) {
+        // Auto-signed in
+        navigate({ to: search.redirect ?? "/account" });
+      } else {
+        // Confirmation required or pending approval
+        setSubmitted(true);
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Registration failed.";
+      if (msg.toLowerCase().includes("already registered") || msg.toLowerCase().includes("user already exists")) {
+        setError("An account with this email already exists. Please sign in using the Sign In tab.");
+      } else {
+        setError(msg);
+      }
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -195,8 +270,24 @@ function LoginPage() {
     setFormErrors({});
     setError("");
     setInfo("");
-    setStudentForm({ name: "", email: "", phone: "", course: "ppl", message: "" });
-    setPilotForm({ name: "", email: "", license: "ppl", hours: "", medical: "current" });
+    setStudentForm({
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      phone: "",
+      course: "ppl",
+      message: "",
+    });
+    setPilotForm({
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      license: "ppl",
+      hours: "",
+      medical: "current",
+    });
   };
 
   // Active Runway calculations for Cumbernauld (EGPG)
@@ -305,15 +396,26 @@ function LoginPage() {
                       <CheckCircle2 className="h-10 w-10" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-foreground">Application Queued!</h3>
+                      <h3 className="text-2xl font-bold text-foreground">Registration Submitted!</h3>
                       <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                        Your request for {registerType === "student" ? "PPL Flight Training" : "Self-Hire Pilot privileges"} has been successfully queued. An airfield representative will contact you shortly to confirm your booking checkout or lesson schedule.
+                        Your account for {registerType === "student" ? "PPL Flight Training" : "Self-Hire Pilot privileges"} has been created. A confirmation email has been dispatched to your inbox. Please verify your email, then sign in below to access your portal.
                       </p>
                     </div>
-                    <div>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                       <button
+                        type="button"
+                        onClick={() => {
+                          resetForm();
+                          setViewMode("login");
+                        }}
+                        className="inline-flex w-full sm:w-auto items-center justify-center rounded-lg bg-primary px-6 py-2.5 text-sm font-bold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                      >
+                        Proceed to Sign In
+                      </button>
+                      <button
+                        type="button"
                         onClick={resetForm}
-                        className="inline-flex items-center justify-center rounded-lg border border-input bg-background px-6 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+                        className="inline-flex w-full sm:w-auto items-center justify-center rounded-lg border border-input bg-background px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
                       >
                         Submit Another Form
                       </button>
@@ -373,9 +475,18 @@ function LoginPage() {
                             />
                           </div>
                           <div className="flex items-center justify-between pt-1">
-                            <a href="#" className="text-xs font-semibold text-primary hover:underline">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setForgotOpen(true);
+                                setForgotEmail(loginEmail);
+                                setForgotMsg("");
+                                setForgotErr("");
+                              }}
+                              className="text-xs font-semibold text-primary hover:underline focus:outline-none"
+                            >
                               Forgotten Password?
-                            </a>
+                            </button>
                             <Link to="/request-admin" className="text-xs font-semibold text-primary hover:underline">
                               Request CMS access
                             </Link>
@@ -493,6 +604,20 @@ function LoginPage() {
                           </div>
                         </div>
 
+                        {/* Registration Alert Banner */}
+                        {error && (
+                          <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3.5 py-3 text-xs text-destructive animate-in fade-in duration-150">
+                            <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+                            <span>{error}</span>
+                          </div>
+                        )}
+                        {info && (
+                          <div className="flex items-start gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-3 text-xs text-emerald-600 dark:text-emerald-400 animate-in fade-in duration-150">
+                            <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
+                            <span>{info}</span>
+                          </div>
+                        )}
+
                         {/* Dynamically Rendered Form */}
                         {registerType === "student" ? (
                           /* Student Form */
@@ -540,14 +665,14 @@ function LoginPage() {
 
                             <div>
                               <label htmlFor="stEmail" className="block text-sm font-semibold text-foreground">
-                                  Email Address
+                                Email Address
                               </label>
                               <input
                                 type="email"
                                 id="stEmail"
                                 value={studentForm.email}
                                 onChange={(e) => setStudentForm({ ...studentForm, email: e.target.value })}
-                                  className={`mt-1.5 block w-full rounded-lg border bg-background px-3.5 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${formErrors.studentEmail ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-input focus:border-primary focus:ring-primary"}`}
+                                className={`mt-1.5 block w-full rounded-lg border bg-background px-3.5 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${formErrors.studentEmail ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-input focus:border-primary focus:ring-primary"}`}
                                 placeholder="john@example.com"
                               />
                               {formErrors.studentEmail && (
@@ -556,6 +681,47 @@ function LoginPage() {
                                   {formErrors.studentEmail}
                                 </p>
                               )}
+                            </div>
+
+                            <div className="grid gap-5 sm:grid-cols-2">
+                              <div>
+                                <label htmlFor="stPass" className="block text-sm font-semibold text-foreground">
+                                  Create Password
+                                </label>
+                                <input
+                                  type="password"
+                                  id="stPass"
+                                  value={studentForm.password}
+                                  onChange={(e) => setStudentForm({ ...studentForm, password: e.target.value })}
+                                  className={`mt-1.5 block w-full rounded-lg border bg-background px-3.5 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${formErrors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-input focus:border-primary focus:ring-primary"}`}
+                                  placeholder="Min. 8 characters"
+                                />
+                                {formErrors.password && (
+                                  <p className="mt-1 text-xs font-semibold text-red-500 flex items-center gap-1">
+                                    <span className="h-1 w-1 rounded-full bg-red-500" />
+                                    {formErrors.password}
+                                  </p>
+                                )}
+                              </div>
+                              <div>
+                                <label htmlFor="stConfirm" className="block text-sm font-semibold text-foreground">
+                                  Confirm Password
+                                </label>
+                                <input
+                                  type="password"
+                                  id="stConfirm"
+                                  value={studentForm.confirmPassword}
+                                  onChange={(e) => setStudentForm({ ...studentForm, confirmPassword: e.target.value })}
+                                  className={`mt-1.5 block w-full rounded-lg border bg-background px-3.5 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${formErrors.confirmPassword ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-input focus:border-primary focus:ring-primary"}`}
+                                  placeholder="Repeat password"
+                                />
+                                {formErrors.confirmPassword && (
+                                  <p className="mt-1 text-xs font-semibold text-red-500 flex items-center gap-1">
+                                    <span className="h-1 w-1 rounded-full bg-red-500" />
+                                    {formErrors.confirmPassword}
+                                  </p>
+                                )}
+                              </div>
                             </div>
 
                             <div>
@@ -590,10 +756,20 @@ function LoginPage() {
 
                             <button
                               type="submit"
-                              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md hover:bg-primary/95 transition-transform hover:scale-[1.01]"
+                              disabled={busy}
+                              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md hover:bg-primary/95 transition-transform hover:scale-[1.01] disabled:opacity-60 disabled:cursor-not-allowed"
                             >
-                              <Send className="h-4 w-4" />
-                              Submit Student Enrollment Request
+                              {busy ? (
+                                <>
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                  Creating Account...
+                                </>
+                              ) : (
+                                <>
+                                  <Send className="h-4 w-4" />
+                                  Create Student Account & Apply
+                                </>
+                              )}
                             </button>
                           </form>
                         ) : (
@@ -662,6 +838,47 @@ function LoginPage() {
 
                             <div className="grid gap-5 sm:grid-cols-2">
                               <div>
+                                <label htmlFor="pPass" className="block text-sm font-semibold text-foreground">
+                                  Create Password
+                                </label>
+                                <input
+                                  type="password"
+                                  id="pPass"
+                                  value={pilotForm.password}
+                                  onChange={(e) => setPilotForm({ ...pilotForm, password: e.target.value })}
+                                  className={`mt-1.5 block w-full rounded-lg border bg-background px-3.5 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${formErrors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-input focus:border-primary focus:ring-primary"}`}
+                                  placeholder="Min. 8 characters"
+                                />
+                                {formErrors.password && (
+                                  <p className="mt-1 text-xs font-semibold text-red-500 flex items-center gap-1">
+                                    <span className="h-1 w-1 rounded-full bg-red-500" />
+                                    {formErrors.password}
+                                  </p>
+                                )}
+                              </div>
+                              <div>
+                                <label htmlFor="pConfirm" className="block text-sm font-semibold text-foreground">
+                                  Confirm Password
+                                </label>
+                                <input
+                                  type="password"
+                                  id="pConfirm"
+                                  value={pilotForm.confirmPassword}
+                                  onChange={(e) => setPilotForm({ ...pilotForm, confirmPassword: e.target.value })}
+                                  className={`mt-1.5 block w-full rounded-lg border bg-background px-3.5 py-2.5 shadow-sm text-sm focus:outline-none focus:ring-1 ${formErrors.confirmPassword ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "border-input focus:border-primary focus:ring-primary"}`}
+                                  placeholder="Repeat password"
+                                />
+                                {formErrors.confirmPassword && (
+                                  <p className="mt-1 text-xs font-semibold text-red-500 flex items-center gap-1">
+                                    <span className="h-1 w-1 rounded-full bg-red-500" />
+                                    {formErrors.confirmPassword}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="grid gap-5 sm:grid-cols-2">
+                              <div>
                                 <label htmlFor="pLicense" className="block text-sm font-semibold text-foreground">
                                   License Held
                                 </label>
@@ -710,10 +927,20 @@ function LoginPage() {
 
                             <button
                               type="submit"
-                              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md hover:bg-primary/95 transition-transform hover:scale-[1.01]"
+                              disabled={busy}
+                              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md hover:bg-primary/95 transition-transform hover:scale-[1.01] disabled:opacity-60 disabled:cursor-not-allowed"
                             >
-                              <Send className="h-4 w-4" />
-                              Apply for Checkout Scheduling
+                              {busy ? (
+                                <>
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                  Creating Account...
+                                </>
+                              ) : (
+                                <>
+                                  <Send className="h-4 w-4" />
+                                  Create Pilot Account & Apply
+                                </>
+                              )}
                             </button>
                           </form>
                         )}
@@ -724,6 +951,102 @@ function LoginPage() {
                 )}
               </div>
             </div>
+
+            {/* Forgot Password Modal */}
+            {forgotOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-150">
+                <div className="relative w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl">
+                  <div className="flex items-center justify-between pb-4 border-b border-border">
+                    <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                      <Lock className="h-4 w-4 text-primary" />
+                      Reset Your Password
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setForgotOpen(false)}
+                      className="rounded-lg p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                      aria-label="Close modal"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+                    Enter the email address associated with your flight portal account. We'll send you a secure link to choose a new password.
+                  </p>
+
+                  {forgotMsg && (
+                    <div className="mt-4 flex items-start gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-600 dark:text-emerald-400 animate-in fade-in">
+                      <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
+                      <span>{forgotMsg}</span>
+                    </div>
+                  )}
+
+                  {forgotErr && (
+                    <div className="mt-4 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive animate-in fade-in">
+                      <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+                      <span>{forgotErr}</span>
+                    </div>
+                  )}
+
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      if (!forgotEmail.trim()) return;
+                      setForgotBusy(true);
+                      setForgotMsg("");
+                      setForgotErr("");
+                      try {
+                        const { error } = await supabase.auth.resetPasswordForEmail(
+                          forgotEmail.trim(),
+                          { redirectTo: `${window.location.origin}/reset-password` }
+                        );
+                        if (error) throw error;
+                        setForgotMsg("Password reset instructions sent. Please check your email inbox.");
+                      } catch (err) {
+                        setForgotErr(err instanceof Error ? err.message : "Failed to request password reset.");
+                      } finally {
+                        setForgotBusy(false);
+                      }
+                    }}
+                    className="mt-5 space-y-4"
+                  >
+                    <div>
+                      <label htmlFor="fEmail" className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">
+                        Account Email Address
+                      </label>
+                      <input
+                        type="email"
+                        id="fEmail"
+                        required
+                        value={forgotEmail}
+                        onChange={(e) => setForgotEmail(e.target.value)}
+                        placeholder="pilot@example.com"
+                        className="block w-full rounded-lg border border-input bg-background px-3.5 py-2.5 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setForgotOpen(false)}
+                        className="rounded-lg border border-border bg-background px-4 py-2 text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={forgotBusy}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-sm hover:bg-primary/90 transition-colors disabled:opacity-60"
+                      >
+                        {forgotBusy && <Loader2 className="h-3 w-3 animate-spin" />}
+                        Send Reset Link
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
 
           </div>
 
