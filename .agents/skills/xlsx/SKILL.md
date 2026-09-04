@@ -8,9 +8,11 @@ description: >-
 # Excel / Spreadsheet (.xlsx) Skill
 
 ## When to Use
+
 Use when generating financial sheets, student hour trackers, maintenance logs, or data models in Excel format.
 
 ## Tooling & Patterns
+
 - **Node.js**: Use `exceljs` or `xlsx` (SheetJS) to build styled workbooks with multiple worksheets, formulas, and cell formatting.
 - **Python**: Use `pandas` and `openpyxl` (`df.to_excel('...')`) for data analysis, formula insertion, and column auto-sizing.
 - **Data Rigour**:

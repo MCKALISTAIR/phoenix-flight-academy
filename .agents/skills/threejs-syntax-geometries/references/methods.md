@@ -3,13 +3,13 @@
 ## BufferGeometry
 
 ```javascript
-import { BufferGeometry } from 'three';
+import { BufferGeometry } from "three";
 ```
 
 ### Constructor
 
 ```javascript
-new BufferGeometry()
+new BufferGeometry();
 // Creates an empty geometry. ALWAYS add attributes via setAttribute() before rendering.
 ```
 
@@ -119,7 +119,7 @@ dispose(): void                 // Free GPU resources
 ## BufferAttribute
 
 ```javascript
-import { BufferAttribute } from 'three';
+import { BufferAttribute } from "three";
 ```
 
 ### Constructor
@@ -231,7 +231,7 @@ new InterleavedBufferAttribute(
 ## InstancedMesh
 
 ```javascript
-import { InstancedMesh } from 'three';
+import { InstancedMesh } from "three";
 ```
 
 ### Constructor
@@ -290,7 +290,7 @@ new InstancedBufferAttribute(array: TypedArray, itemSize: number, normalized?: b
 ## Shape
 
 ```javascript
-import { Shape } from 'three';
+import { Shape } from "three";
 ```
 
 ### Constructor

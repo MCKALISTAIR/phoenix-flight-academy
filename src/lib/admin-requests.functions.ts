@@ -99,9 +99,7 @@ export const reviewAdminRequest = createServerFn({ method: "POST" })
       // Find the auth user for this email
       const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers();
       if (listErr) throw new Error(listErr.message);
-      const target = list.users.find(
-        (u) => u.email?.toLowerCase() === req.email.toLowerCase(),
-      );
+      const target = list.users.find((u) => u.email?.toLowerCase() === req.email.toLowerCase());
       if (!target) {
         throw new Error(
           "No account exists for that email. Ask them to sign up first, then approve.",
@@ -110,10 +108,7 @@ export const reviewAdminRequest = createServerFn({ method: "POST" })
 
       const { error: roleErr } = await supabaseAdmin
         .from("user_roles")
-        .upsert(
-          { user_id: target.id, role: "super_admin" },
-          { onConflict: "user_id,role" },
-        );
+        .upsert({ user_id: target.id, role: "super_admin" }, { onConflict: "user_id,role" });
       if (roleErr) throw new Error(roleErr.message);
     }
 

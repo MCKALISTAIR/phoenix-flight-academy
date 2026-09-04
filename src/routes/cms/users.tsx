@@ -50,7 +50,7 @@ const ROLES: { value: Role; label: string; desc: string; color: string }[] = [
     value: "super_admin",
     label: "Super Admin",
     desc: "Full CMS + Ops access",
-    color: "text-[oklch(0.70_0.18_270)] bg-[oklch(0.55_0.22_270)]/15 border-[oklch(0.55_0.22_270)]/30",
+    color: "text-primary bg-primary/15 border-primary/30",
   },
   {
     value: "admin",
@@ -206,7 +206,11 @@ function UserManager() {
         role: inviteRole,
         status: "pending",
         lastActive: "Never",
-        avatar: name.split(" ").map((n) => n[0]).join("").slice(0, 2),
+        avatar: name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .slice(0, 2),
       },
     ]);
     setNextId((n) => n + 1);
@@ -226,10 +230,8 @@ function UserManager() {
   function toggleSuspend(id: number) {
     setUsers((prev) =>
       prev.map((u) =>
-        u.id === id
-          ? { ...u, status: u.status === "suspended" ? "active" : "suspended" }
-          : u
-      )
+        u.id === id ? { ...u, status: u.status === "suspended" ? "active" : "suspended" } : u,
+      ),
     );
   }
 
@@ -237,8 +239,7 @@ function UserManager() {
     setUsers((prev) => prev.filter((u) => u.id !== id));
   }
 
-  const filtered =
-    filterRole === "all" ? users : users.filter((u) => u.role === filterRole);
+  const filtered = filterRole === "all" ? users : users.filter((u) => u.role === filterRole);
 
   return (
     <div className="p-8 space-y-8">
@@ -247,12 +248,17 @@ function UserManager() {
         <div>
           <h2 className="text-xl font-extrabold text-white">User Management</h2>
           <p className="mt-1 text-xs text-white/40">
-            Invite users, assign roles, and manage portal access. Changes will sync with Supabase Auth when connected.
+            Invite users, assign roles, and manage portal access. Changes will sync with Supabase
+            Auth when connected.
           </p>
         </div>
         <button
-          onClick={() => { setShowInvite(true); setInviteLink(""); setInviteEmail(""); }}
-          className="flex items-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-[oklch(0.55_0.22_270)]/20 transition-all hover:scale-[1.02] hover:bg-[oklch(0.60_0.22_270)]"
+          onClick={() => {
+            setShowInvite(true);
+            setInviteLink("");
+            setInviteEmail("");
+          }}
+          className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-[var(--color-primary)]/20 transition-all hover:scale-[1.02] hover:bg-primary"
         >
           <UserPlus className="h-4 w-4" />
           Invite User
@@ -314,7 +320,7 @@ function UserManager() {
               className="flex items-center gap-5 px-6 py-4 transition-colors hover:bg-white/3"
             >
               {/* Avatar */}
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[oklch(0.55_0.22_270)]/20 text-xs font-bold text-[oklch(0.70_0.18_270)] border border-[oklch(0.55_0.22_270)]/20">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary border border-primary/20">
                 {user.avatar}
               </div>
 
@@ -337,7 +343,7 @@ function UserManager() {
                   <ChevronDown className="h-3 w-3 text-white/30" />
                 </button>
                 {openRoleMenu === user.id && (
-                  <div className="absolute right-0 top-full mt-1 z-20 w-56 rounded-xl border border-white/10 bg-[oklch(0.12_0.04_270)] shadow-2xl overflow-hidden">
+                  <div className="absolute right-0 top-full mt-1 z-20 w-56 rounded-xl border border-white/10 bg-primary shadow-2xl overflow-hidden">
                     {ROLES.map((r) => (
                       <button
                         key={r.value}
@@ -348,7 +354,7 @@ function UserManager() {
                       >
                         <div className="pt-0.5">
                           {user.role === r.value ? (
-                            <CheckCircle2 className="h-3.5 w-3.5 text-[oklch(0.70_0.18_270)]" />
+                            <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
                           ) : (
                             <div className="h-3.5 w-3.5 rounded-full border border-white/20" />
                           )}
@@ -398,14 +404,19 @@ function UserManager() {
       {/* Invite Modal */}
       {showInvite && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-          <div className="w-full max-w-md rounded-3xl border border-white/10 bg-[oklch(0.10_0.04_270)] shadow-2xl overflow-hidden">
+          <div className="w-full max-w-md rounded-3xl border border-white/10 bg-surface-navy shadow-2xl overflow-hidden">
             <div className="border-b border-white/10 px-6 py-5 flex items-center justify-between">
               <div>
                 <h3 className="text-base font-bold text-white">Invite a User</h3>
-                <p className="mt-0.5 text-xs text-white/40">An invite link will be generated for their email address.</p>
+                <p className="mt-0.5 text-xs text-white/40">
+                  An invite link will be generated for their email address.
+                </p>
               </div>
               <button
-                onClick={() => { setShowInvite(false); setInviteLink(""); }}
+                onClick={() => {
+                  setShowInvite(false);
+                  setInviteLink("");
+                }}
                 className="text-white/30 hover:text-white/60 text-xl leading-none transition-colors"
               >
                 ×
@@ -424,7 +435,7 @@ function UserManager() {
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
                     placeholder="pilot@example.com"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-[oklch(0.65_0.22_270)] focus:ring-1 focus:ring-[oklch(0.65_0.22_270)] transition-all"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                   />
                 </div>
 
@@ -438,7 +449,7 @@ function UserManager() {
                         key={r.value}
                         className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3.5 transition-all ${
                           inviteRole === r.value
-                            ? "border-[oklch(0.55_0.22_270)]/40 bg-[oklch(0.55_0.22_270)]/10"
+                            ? "border-primary/40 bg-primary/10"
                             : "border-white/5 bg-white/3 hover:bg-white/5"
                         }`}
                       >
@@ -448,7 +459,7 @@ function UserManager() {
                           value={r.value}
                           checked={inviteRole === r.value}
                           onChange={() => setInviteRole(r.value)}
-                          className="accent-[oklch(0.55_0.22_270)]"
+                          className="accent-[var(--color-primary)]"
                         />
                         <div>
                           <span className="block text-sm font-bold text-white">{r.label}</span>
@@ -461,7 +472,7 @@ function UserManager() {
 
                 <button
                   type="submit"
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] py-3 text-sm font-bold text-white shadow-lg transition-all hover:scale-[1.01] hover:bg-[oklch(0.60_0.22_270)]"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-white shadow-lg transition-all hover:scale-[1.01] hover:bg-primary"
                 >
                   <Send className="h-4 w-4" />
                   Generate Invite Link
@@ -475,23 +486,34 @@ function UserManager() {
                   </div>
                   <p className="text-sm font-bold text-white">Invite Created</p>
                   <p className="text-xs text-white/40 text-center">
-                    Share this link with <span className="text-white/70">{inviteEmail}</span>. It will expire in 72 hours.
+                    Share this link with <span className="text-white/70">{inviteEmail}</span>. It
+                    will expire in 72 hours.
                   </p>
                 </div>
 
                 <div className="rounded-xl border border-white/10 bg-white/5 p-3 flex items-center gap-3">
-                  <span className="flex-1 text-xs text-white/50 font-mono break-all">{inviteLink}</span>
+                  <span className="flex-1 text-xs text-white/50 font-mono break-all">
+                    {inviteLink}
+                  </span>
                   <button
                     onClick={copyLink}
                     className="shrink-0 flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-xs font-semibold text-white/70 transition-all hover:bg-white/20"
                   >
-                    {copiedLink ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+                    {copiedLink ? (
+                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
                     {copiedLink ? "Copied!" : "Copy"}
                   </button>
                 </div>
 
                 <button
-                  onClick={() => { setShowInvite(false); setInviteLink(""); setInviteEmail(""); }}
+                  onClick={() => {
+                    setShowInvite(false);
+                    setInviteLink("");
+                    setInviteEmail("");
+                  }}
                   className="w-full rounded-xl border border-white/10 bg-white/5 py-3 text-sm font-bold text-white/60 transition-all hover:bg-white/10"
                 >
                   Done
@@ -516,8 +538,7 @@ function AdminRequestsPanel() {
   });
 
   const review = useMutation({
-    mutationFn: (vars: { id: string; action: "approve" | "reject" }) =>
-      reviewFn({ data: vars }),
+    mutationFn: (vars: { id: string; action: "approve" | "reject" }) => reviewFn({ data: vars }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin_requests"] }),
   });
 
@@ -525,15 +546,16 @@ function AdminRequestsPanel() {
   const recent = (data?.requests ?? []).filter((r) => r.status !== "pending").slice(0, 5);
 
   return (
-    <div className="rounded-2xl border border-[oklch(0.55_0.22_270)]/25 bg-[oklch(0.55_0.22_270)]/[0.05] p-6">
+    <div className="rounded-2xl border border-primary/25 bg-primary/[0.05] p-6">
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h3 className="flex items-center gap-2 text-sm font-bold text-white">
-            <ShieldCheck className="h-4 w-4 text-[oklch(0.75_0.18_270)]" />
+            <ShieldCheck className="h-4 w-4 text-primary" />
             Pending super-admin requests
           </h3>
           <p className="mt-0.5 text-xs text-white/40">
-            Submitted via the public <code className="rounded bg-white/10 px-1">/request-admin</code> form.
+            Submitted via the public{" "}
+            <code className="rounded bg-white/10 px-1">/request-admin</code> form.
           </p>
         </div>
         <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-xs font-bold text-white/70">

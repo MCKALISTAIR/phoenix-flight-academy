@@ -40,12 +40,12 @@ Manually sets the ray origin and direction.
 - `direction`: MUST be normalized (unit length). Unnormalized direction produces wrong distance values.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const raycaster = new THREE.Raycaster();
 raycaster.set(
   new THREE.Vector3(0, 10, 0),
-  new THREE.Vector3(0, -1, 0)  // pointing down, already normalized
+  new THREE.Vector3(0, -1, 0), // pointing down, already normalized
 );
 ```
 
@@ -59,7 +59,7 @@ Configures the ray based on normalized device coordinates and a camera.
 - `camera`: `PerspectiveCamera` creates a ray from camera origin through the NDC point; `OrthographicCamera` creates a parallel ray
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const mouse = new THREE.Vector2();
 mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -89,7 +89,7 @@ Tests a single Object3D (and optionally its descendants) for ray intersections.
 - **Returns**: `Intersection[]` sorted by distance (nearest first)
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const raycaster = new THREE.Raycaster();
 const intersections = [];
@@ -112,7 +112,7 @@ Tests an array of Object3D instances for ray intersections.
 - **Returns**: `Intersection[]` sorted by distance (nearest first)
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const raycaster = new THREE.Raycaster();
 const intersections = [];
@@ -122,7 +122,7 @@ raycaster.setFromCamera(mouse, camera);
 raycaster.intersectObjects(selectableObjects, false, intersections);
 
 if (intersections.length > 0) {
-  console.log('Nearest hit:', intersections[0].object.name);
+  console.log("Nearest hit:", intersections[0].object.name);
 }
 
 intersections.length = 0; // clear for next frame
@@ -136,15 +136,15 @@ Each element in the returned intersections array:
 
 ```typescript
 interface Intersection {
-  distance: number;           // Distance from ray origin to hit point (world units)
-  point: Vector3;             // Hit point in world space
-  face: Face | null;          // Hit face: { a: number, b: number, c: number, normal: Vector3 }
-  faceIndex: number;          // Index of the hit face in geometry.index
-  object: Object3D;           // Reference to the intersected Object3D
-  uv?: Vector2;               // UV coordinates at intersection (requires UV attribute)
-  uv1?: Vector2;              // Second UV set at intersection (if geometry has uv1)
-  normal?: Vector3;           // Interpolated face normal at intersection point
-  instanceId?: number;        // Instance index — ONLY present for InstancedMesh hits
+  distance: number; // Distance from ray origin to hit point (world units)
+  point: Vector3; // Hit point in world space
+  face: Face | null; // Hit face: { a: number, b: number, c: number, normal: Vector3 }
+  faceIndex: number; // Index of the hit face in geometry.index
+  object: Object3D; // Reference to the intersected Object3D
+  uv?: Vector2; // UV coordinates at intersection (requires UV attribute)
+  uv1?: Vector2; // Second UV set at intersection (if geometry has uv1)
+  normal?: Vector3; // Interpolated face normal at intersection point
+  instanceId?: number; // Instance index — ONLY present for InstancedMesh hits
 }
 ```
 
@@ -152,10 +152,10 @@ interface Intersection {
 
 ```typescript
 interface Face {
-  a: number;         // vertex index A
-  b: number;         // vertex index B
-  c: number;         // vertex index C
-  normal: Vector3;   // face normal (NOT interpolated)
+  a: number; // vertex index A
+  b: number; // vertex index B
+  c: number; // vertex index C
+  normal: Vector3; // face normal (NOT interpolated)
 }
 ```
 
@@ -185,7 +185,7 @@ The raycaster ONLY tests objects where `raycaster.layers.test(object.layers)` re
 The `params` object controls intersection sensitivity for non-mesh types:
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const raycaster = new THREE.Raycaster();
 

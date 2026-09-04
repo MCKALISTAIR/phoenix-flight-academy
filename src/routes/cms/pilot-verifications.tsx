@@ -13,8 +13,12 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/cms/pilot-verifications")({
   beforeLoad: async ({ location }) => {
-    try { await requireAdmin(location.href); }
-    catch (e) { if (isRedirect(e)) throw e; throw redirect({ to: "/login", search: { redirect: location.href } }); }
+    try {
+      await requireAdmin(location.href);
+    } catch (e) {
+      if (isRedirect(e)) throw e;
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
   },
   component: PilotVerificationsAdmin,
 });
@@ -42,7 +46,8 @@ function PilotVerificationsAdmin() {
       return data ?? [];
     },
   });
-  const nameFor = (id: string) => profiles?.find((p) => p.user_id === id)?.display_name ?? id.slice(0, 8);
+  const nameFor = (id: string) =>
+    profiles?.find((p) => p.user_id === id)?.display_name ?? id.slice(0, 8);
 
   const reviewMut = useMutation({
     mutationFn: reviewFn,
@@ -66,7 +71,10 @@ function PilotVerificationsAdmin() {
     <div className="p-8 space-y-6">
       <div>
         <h1 className="text-2xl font-extrabold text-white">Pilot Verifications</h1>
-        <p className="mt-1 text-sm text-white/50">Review licence submissions. Approving promotes a customer to <span className="font-semibold">pilot</span> and grants self-hire.</p>
+        <p className="mt-1 text-sm text-white/50">
+          Review licence submissions. Approving promotes a customer to{" "}
+          <span className="font-semibold">pilot</span> and grants self-hire.
+        </p>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -75,7 +83,9 @@ function PilotVerificationsAdmin() {
             key={t.id}
             onClick={() => setStatus(t.id)}
             className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-              status === t.id ? "bg-[oklch(0.55_0.22_270)] text-white" : "bg-white/5 text-white/60 hover:bg-white/10"
+              status === t.id
+                ? "bg-primary text-white"
+                : "bg-white/5 text-white/60 hover:bg-white/10"
             }`}
           >
             {t.label}
@@ -97,10 +107,16 @@ function PilotVerificationsAdmin() {
             </header>
 
             <dl className="mt-4 grid gap-3 text-sm text-white sm:grid-cols-2 lg:grid-cols-4">
-              <Cell label="Licence number"><span className="font-mono">{r.licence_number}</span></Cell>
+              <Cell label="Licence number">
+                <span className="font-mono">{r.licence_number}</span>
+              </Cell>
               <Cell label="Issuing authority">{r.issuing_authority}</Cell>
-              <Cell label="Licence expiry">{r.licence_expiry ? new Date(r.licence_expiry).toLocaleDateString("en-GB") : "—"}</Cell>
-              <Cell label="Medical expiry">{r.medical_expiry ? new Date(r.medical_expiry).toLocaleDateString("en-GB") : "—"}</Cell>
+              <Cell label="Licence expiry">
+                {r.licence_expiry ? new Date(r.licence_expiry).toLocaleDateString("en-GB") : "—"}
+              </Cell>
+              <Cell label="Medical expiry">
+                {r.medical_expiry ? new Date(r.medical_expiry).toLocaleDateString("en-GB") : "—"}
+              </Cell>
               {r.ratings && (
                 <div className="sm:col-span-2 lg:col-span-4">
                   <Cell label="Ratings">{r.ratings}</Cell>
@@ -113,7 +129,9 @@ function PilotVerificationsAdmin() {
                 <DocButton onClick={() => openDoc(r.document_path!)}>Licence document</DocButton>
               )}
               {r.medical_document_path && (
-                <DocButton onClick={() => openDoc(r.medical_document_path!)}>Medical document</DocButton>
+                <DocButton onClick={() => openDoc(r.medical_document_path!)}>
+                  Medical document
+                </DocButton>
               )}
             </div>
 
@@ -128,7 +146,11 @@ function PilotVerificationsAdmin() {
                 />
                 <div className="flex flex-wrap gap-2">
                   <button
-                    onClick={() => reviewMut.mutate({ data: { id: r.id, decision: "approved", notes: notesById[r.id] || null } })}
+                    onClick={() =>
+                      reviewMut.mutate({
+                        data: { id: r.id, decision: "approved", notes: notesById[r.id] || null },
+                      })
+                    }
                     disabled={reviewMut.isPending}
                     className="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-3.5 py-2 text-sm font-bold text-white hover:bg-emerald-400 disabled:opacity-50"
                   >
@@ -136,8 +158,11 @@ function PilotVerificationsAdmin() {
                   </button>
                   <button
                     onClick={() => {
-                      if (!notesById[r.id]?.trim() && !window.confirm("Reject without notes?")) return;
-                      reviewMut.mutate({ data: { id: r.id, decision: "rejected", notes: notesById[r.id] || null } });
+                      if (!notesById[r.id]?.trim() && !window.confirm("Reject without notes?"))
+                        return;
+                      reviewMut.mutate({
+                        data: { id: r.id, decision: "rejected", notes: notesById[r.id] || null },
+                      });
                     }}
                     disabled={reviewMut.isPending}
                     className="inline-flex items-center gap-2 rounded-lg bg-red-500/15 px-3.5 py-2 text-sm font-bold text-red-300 hover:bg-red-500/25 disabled:opacity-50"
@@ -148,7 +173,7 @@ function PilotVerificationsAdmin() {
               </div>
             ) : (
               <div className="mt-4 border-t border-white/10 pt-3 text-xs text-white/50">
-                {r.reviewed_at && <>Reviewed {new Date(r.reviewed_at).toLocaleString("en-GB")}{" "}</>}
+                {r.reviewed_at && <>Reviewed {new Date(r.reviewed_at).toLocaleString("en-GB")} </>}
                 {r.review_notes && <>· "{r.review_notes}"</>}
               </div>
             )}
@@ -195,7 +220,9 @@ function StatusPill({ status }: { status: string }) {
   const m = map[status] ?? map.withdrawn;
   const Icon = m.Icon;
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${m.cls}`}>
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${m.cls}`}
+    >
       <Icon className="h-3 w-3" /> {m.label}
     </span>
   );

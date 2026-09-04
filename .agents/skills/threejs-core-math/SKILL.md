@@ -22,39 +22,39 @@ metadata:
 
 Three.js uses a **right-handed** coordinate system with **Y-up**:
 
-| Axis | Direction | Notes |
-|------|-----------|-------|
-| **X** | Right | Positive toward screen right |
-| **Y** | Up | Positive toward ceiling |
-| **Z** | Toward viewer | Positive out of the screen |
+| Axis  | Direction     | Notes                        |
+| ----- | ------------- | ---------------------------- |
+| **X** | Right         | Positive toward screen right |
+| **Y** | Up            | Positive toward ceiling      |
+| **Z** | Toward viewer | Positive out of the screen   |
 
 **Import conversion rules:**
 
-| Source | Convention | Conversion |
-|--------|-----------|------------|
-| Blender | Z-up | glTF exporter converts automatically |
-| FBX | Z-up | `FBXLoader` converts automatically |
-| OBJ | No standard | ALWAYS verify orientation after loading |
-| IFC | Z-up | ALWAYS apply -90 degree X rotation or use a converting loader |
+| Source  | Convention  | Conversion                                                    |
+| ------- | ----------- | ------------------------------------------------------------- |
+| Blender | Z-up        | glTF exporter converts automatically                          |
+| FBX     | Z-up        | `FBXLoader` converts automatically                            |
+| OBJ     | No standard | ALWAYS verify orientation after loading                       |
+| IFC     | Z-up        | ALWAYS apply -90 degree X rotation or use a converting loader |
 
 **NEVER** assume imported models match Three.js conventions -- ALWAYS verify orientation after loading.
 
 ### Core Math Classes
 
-| Class | Purpose | Identity/Default |
-|-------|---------|-----------------|
-| `Vector3` | Position, direction, scale | `(0, 0, 0)` |
-| `Vector2` | UV coordinates, 2D positions | `(0, 0)` |
-| `Vector4` | Homogeneous coordinates, shader data | `(0, 0, 0, 0)` |
-| `Matrix4` | 4x4 transformation matrix | Identity matrix |
-| `Quaternion` | Rotation without gimbal lock | `(0, 0, 0, 1)` |
-| `Euler` | Human-readable rotation angles | `(0, 0, 0, 'XYZ')` |
-| `Color` | RGB color (0-1 range) | `(1, 1, 1)` white |
-| `Box3` | Axis-aligned bounding box | Empty (+Inf min, -Inf max) |
-| `Sphere` | Bounding sphere | Center origin, radius -1 |
-| `Plane` | Infinite plane | Normal (1,0,0), constant 0 |
-| `Ray` | Origin + direction | Origin (0,0,0), direction (0,0,-1) |
-| `Frustum` | 6-plane view frustum | -- |
+| Class        | Purpose                              | Identity/Default                   |
+| ------------ | ------------------------------------ | ---------------------------------- |
+| `Vector3`    | Position, direction, scale           | `(0, 0, 0)`                        |
+| `Vector2`    | UV coordinates, 2D positions         | `(0, 0)`                           |
+| `Vector4`    | Homogeneous coordinates, shader data | `(0, 0, 0, 0)`                     |
+| `Matrix4`    | 4x4 transformation matrix            | Identity matrix                    |
+| `Quaternion` | Rotation without gimbal lock         | `(0, 0, 0, 1)`                     |
+| `Euler`      | Human-readable rotation angles       | `(0, 0, 0, 'XYZ')`                 |
+| `Color`      | RGB color (0-1 range)                | `(1, 1, 1)` white                  |
+| `Box3`       | Axis-aligned bounding box            | Empty (+Inf min, -Inf max)         |
+| `Sphere`     | Bounding sphere                      | Center origin, radius -1           |
+| `Plane`      | Infinite plane                       | Normal (1,0,0), constant 0         |
+| `Ray`        | Origin + direction                   | Origin (0,0,0), direction (0,0,-1) |
+| `Frustum`    | 6-plane view frustum                 | --                                 |
 
 ### Critical Warnings
 
@@ -65,8 +65,8 @@ Three.js uses a **right-handed** coordinate system with **Y-up**:
 const offset = new Vector3(1, 0, 0);
 meshA.position.add(offset);
 meshB.position.add(offset); // offset is still (1, 0, 0) BUT if you
-                             // had stored meshA.position somewhere,
-                             // it would be mutated
+// had stored meshA.position somewhere,
+// it would be mutated
 
 // CORRECT: clone before mutation
 const pos = sharedPosition.clone().add(offset);
@@ -132,7 +132,7 @@ elements[3]  elements[7]  elements[11]  elements[15]
 Represents rotation without gimbal lock. ALWAYS prefer Quaternion over Euler for interpolated animations and compound rotations.
 
 ```javascript
-import { Quaternion } from 'three';
+import { Quaternion } from "three";
 const q = new Quaternion(); // identity: (0, 0, 0, 1)
 ```
 
@@ -149,8 +149,8 @@ const q = new Quaternion(); // identity: (0, 0, 0, 1)
 Human-readable rotation in radians with a rotation order.
 
 ```javascript
-import { Euler } from 'three';
-const e = new Euler(0, Math.PI / 2, 0, 'XYZ');
+import { Euler } from "three";
+const e = new Euler(0, Math.PI / 2, 0, "XYZ");
 ```
 
 **Rotation orders:** `'XYZ'` (default), `'YXZ'`, `'ZXY'`, `'ZYX'`, `'YZX'`, `'XZY'`
@@ -161,28 +161,28 @@ const e = new Euler(0, Math.PI / 2, 0, 'XYZ');
 
 ### Euler vs Quaternion Decision Tree
 
-| Scenario | Use |
-|----------|-----|
-| Setting a fixed rotation | Euler -- human-readable |
-| Smooth rotation animation | Quaternion + `slerp()` |
-| Combining multiple rotations | Quaternion + `multiply()` |
-| Avoiding gimbal lock | Quaternion |
-| Reading rotation from user input (degrees) | Euler, convert via `quaternion.setFromEuler(euler)` |
-| Storing rotation in scene graph | `object.rotation` (Euler) auto-syncs with `object.quaternion` |
+| Scenario                                   | Use                                                           |
+| ------------------------------------------ | ------------------------------------------------------------- |
+| Setting a fixed rotation                   | Euler -- human-readable                                       |
+| Smooth rotation animation                  | Quaternion + `slerp()`                                        |
+| Combining multiple rotations               | Quaternion + `multiply()`                                     |
+| Avoiding gimbal lock                       | Quaternion                                                    |
+| Reading rotation from user input (degrees) | Euler, convert via `quaternion.setFromEuler(euler)`           |
+| Storing rotation in scene graph            | `object.rotation` (Euler) auto-syncs with `object.quaternion` |
 
 ---
 
 ## Color
 
 ```javascript
-import { Color } from 'three';
+import { Color } from "three";
 
-new Color(0xff0000);               // hex integer
-new Color('red');                   // CSS color name
-new Color('rgb(255, 0, 0)');       // CSS rgb string
-new Color('#ff0000');              // CSS hex string
-new Color('hsl(0, 100%, 50%)');   // CSS hsl string
-new Color(1.0, 0.0, 0.0);        // RGB floats (0-1 range)
+new Color(0xff0000); // hex integer
+new Color("red"); // CSS color name
+new Color("rgb(255, 0, 0)"); // CSS rgb string
+new Color("#ff0000"); // CSS hex string
+new Color("hsl(0, 100%, 50%)"); // CSS hsl string
+new Color(1.0, 0.0, 0.0); // RGB floats (0-1 range)
 ```
 
 **Properties:** `r`, `g`, `b` (number, 0-1 range).
@@ -202,15 +202,15 @@ new Color(1.0, 0.0, 0.0);        // RGB floats (0-1 range)
 Static utility methods -- NEVER instantiate, ALWAYS access via `MathUtils.method()`.
 
 ```javascript
-import { MathUtils } from 'three';
+import { MathUtils } from "three";
 
-MathUtils.degToRad(90);           // 1.5707...
-MathUtils.clamp(value, 0, 1);    // clamp to range
-MathUtils.lerp(0, 100, 0.5);     // 50
+MathUtils.degToRad(90); // 1.5707...
+MathUtils.clamp(value, 0, 1); // clamp to range
+MathUtils.lerp(0, 100, 0.5); // 50
 MathUtils.mapLinear(5, 0, 10, 0, 100); // 50
 MathUtils.smoothstep(0.5, 0, 1); // Hermite ease
 MathUtils.damp(current, target, lambda, dt); // frame-rate-independent damping
-MathUtils.generateUUID();         // RFC 4122 v4 UUID
+MathUtils.generateUUID(); // RFC 4122 v4 UUID
 ```
 
 `damp()` is particularly useful for smooth camera follow and UI animations -- it produces exponential decay that is frame-rate independent, unlike naive lerp in an animation loop.
@@ -222,14 +222,14 @@ MathUtils.generateUUID();         // RFC 4122 v4 UUID
 ### Box3 (Axis-Aligned Bounding Box)
 
 ```javascript
-import { Box3, Vector3 } from 'three';
+import { Box3, Vector3 } from "three";
 
 const box = new Box3();
-box.setFromObject(mesh);                    // compute from mesh
-box.containsPoint(new Vector3(1, 2, 3));   // boolean
-box.intersectsBox(otherBox);               // boolean
-box.getCenter(new Vector3());              // center point
-box.getSize(new Vector3());                // dimensions
+box.setFromObject(mesh); // compute from mesh
+box.containsPoint(new Vector3(1, 2, 3)); // boolean
+box.intersectsBox(otherBox); // boolean
+box.getCenter(new Vector3()); // center point
+box.getSize(new Vector3()); // dimensions
 ```
 
 ### Sphere, Plane, Ray, Frustum

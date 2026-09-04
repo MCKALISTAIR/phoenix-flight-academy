@@ -48,7 +48,7 @@ Scene is slow / low FPS
 ### renderer.info: Your First Diagnostic Tool
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 // ALWAYS check renderer.info when diagnosing performance
 console.log(renderer.info.render);
@@ -66,7 +66,7 @@ console.log(renderer.info.programs);
 ### Stats.js: FPS and Memory Monitoring
 
 ```javascript
-import Stats from 'three/addons/libs/stats.module.js';
+import Stats from "three/addons/libs/stats.module.js";
 
 const stats = new Stats();
 stats.showPanel(0); // 0 = FPS, 1 = MS per frame, 2 = MB heap
@@ -82,13 +82,13 @@ function animate() {
 
 ### Performance Budgets
 
-| Metric | Target (60 FPS) | Warning | Critical |
-|--------|-----------------|---------|----------|
-| Draw calls | < 100 | 100-500 | > 500 |
-| Triangles | < 1M | 1M-3M | > 3M |
-| Textures (GPU) | < 50 | 50-200 | > 200 |
-| Shader programs | < 20 | 20-50 | > 50 |
-| Frame time | < 16.6ms | 16.6-33ms | > 33ms |
+| Metric          | Target (60 FPS) | Warning   | Critical |
+| --------------- | --------------- | --------- | -------- |
+| Draw calls      | < 100           | 100-500   | > 500    |
+| Triangles       | < 1M            | 1M-3M     | > 3M     |
+| Textures (GPU)  | < 50            | 50-200    | > 200    |
+| Shader programs | < 20            | 20-50     | > 50     |
+| Frame time      | < 16.6ms        | 16.6-33ms | > 33ms   |
 
 ---
 
@@ -98,26 +98,41 @@ function animate() {
 
 Three.js allocates GPU resources that are NOT automatically garbage collected by JavaScript. ALWAYS dispose these manually:
 
-| Object Type | Method | GPU Resource Released |
-|-------------|--------|---------------------|
-| `BufferGeometry` | `geometry.dispose()` | Vertex/index buffers |
-| `Material` (all types) | `material.dispose()` | Shader programs, uniforms |
-| `Texture` (all types) | `texture.dispose()` | GPU texture memory |
-| `WebGLRenderTarget` | `renderTarget.dispose()` | Framebuffer + textures |
-| `WebGLRenderer` | `renderer.dispose()` | Entire WebGL context |
-| `PMREMGenerator` | `pmremGenerator.dispose()` | Prefiltered env maps |
-| Controls (all types) | `controls.dispose()` | DOM event listeners |
+| Object Type            | Method                     | GPU Resource Released     |
+| ---------------------- | -------------------------- | ------------------------- |
+| `BufferGeometry`       | `geometry.dispose()`       | Vertex/index buffers      |
+| `Material` (all types) | `material.dispose()`       | Shader programs, uniforms |
+| `Texture` (all types)  | `texture.dispose()`        | GPU texture memory        |
+| `WebGLRenderTarget`    | `renderTarget.dispose()`   | Framebuffer + textures    |
+| `WebGLRenderer`        | `renderer.dispose()`       | Entire WebGL context      |
+| `PMREMGenerator`       | `pmremGenerator.dispose()` | Prefiltered env maps      |
+| Controls (all types)   | `controls.dispose()`       | DOM event listeners       |
 
 ### Complete Material Disposal
 
 ```javascript
 function disposeMaterial(material) {
   const textureProps = [
-    'map', 'lightMap', 'bumpMap', 'normalMap', 'specularMap',
-    'envMap', 'alphaMap', 'aoMap', 'displacementMap',
-    'emissiveMap', 'gradientMap', 'metalnessMap', 'roughnessMap',
-    'clearcoatMap', 'clearcoatNormalMap', 'clearcoatRoughnessMap',
-    'transmissionMap', 'thicknessMap', 'sheenColorMap', 'sheenRoughnessMap'
+    "map",
+    "lightMap",
+    "bumpMap",
+    "normalMap",
+    "specularMap",
+    "envMap",
+    "alphaMap",
+    "aoMap",
+    "displacementMap",
+    "emissiveMap",
+    "gradientMap",
+    "metalnessMap",
+    "roughnessMap",
+    "clearcoatMap",
+    "clearcoatNormalMap",
+    "clearcoatRoughnessMap",
+    "transmissionMap",
+    "thicknessMap",
+    "sheenColorMap",
+    "sheenRoughnessMap",
   ];
   for (const prop of textureProps) {
     if (material[prop]) material[prop].dispose();
@@ -149,12 +164,14 @@ function disposeScene(scene) {
 ### When to Dispose vs. When to Reuse
 
 **ALWAYS dispose when:**
+
 - Removing objects permanently from the scene
 - Switching between completely different scenes
 - Unloading loaded models (GLTF, FBX, OBJ)
 - Component unmount (React, Vue, Angular)
 
 **NEVER dispose when:**
+
 - Temporarily hiding objects (use `visible = false` instead)
 - Objects will be re-added to the scene later
 - Multiple meshes share the same geometry/material (dispose ONLY when ALL users are done)
@@ -168,7 +185,7 @@ function disposeScene(scene) {
 ALWAYS use `InstancedMesh` when rendering more than ~100 copies of the same geometry+material combination.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
@@ -188,12 +205,12 @@ mesh.instanceMatrix.needsUpdate = true;
 scene.add(mesh);
 ```
 
-| Instance Count | Recommendation |
-|---------------|----------------|
-| < 10 | Individual `Mesh` objects are fine |
-| 10-100 | Either approach; profile your case |
-| 100-10,000 | ALWAYS use `InstancedMesh` |
-| > 10,000 | `InstancedMesh` with spatial subdivision or `BatchedMesh` (r160+) |
+| Instance Count | Recommendation                                                    |
+| -------------- | ----------------------------------------------------------------- |
+| < 10           | Individual `Mesh` objects are fine                                |
+| 10-100         | Either approach; profile your case                                |
+| 100-10,000     | ALWAYS use `InstancedMesh`                                        |
+| > 10,000       | `InstancedMesh` with spatial subdivision or `BatchedMesh` (r160+) |
 
 ### BatchedMesh (r160+): Multiple Geometries in One Call
 
@@ -204,7 +221,7 @@ scene.add(mesh);
 For static objects that NEVER move independently, merge them into a single geometry:
 
 ```javascript
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 
 const geometries = meshArray.map((m) => {
   const geo = m.geometry.clone();
@@ -228,12 +245,12 @@ meshArray.forEach((m) => {
 ## LOD (Level of Detail)
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const lod = new THREE.LOD();
-lod.addLevel(highDetailMesh, 0);    // visible 0-50 units
+lod.addLevel(highDetailMesh, 0); // visible 0-50 units
 lod.addLevel(mediumDetailMesh, 50); // visible 50-200 units
-lod.addLevel(lowDetailMesh, 200);   // visible 200+ units
+lod.addLevel(lowDetailMesh, 200); // visible 200+ units
 scene.add(lod);
 
 // ALWAYS call in animation loop for distance-based switching
@@ -246,25 +263,25 @@ lod.update(camera);
 
 ## Texture Optimization
 
-| Technique | Impact | When to Use |
-|-----------|--------|-------------|
-| Resize textures | High | ALWAYS use the smallest resolution that looks acceptable |
-| Power-of-two dimensions | Medium | Required for mipmaps; ALWAYS use (256, 512, 1024, 2048) |
-| Compressed formats (KTX2/Basis) | High | ALWAYS for production; 4-6x smaller GPU footprint |
-| Texture atlases | High | Combine multiple small textures into one to reduce draw calls |
-| `texture.dispose()` on swap | Critical | ALWAYS dispose old texture before assigning new one |
-| `generateMipmaps: false` | Low | Use for UI textures or textures that NEVER need filtering at distance |
+| Technique                       | Impact   | When to Use                                                           |
+| ------------------------------- | -------- | --------------------------------------------------------------------- |
+| Resize textures                 | High     | ALWAYS use the smallest resolution that looks acceptable              |
+| Power-of-two dimensions         | Medium   | Required for mipmaps; ALWAYS use (256, 512, 1024, 2048)               |
+| Compressed formats (KTX2/Basis) | High     | ALWAYS for production; 4-6x smaller GPU footprint                     |
+| Texture atlases                 | High     | Combine multiple small textures into one to reduce draw calls         |
+| `texture.dispose()` on swap     | Critical | ALWAYS dispose old texture before assigning new one                   |
+| `generateMipmaps: false`        | Low      | Use for UI textures or textures that NEVER need filtering at distance |
 
 ### KTX2 Compressed Textures
 
 ```javascript
-import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
+import { KTX2Loader } from "three/addons/loaders/KTX2Loader.js";
 
 const ktx2Loader = new KTX2Loader()
-  .setTranscoderPath('three/addons/libs/basis/')
+  .setTranscoderPath("three/addons/libs/basis/")
   .detectSupport(renderer);
 
-ktx2Loader.load('texture.ktx2', (texture) => {
+ktx2Loader.load("texture.ktx2", (texture) => {
   material.map = texture;
   material.needsUpdate = true;
 });
@@ -309,8 +326,10 @@ class MeshPool {
     mesh.visible = false;
     const idx = this.pool.indexOf(mesh);
     if (idx !== -1 && idx < this.activeIndex) {
-      [this.pool[idx], this.pool[this.activeIndex - 1]] =
-        [this.pool[this.activeIndex - 1], this.pool[idx]];
+      [this.pool[idx], this.pool[this.activeIndex - 1]] = [
+        this.pool[this.activeIndex - 1],
+        this.pool[idx],
+      ];
       this.activeIndex--;
     }
   }
@@ -355,12 +374,12 @@ function animate() {
 
 ## Shader and Material Optimization
 
-| Action | Impact |
-|--------|--------|
-| Use `MeshStandardMaterial` instead of `MeshPhysicalMaterial` | Fewer shader instructions unless you need clearcoat/transmission/sheen |
-| Minimize unique material count | Fewer shader compilations; ALWAYS share materials across identical meshes |
-| Set `material.precision = 'mediump'` on mobile | Faster fragment shading on mobile GPUs |
-| Avoid `onBeforeCompile` unless necessary | Each unique modification creates a new shader variant |
+| Action                                                       | Impact                                                                    |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| Use `MeshStandardMaterial` instead of `MeshPhysicalMaterial` | Fewer shader instructions unless you need clearcoat/transmission/sheen    |
+| Minimize unique material count                               | Fewer shader compilations; ALWAYS share materials across identical meshes |
+| Set `material.precision = 'mediump'` on mobile               | Faster fragment shading on mobile GPUs                                    |
+| Avoid `onBeforeCompile` unless necessary                     | Each unique modification creates a new shader variant                     |
 
 ---
 

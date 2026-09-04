@@ -36,7 +36,7 @@ function animateRotation(mesh, startEuler, endEuler, t) {
 }
 
 // CORRECT: Convert to quaternions, slerp, let auto-sync handle the rest
-import { Quaternion, Euler } from 'three';
+import { Quaternion, Euler } from "three";
 
 const qStart = new Quaternion().setFromEuler(startEuler);
 const qEnd = new Quaternion().setFromEuler(endEuler);
@@ -58,7 +58,7 @@ function animateRotation(mesh, t) {
 mesh.rotation.y = 90; // This rotates ~14.3 full turns, NOT 90 degrees!
 
 // CORRECT: ALWAYS convert degrees to radians
-import { MathUtils } from 'three';
+import { MathUtils } from "three";
 mesh.rotation.y = MathUtils.degToRad(90); // 1.5707... radians = 90 degrees
 
 // Also correct: use Math.PI directly
@@ -177,22 +177,16 @@ function animate() {
 ```javascript
 // WRONG: Using Euler angles for a flight simulator camera
 // When pitch reaches 90 degrees, yaw and roll merge -- gimbal lock!
-camera.rotation.order = 'XYZ';
-camera.rotation.x += pitchInput;  // pitch
-camera.rotation.y += yawInput;    // yaw
-camera.rotation.z += rollInput;   // roll
+camera.rotation.order = "XYZ";
+camera.rotation.x += pitchInput; // pitch
+camera.rotation.y += yawInput; // yaw
+camera.rotation.z += rollInput; // roll
 // At rotation.x = Math.PI/2, changing y and z produce the same rotation
 
 // CORRECT: Use quaternion incremental rotation
-const pitchQ = new Quaternion().setFromAxisAngle(
-  new Vector3(1, 0, 0), pitchInput
-);
-const yawQ = new Quaternion().setFromAxisAngle(
-  new Vector3(0, 1, 0), yawInput
-);
-const rollQ = new Quaternion().setFromAxisAngle(
-  new Vector3(0, 0, 1), rollInput
-);
+const pitchQ = new Quaternion().setFromAxisAngle(new Vector3(1, 0, 0), pitchInput);
+const yawQ = new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), yawInput);
+const rollQ = new Quaternion().setFromAxisAngle(new Vector3(0, 0, 1), rollInput);
 
 camera.quaternion.multiply(yawQ);
 camera.quaternion.multiply(pitchQ);

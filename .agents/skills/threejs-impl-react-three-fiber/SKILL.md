@@ -20,34 +20,34 @@ metadata:
 
 ### Canvas Component Props
 
-| Prop | Type | Default | Purpose |
-|------|------|---------|---------|
-| `gl` | `Renderer props \| (canvas) => Renderer` | `{}` | WebGL renderer config or factory |
-| `camera` | `Camera props \| THREE.Camera` | `{ fov: 75, near: 0.1, far: 1000, position: [0,0,5] }` | Default camera |
-| `scene` | `Scene props \| THREE.Scene` | `{}` | Scene configuration |
-| `shadows` | `boolean \| ShadowMapType` | `false` | Enable shadow maps |
-| `raycaster` | `Raycaster props` | `{}` | Raycaster configuration |
-| `frameloop` | `"always" \| "demand" \| "never"` | `"always"` | Render loop strategy |
-| `resize` | `ResizeOptions` | `{ scroll: true, debounce: { scroll: 50, resize: 0 } }` | Resize behavior |
-| `orthographic` | `boolean` | `false` | Use OrthographicCamera |
-| `dpr` | `number \| [min, max]` | `[1, 2]` | Device pixel ratio |
-| `linear` | `boolean` | `false` | Linear color space |
-| `flat` | `boolean` | `false` | Disable tone mapping |
-| `legacy` | `boolean` | `false` | Disable color management |
-| `events` | `EventManager` | R3F default | Custom event manager |
-| `eventSource` | `HTMLElement \| React.RefObject` | Parent node | Event capture element |
-| `eventPrefix` | `string` | `"offset"` | Coordinate prefix |
-| `onCreated` | `(state: RootState) => void` | -- | Post-init callback |
-| `onPointerMissed` | `(event: PointerEvent) => void` | -- | Click misses all meshes |
-| `fallback` | `React.ReactNode` | -- | DOM fallback during init |
+| Prop              | Type                                     | Default                                                 | Purpose                          |
+| ----------------- | ---------------------------------------- | ------------------------------------------------------- | -------------------------------- |
+| `gl`              | `Renderer props \| (canvas) => Renderer` | `{}`                                                    | WebGL renderer config or factory |
+| `camera`          | `Camera props \| THREE.Camera`           | `{ fov: 75, near: 0.1, far: 1000, position: [0,0,5] }`  | Default camera                   |
+| `scene`           | `Scene props \| THREE.Scene`             | `{}`                                                    | Scene configuration              |
+| `shadows`         | `boolean \| ShadowMapType`               | `false`                                                 | Enable shadow maps               |
+| `raycaster`       | `Raycaster props`                        | `{}`                                                    | Raycaster configuration          |
+| `frameloop`       | `"always" \| "demand" \| "never"`        | `"always"`                                              | Render loop strategy             |
+| `resize`          | `ResizeOptions`                          | `{ scroll: true, debounce: { scroll: 50, resize: 0 } }` | Resize behavior                  |
+| `orthographic`    | `boolean`                                | `false`                                                 | Use OrthographicCamera           |
+| `dpr`             | `number \| [min, max]`                   | `[1, 2]`                                                | Device pixel ratio               |
+| `linear`          | `boolean`                                | `false`                                                 | Linear color space               |
+| `flat`            | `boolean`                                | `false`                                                 | Disable tone mapping             |
+| `legacy`          | `boolean`                                | `false`                                                 | Disable color management         |
+| `events`          | `EventManager`                           | R3F default                                             | Custom event manager             |
+| `eventSource`     | `HTMLElement \| React.RefObject`         | Parent node                                             | Event capture element            |
+| `eventPrefix`     | `string`                                 | `"offset"`                                              | Coordinate prefix                |
+| `onCreated`       | `(state: RootState) => void`             | --                                                      | Post-init callback               |
+| `onPointerMissed` | `(event: PointerEvent) => void`          | --                                                      | Click misses all meshes          |
+| `fallback`        | `React.ReactNode`                        | --                                                      | DOM fallback during init         |
 
 ### Frameloop Modes
 
-| Mode | Behavior |
-|------|----------|
-| `"always"` | ALWAYS renders every frame via requestAnimationFrame |
-| `"demand"` | ONLY renders when `invalidate()` is called -- use for static scenes |
-| `"never"` | NEVER renders automatically -- caller MUST invoke `advance(timestamp)` |
+| Mode       | Behavior                                                               |
+| ---------- | ---------------------------------------------------------------------- |
+| `"always"` | ALWAYS renders every frame via requestAnimationFrame                   |
+| `"demand"` | ONLY renders when `invalidate()` is called -- use for static scenes    |
+| `"never"`  | NEVER renders automatically -- caller MUST invoke `advance(timestamp)` |
 
 ### Critical Warnings
 
@@ -101,28 +101,28 @@ Subscribes a callback to the render loop. Executes every frame.
 
 **State object key properties:**
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `gl` | `THREE.WebGLRenderer` | The renderer |
-| `scene` | `THREE.Scene` | The scene |
-| `camera` | `THREE.Camera` | Active camera |
-| `clock` | `THREE.Clock` | System clock |
-| `pointer` | `THREE.Vector2` | Normalized pointer (-1 to +1) |
-| `size` | `{ width, height, top, left }` | Canvas dimensions (px) |
-| `viewport` | `{ width, height, factor, distance, aspect }` | Camera-relative metrics |
-| `invalidate` | `() => void` | Request render in demand mode |
-| `advance` | `(timestamp: number) => void` | Advance one tick in never mode |
-| `performance` | `{ current, min, max, regress() }` | Adaptive performance |
-| `set` | `(state) => void` | Mutate state directly |
-| `get` | `() => RootState` | Read state non-reactively |
+| Property      | Type                                          | Description                    |
+| ------------- | --------------------------------------------- | ------------------------------ |
+| `gl`          | `THREE.WebGLRenderer`                         | The renderer                   |
+| `scene`       | `THREE.Scene`                                 | The scene                      |
+| `camera`      | `THREE.Camera`                                | Active camera                  |
+| `clock`       | `THREE.Clock`                                 | System clock                   |
+| `pointer`     | `THREE.Vector2`                               | Normalized pointer (-1 to +1)  |
+| `size`        | `{ width, height, top, left }`                | Canvas dimensions (px)         |
+| `viewport`    | `{ width, height, factor, distance, aspect }` | Camera-relative metrics        |
+| `invalidate`  | `() => void`                                  | Request render in demand mode  |
+| `advance`     | `(timestamp: number) => void`                 | Advance one tick in never mode |
+| `performance` | `{ current, min, max, regress() }`            | Adaptive performance           |
+| `set`         | `(state) => void`                             | Mutate state directly          |
+| `get`         | `() => RootState`                             | Read state non-reactively      |
 
 **Priority system:** Callbacks execute in ascending priority order. When ANY callback has priority > 0, R3F disables automatic `renderer.render()`. The highest-priority subscriber MUST call `state.gl.render(state.scene, state.camera)` manually. Negative priorities do NOT disable auto-rendering.
 
 ### useThree
 
 ```typescript
-const state = useThree()                              // full state (re-renders often)
-const camera = useThree((state) => state.camera)      // selector (re-renders only on change)
+const state = useThree(); // full state (re-renders often)
+const camera = useThree((state) => state.camera); // selector (re-renders only on change)
 ```
 
 Returns the RootState (same object as useFrame's state). ALWAYS use a selector when only one property is needed.
@@ -143,7 +143,7 @@ Suspense-based asset loading. ALWAYS wrap in `<Suspense fallback={...}>`.
 ### useGraph
 
 ```typescript
-const { nodes, materials } = useGraph(object3D)
+const { nodes, materials } = useGraph(object3D);
 ```
 
 Traverses an Object3D hierarchy and returns memoized `{ nodes, materials }` collections keyed by name.
@@ -168,10 +168,10 @@ Insert pre-existing Three.js objects into the declarative tree:
 Register custom Three.js classes as JSX elements:
 
 ```jsx
-import { extend } from '@react-three/fiber'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { extend } from "@react-three/fiber";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-extend({ OrbitControls })
+extend({ OrbitControls });
 // Now usable as <orbitControls args={[camera, domElement]} />
 ```
 
@@ -185,38 +185,38 @@ R3F implements pointer events via raycasting. Events bubble through the scene gr
 
 ### Supported Events
 
-| Event | Trigger |
-|-------|---------|
-| `onClick` | Pointer click on mesh |
-| `onContextMenu` | Right-click / context menu |
-| `onDoubleClick` | Double click |
-| `onPointerUp` | Pointer released |
-| `onPointerDown` | Pointer pressed |
-| `onPointerOver` | Pointer enters mesh (fires continuously) |
-| `onPointerOut` | Pointer leaves mesh |
-| `onPointerEnter` | Pointer enters mesh (fires once) |
-| `onPointerLeave` | Pointer leaves mesh (fires once) |
-| `onPointerMove` | Pointer moves over mesh |
-| `onPointerMissed` | Click hits no mesh (Canvas-level) |
-| `onWheel` | Scroll wheel |
-| `onUpdate` | Object receives new props |
+| Event             | Trigger                                  |
+| ----------------- | ---------------------------------------- |
+| `onClick`         | Pointer click on mesh                    |
+| `onContextMenu`   | Right-click / context menu               |
+| `onDoubleClick`   | Double click                             |
+| `onPointerUp`     | Pointer released                         |
+| `onPointerDown`   | Pointer pressed                          |
+| `onPointerOver`   | Pointer enters mesh (fires continuously) |
+| `onPointerOut`    | Pointer leaves mesh                      |
+| `onPointerEnter`  | Pointer enters mesh (fires once)         |
+| `onPointerLeave`  | Pointer leaves mesh (fires once)         |
+| `onPointerMove`   | Pointer moves over mesh                  |
+| `onPointerMissed` | Click hits no mesh (Canvas-level)        |
+| `onWheel`         | Scroll wheel                             |
+| `onUpdate`        | Object receives new props                |
 
 ### Event Object Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `object` | `THREE.Object3D` | The mesh actually hit |
-| `eventObject` | `THREE.Object3D` | Object with the event handler |
-| `point` | `THREE.Vector3` | Intersection in world space |
-| `distance` | `number` | Camera-to-intersection distance |
-| `uv` | `THREE.Vector2` | UV coordinates at intersection |
-| `face` | `THREE.Face` | Intersected face |
-| `ray` | `THREE.Ray` | Ray used for intersection |
-| `camera` | `THREE.Camera` | Active camera |
-| `intersections` | `Intersection[]` | All intersected objects |
-| `delta` | `number` | Pixel distance down-to-up |
-| `sourceEvent` | `Event` | Original DOM event |
-| `stopPropagation()` | `function` | Prevent bubbling to occluded objects |
+| Property            | Type             | Description                          |
+| ------------------- | ---------------- | ------------------------------------ |
+| `object`            | `THREE.Object3D` | The mesh actually hit                |
+| `eventObject`       | `THREE.Object3D` | Object with the event handler        |
+| `point`             | `THREE.Vector3`  | Intersection in world space          |
+| `distance`          | `number`         | Camera-to-intersection distance      |
+| `uv`                | `THREE.Vector2`  | UV coordinates at intersection       |
+| `face`              | `THREE.Face`     | Intersected face                     |
+| `ray`               | `THREE.Ray`      | Ray used for intersection            |
+| `camera`            | `THREE.Camera`   | Active camera                        |
+| `intersections`     | `Intersection[]` | All intersected objects              |
+| `delta`             | `number`         | Pixel distance down-to-up            |
+| `sourceEvent`       | `Event`          | Original DOM event                   |
+| `stopPropagation()` | `function`       | Prevent bubbling to occluded objects |
 
 ---
 
@@ -234,9 +234,9 @@ Use `frameloop="demand"` with `invalidate()` for scenes that do not animate cont
 ### Portals
 
 ```jsx
-import { createPortal } from '@react-three/fiber'
+import { createPortal } from "@react-three/fiber";
 
-createPortal(children, targetScene)
+createPortal(children, targetScene);
 ```
 
 Renders children into a different scene/layer without affecting the main scene graph.
@@ -246,7 +246,7 @@ Renders children into a different scene/layer without affecting the main scene g
 ALWAYS wrap imperatively created geometries and materials in `useMemo`:
 
 ```jsx
-const geometry = useMemo(() => new THREE.TorusKnotGeometry(1, 0.3, 128, 32), [])
+const geometry = useMemo(() => new THREE.TorusKnotGeometry(1, 0.3, 128, 32), []);
 ```
 
 Without `useMemo`, a new object is created on every render.

@@ -23,9 +23,13 @@ metadata:
 
 ```javascript
 import {
-  WebGLRenderer, SRGBColorSpace, ACESFilmicToneMapping,
-  PCFSoftShadowMap, PerspectiveCamera, Scene
-} from 'three';
+  WebGLRenderer,
+  SRGBColorSpace,
+  ACESFilmicToneMapping,
+  PCFSoftShadowMap,
+  PerspectiveCamera,
+  Scene,
+} from "three";
 
 const renderer = new WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -47,38 +51,38 @@ renderer.setAnimationLoop((time) => {
 
 ### Constructor Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `canvas` | `HTMLCanvasElement` | new canvas | Existing canvas element |
-| `context` | `WebGLRenderingContext` | new context | Existing WebGL context |
-| `precision` | `'highp' \| 'mediump' \| 'lowp'` | `'highp'` | Shader precision |
-| `alpha` | `boolean` | `false` | Transparent canvas background |
-| `premultipliedAlpha` | `boolean` | `true` | Premultiplied alpha blending |
-| `antialias` | `boolean` | `false` | MSAA anti-aliasing |
-| `stencil` | `boolean` | `true` | Stencil buffer |
-| `preserveDrawingBuffer` | `boolean` | `false` | Required for screenshots |
-| `powerPreference` | `'high-performance' \| 'low-power' \| 'default'` | `'default'` | GPU selection hint |
-| `failIfMajorPerformanceCaveat` | `boolean` | `false` | Fail if software renderer |
-| `depth` | `boolean` | `true` | Depth buffer |
-| `logarithmicDepthBuffer` | `boolean` | `false` | Fix Z-fighting for large scenes |
+| Parameter                      | Type                                             | Default     | Description                     |
+| ------------------------------ | ------------------------------------------------ | ----------- | ------------------------------- |
+| `canvas`                       | `HTMLCanvasElement`                              | new canvas  | Existing canvas element         |
+| `context`                      | `WebGLRenderingContext`                          | new context | Existing WebGL context          |
+| `precision`                    | `'highp' \| 'mediump' \| 'lowp'`                 | `'highp'`   | Shader precision                |
+| `alpha`                        | `boolean`                                        | `false`     | Transparent canvas background   |
+| `premultipliedAlpha`           | `boolean`                                        | `true`      | Premultiplied alpha blending    |
+| `antialias`                    | `boolean`                                        | `false`     | MSAA anti-aliasing              |
+| `stencil`                      | `boolean`                                        | `true`      | Stencil buffer                  |
+| `preserveDrawingBuffer`        | `boolean`                                        | `false`     | Required for screenshots        |
+| `powerPreference`              | `'high-performance' \| 'low-power' \| 'default'` | `'default'` | GPU selection hint              |
+| `failIfMajorPerformanceCaveat` | `boolean`                                        | `false`     | Fail if software renderer       |
+| `depth`                        | `boolean`                                        | `true`      | Depth buffer                    |
+| `logarithmicDepthBuffer`       | `boolean`                                        | `false`     | Fix Z-fighting for large scenes |
 
 **NEVER** change `antialias` after construction -- it CANNOT be modified post-creation.
 
 ### Key Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `domElement` | `HTMLCanvasElement` | -- | The canvas. ALWAYS append to DOM |
-| `shadowMap.enabled` | `boolean` | `false` | MUST set `true` for any shadows |
-| `shadowMap.type` | `ShadowMapType` | `PCFShadowMap` | Shadow filtering algorithm |
-| `toneMapping` | `ToneMapping` | `NoToneMapping` | HDR tone mapping algorithm |
-| `toneMappingExposure` | `number` | `1` | Exposure for tone mapping |
-| `outputColorSpace` | `string` | `SRGBColorSpace` | Output color space |
-| `autoClear` | `boolean` | `true` | Clear before each render call |
-| `sortObjects` | `boolean` | `true` | Automatic draw order sorting |
-| `clippingPlanes` | `Plane[]` | `[]` | Global clipping planes |
-| `localClippingEnabled` | `boolean` | `false` | Enable per-material clipping |
-| `info` | `object` | -- | Render stats (calls, triangles, memory) |
+| Property               | Type                | Default          | Description                             |
+| ---------------------- | ------------------- | ---------------- | --------------------------------------- |
+| `domElement`           | `HTMLCanvasElement` | --               | The canvas. ALWAYS append to DOM        |
+| `shadowMap.enabled`    | `boolean`           | `false`          | MUST set `true` for any shadows         |
+| `shadowMap.type`       | `ShadowMapType`     | `PCFShadowMap`   | Shadow filtering algorithm              |
+| `toneMapping`          | `ToneMapping`       | `NoToneMapping`  | HDR tone mapping algorithm              |
+| `toneMappingExposure`  | `number`            | `1`              | Exposure for tone mapping               |
+| `outputColorSpace`     | `string`            | `SRGBColorSpace` | Output color space                      |
+| `autoClear`            | `boolean`           | `true`           | Clear before each render call           |
+| `sortObjects`          | `boolean`           | `true`           | Automatic draw order sorting            |
+| `clippingPlanes`       | `Plane[]`           | `[]`             | Global clipping planes                  |
+| `localClippingEnabled` | `boolean`           | `false`          | Enable per-material clipping            |
+| `info`                 | `object`            | --               | Render stats (calls, triangles, memory) |
 
 ### Critical Warnings
 
@@ -104,24 +108,24 @@ Three.js r160+ uses a linear workflow with automatic sRGB conversion on output.
 
 ### Color Space Rules
 
-| Texture Type | colorSpace | Examples |
-|-------------|-----------|----------|
-| Color / albedo | `SRGBColorSpace` | Diffuse maps, emissive maps |
-| Data | `LinearSRGBColorSpace` | Normal maps, roughness, metalness, AO, displacement |
+| Texture Type   | colorSpace             | Examples                                            |
+| -------------- | ---------------------- | --------------------------------------------------- |
+| Color / albedo | `SRGBColorSpace`       | Diffuse maps, emissive maps                         |
+| Data           | `LinearSRGBColorSpace` | Normal maps, roughness, metalness, AO, displacement |
 
 **Rule:** Color textures are ALWAYS `SRGBColorSpace`. Data textures are ALWAYS `LinearSRGBColorSpace`. Mixing these up produces washed-out or over-saturated renders.
 
 ### Tone Mapping Decision Tree
 
-| Constant | When to Use |
-|----------|------------|
-| `NoToneMapping` | Non-photorealistic rendering, UI overlays, unlit scenes |
-| `LinearToneMapping` | Basic HDR clamping with minimal color transformation |
-| `ReinhardToneMapping` | General-purpose, preserves color hues well |
-| `CineonToneMapping` | Cinematic film stock look |
-| `ACESFilmicToneMapping` | **Default choice for PBR.** Industry-standard filmic curve |
-| `AgXToneMapping` | Better than ACES for saturated colors. Avoids ACES hue shift on bright blues/reds. (r160+) |
-| `NeutralToneMapping` | When color accuracy is paramount, minimal artistic transformation |
+| Constant                | When to Use                                                                                |
+| ----------------------- | ------------------------------------------------------------------------------------------ |
+| `NoToneMapping`         | Non-photorealistic rendering, UI overlays, unlit scenes                                    |
+| `LinearToneMapping`     | Basic HDR clamping with minimal color transformation                                       |
+| `ReinhardToneMapping`   | General-purpose, preserves color hues well                                                 |
+| `CineonToneMapping`     | Cinematic film stock look                                                                  |
+| `ACESFilmicToneMapping` | **Default choice for PBR.** Industry-standard filmic curve                                 |
+| `AgXToneMapping`        | Better than ACES for saturated colors. Avoids ACES hue shift on bright blues/reds. (r160+) |
+| `NeutralToneMapping`    | When color accuracy is paramount, minimal artistic transformation                          |
 
 **ALWAYS** use `ACESFilmicToneMapping` or `AgXToneMapping` for PBR workflows. `AgXToneMapping` is preferred when saturated colors must remain accurate.
 
@@ -130,18 +134,18 @@ Three.js r160+ uses a linear workflow with automatic sRGB conversion on output.
 ## Shadow Map Configuration
 
 ```javascript
-import { PCFSoftShadowMap } from 'three';
+import { PCFSoftShadowMap } from "three";
 
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = PCFSoftShadowMap;
 ```
 
-| Type | Quality | Performance | Notes |
-|------|---------|-------------|-------|
-| `BasicShadowMap` | Low (hard edges) | Fastest | No filtering |
-| `PCFShadowMap` | Medium | Medium | Default. Percentage-Closer Filtering |
-| `PCFSoftShadowMap` | High (soft edges) | Slower | Bilinear PCF. Most popular choice |
-| `VSMShadowMap` | High (very soft) | Slowest | Can exhibit light bleeding artifacts |
+| Type               | Quality           | Performance | Notes                                |
+| ------------------ | ----------------- | ----------- | ------------------------------------ |
+| `BasicShadowMap`   | Low (hard edges)  | Fastest     | No filtering                         |
+| `PCFShadowMap`     | Medium            | Medium      | Default. Percentage-Closer Filtering |
+| `PCFSoftShadowMap` | High (soft edges) | Slower      | Bilinear PCF. Most popular choice    |
+| `VSMShadowMap`     | High (very soft)  | Slowest     | Can exhibit light bleeding artifacts |
 
 ---
 
@@ -162,7 +166,7 @@ renderer.setAnimationLoop(null);
 ### Window Resize Handler
 
 ```javascript
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -178,13 +182,13 @@ ALWAYS update `camera.aspect` AND call `updateProjectionMatrix()` before `setSiz
 ### PerspectiveCamera
 
 ```javascript
-import { PerspectiveCamera } from 'three';
+import { PerspectiveCamera } from "three";
 
 const camera = new PerspectiveCamera(
-  50,                                        // fov (vertical, degrees)
-  window.innerWidth / window.innerHeight,    // aspect ratio
-  0.1,                                       // near
-  1000                                       // far
+  50, // fov (vertical, degrees)
+  window.innerWidth / window.innerHeight, // aspect ratio
+  0.1, // near
+  1000, // far
 );
 camera.position.set(0, 5, 10);
 camera.lookAt(0, 0, 0);
@@ -195,16 +199,17 @@ After modifying `fov`, `aspect`, `near`, `far`, or `zoom`, you MUST call `camera
 ### OrthographicCamera
 
 ```javascript
-import { OrthographicCamera } from 'three';
+import { OrthographicCamera } from "three";
 
 const frustumSize = 10;
 const aspect = window.innerWidth / window.innerHeight;
 const camera = new OrthographicCamera(
-  -frustumSize * aspect / 2,   // left
-   frustumSize * aspect / 2,   // right
-   frustumSize / 2,            // top
-  -frustumSize / 2,            // bottom
-  0.1, 1000
+  (-frustumSize * aspect) / 2, // left
+  (frustumSize * aspect) / 2, // right
+  frustumSize / 2, // top
+  -frustumSize / 2, // bottom
+  0.1,
+  1000,
 );
 ```
 
@@ -223,7 +228,7 @@ Renders the scene from all 6 directions into a `WebGLCubeRenderTarget`. Used for
 ## Render Targets
 
 ```javascript
-import { WebGLRenderTarget } from 'three';
+import { WebGLRenderTarget } from "three";
 
 const renderTarget = new WebGLRenderTarget(1024, 1024);
 renderer.setRenderTarget(renderTarget);
@@ -269,7 +274,7 @@ renderer.setViewport(0, 0, canvas.width, canvas.height);
 ## Clipping Planes
 
 ```javascript
-import { Plane, Vector3 } from 'three';
+import { Plane, Vector3 } from "three";
 
 // Global clipping (affects all objects)
 renderer.clippingPlanes = [new Plane(new Vector3(0, -1, 0), 1)];
@@ -278,7 +283,7 @@ renderer.clippingPlanes = [new Plane(new Vector3(0, -1, 0), 1)];
 renderer.localClippingEnabled = true;
 material.clippingPlanes = [plane];
 material.clipIntersection = false; // false = union, true = intersection
-material.clipShadows = true;       // also clip shadow geometry
+material.clipShadows = true; // also clip shadow geometry
 ```
 
 ---

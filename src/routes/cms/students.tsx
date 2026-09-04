@@ -4,11 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { GraduationCap, Plus, Clock, Plane, ChevronRight, UserPlus2 } from "lucide-react";
 import { requireAdmin } from "@/lib/auth-guards";
-import {
-  listStudents,
-  listEligibleStudentUsers,
-  createStudent,
-} from "@/lib/students.functions";
+import { listStudents, listEligibleStudentUsers, createStudent } from "@/lib/students.functions";
 
 export const Route = createFileRoute("/cms/students")({
   beforeLoad: async ({ location }) => {
@@ -76,7 +72,7 @@ function StudentsList() {
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-xl font-extrabold text-white flex items-center gap-2">
-            <GraduationCap className="h-5 w-5 text-[oklch(0.70_0.18_270)]" />
+            <GraduationCap className="h-5 w-5 text-primary" />
             Students &amp; Logbook
           </h2>
           <p className="mt-1 text-xs text-white/40">
@@ -85,7 +81,7 @@ function StudentsList() {
         </div>
         <button
           onClick={() => setShowAdd(true)}
-          className="flex items-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-[oklch(0.55_0.22_270)]/20 transition-all hover:scale-[1.02] hover:bg-[oklch(0.60_0.22_270)]"
+          className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-[var(--color-primary)]/20 transition-all hover:scale-[1.02] hover:bg-primary"
         >
           <Plus className="h-4 w-4" />
           Add Student
@@ -97,7 +93,8 @@ function StudentsList() {
           <div className="p-10 text-center text-white/40 text-sm">Loading students…</div>
         ) : students.length === 0 ? (
           <div className="p-10 text-center text-white/40 text-sm">
-            No students yet. Click <span className="text-white">Add Student</span> to enrol the first one.
+            No students yet. Click <span className="text-white">Add Student</span> to enrol the
+            first one.
           </div>
         ) : (
           <div className="divide-y divide-white/5">
@@ -108,8 +105,13 @@ function StudentsList() {
                 params={{ studentId: s.id }}
                 className="flex items-center gap-5 px-6 py-4 transition-colors hover:bg-white/5"
               >
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[oklch(0.55_0.22_270)]/20 text-xs font-bold text-[oklch(0.70_0.18_270)] border border-[oklch(0.55_0.22_270)]/20">
-                  {(s.display_name ?? "?").split(" ").map((p) => p[0]).join("").slice(0, 2).toUpperCase()}
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary border border-primary/20">
+                  {(s.display_name ?? "?")
+                    .split(" ")
+                    .map((p) => p[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-semibold text-white truncate">
@@ -137,9 +139,7 @@ function StudentsList() {
                     <div className="text-white/40 mt-0.5">flights</div>
                   </div>
                   <div className="text-right w-24">
-                    <div className="text-white/70 font-semibold">
-                      {s.last_flight_date ?? "—"}
-                    </div>
+                    <div className="text-white/70 font-semibold">{s.last_flight_date ?? "—"}</div>
                     <div className="text-white/40 mt-0.5">last flight</div>
                   </div>
                   <ChevronRight className="h-4 w-4 text-white/30" />
@@ -152,7 +152,7 @@ function StudentsList() {
 
       {showAdd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-          <div className="w-full max-w-md rounded-3xl border border-white/10 bg-[oklch(0.10_0.04_270)] shadow-2xl">
+          <div className="w-full max-w-md rounded-3xl border border-white/10 bg-surface-navy shadow-2xl">
             <div className="border-b border-white/10 px-6 py-5 flex items-center justify-between">
               <div>
                 <h3 className="text-base font-bold text-white flex items-center gap-2">
@@ -186,7 +186,7 @@ function StudentsList() {
                   required
                   value={userId}
                   onChange={(e) => setUserId(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-[oklch(0.65_0.22_270)]"
+                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none focus:border-primary"
                 >
                   <option value="">Choose a user…</option>
                   {(elig?.users ?? []).map((u) => (
@@ -229,14 +229,12 @@ function StudentsList() {
                 </div>
               </div>
               {createMut.error && (
-                <div className="text-xs text-red-400">
-                  {(createMut.error as Error).message}
-                </div>
+                <div className="text-xs text-red-400">{(createMut.error as Error).message}</div>
               )}
               <button
                 type="submit"
                 disabled={createMut.isPending || !userId}
-                className="w-full rounded-xl bg-[oklch(0.55_0.22_270)] py-3 text-sm font-bold text-white hover:bg-[oklch(0.60_0.22_270)] disabled:opacity-50"
+                className="w-full rounded-xl bg-primary py-3 text-sm font-bold text-white hover:bg-primary disabled:opacity-50"
               >
                 {createMut.isPending ? "Enrolling…" : "Enrol Student"}
               </button>

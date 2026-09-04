@@ -7,37 +7,37 @@ All materials extend `Material`. These methods and properties are available on e
 ```typescript
 class Material {
   // Properties
-  side: number;                    // FrontSide | BackSide | DoubleSide
-  transparent: boolean;            // Enable alpha blending
-  opacity: number;                 // 0-1 (requires transparent: true)
-  depthWrite: boolean;             // Write to depth buffer
-  depthTest: boolean;              // Test against depth buffer
-  depthFunc: number;               // LessEqualDepth (default)
-  blending: number;                // NormalBlending | AdditiveBlending | SubtractiveBlending | MultiplyBlending | CustomBlending | NoBlending
-  blendSrc: number;                // Source blend factor (CustomBlending)
-  blendDst: number;                // Destination blend factor (CustomBlending)
-  blendEquation: number;           // AddEquation (default)
-  alphaTest: number;               // Discard fragments below this alpha (0-1)
-  alphaToCoverage: boolean;        // Alpha-to-coverage (MSAA only)
-  clippingPlanes: Plane[] | null;  // Clipping planes
-  clipIntersection: boolean;       // Clip ALL planes intersection vs union
-  clipShadows: boolean;            // Apply clipping to shadows
-  colorWrite: boolean;             // Write color
-  stencilWrite: boolean;           // Enable stencil buffer writing
-  stencilFunc: number;             // Stencil comparison function
-  stencilRef: number;              // Stencil reference value
-  stencilWriteMask: number;        // Stencil write bitmask
-  stencilFuncMask: number;         // Stencil function bitmask
-  stencilFail: number;             // Stencil fail operation
-  stencilZFail: number;            // Stencil depth fail operation
-  stencilZPass: number;            // Stencil depth pass operation
-  polygonOffset: boolean;          // Enable polygon offset (decals, coplanar)
-  polygonOffsetFactor: number;     // Polygon offset factor
-  polygonOffsetUnits: number;      // Polygon offset units
-  visible: boolean;                // Render this material
-  toneMapped: boolean;             // Apply renderer tone mapping
-  needsUpdate: boolean;            // Trigger shader recompilation
-  version: number;                 // Auto-incremented on changes
+  side: number; // FrontSide | BackSide | DoubleSide
+  transparent: boolean; // Enable alpha blending
+  opacity: number; // 0-1 (requires transparent: true)
+  depthWrite: boolean; // Write to depth buffer
+  depthTest: boolean; // Test against depth buffer
+  depthFunc: number; // LessEqualDepth (default)
+  blending: number; // NormalBlending | AdditiveBlending | SubtractiveBlending | MultiplyBlending | CustomBlending | NoBlending
+  blendSrc: number; // Source blend factor (CustomBlending)
+  blendDst: number; // Destination blend factor (CustomBlending)
+  blendEquation: number; // AddEquation (default)
+  alphaTest: number; // Discard fragments below this alpha (0-1)
+  alphaToCoverage: boolean; // Alpha-to-coverage (MSAA only)
+  clippingPlanes: Plane[] | null; // Clipping planes
+  clipIntersection: boolean; // Clip ALL planes intersection vs union
+  clipShadows: boolean; // Apply clipping to shadows
+  colorWrite: boolean; // Write color
+  stencilWrite: boolean; // Enable stencil buffer writing
+  stencilFunc: number; // Stencil comparison function
+  stencilRef: number; // Stencil reference value
+  stencilWriteMask: number; // Stencil write bitmask
+  stencilFuncMask: number; // Stencil function bitmask
+  stencilFail: number; // Stencil fail operation
+  stencilZFail: number; // Stencil depth fail operation
+  stencilZPass: number; // Stencil depth pass operation
+  polygonOffset: boolean; // Enable polygon offset (decals, coplanar)
+  polygonOffsetFactor: number; // Polygon offset factor
+  polygonOffsetUnits: number; // Polygon offset units
+  visible: boolean; // Render this material
+  toneMapped: boolean; // Apply renderer tone mapping
+  needsUpdate: boolean; // Trigger shader recompilation
+  version: number; // Auto-incremented on changes
 
   // Methods
   clone(): Material;
@@ -274,15 +274,19 @@ new MeshMatcapMaterial({
 ## Utility Materials
 
 ### MeshNormalMaterial
+
 Maps surface normals to RGB. Useful for debugging geometry normals.
 
 ### MeshDepthMaterial
+
 Renders depth from camera. Used internally for shadow maps.
 
 ### MeshDistanceMaterial
+
 Renders distance from a point light. Used internally for point light shadows.
 
 ### ShadowMaterial
+
 Receives shadows on a transparent surface.
 
 ```typescript
@@ -351,24 +355,24 @@ new SpriteMaterial({
 class Texture {
   // Properties
   image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement;
-  mapping: number;              // UVMapping (default)
-  channel: number;              // UV channel (0 = uv, 1 = uv2)
-  wrapS: number;                // ClampToEdgeWrapping (default)
-  wrapT: number;                // ClampToEdgeWrapping (default)
-  magFilter: number;            // LinearFilter (default)
-  minFilter: number;            // LinearMipmapLinearFilter (default)
-  anisotropy: number;           // 1 (default), max = renderer.capabilities.getMaxAnisotropy()
-  format: number;               // RGBAFormat (default)
-  type: number;                 // UnsignedByteType (default)
-  offset: Vector2;              // (0, 0)
-  repeat: Vector2;              // (1, 1)
-  rotation: number;             // 0
-  center: Vector2;              // (0, 0)
-  generateMipmaps: boolean;     // true
-  premultiplyAlpha: boolean;    // false
-  flipY: boolean;               // true
-  colorSpace: string;           // NoColorSpace
-  needsUpdate: boolean;         // false
+  mapping: number; // UVMapping (default)
+  channel: number; // UV channel (0 = uv, 1 = uv2)
+  wrapS: number; // ClampToEdgeWrapping (default)
+  wrapT: number; // ClampToEdgeWrapping (default)
+  magFilter: number; // LinearFilter (default)
+  minFilter: number; // LinearMipmapLinearFilter (default)
+  anisotropy: number; // 1 (default), max = renderer.capabilities.getMaxAnisotropy()
+  format: number; // RGBAFormat (default)
+  type: number; // UnsignedByteType (default)
+  offset: Vector2; // (0, 0)
+  repeat: Vector2; // (1, 1)
+  rotation: number; // 0
+  center: Vector2; // (0, 0)
+  generateMipmaps: boolean; // true
+  premultiplyAlpha: boolean; // false
+  flipY: boolean; // true
+  colorSpace: string; // NoColorSpace
+  needsUpdate: boolean; // false
 
   // Methods
   clone(): Texture;

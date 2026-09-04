@@ -26,9 +26,19 @@ export const getCheckoutSession = createServerFn({ method: "GET" })
 
     const blockCount = 0;
 
-    const product = (row as { booking_products: { name: string; payment_mode: "full" | "deposit" | "invoice"; requires_approval: boolean } | null }).booking_products;
+    const product = (
+      row as {
+        booking_products: {
+          name: string;
+          payment_mode: "full" | "deposit" | "invoice";
+          requires_approval: boolean;
+        } | null;
+      }
+    ).booking_products;
     const amountDueCents =
-      product?.payment_mode === "deposit" ? row.deposit_due_cents ?? 0 : row.price_total_cents ?? 0;
+      product?.payment_mode === "deposit"
+        ? (row.deposit_due_cents ?? 0)
+        : (row.price_total_cents ?? 0);
     return {
       bookingId: row.id,
       productName: product?.name ?? "Booking",
@@ -71,7 +81,14 @@ export const completeMockPayment = createServerFn({ method: "POST" })
       .maybeSingle();
     if (loadErr) throw new Error(loadErr.message);
     if (!row) throw new Error("Booking not found");
-    const product = (row as { booking_products: { payment_mode: "full" | "deposit" | "invoice"; requires_approval: boolean } | null }).booking_products;
+    const product = (
+      row as {
+        booking_products: {
+          payment_mode: "full" | "deposit" | "invoice";
+          requires_approval: boolean;
+        } | null;
+      }
+    ).booking_products;
     const mode = product?.payment_mode ?? "full";
     const requiresApproval = product?.requires_approval ?? false;
 
@@ -82,7 +99,7 @@ export const completeMockPayment = createServerFn({ method: "POST" })
 
     // Paid path
     const amountPaid =
-      mode === "deposit" ? row.deposit_due_cents ?? 0 : row.price_total_cents ?? 0;
+      mode === "deposit" ? (row.deposit_due_cents ?? 0) : (row.price_total_cents ?? 0);
     const paymentStatus = (mode === "deposit" ? "deposit_paid" : "paid") as "deposit_paid" | "paid";
     const status = (requiresApproval ? "pending" : "confirmed") as "pending" | "confirmed";
 

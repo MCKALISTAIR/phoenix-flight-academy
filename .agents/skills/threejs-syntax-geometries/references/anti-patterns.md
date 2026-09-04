@@ -4,12 +4,12 @@
 
 ```javascript
 // WRONG: GPU buffer will NOT update — changes are invisible
-const positions = geometry.getAttribute('position');
+const positions = geometry.getAttribute("position");
 positions.setXYZ(0, 5, 0, 0);
 // Nothing happens on screen
 
 // CORRECT: ALWAYS set needsUpdate = true after modifying attribute data
-const positions = geometry.getAttribute('position');
+const positions = geometry.getAttribute("position");
 positions.setXYZ(0, 5, 0, 0);
 positions.needsUpdate = true;
 ```
@@ -84,13 +84,13 @@ mesh = null;
 ```javascript
 // WRONG: MeshStandardMaterial renders completely black
 const geometry = new THREE.BufferGeometry();
-geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
 geometry.setIndex(indices);
 const mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color: 0xff0000 }));
 
 // CORRECT: ALWAYS compute normals for lit materials
 const geometry = new THREE.BufferGeometry();
-geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
 geometry.setIndex(indices);
 geometry.computeVertexNormals(); // Required for lighting calculations
 const mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color: 0xff0000 }));
@@ -111,7 +111,7 @@ const positions = new THREE.Float32BufferAttribute(data, 3);
 // CORRECT: Set DynamicDrawUsage BEFORE the first render
 const positions = new THREE.Float32BufferAttribute(data, 3);
 positions.usage = THREE.DynamicDrawUsage; // MUST be set before first render
-geometry.setAttribute('position', positions);
+geometry.setAttribute("position", positions);
 ```
 
 **WHY**: GPU drivers use the usage hint to decide where to allocate the buffer. `StaticDrawUsage` places the buffer in GPU-optimized memory that is slow to update. `DynamicDrawUsage` uses a buffer that is fast to update from the CPU. Changing usage after the first render has no effect on some drivers.
@@ -142,7 +142,7 @@ mesh.count = 500; // Works because buffer was allocated for 1000
 ```javascript
 // WRONG: boundingBox is null — causes crash or incorrect behavior
 const geometry = new THREE.BufferGeometry();
-geometry.setAttribute('position', new THREE.Float32BufferAttribute(data, 3));
+geometry.setAttribute("position", new THREE.Float32BufferAttribute(data, 3));
 console.log(geometry.boundingBox.min); // TypeError: Cannot read property 'min' of null
 
 // CORRECT: ALWAYS call compute methods explicitly
@@ -170,7 +170,7 @@ flatGeometry.computeVertexNormals(); // Now each face gets independent normals
 // CORRECT option B: Use material flatShading property
 const material = new THREE.MeshStandardMaterial({
   color: 0x888888,
-  flatShading: true // Forces flat shading in the shader
+  flatShading: true, // Forces flat shading in the shader
 });
 ```
 

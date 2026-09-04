@@ -4,15 +4,15 @@
 
 ```javascript
 // WRONG: Setting SRGBColorSpace on a normal map corrupts normal vectors
-const normalMap = loader.load('normal.jpg');
+const normalMap = loader.load("normal.jpg");
 normalMap.colorSpace = THREE.SRGBColorSpace; // CORRUPTED lighting!
 
 // CORRECT: Data textures ALWAYS use NoColorSpace (the default)
-const normalMap = loader.load('normal.jpg');
+const normalMap = loader.load("normal.jpg");
 // colorSpace stays at NoColorSpace -- do NOT change it
 
 // CORRECT: ONLY diffuse/emissive/color textures get SRGBColorSpace
-const diffuseMap = loader.load('diffuse.jpg');
+const diffuseMap = loader.load("diffuse.jpg");
 diffuseMap.colorSpace = THREE.SRGBColorSpace;
 ```
 
@@ -26,14 +26,14 @@ diffuseMap.colorSpace = THREE.SRGBColorSpace;
 // WRONG: opacity is silently ignored without transparent: true
 const material = new THREE.MeshStandardMaterial({
   color: 0xff0000,
-  opacity: 0.5    // Has NO visible effect!
+  opacity: 0.5, // Has NO visible effect!
 });
 
 // CORRECT: ALWAYS pair opacity with transparent
 const material = new THREE.MeshStandardMaterial({
   color: 0xff0000,
   opacity: 0.5,
-  transparent: true
+  transparent: true,
 });
 ```
 
@@ -48,7 +48,7 @@ const material = new THREE.MeshStandardMaterial({
 const material = new THREE.MeshPhysicalMaterial({
   color: 0xff4444,
   roughness: 0.5,
-  metalness: 0.0
+  metalness: 0.0,
   // No clearcoat, transmission, sheen, iridescence, or anisotropy used
 });
 
@@ -56,7 +56,7 @@ const material = new THREE.MeshPhysicalMaterial({
 const material = new THREE.MeshStandardMaterial({
   color: 0xff4444,
   roughness: 0.5,
-  metalness: 0.0
+  metalness: 0.0,
 });
 ```
 
@@ -91,12 +91,12 @@ scene.remove(mesh);
 
 ```javascript
 // WRONG: Setting repeat without changing wrapping mode
-const texture = loader.load('tile.jpg');
+const texture = loader.load("tile.jpg");
 texture.repeat.set(4, 4);
 // Default ClampToEdgeWrapping: texture does NOT tile, edge pixels are stretched
 
 // CORRECT: ALWAYS set wrapping mode when using repeat
-const texture = loader.load('tile.jpg');
+const texture = loader.load("tile.jpg");
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
 texture.repeat.set(4, 4);
@@ -112,21 +112,21 @@ texture.repeat.set(4, 4);
 // WRONG: linewidth > 1 is silently ignored on most platforms
 const material = new THREE.LineBasicMaterial({
   color: 0xff0000,
-  linewidth: 5    // IGNORED on Windows, macOS, most Linux (WebGL limitation)
+  linewidth: 5, // IGNORED on Windows, macOS, most Linux (WebGL limitation)
 });
 
 // CORRECT: Use Line2 + LineMaterial from addons for thick lines
-import { Line2 } from 'three/addons/lines/Line2.js';
-import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
-import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+import { Line2 } from "three/addons/lines/Line2.js";
+import { LineMaterial } from "three/addons/lines/LineMaterial.js";
+import { LineGeometry } from "three/addons/lines/LineGeometry.js";
 
 const geometry = new LineGeometry();
 geometry.setPositions([0, 0, 0, 1, 1, 0, 2, 0, 0]);
 
 const material = new LineMaterial({
   color: 0xff0000,
-  linewidth: 5,    // Works on all platforms (screen-space pixels)
-  resolution: new THREE.Vector2(window.innerWidth, window.innerHeight)
+  linewidth: 5, // Works on all platforms (screen-space pixels)
+  resolution: new THREE.Vector2(window.innerWidth, window.innerHeight),
 });
 
 const line = new Line2(geometry, material);
@@ -142,14 +142,14 @@ scene.add(line);
 ```javascript
 // WRONG: Forcing shader recompilation every frame
 function animate() {
-  material.needsUpdate = true;  // Recompiles shader EVERY frame -- massive waste
+  material.needsUpdate = true; // Recompiles shader EVERY frame -- massive waste
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
 }
 
 // CORRECT: Only set needsUpdate once, after the change
 material.flatShading = true;
-material.needsUpdate = true;  // Set ONCE after the change
+material.needsUpdate = true; // Set ONCE after the change
 // Do NOT set again until the next property change
 ```
 
@@ -163,14 +163,14 @@ material.needsUpdate = true;  // Set ONCE after the change
 // WRONG: Using aoMap without uv2 attribute -- AO will not render
 const material = new THREE.MeshStandardMaterial({
   aoMap: aoTexture,
-  aoMapIntensity: 1.0
+  aoMapIntensity: 1.0,
 });
 const mesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material);
 // aoMap is silently ignored because geometry has no uv2 attribute
 
 // CORRECT: ALWAYS add uv2 attribute when using aoMap or lightMap
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-geometry.setAttribute('uv2', geometry.getAttribute('uv'));
+geometry.setAttribute("uv2", geometry.getAttribute("uv"));
 const mesh = new THREE.Mesh(geometry, material);
 ```
 
@@ -188,7 +188,7 @@ renderer.render(scene, camera);
 renderer.setRenderTarget(null);
 
 const screenMaterial = new THREE.MeshBasicMaterial({
-  map: renderTarget.texture  // Upside down if flipY is not corrected
+  map: renderTarget.texture, // Upside down if flipY is not corrected
 });
 
 // CORRECT: Render target textures have flipY = false by default (correct)
@@ -207,22 +207,22 @@ dataTexture.needsUpdate = true;
 
 ```javascript
 // WRONG: Linear filtering blurs toon shading into smooth gradient
-const gradientMap = loader.load('toon_gradient_3.png');
+const gradientMap = loader.load("toon_gradient_3.png");
 // Default filters: LinearFilter / LinearMipmapLinearFilter -- SMOOTH, not toon
 
 const material = new THREE.MeshToonMaterial({
   color: 0xff4444,
-  gradientMap: gradientMap   // Looks like MeshLambertMaterial, not toon!
+  gradientMap: gradientMap, // Looks like MeshLambertMaterial, not toon!
 });
 
 // CORRECT: ALWAYS use NearestFilter for toon gradient maps
-const gradientMap = loader.load('toon_gradient_3.png');
+const gradientMap = loader.load("toon_gradient_3.png");
 gradientMap.minFilter = THREE.NearestFilter;
 gradientMap.magFilter = THREE.NearestFilter;
 
 const material = new THREE.MeshToonMaterial({
   color: 0xff4444,
-  gradientMap: gradientMap   // Sharp discrete shading steps
+  gradientMap: gradientMap, // Sharp discrete shading steps
 });
 ```
 

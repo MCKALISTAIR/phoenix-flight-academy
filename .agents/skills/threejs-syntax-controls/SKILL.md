@@ -20,30 +20,30 @@ metadata:
 
 ### Control Selection Decision Tree
 
-| Use Case | Control | Why |
-|----------|---------|-----|
-| Inspect a 3D model from all angles | OrbitControls | Orbit/pan/zoom around a target point |
-| Top-down map or 2D-style navigation | MapControls | Left-drag pans, right-drag rotates |
-| Free-flight editor or space scene | FlyControls | Six degrees of freedom, WASD + mouse |
-| First-person game with pointer lock | PointerLockControls | Hides cursor, captures mouse movement |
-| First-person without pointer lock | FirstPersonControls | Mouse-look without browser lock API |
-| Move/rotate/scale objects via gizmo | TransformControls | Interactive translate/rotate/scale handles |
-| Drag objects along a plane | DragControls | Click-and-drag object repositioning |
-| Unconstrained rotation (no gimbal lock) | ArcballControls | Full spherical rotation with animation |
-| Unconstrained rotation (simpler) | TrackballControls | Like OrbitControls but no pole constraint |
+| Use Case                                | Control             | Why                                        |
+| --------------------------------------- | ------------------- | ------------------------------------------ |
+| Inspect a 3D model from all angles      | OrbitControls       | Orbit/pan/zoom around a target point       |
+| Top-down map or 2D-style navigation     | MapControls         | Left-drag pans, right-drag rotates         |
+| Free-flight editor or space scene       | FlyControls         | Six degrees of freedom, WASD + mouse       |
+| First-person game with pointer lock     | PointerLockControls | Hides cursor, captures mouse movement      |
+| First-person without pointer lock       | FirstPersonControls | Mouse-look without browser lock API        |
+| Move/rotate/scale objects via gizmo     | TransformControls   | Interactive translate/rotate/scale handles |
+| Drag objects along a plane              | DragControls        | Click-and-drag object repositioning        |
+| Unconstrained rotation (no gimbal lock) | ArcballControls     | Full spherical rotation with animation     |
+| Unconstrained rotation (simpler)        | TrackballControls   | Like OrbitControls but no pole constraint  |
 
 ### Import Paths (Three.js r160+)
 
 ```javascript
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { MapControls } from 'three/addons/controls/MapControls.js';
-import { FlyControls } from 'three/addons/controls/FlyControls.js';
-import { FirstPersonControls } from 'three/addons/controls/FirstPersonControls.js';
-import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
-import { TransformControls } from 'three/addons/controls/TransformControls.js';
-import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
-import { ArcballControls } from 'three/addons/controls/ArcballControls.js';
-import { DragControls } from 'three/addons/controls/DragControls.js';
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { MapControls } from "three/addons/controls/MapControls.js";
+import { FlyControls } from "three/addons/controls/FlyControls.js";
+import { FirstPersonControls } from "three/addons/controls/FirstPersonControls.js";
+import { PointerLockControls } from "three/addons/controls/PointerLockControls.js";
+import { TransformControls } from "three/addons/controls/TransformControls.js";
+import { TrackballControls } from "three/addons/controls/TrackballControls.js";
+import { ArcballControls } from "three/addons/controls/ArcballControls.js";
+import { DragControls } from "three/addons/controls/DragControls.js";
 ```
 
 **ALWAYS** use `'three/addons/controls/...'` for r160+. The legacy path `'three/examples/jsm/controls/...'` still works but is deprecated.
@@ -121,55 +121,55 @@ new OrbitControls(camera: THREE.Camera, domElement: HTMLElement)
 
 ### Key Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `enabled` | `boolean` | `true` | Enable/disable all interaction |
-| `target` | `Vector3` | `(0,0,0)` | Orbit focus point |
-| `enableDamping` | `boolean` | `false` | Smooth inertial movement |
-| `dampingFactor` | `number` | `0.05` | Inertia strength (0-1) |
-| `autoRotate` | `boolean` | `false` | Auto-rotate around target |
-| `autoRotateSpeed` | `number` | `2.0` | Degrees/sec at 60fps |
-| `enablePan` | `boolean` | `true` | Allow panning |
-| `enableRotate` | `boolean` | `true` | Allow rotation |
-| `enableZoom` | `boolean` | `true` | Allow zooming |
-| `minDistance` | `number` | `0` | Min zoom distance (PerspectiveCamera) |
-| `maxDistance` | `number` | `Infinity` | Max zoom distance (PerspectiveCamera) |
-| `minZoom` | `number` | `0` | Min zoom (OrthographicCamera) |
-| `maxZoom` | `number` | `Infinity` | Max zoom (OrthographicCamera) |
-| `minPolarAngle` | `number` | `0` | Min vertical angle (radians) |
-| `maxPolarAngle` | `number` | `Math.PI` | Max vertical angle (radians) |
-| `minAzimuthAngle` | `number` | `-Infinity` | Min horizontal angle (radians) |
-| `maxAzimuthAngle` | `number` | `Infinity` | Max horizontal angle (radians) |
-| `screenSpacePanning` | `boolean` | `true` | Pan in screen plane (true) or horizontal plane (false) |
-| `zoomToCursor` | `boolean` | `false` | Zoom towards cursor position |
-| `panSpeed` | `number` | `1.0` | Pan speed multiplier |
-| `rotateSpeed` | `number` | `1.0` | Rotation speed multiplier |
-| `zoomSpeed` | `number` | `1.0` | Zoom speed multiplier |
-| `mouseButtons` | `object` | `{LEFT: ROTATE, MIDDLE: DOLLY, RIGHT: PAN}` | Mouse button mapping |
-| `touches` | `object` | `{ONE: ROTATE, TWO: DOLLY_PAN}` | Touch gesture mapping |
-| `keys` | `object` | `{LEFT, UP, RIGHT, BOTTOM}` | Arrow key codes for panning |
+| Property             | Type      | Default                                     | Description                                            |
+| -------------------- | --------- | ------------------------------------------- | ------------------------------------------------------ |
+| `enabled`            | `boolean` | `true`                                      | Enable/disable all interaction                         |
+| `target`             | `Vector3` | `(0,0,0)`                                   | Orbit focus point                                      |
+| `enableDamping`      | `boolean` | `false`                                     | Smooth inertial movement                               |
+| `dampingFactor`      | `number`  | `0.05`                                      | Inertia strength (0-1)                                 |
+| `autoRotate`         | `boolean` | `false`                                     | Auto-rotate around target                              |
+| `autoRotateSpeed`    | `number`  | `2.0`                                       | Degrees/sec at 60fps                                   |
+| `enablePan`          | `boolean` | `true`                                      | Allow panning                                          |
+| `enableRotate`       | `boolean` | `true`                                      | Allow rotation                                         |
+| `enableZoom`         | `boolean` | `true`                                      | Allow zooming                                          |
+| `minDistance`        | `number`  | `0`                                         | Min zoom distance (PerspectiveCamera)                  |
+| `maxDistance`        | `number`  | `Infinity`                                  | Max zoom distance (PerspectiveCamera)                  |
+| `minZoom`            | `number`  | `0`                                         | Min zoom (OrthographicCamera)                          |
+| `maxZoom`            | `number`  | `Infinity`                                  | Max zoom (OrthographicCamera)                          |
+| `minPolarAngle`      | `number`  | `0`                                         | Min vertical angle (radians)                           |
+| `maxPolarAngle`      | `number`  | `Math.PI`                                   | Max vertical angle (radians)                           |
+| `minAzimuthAngle`    | `number`  | `-Infinity`                                 | Min horizontal angle (radians)                         |
+| `maxAzimuthAngle`    | `number`  | `Infinity`                                  | Max horizontal angle (radians)                         |
+| `screenSpacePanning` | `boolean` | `true`                                      | Pan in screen plane (true) or horizontal plane (false) |
+| `zoomToCursor`       | `boolean` | `false`                                     | Zoom towards cursor position                           |
+| `panSpeed`           | `number`  | `1.0`                                       | Pan speed multiplier                                   |
+| `rotateSpeed`        | `number`  | `1.0`                                       | Rotation speed multiplier                              |
+| `zoomSpeed`          | `number`  | `1.0`                                       | Zoom speed multiplier                                  |
+| `mouseButtons`       | `object`  | `{LEFT: ROTATE, MIDDLE: DOLLY, RIGHT: PAN}` | Mouse button mapping                                   |
+| `touches`            | `object`  | `{ONE: ROTATE, TWO: DOLLY_PAN}`             | Touch gesture mapping                                  |
+| `keys`               | `object`  | `{LEFT, UP, RIGHT, BOTTOM}`                 | Arrow key codes for panning                            |
 
 ### Methods
 
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `update(deltaTime?)` | `(number?) => boolean` | Update controls state. MUST call every frame with damping/autoRotate |
-| `dispose()` | `() => void` | Remove all event listeners |
-| `saveState()` | `() => void` | Save current camera position/target/zoom |
-| `reset()` | `() => void` | Restore to last saved state |
-| `getDistance()` | `() => number` | Distance from camera to target |
-| `getPolarAngle()` | `() => number` | Vertical angle in radians |
-| `getAzimuthalAngle()` | `() => number` | Horizontal angle in radians |
-| `listenToKeyEvents(el)` | `(HTMLElement) => void` | Enable keyboard panning |
-| `stopListenToKeyEvents()` | `() => void` | Disable keyboard panning |
+| Method                    | Signature               | Description                                                          |
+| ------------------------- | ----------------------- | -------------------------------------------------------------------- |
+| `update(deltaTime?)`      | `(number?) => boolean`  | Update controls state. MUST call every frame with damping/autoRotate |
+| `dispose()`               | `() => void`            | Remove all event listeners                                           |
+| `saveState()`             | `() => void`            | Save current camera position/target/zoom                             |
+| `reset()`                 | `() => void`            | Restore to last saved state                                          |
+| `getDistance()`           | `() => number`          | Distance from camera to target                                       |
+| `getPolarAngle()`         | `() => number`          | Vertical angle in radians                                            |
+| `getAzimuthalAngle()`     | `() => number`          | Horizontal angle in radians                                          |
+| `listenToKeyEvents(el)`   | `(HTMLElement) => void` | Enable keyboard panning                                              |
+| `stopListenToKeyEvents()` | `() => void`            | Disable keyboard panning                                             |
 
 ### Events
 
-| Event | Trigger |
-|-------|---------|
-| `change` | Camera position or target changed |
-| `start` | User interaction began (pointerdown) |
-| `end` | User interaction ended (pointerup) |
+| Event    | Trigger                              |
+| -------- | ------------------------------------ |
+| `change` | Camera position or target changed    |
+| `start`  | User interaction began (pointerdown) |
+| `end`    | User interaction ended (pointerup)   |
 
 ---
 
@@ -177,11 +177,11 @@ new OrbitControls(camera: THREE.Camera, domElement: HTMLElement)
 
 Subclass of OrbitControls optimized for top-down map navigation.
 
-| Button | OrbitControls | MapControls |
-|--------|--------------|-------------|
-| Left mouse | Rotate | Pan |
-| Middle mouse | Dolly | Dolly |
-| Right mouse | Pan | Rotate |
+| Button       | OrbitControls | MapControls |
+| ------------ | ------------- | ----------- |
+| Left mouse   | Rotate        | Pan         |
+| Middle mouse | Dolly         | Dolly       |
+| Right mouse  | Pan           | Rotate      |
 
 All properties, methods, and events are identical to OrbitControls. The ONLY differences are the default `mouseButtons` mapping and `screenSpacePanning` defaulting to `true`.
 
@@ -193,12 +193,12 @@ Six-degrees-of-freedom flight camera. WASD for movement, QE for roll, RF for up/
 
 ### Key Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `movementSpeed` | `number` | `1.0` | Translation speed |
-| `rollSpeed` | `number` | `0.005` | Roll rotation speed |
-| `dragToLook` | `boolean` | `false` | Require mouse drag to rotate (vs. always follow mouse) |
-| `autoForward` | `boolean` | `false` | Move forward automatically |
+| Property        | Type      | Default | Description                                            |
+| --------------- | --------- | ------- | ------------------------------------------------------ |
+| `movementSpeed` | `number`  | `1.0`   | Translation speed                                      |
+| `rollSpeed`     | `number`  | `0.005` | Roll rotation speed                                    |
+| `dragToLook`    | `boolean` | `false` | Require mouse drag to rotate (vs. always follow mouse) |
+| `autoForward`   | `boolean` | `false` | Move forward automatically                             |
 
 ### Methods
 
@@ -213,34 +213,34 @@ First-person camera using the Pointer Lock API. Hides and captures the mouse cur
 
 ### Key Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `isLocked` | `boolean` | read-only | Whether pointer is currently locked |
-| `maxPolarAngle` | `number` | `Math.PI` | Max vertical look angle |
-| `minPolarAngle` | `number` | `0` | Min vertical look angle |
-| `pointerSpeed` | `number` | `1.0` | Mouse sensitivity multiplier |
+| Property        | Type      | Default   | Description                         |
+| --------------- | --------- | --------- | ----------------------------------- |
+| `isLocked`      | `boolean` | read-only | Whether pointer is currently locked |
+| `maxPolarAngle` | `number`  | `Math.PI` | Max vertical look angle             |
+| `minPolarAngle` | `number`  | `0`       | Min vertical look angle             |
+| `pointerSpeed`  | `number`  | `1.0`     | Mouse sensitivity multiplier        |
 
 ### Methods
 
-| Method | Description |
-|--------|-------------|
-| `lock()` | Request pointer lock (MUST call from user gesture) |
-| `unlock()` | Exit pointer lock |
-| `connect()` | Attach event listeners |
-| `disconnect()` | Remove event listeners |
-| `dispose()` | Full cleanup (calls disconnect) |
-| `getObject()` | Returns the controlled camera |
-| `getDirection(target)` | Write look direction into target Vector3 |
-| `moveForward(distance)` | Move camera forward |
-| `moveRight(distance)` | Move camera sideways |
+| Method                  | Description                                        |
+| ----------------------- | -------------------------------------------------- |
+| `lock()`                | Request pointer lock (MUST call from user gesture) |
+| `unlock()`              | Exit pointer lock                                  |
+| `connect()`             | Attach event listeners                             |
+| `disconnect()`          | Remove event listeners                             |
+| `dispose()`             | Full cleanup (calls disconnect)                    |
+| `getObject()`           | Returns the controlled camera                      |
+| `getDirection(target)`  | Write look direction into target Vector3           |
+| `moveForward(distance)` | Move camera forward                                |
+| `moveRight(distance)`   | Move camera sideways                               |
 
 ### Events
 
-| Event | Trigger |
-|-------|---------|
+| Event    | Trigger                    |
+| -------- | -------------------------- |
 | `change` | Camera orientation changed |
-| `lock` | Pointer lock acquired |
-| `unlock` | Pointer lock released |
+| `lock`   | Pointer lock acquired      |
+| `unlock` | Pointer lock released      |
 
 **ALWAYS** implement your own WASD movement in the animation loop. PointerLockControls handles look direction only, NOT position.
 
@@ -252,50 +252,50 @@ Interactive gizmo for moving, rotating, and scaling scene objects.
 
 ### Key Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `mode` | `string` | `'translate'` | `'translate'`, `'rotate'`, or `'scale'` |
-| `space` | `string` | `'world'` | `'world'` or `'local'` coordinate space |
-| `showX` | `boolean` | `true` | Show X axis handle |
-| `showY` | `boolean` | `true` | Show Y axis handle |
-| `showZ` | `boolean` | `true` | Show Z axis handle |
-| `size` | `number` | `1` | Gizmo visual scale |
-| `translationSnap` | `number|null` | `null` | Snap to grid (units) |
-| `rotationSnap` | `number|null` | `null` | Snap rotation (radians) |
-| `scaleSnap` | `number|null` | `null` | Snap scale increment |
-| `dragging` | `boolean` | read-only | User is currently dragging |
+| Property          | Type      | Default       | Description                             |
+| ----------------- | --------- | ------------- | --------------------------------------- | ----------------------- |
+| `mode`            | `string`  | `'translate'` | `'translate'`, `'rotate'`, or `'scale'` |
+| `space`           | `string`  | `'world'`     | `'world'` or `'local'` coordinate space |
+| `showX`           | `boolean` | `true`        | Show X axis handle                      |
+| `showY`           | `boolean` | `true`        | Show Y axis handle                      |
+| `showZ`           | `boolean` | `true`        | Show Z axis handle                      |
+| `size`            | `number`  | `1`           | Gizmo visual scale                      |
+| `translationSnap` | `number   | null`         | `null`                                  | Snap to grid (units)    |
+| `rotationSnap`    | `number   | null`         | `null`                                  | Snap rotation (radians) |
+| `scaleSnap`       | `number   | null`         | `null`                                  | Snap scale increment    |
+| `dragging`        | `boolean` | read-only     | User is currently dragging              |
 
 ### Methods
 
-| Method | Description |
-|--------|-------------|
-| `attach(object)` | Attach gizmo to a scene object |
-| `detach()` | Remove gizmo from current object |
-| `setMode(mode)` | Set transform mode |
-| `setSpace(space)` | Set coordinate space |
-| `setSize(size)` | Set gizmo scale |
-| `setTranslationSnap(snap)` | Set position snap |
-| `setRotationSnap(snap)` | Set rotation snap |
-| `setScaleSnap(snap)` | Set scale snap |
-| `getRaycaster()` | Access internal raycaster |
-| `dispose()` | Cleanup |
+| Method                     | Description                      |
+| -------------------------- | -------------------------------- |
+| `attach(object)`           | Attach gizmo to a scene object   |
+| `detach()`                 | Remove gizmo from current object |
+| `setMode(mode)`            | Set transform mode               |
+| `setSpace(space)`          | Set coordinate space             |
+| `setSize(size)`            | Set gizmo scale                  |
+| `setTranslationSnap(snap)` | Set position snap                |
+| `setRotationSnap(snap)`    | Set rotation snap                |
+| `setScaleSnap(snap)`       | Set scale snap                   |
+| `getRaycaster()`           | Access internal raycaster        |
+| `dispose()`                | Cleanup                          |
 
 ### Events
 
-| Event | Trigger |
-|-------|---------|
-| `change` | Gizmo visual changed |
+| Event              | Trigger                                                            |
+| ------------------ | ------------------------------------------------------------------ |
+| `change`           | Gizmo visual changed                                               |
 | `dragging-changed` | `event.value` is `true` when dragging starts, `false` when it ends |
-| `objectChange` | Attached object's transform was modified |
-| `mouseDown` | Pointer pressed on gizmo |
-| `mouseUp` | Pointer released from gizmo |
+| `objectChange`     | Attached object's transform was modified                           |
+| `mouseDown`        | Pointer pressed on gizmo                                           |
+| `mouseUp`          | Pointer released from gizmo                                        |
 
 ### Critical Integration Pattern
 
 **ALWAYS** disable camera controls during gizmo drag:
 
 ```javascript
-transformControls.addEventListener('dragging-changed', (event) => {
+transformControls.addEventListener("dragging-changed", (event) => {
   orbitControls.enabled = !event.value;
 });
 ```
@@ -307,15 +307,19 @@ transformControls.addEventListener('dragging-changed', (event) => {
 ## Brief Overview: Other Controls
 
 ### ArcballControls
+
 Unconstrained rotation with animation states. No polar angle limit -- the camera rotates freely in all directions. Best for CAD-style model inspection.
 
 ### TrackballControls
+
 Like OrbitControls without the polar angle constraint. The camera can rotate past the poles. Properties: `rotateSpeed`, `zoomSpeed`, `panSpeed`, `staticMoving`, `dynamicDampingFactor`.
 
 ### DragControls
+
 Drag scene objects along a plane. Constructor: `new DragControls(objects, camera, domElement)`. Events: `dragstart`, `drag`, `dragend`, `hoveron`, `hoveroff`.
 
 ### FirstPersonControls
+
 Mouse-look camera without pointer lock. Properties: `movementSpeed`, `lookSpeed`, `activeLook`, `constrainVertical`, `verticalMin`, `verticalMax`.
 
 ---

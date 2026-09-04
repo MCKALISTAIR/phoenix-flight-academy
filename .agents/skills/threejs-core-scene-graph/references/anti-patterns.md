@@ -47,14 +47,14 @@ toRemove.forEach((obj) => obj.removeFromParent());
 
 ```javascript
 // WRONG: bypasses parent reference updates and event dispatch
-group.children.push(mesh);          // mesh.parent is still null!
-group.children.splice(0, 1);        // removed object.parent still points to group!
-group.children = [];                 // orphans all children with stale parent refs
+group.children.push(mesh); // mesh.parent is still null!
+group.children.splice(0, 1); // removed object.parent still points to group!
+group.children = []; // orphans all children with stale parent refs
 
 // CORRECT: ALWAYS use the hierarchy methods
-group.add(mesh);                     // sets mesh.parent, fires 'added' event
-group.remove(mesh);                  // clears mesh.parent, fires 'removed' event
-group.clear();                       // properly removes all children
+group.add(mesh); // sets mesh.parent, fires 'added' event
+group.remove(mesh); // clears mesh.parent, fires 'removed' event
+group.clear(); // properly removes all children
 ```
 
 **WHY**: `add()` and `remove()` manage parent references, fire events, and handle auto-removal from previous parents. Direct array manipulation breaks all of these guarantees.
@@ -119,11 +119,11 @@ if (Array.isArray(mesh.material)) {
 
 ```javascript
 // WRONG: set() disables ALL other layers
-mesh.layers.set(2);     // mesh is now ONLY on layer 2, removed from layer 0!
+mesh.layers.set(2); // mesh is now ONLY on layer 2, removed from layer 0!
 // camera (on layer 0) can no longer see this mesh
 
 // CORRECT: enable() adds a layer without removing existing ones
-mesh.layers.enable(2);  // mesh is now on layers 0 AND 2
+mesh.layers.enable(2); // mesh is now on layers 0 AND 2
 ```
 
 **WHY**: `layers.set(n)` replaces the entire bitmask with only bit `n`. `layers.enable(n)` performs a bitwise OR, adding the layer without affecting others. Use `set()` only when you want exclusive layer membership.

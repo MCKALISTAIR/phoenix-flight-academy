@@ -20,56 +20,56 @@ metadata:
 
 ### WebXRManager Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `enabled` | `boolean` | `false` | Enable XR rendering |
-| `isPresenting` | `boolean` | read-only | Whether an XR session is active |
-| `cameraAutoUpdate` | `boolean` | `true` | Auto-update camera from XR device pose |
+| Property           | Type      | Default   | Description                            |
+| ------------------ | --------- | --------- | -------------------------------------- |
+| `enabled`          | `boolean` | `false`   | Enable XR rendering                    |
+| `isPresenting`     | `boolean` | read-only | Whether an XR session is active        |
+| `cameraAutoUpdate` | `boolean` | `true`    | Auto-update camera from XR device pose |
 
 ### WebXRManager Methods
 
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `getSession()` | `() => XRSession \| null` | Current XR session |
-| `setSessionInit(options)` | `(XRSessionInit) => void` | Configure session features before entry |
-| `setReferenceSpaceType(type)` | `(string) => void` | Set reference space type |
-| `getController(index)` | `(number) => Group` | Get controller target ray space |
-| `getControllerGrip(index)` | `(number) => Group` | Get controller grip space |
-| `getHand(index)` | `(number) => Group` | Get hand tracking group |
-| `setFoveation(level)` | `(number) => void` | Set foveated rendering (0.0–1.0) |
-| `getFoveation()` | `() => number` | Get current foveation level |
-| `getEnvironmentBlendMode()` | `() => string` | Get blend mode (opaque, additive, alpha-blend) |
-| `setFramebufferScaleFactor(scale)` | `(number) => void` | Adjust XR render resolution |
+| Method                             | Signature                 | Description                                    |
+| ---------------------------------- | ------------------------- | ---------------------------------------------- |
+| `getSession()`                     | `() => XRSession \| null` | Current XR session                             |
+| `setSessionInit(options)`          | `(XRSessionInit) => void` | Configure session features before entry        |
+| `setReferenceSpaceType(type)`      | `(string) => void`        | Set reference space type                       |
+| `getController(index)`             | `(number) => Group`       | Get controller target ray space                |
+| `getControllerGrip(index)`         | `(number) => Group`       | Get controller grip space                      |
+| `getHand(index)`                   | `(number) => Group`       | Get hand tracking group                        |
+| `setFoveation(level)`              | `(number) => void`        | Set foveated rendering (0.0–1.0)               |
+| `getFoveation()`                   | `() => number`            | Get current foveation level                    |
+| `getEnvironmentBlendMode()`        | `() => string`            | Get blend mode (opaque, additive, alpha-blend) |
+| `setFramebufferScaleFactor(scale)` | `(number) => void`        | Adjust XR render resolution                    |
 
 ### Session Types
 
-| Type | Use Case |
-|------|----------|
-| `'immersive-vr'` | Full VR headset experience |
-| `'immersive-ar'` | AR passthrough on headset or phone |
-| `'inline'` | Non-immersive XR in a browser window |
+| Type             | Use Case                             |
+| ---------------- | ------------------------------------ |
+| `'immersive-vr'` | Full VR headset experience           |
+| `'immersive-ar'` | AR passthrough on headset or phone   |
+| `'inline'`       | Non-immersive XR in a browser window |
 
 ### Reference Space Types
 
-| Type | Origin | Use Case |
-|------|--------|----------|
-| `'viewer'` | Head position | HUD elements, gaze-locked UI |
-| `'local'` | Initial head position | Seated experiences |
-| `'local-floor'` | Floor level at start | Standing VR, ALWAYS preferred for room-scale |
-| `'bounded-floor'` | Floor with boundary | Room-scale with guardian |
-| `'unbounded'` | World origin | Large-scale AR experiences |
+| Type              | Origin                | Use Case                                     |
+| ----------------- | --------------------- | -------------------------------------------- |
+| `'viewer'`        | Head position         | HUD elements, gaze-locked UI                 |
+| `'local'`         | Initial head position | Seated experiences                           |
+| `'local-floor'`   | Floor level at start  | Standing VR, ALWAYS preferred for room-scale |
+| `'bounded-floor'` | Floor with boundary   | Room-scale with guardian                     |
+| `'unbounded'`     | World origin          | Large-scale AR experiences                   |
 
 ### XR Addon Classes
 
-| Class | Import Path | Purpose |
-|-------|-------------|---------|
-| `VRButton` | `three/addons/webxr/VRButton.js` | Creates "Enter VR" button with feature detection |
-| `ARButton` | `three/addons/webxr/ARButton.js` | Creates "Enter AR" button with feature detection |
-| `XRControllerModelFactory` | `three/addons/webxr/XRControllerModelFactory.js` | Loads appropriate controller 3D model |
-| `XRHandModelFactory` | `three/addons/webxr/XRHandModelFactory.js` | Creates hand tracking visualization |
-| `XRHandPrimitiveModel` | `three/addons/webxr/XRHandPrimitiveModel.js` | Simple geometric hand representation |
-| `XREstimatedLight` | `three/addons/webxr/XREstimatedLight.js` | AR environment lighting estimation |
-| `XRPlanes` | `three/addons/webxr/XRPlanes.js` | AR plane detection visualization |
+| Class                      | Import Path                                      | Purpose                                          |
+| -------------------------- | ------------------------------------------------ | ------------------------------------------------ |
+| `VRButton`                 | `three/addons/webxr/VRButton.js`                 | Creates "Enter VR" button with feature detection |
+| `ARButton`                 | `three/addons/webxr/ARButton.js`                 | Creates "Enter AR" button with feature detection |
+| `XRControllerModelFactory` | `three/addons/webxr/XRControllerModelFactory.js` | Loads appropriate controller 3D model            |
+| `XRHandModelFactory`       | `three/addons/webxr/XRHandModelFactory.js`       | Creates hand tracking visualization              |
+| `XRHandPrimitiveModel`     | `three/addons/webxr/XRHandPrimitiveModel.js`     | Simple geometric hand representation             |
+| `XREstimatedLight`         | `three/addons/webxr/XREstimatedLight.js`         | AR environment lighting estimation               |
+| `XRPlanes`                 | `three/addons/webxr/XRPlanes.js`                 | AR plane detection visualization                 |
 
 ### Critical Warnings
 
@@ -90,8 +90,8 @@ metadata:
 ### Minimal VR Scene
 
 ```javascript
-import * as THREE from 'three';
-import { VRButton } from 'three/addons/webxr/VRButton.js';
+import * as THREE from "three";
+import { VRButton } from "three/addons/webxr/VRButton.js";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -102,7 +102,7 @@ document.body.appendChild(renderer.domElement);
 
 // Enable XR BEFORE creating VRButton
 renderer.xr.enabled = true;
-renderer.xr.setReferenceSpaceType('local-floor');
+renderer.xr.setReferenceSpaceType("local-floor");
 document.body.appendChild(VRButton.createButton(renderer));
 
 // MUST use setAnimationLoop — NEVER requestAnimationFrame
@@ -114,22 +114,24 @@ renderer.setAnimationLoop((time, frame) => {
 ### AR Setup
 
 ```javascript
-import * as THREE from 'three';
-import { ARButton } from 'three/addons/webxr/ARButton.js';
+import * as THREE from "three";
+import { ARButton } from "three/addons/webxr/ARButton.js";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.xr.enabled = true;
 
 // Configure AR features BEFORE creating ARButton
 renderer.xr.setSessionInit({
-  requiredFeatures: ['hit-test'],
-  optionalFeatures: ['dom-overlay'],
-  domOverlay: { root: document.getElementById('overlay') }
+  requiredFeatures: ["hit-test"],
+  optionalFeatures: ["dom-overlay"],
+  domOverlay: { root: document.getElementById("overlay") },
 });
 
-document.body.appendChild(ARButton.createButton(renderer, {
-  requiredFeatures: ['hit-test']
-}));
+document.body.appendChild(
+  ARButton.createButton(renderer, {
+    requiredFeatures: ["hit-test"],
+  }),
+);
 
 renderer.setAnimationLoop((time, frame) => {
   renderer.render(scene, camera);
@@ -144,38 +146,38 @@ renderer.setAnimationLoop((time, frame) => {
 
 Three.js exposes THREE distinct spaces per physical controller:
 
-| Method | Space | Use Case |
-|--------|-------|----------|
-| `getController(index)` | Target ray | Pointing direction, laser pointer |
-| `getControllerGrip(index)` | Grip | Where the hand holds the controller |
-| `getHand(index)` | Hand | Full hand tracking skeleton |
+| Method                     | Space      | Use Case                            |
+| -------------------------- | ---------- | ----------------------------------- |
+| `getController(index)`     | Target ray | Pointing direction, laser pointer   |
+| `getControllerGrip(index)` | Grip       | Where the hand holds the controller |
+| `getHand(index)`           | Hand       | Full hand tracking skeleton         |
 
 ALWAYS add ALL spaces you use to the scene. Each returns a `THREE.Group`.
 
 ### Controller Events
 
-| Event | Trigger |
-|-------|---------|
-| `selectstart` | Primary trigger pressed |
-| `selectend` | Primary trigger released |
-| `select` | Primary trigger press-and-release |
-| `squeezestart` | Grip button pressed |
-| `squeezeend` | Grip button released |
-| `squeeze` | Grip button press-and-release |
-| `connected` | Controller detected (event.data = XRInputSource) |
-| `disconnected` | Controller lost |
+| Event          | Trigger                                          |
+| -------------- | ------------------------------------------------ |
+| `selectstart`  | Primary trigger pressed                          |
+| `selectend`    | Primary trigger released                         |
+| `select`       | Primary trigger press-and-release                |
+| `squeezestart` | Grip button pressed                              |
+| `squeezeend`   | Grip button released                             |
+| `squeeze`      | Grip button press-and-release                    |
+| `connected`    | Controller detected (event.data = XRInputSource) |
+| `disconnected` | Controller lost                                  |
 
 ### Controller Models
 
 ```javascript
-import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
+import { XRControllerModelFactory } from "three/addons/webxr/XRControllerModelFactory.js";
 
 const factory = new XRControllerModelFactory();
 
 // Target ray space — for laser pointer / interaction ray
 const controller0 = renderer.xr.getController(0);
-controller0.addEventListener('selectstart', onSelectStart);
-controller0.addEventListener('selectend', onSelectEnd);
+controller0.addEventListener("selectstart", onSelectStart);
+controller0.addEventListener("selectend", onSelectEnd);
 scene.add(controller0);
 
 // Grip space — for rendering the controller model
@@ -189,7 +191,7 @@ scene.add(grip0);
 ```javascript
 const geometry = new THREE.BufferGeometry().setFromPoints([
   new THREE.Vector3(0, 0, 0),
-  new THREE.Vector3(0, 0, -5)
+  new THREE.Vector3(0, 0, -5),
 ]);
 const material = new THREE.LineBasicMaterial({ color: 0xffffff });
 const line = new THREE.Line(geometry, material);
@@ -201,27 +203,28 @@ controller0.add(line);
 ## Hand Tracking
 
 ```javascript
-import { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js';
+import { XRHandModelFactory } from "three/addons/webxr/XRHandModelFactory.js";
 
 // Request hand-tracking feature
 renderer.xr.setSessionInit({
-  optionalFeatures: ['hand-tracking']
+  optionalFeatures: ["hand-tracking"],
 });
 
 const handFactory = new XRHandModelFactory();
 
 const hand0 = renderer.xr.getHand(0);
-hand0.add(handFactory.createHandModel(hand0, 'mesh'));
+hand0.add(handFactory.createHandModel(hand0, "mesh"));
 scene.add(hand0);
 
 const hand1 = renderer.xr.getHand(1);
-hand1.add(handFactory.createHandModel(hand1, 'mesh'));
+hand1.add(handFactory.createHandModel(hand1, "mesh"));
 scene.add(hand1);
 ```
 
 **Hand model profiles:** `'mesh'` (realistic), `'spheres'` (joint spheres), `'boxes'` (joint boxes).
 
 Hand tracking events fire on the hand group:
+
 - `connected` — hand detected
 - `disconnected` — hand lost
 - `pinchstart` / `pinchend` — thumb-index pinch gesture
@@ -237,7 +240,7 @@ let hitTestSource = null;
 let hitTestSourceRequested = false;
 const reticle = new THREE.Mesh(
   new THREE.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2),
-  new THREE.MeshBasicMaterial()
+  new THREE.MeshBasicMaterial(),
 );
 reticle.matrixAutoUpdate = false;
 reticle.visible = false;
@@ -249,7 +252,7 @@ renderer.setAnimationLoop((time, frame) => {
     const referenceSpace = renderer.xr.getReferenceSpace();
 
     if (!hitTestSourceRequested) {
-      session.requestReferenceSpace('viewer').then((viewerSpace) => {
+      session.requestReferenceSpace("viewer").then((viewerSpace) => {
         session.requestHitTestSource({ space: viewerSpace }).then((source) => {
           hitTestSource = source;
         });
@@ -281,12 +284,12 @@ const tempMatrix = new THREE.Matrix4();
 const raycaster = new THREE.Raycaster();
 const marker = new THREE.Mesh(
   new THREE.CircleGeometry(0.25, 32).rotateX(-Math.PI / 2),
-  new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+  new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
 );
 scene.add(marker);
 
 const controller = renderer.xr.getController(0);
-controller.addEventListener('selectend', () => {
+controller.addEventListener("selectend", () => {
   tempMatrix.identity().extractRotation(controller.matrixWorld);
   raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
   raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
@@ -309,11 +312,11 @@ scene.add(controller);
 
 ### Target Frame Rates
 
-| Platform | Target FPS | Notes |
-|----------|-----------|-------|
-| Meta Quest 2/3 | 72–120 fps | 72 default, 90/120 optional |
-| PC VR (SteamVR) | 90 fps | Standard target |
-| PSVR2 | 90–120 fps | Platform-dependent |
+| Platform        | Target FPS | Notes                       |
+| --------------- | ---------- | --------------------------- |
+| Meta Quest 2/3  | 72–120 fps | 72 default, 90/120 optional |
+| PC VR (SteamVR) | 90 fps     | Standard target             |
+| PSVR2           | 90–120 fps | Platform-dependent          |
 
 ### Optimization Techniques
 
@@ -345,15 +348,15 @@ The WebXR API sets camera position/rotation each frame relative to its parent. M
 ## XR Estimated Light (AR)
 
 ```javascript
-import { XREstimatedLight } from 'three/addons/webxr/XREstimatedLight.js';
+import { XREstimatedLight } from "three/addons/webxr/XREstimatedLight.js";
 
 const xrLight = new XREstimatedLight(renderer);
-xrLight.addEventListener('estimationstart', () => {
+xrLight.addEventListener("estimationstart", () => {
   scene.add(xrLight);
   scene.environment = xrLight.environment;
   // Remove default lights
 });
-xrLight.addEventListener('estimationend', () => {
+xrLight.addEventListener("estimationend", () => {
   scene.remove(xrLight);
   scene.environment = null;
   // Restore default lights

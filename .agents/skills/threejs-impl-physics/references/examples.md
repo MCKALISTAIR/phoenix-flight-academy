@@ -5,8 +5,8 @@
 Complete scene with a static ground plane and dynamic falling boxes.
 
 ```js
-import * as THREE from 'three';
-import * as CANNON from 'cannon-es';
+import * as THREE from "three";
+import * as CANNON from "cannon-es";
 
 // Three.js setup
 const scene = new THREE.Scene();
@@ -33,7 +33,7 @@ world.broadphase = new CANNON.SAPBroadphase(world);
 world.allowSleep = true;
 
 // Contact material
-const defaultMat = new CANNON.Material('default');
+const defaultMat = new CANNON.Material("default");
 const defaultContact = new CANNON.ContactMaterial(defaultMat, defaultMat, {
   friction: 0.3,
   restitution: 0.4,
@@ -65,11 +65,7 @@ for (let i = 0; i < 20; i++) {
 
   const body = new CANNON.Body({
     mass: 1,
-    position: new CANNON.Vec3(
-      (Math.random() - 0.5) * 4,
-      5 + i * 2,
-      (Math.random() - 0.5) * 4,
-    ),
+    position: new CANNON.Vec3((Math.random() - 0.5) * 4, 5 + i * 2, (Math.random() - 0.5) * 4),
     shape: new CANNON.Box(new CANNON.Vec3(halfSize, halfSize, halfSize)),
     material: defaultMat,
   });
@@ -109,8 +105,8 @@ animate();
 Complete scene using Rapier WASM with ray-based ground detection.
 
 ```js
-import * as THREE from 'three';
-import RAPIER from '@dimforge/rapier3d-compat';
+import * as THREE from "three";
+import RAPIER from "@dimforge/rapier3d-compat";
 
 async function main() {
   await RAPIER.init();
@@ -150,16 +146,10 @@ async function main() {
   for (let i = 0; i < 50; i++) {
     const radius = 0.3 + Math.random() * 0.3;
     const bodyDesc = RAPIER.RigidBodyDesc.dynamic()
-      .setTranslation(
-        (Math.random() - 0.5) * 6,
-        5 + i * 1.5,
-        (Math.random() - 0.5) * 6,
-      )
+      .setTranslation((Math.random() - 0.5) * 6, 5 + i * 1.5, (Math.random() - 0.5) * 6)
       .setCcdEnabled(true);
     const rigidBody = world.createRigidBody(bodyDesc);
-    const colliderDesc = RAPIER.ColliderDesc.ball(radius)
-      .setRestitution(0.7)
-      .setFriction(0.5);
+    const colliderDesc = RAPIER.ColliderDesc.ball(radius).setRestitution(0.7).setFriction(0.5);
     world.createCollider(colliderDesc, rigidBody);
 
     const mesh = new THREE.Mesh(
@@ -177,7 +167,7 @@ async function main() {
   scene.add(marker);
 
   // Ray cast on click
-  window.addEventListener('click', () => {
+  window.addEventListener("click", () => {
     const ray = new RAPIER.Ray({ x: 0, y: 20, z: 0 }, { x: 0, y: -1, z: 0 });
     const hit = world.castRay(ray, 50, true);
     if (hit) {
@@ -210,8 +200,8 @@ main();
 A door attached to a frame with a hinge constraint.
 
 ```js
-import * as THREE from 'three';
-import * as CANNON from 'cannon-es';
+import * as THREE from "three";
+import * as CANNON from "cannon-es";
 
 const world = new CANNON.World();
 world.gravity.set(0, -9.82, 0);
@@ -265,8 +255,8 @@ function updatePhysics(delta) {
 Visualize Rapier collision shapes as wireframe overlays.
 
 ```js
-import * as THREE from 'three';
-import RAPIER from '@dimforge/rapier3d-compat';
+import * as THREE from "three";
+import RAPIER from "@dimforge/rapier3d-compat";
 
 async function main() {
   await RAPIER.init();
@@ -287,8 +277,8 @@ async function main() {
     }
 
     const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 4));
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+    geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 4));
     const material = new THREE.LineBasicMaterial({ vertexColors: true, depthTest: false });
     debugMesh = new THREE.LineSegments(geometry, material);
     debugMesh.renderOrder = 999;
@@ -313,8 +303,8 @@ main();
 Declarative physics with R3F.
 
 ```jsx
-import { Canvas } from '@react-three/fiber';
-import { Physics, RigidBody, CuboidCollider } from '@react-three/rapier';
+import { Canvas } from "@react-three/fiber";
+import { Physics, RigidBody, CuboidCollider } from "@react-three/rapier";
 
 function Ground() {
   return (

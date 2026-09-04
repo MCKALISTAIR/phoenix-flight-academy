@@ -32,18 +32,16 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-border p-1.5 shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:rotate-3 dark:bg-slate-950 dark:border-white/10">
-                <img
-                  src="/logo.png"
-                  alt="Phoenix Flight Academy Logo"
-                  className="h-full w-full object-contain"
-                />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-foreground">
-                Phoenix Flight
-              </span>
-            </Link>
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-border p-1.5 shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:rotate-3 dark:bg-slate-950 dark:border-white/10">
+              <img
+                src="/logo.png"
+                alt="Phoenix Flight Academy Logo"
+                className="h-full w-full object-contain"
+              />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-foreground">Phoenix Flight</span>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:items-center md:gap-8">

@@ -41,7 +41,11 @@ export const getBookingProductBySlug = createServerFn({ method: "GET" })
 
 const upsertSchema = z.object({
   id: z.string().uuid().optional(),
-  slug: z.string().min(1).max(120).regex(/^[a-z0-9-]+$/),
+  slug: z
+    .string()
+    .min(1)
+    .max(120)
+    .regex(/^[a-z0-9-]+$/),
   kind: z.enum(["experience", "lesson", "self_hire"]),
   name: z.string().min(1).max(200),
   tagline: z.string().max(300).nullable().optional(),

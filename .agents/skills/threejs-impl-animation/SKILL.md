@@ -34,21 +34,21 @@ NEVER instantiate `AnimationAction` directly -- ALWAYS use `mixer.clipAction(cli
 ### Essential Imports
 
 ```js
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 ```
 
 ### Minimal Animation Setup
 
 ```js
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const clock = new THREE.Clock();
 let mixer;
 
 const loader = new GLTFLoader();
-loader.load('character.glb', (gltf) => {
+loader.load("character.glb", (gltf) => {
   scene.add(gltf.scene);
   mixer = new THREE.AnimationMixer(gltf.scene);
 
@@ -96,33 +96,33 @@ const mixer = new THREE.AnimationMixer(rootObject);
 
 ### Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `.time` | number | `0` | Global mixer time in seconds |
-| `.timeScale` | number | `1` | Global speed multiplier; `0` pauses ALL actions |
+| Property     | Type   | Default | Description                                     |
+| ------------ | ------ | ------- | ----------------------------------------------- |
+| `.time`      | number | `0`     | Global mixer time in seconds                    |
+| `.timeScale` | number | `1`     | Global speed multiplier; `0` pauses ALL actions |
 
 ### Methods
 
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `.clipAction(clip, root?, blendMode?)` | `AnimationAction` | Returns or creates an action for the clip |
-| `.existingAction(clip, root?)` | `AnimationAction \| null` | Returns previously created action or `null` |
-| `.update(delta)` | `this` | Advances mixer by delta seconds -- MUST call every frame |
-| `.setTime(seconds)` | `this` | Sets global time, updates all actions |
-| `.stopAllAction()` | `this` | Deactivates all scheduled actions |
-| `.getRoot()` | `Object3D` | Returns the mixer's root object |
-| `.uncacheAction(clip, root?)` | `void` | Deallocates cached action |
-| `.uncacheClip(clip)` | `void` | Deallocates clip data |
-| `.uncacheRoot(root)` | `void` | Deallocates root object data |
+| Method                                 | Returns                   | Description                                              |
+| -------------------------------------- | ------------------------- | -------------------------------------------------------- |
+| `.clipAction(clip, root?, blendMode?)` | `AnimationAction`         | Returns or creates an action for the clip                |
+| `.existingAction(clip, root?)`         | `AnimationAction \| null` | Returns previously created action or `null`              |
+| `.update(delta)`                       | `this`                    | Advances mixer by delta seconds -- MUST call every frame |
+| `.setTime(seconds)`                    | `this`                    | Sets global time, updates all actions                    |
+| `.stopAllAction()`                     | `this`                    | Deactivates all scheduled actions                        |
+| `.getRoot()`                           | `Object3D`                | Returns the mixer's root object                          |
+| `.uncacheAction(clip, root?)`          | `void`                    | Deallocates cached action                                |
+| `.uncacheClip(clip)`                   | `void`                    | Deallocates clip data                                    |
+| `.uncacheRoot(root)`                   | `void`                    | Deallocates root object data                             |
 
 ### Events
 
 Listen via `mixer.addEventListener(type, callback)`:
 
-| Event | Fires When |
-|-------|-----------|
+| Event        | Fires When                                                           |
+| ------------ | -------------------------------------------------------------------- |
 | `'finished'` | Action completes (ONLY with `LoopOnce` + `clampWhenFinished = true`) |
-| `'loop'` | Action completes a loop iteration |
+| `'loop'`     | Action completes a loop iteration                                    |
 
 Event object properties: `{ action, loopDelta, type }`.
 
@@ -130,9 +130,9 @@ Event object properties: `{ action, loopDelta, type }`.
 
 Pass as the third argument to `mixer.clipAction(clip, root, blendMode)`:
 
-| Constant | Behavior |
-|----------|----------|
-| `THREE.NormalAnimationBlendMode` | Standard blending (default) |
+| Constant                           | Behavior                         |
+| ---------------------------------- | -------------------------------- |
+| `THREE.NormalAnimationBlendMode`   | Standard blending (default)      |
 | `THREE.AdditiveAnimationBlendMode` | Layered on top of base animation |
 
 ---
@@ -143,71 +143,71 @@ Controls playback of a single animation clip. NEVER instantiate directly.
 
 ### Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `.blendMode` | number | `NormalAnimationBlendMode` | Blending strategy |
-| `.clampWhenFinished` | boolean | `false` | Pause at last frame when done |
-| `.enabled` | boolean | `true` | Disable without resetting |
-| `.loop` | number | `LoopRepeat` | Loop mode |
-| `.paused` | boolean | `false` | Freeze playback |
-| `.repetitions` | number | `Infinity` | Loop count |
-| `.time` | number | `0` | Local time in seconds |
-| `.timeScale` | number | `1` | Speed: `0` pauses, negative reverses |
-| `.weight` | number | `1` | Blend influence `[0, 1]` |
-| `.zeroSlopeAtEnd` | boolean | `true` | Smooth interpolation at loop end |
-| `.zeroSlopeAtStart` | boolean | `true` | Smooth interpolation at loop start |
+| Property             | Type    | Default                    | Description                          |
+| -------------------- | ------- | -------------------------- | ------------------------------------ |
+| `.blendMode`         | number  | `NormalAnimationBlendMode` | Blending strategy                    |
+| `.clampWhenFinished` | boolean | `false`                    | Pause at last frame when done        |
+| `.enabled`           | boolean | `true`                     | Disable without resetting            |
+| `.loop`              | number  | `LoopRepeat`               | Loop mode                            |
+| `.paused`            | boolean | `false`                    | Freeze playback                      |
+| `.repetitions`       | number  | `Infinity`                 | Loop count                           |
+| `.time`              | number  | `0`                        | Local time in seconds                |
+| `.timeScale`         | number  | `1`                        | Speed: `0` pauses, negative reverses |
+| `.weight`            | number  | `1`                        | Blend influence `[0, 1]`             |
+| `.zeroSlopeAtEnd`    | boolean | `true`                     | Smooth interpolation at loop end     |
+| `.zeroSlopeAtStart`  | boolean | `true`                     | Smooth interpolation at loop start   |
 
 ### Loop Modes
 
-| Constant | Behavior |
-|----------|----------|
-| `THREE.LoopOnce` | Plays once, stops |
-| `THREE.LoopRepeat` | Restarts from beginning each loop |
-| `THREE.LoopPingPong` | Alternates forward/backward |
+| Constant             | Behavior                          |
+| -------------------- | --------------------------------- |
+| `THREE.LoopOnce`     | Plays once, stops                 |
+| `THREE.LoopRepeat`   | Restarts from beginning each loop |
+| `THREE.LoopPingPong` | Alternates forward/backward       |
 
 ### Playback Methods
 
-| Method | Description |
-|--------|-------------|
-| `.play()` | Start playback |
-| `.stop()` | Stop and reset to start |
-| `.reset()` | Reset time, weight, speed to initial state |
-| `.startAt(mixerTime)` | Delay start until specified mixer time |
+| Method                | Description                                |
+| --------------------- | ------------------------------------------ |
+| `.play()`             | Start playback                             |
+| `.stop()`             | Stop and reset to start                    |
+| `.reset()`            | Reset time, weight, speed to initial state |
+| `.startAt(mixerTime)` | Delay start until specified mixer time     |
 
 ### Fading and Crossfade Methods
 
-| Method | Description |
-|--------|-------------|
-| `.fadeIn(duration)` | Fade weight from `0` to `1` |
-| `.fadeOut(duration)` | Fade weight from `1` to `0` |
+| Method                                          | Description                                 |
+| ----------------------------------------------- | ------------------------------------------- |
+| `.fadeIn(duration)`                             | Fade weight from `0` to `1`                 |
+| `.fadeOut(duration)`                            | Fade weight from `1` to `0`                 |
 | `.crossFadeFrom(fadeOutAction, duration, warp)` | Crossfade from another action into this one |
-| `.crossFadeTo(fadeInAction, duration, warp)` | Crossfade from this action to another |
-| `.stopFading()` | Cancel any active fade |
+| `.crossFadeTo(fadeInAction, duration, warp)`    | Crossfade from this action to another       |
+| `.stopFading()`                                 | Cancel any active fade                      |
 
 ### Speed and Timing Methods
 
-| Method | Description |
-|--------|-------------|
-| `.halt(duration)` | Decelerate timeScale to `0` over duration |
-| `.warp(startScale, endScale, duration)` | Smoothly transition playback speed |
-| `.stopWarping()` | Cancel any active warp |
-| `.setDuration(seconds)` | Adjust timeScale so one loop takes exactly `seconds` |
-| `.setEffectiveTimeScale(scale)` | Set effective time scale |
-| `.setEffectiveWeight(weight)` | Set effective weight |
-| `.setLoop(mode, repetitions)` | Set loop mode and count |
-| `.syncWith(otherAction)` | Synchronize time with another action |
+| Method                                  | Description                                          |
+| --------------------------------------- | ---------------------------------------------------- |
+| `.halt(duration)`                       | Decelerate timeScale to `0` over duration            |
+| `.warp(startScale, endScale, duration)` | Smoothly transition playback speed                   |
+| `.stopWarping()`                        | Cancel any active warp                               |
+| `.setDuration(seconds)`                 | Adjust timeScale so one loop takes exactly `seconds` |
+| `.setEffectiveTimeScale(scale)`         | Set effective time scale                             |
+| `.setEffectiveWeight(weight)`           | Set effective weight                                 |
+| `.setLoop(mode, repetitions)`           | Set loop mode and count                              |
+| `.syncWith(otherAction)`                | Synchronize time with another action                 |
 
 ### Query Methods
 
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `.isRunning()` | boolean | `true` only if actively playing |
-| `.isScheduled()` | boolean | `true` if `.play()` was called |
-| `.getClip()` | `AnimationClip` | The associated clip |
-| `.getMixer()` | `AnimationMixer` | The owning mixer |
-| `.getRoot()` | `Object3D` | The root object |
-| `.getEffectiveTimeScale()` | number | Computed time scale |
-| `.getEffectiveWeight()` | number | Computed weight |
+| Method                     | Returns          | Description                     |
+| -------------------------- | ---------------- | ------------------------------- |
+| `.isRunning()`             | boolean          | `true` only if actively playing |
+| `.isScheduled()`           | boolean          | `true` if `.play()` was called  |
+| `.getClip()`               | `AnimationClip`  | The associated clip             |
+| `.getMixer()`              | `AnimationMixer` | The owning mixer                |
+| `.getRoot()`               | `Object3D`       | The root object                 |
+| `.getEffectiveTimeScale()` | number           | Computed time scale             |
+| `.getEffectiveWeight()`    | number           | Computed weight                 |
 
 ---
 
@@ -228,32 +228,32 @@ const clip = new THREE.AnimationClip(name, duration, tracks, blendMode);
 
 ### Key Static Methods
 
-| Method | Description |
-|--------|-------------|
-| `AnimationClip.findByName(arrayOrObject, name)` | Look up clip by name |
+| Method                                                                    | Description                    |
+| ------------------------------------------------------------------------- | ------------------------------ |
+| `AnimationClip.findByName(arrayOrObject, name)`                           | Look up clip by name           |
 | `AnimationClip.CreateFromMorphTargetSequence(name, targets, fps, noLoop)` | Create clip from morph targets |
-| `AnimationClip.parse(json)` | Deserialize from JSON |
+| `AnimationClip.parse(json)`                                               | Deserialize from JSON          |
 
 ---
 
 ## KeyframeTrack Types
 
-| Track Type | Value Type | Use Case |
-|------------|-----------|----------|
-| `VectorKeyframeTrack` | Vector3 | Position, scale |
-| `QuaternionKeyframeTrack` | Quaternion | Rotation (uses slerp) |
-| `NumberKeyframeTrack` | number | Opacity, intensity |
-| `BooleanKeyframeTrack` | boolean | Visibility toggles |
-| `ColorKeyframeTrack` | Color | Color animation |
-| `StringKeyframeTrack` | string | Discrete string values |
+| Track Type                | Value Type | Use Case               |
+| ------------------------- | ---------- | ---------------------- |
+| `VectorKeyframeTrack`     | Vector3    | Position, scale        |
+| `QuaternionKeyframeTrack` | Quaternion | Rotation (uses slerp)  |
+| `NumberKeyframeTrack`     | number     | Opacity, intensity     |
+| `BooleanKeyframeTrack`    | boolean    | Visibility toggles     |
+| `ColorKeyframeTrack`      | Color      | Color animation        |
+| `StringKeyframeTrack`     | string     | Discrete string values |
 
 ### Interpolation Modes
 
-| Constant | Behavior |
-|----------|----------|
-| `THREE.InterpolateDiscrete` | Step function, no smoothing |
-| `THREE.InterpolateLinear` | Linear interpolation (default) |
-| `THREE.InterpolateSmooth` | Cubic spline interpolation |
+| Constant                    | Behavior                       |
+| --------------------------- | ------------------------------ |
+| `THREE.InterpolateDiscrete` | Step function, no smoothing    |
+| `THREE.InterpolateLinear`   | Linear interpolation (default) |
+| `THREE.InterpolateSmooth`   | Cubic spline interpolation     |
 
 ### PropertyBinding Path Format
 
@@ -276,12 +276,12 @@ const clock = new THREE.Clock(autoStart); // autoStart defaults to true
 
 ### Methods
 
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `.getDelta()` | number | Seconds since last `getDelta()` call |
-| `.getElapsedTime()` | number | Total elapsed time in seconds |
-| `.start()` | void | Start the clock |
-| `.stop()` | void | Stop without resetting |
+| Method              | Returns | Description                          |
+| ------------------- | ------- | ------------------------------------ |
+| `.getDelta()`       | number  | Seconds since last `getDelta()` call |
+| `.getElapsedTime()` | number  | Total elapsed time in seconds        |
+| `.start()`          | void    | Start the clock                      |
+| `.stop()`           | void    | Stop without resetting               |
 
 ---
 
@@ -293,7 +293,7 @@ gltf.animations.forEach((clip) => {
   actions[clip.name] = mixer.clipAction(clip);
 });
 
-let currentAction = actions['Idle'];
+let currentAction = actions["Idle"];
 currentAction.play();
 
 function switchAction(toName, duration = 0.5) {
@@ -316,9 +316,7 @@ ALWAYS store the current action reference for the next transition.
 
 ```js
 const baseAction = mixer.clipAction(baseClip);
-const additiveAction = mixer.clipAction(
-  additiveClip, undefined, THREE.AdditiveAnimationBlendMode
-);
+const additiveAction = mixer.clipAction(additiveClip, undefined, THREE.AdditiveAnimationBlendMode);
 
 baseAction.play();
 additiveAction.play();

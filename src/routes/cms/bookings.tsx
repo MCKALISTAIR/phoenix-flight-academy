@@ -2,19 +2,32 @@ import { createFileRoute, redirect, isRedirect } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { CheckCircle2, XCircle, Clock, AlertCircle, Coins, TrendingUp, CreditCard } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  Clock,
+  AlertCircle,
+  Coins,
+  TrendingUp,
+  CreditCard,
+} from "lucide-react";
 import { requireAdmin } from "@/lib/auth-guards";
 import { listAllBookings, updateBookingStatus } from "@/lib/bookings.functions";
 
 export const Route = createFileRoute("/cms/bookings")({
   beforeLoad: async ({ location }) => {
-    try { await requireAdmin(location.href); } catch (e) { if (isRedirect(e)) throw e; throw redirect({ to: "/login", search: { redirect: location.href } }); }
+    try {
+      await requireAdmin(location.href);
+    } catch (e) {
+      if (isRedirect(e)) throw e;
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
   },
   component: BookingsAdmin,
 });
 
 const STATUSES = ["all", "pending", "confirmed", "cancelled", "completed", "no_show"] as const;
-type StatusFilter = typeof STATUSES[number];
+type StatusFilter = (typeof STATUSES)[number];
 
 function formatDocType(type: string): string {
   const mapping: Record<string, string> = {
@@ -51,50 +64,70 @@ function BookingsAdmin() {
     .filter((b) => b.status !== "cancelled")
     .reduce((sum, b) => sum + b.price_total_cents, 0);
 
-  const collectedRevenue = allBookings
-    .reduce((sum, b) => sum + (b.amount_paid_cents || 0), 0);
+  const collectedRevenue = allBookings.reduce((sum, b) => sum + (b.amount_paid_cents || 0), 0);
 
   const outstandingInvoiceValue = allBookings
     .filter((b) => b.status !== "cancelled")
     .reduce((sum, b) => sum + Math.max(0, b.price_total_cents - (b.amount_paid_cents || 0)), 0);
 
   // Client-side filtering
-  const filteredData = filter === "all" ? allBookings : allBookings.filter((b) => b.status === filter);
+  const filteredData =
+    filter === "all" ? allBookings : allBookings.filter((b) => b.status === filter);
 
   return (
     <div className="p-8 space-y-6">
       <div>
         <h1 className="text-2xl font-extrabold text-white">Bookings & Operations Management</h1>
-        <p className="mt-1 text-sm text-white/50">Approve, cancel, or track bookings and financials.</p>
+        <p className="mt-1 text-sm text-white/50">
+          Approve, cancel, or track bookings and financials.
+        </p>
       </div>
 
       {/* Financial Metrics Banner */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <div className="flex items-center justify-between text-white/40">
-            <span className="text-xs font-semibold uppercase tracking-wider">Total Booked Value</span>
-            <TrendingUp className="h-4 w-4 text-[oklch(0.70_0.18_270)]" />
+            <span className="text-xs font-semibold uppercase tracking-wider">
+              Total Booked Value
+            </span>
+            <TrendingUp className="h-4 w-4 text-primary" />
           </div>
-          <p className="mt-3 text-2xl font-black text-white">£{(totalBookedValue / 100).toFixed(2)}</p>
-          <span className="text-[10px] text-white/30 font-medium">Excluding cancelled bookings</span>
+          <p className="mt-3 text-2xl font-black text-white">
+            £{(totalBookedValue / 100).toFixed(2)}
+          </p>
+          <span className="text-[10px] text-white/30 font-medium">
+            Excluding cancelled bookings
+          </span>
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <div className="flex items-center justify-between text-white/40">
-            <span className="text-xs font-semibold uppercase tracking-wider">Collected Revenue</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">
+              Collected Revenue
+            </span>
             <Coins className="h-4 w-4 text-emerald-400" />
           </div>
-          <p className="mt-3 text-2xl font-black text-emerald-400">£{(collectedRevenue / 100).toFixed(2)}</p>
-          <span className="text-[10px] text-white/30 font-medium">Slipped deposits & full payments</span>
+          <p className="mt-3 text-2xl font-black text-emerald-400">
+            £{(collectedRevenue / 100).toFixed(2)}
+          </p>
+          <span className="text-[10px] text-white/30 font-medium">
+            Slipped deposits & full payments
+          </span>
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <div className="flex items-center justify-between text-white/40">
-            <span className="text-xs font-semibold uppercase tracking-wider">Outstanding Invoices</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">
+              Outstanding Invoices
+            </span>
             <CreditCard className="h-4 w-4 text-amber-400" />
           </div>
-          <p className="mt-3 text-2xl font-black text-amber-400">£{(outstandingInvoiceValue / 100).toFixed(2)}</p>
-          <span className="text-[10px] text-white/30 font-medium">Awaiting final reconciliation</span>
+          <p className="mt-3 text-2xl font-black text-amber-400">
+            £{(outstandingInvoiceValue / 100).toFixed(2)}
+          </p>
+          <span className="text-[10px] text-white/30 font-medium">
+            Awaiting final reconciliation
+          </span>
         </div>
       </div>
 
@@ -105,7 +138,7 @@ function BookingsAdmin() {
             onClick={() => setFilter(s)}
             className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all ${
               filter === s
-                ? "border-[oklch(0.55_0.22_270)] bg-[oklch(0.55_0.22_270)]/15 text-[oklch(0.75_0.18_270)]"
+                ? "border-primary bg-primary/15 text-primary"
                 : "border-white/10 bg-white/5 text-white/60 hover:bg-white/10"
             }`}
           >
@@ -138,12 +171,18 @@ function BookingsAdmin() {
                 const prod = (b as { booking_products: { name: string } | null }).booking_products;
                 const ac = (b as { aircraft: { registration: string } | null }).aircraft;
                 const promoCode = (b as { promo_code?: string }).promo_code;
-                const discountCents = (b as { discount_applied_cents?: number }).discount_applied_cents ?? 0;
+                const discountCents =
+                  (b as { discount_applied_cents?: number }).discount_applied_cents ?? 0;
                 const safetyFlag = (b as any).safety_flag;
                 const expiredDocs = (b as any).expired_documents ?? [];
                 return (
-                  <tr key={b.id} className="border-b border-white/5 text-white hover:bg-white/2 transition-colors">
-                    <td className="px-4 py-3 text-white/70">{new Date(b.starts_at).toLocaleString("en-GB")}</td>
+                  <tr
+                    key={b.id}
+                    className="border-b border-white/5 text-white hover:bg-white/2 transition-colors"
+                  >
+                    <td className="px-4 py-3 text-white/70">
+                      {new Date(b.starts_at).toLocaleString("en-GB")}
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
@@ -158,7 +197,10 @@ function BookingsAdmin() {
                         {expiredDocs.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-0.5">
                             {expiredDocs.map((doc: string) => (
-                              <span key={doc} className="inline-flex items-center rounded-md bg-red-500/10 px-1.5 py-0.5 text-[9px] font-medium text-red-300 border border-red-500/20">
+                              <span
+                                key={doc}
+                                className="inline-flex items-center rounded-md bg-red-500/10 px-1.5 py-0.5 text-[9px] font-medium text-red-300 border border-red-500/20"
+                              >
                                 ⚠️ Expired {formatDocType(doc)}
                               </span>
                             ))}
@@ -169,14 +211,20 @@ function BookingsAdmin() {
                     <td className="px-4 py-3 text-white/70">{prod?.name ?? "—"}</td>
                     <td className="px-4 py-3 text-white/70">{ac?.registration ?? "—"}</td>
                     <td className="px-4 py-3">
-                      <span className="font-semibold text-white">£{(b.price_total_cents / 100).toFixed(2)}</span>
+                      <span className="font-semibold text-white">
+                        £{(b.price_total_cents / 100).toFixed(2)}
+                      </span>
                       {discountCents > 0 && (
-                        <p className="text-[10px] text-emerald-400">−£{(discountCents / 100).toFixed(2)} off</p>
+                        <p className="text-[10px] text-emerald-400">
+                          −£{(discountCents / 100).toFixed(2)} off
+                        </p>
                       )}
                     </td>
                     <td className="px-4 py-3">
                       {promoCode ? (
-                        <span className="font-mono text-xs font-bold text-[oklch(0.75_0.18_270)]">{promoCode}</span>
+                        <span className="font-mono text-xs font-bold text-primary">
+                          {promoCode}
+                        </span>
                       ) : (
                         <span className="text-white/20">—</span>
                       )}
@@ -207,7 +255,13 @@ function BookingsAdmin() {
                             onClick={() => {
                               const reason = window.prompt("Cancellation reason?");
                               if (reason === null) return;
-                              mut.mutate({ data: { id: b.id, status: "cancelled", cancellation_reason: reason || null } });
+                              mut.mutate({
+                                data: {
+                                  id: b.id,
+                                  status: "cancelled",
+                                  cancellation_reason: reason || null,
+                                },
+                              });
                             }}
                             className="rounded-lg bg-red-500/15 px-2.5 py-1 text-xs font-semibold text-red-400 hover:bg-red-500/25"
                           >
@@ -237,7 +291,9 @@ function StatusPill({ status }: { status: string }) {
   };
   const { cls, Icon } = map[status] ?? map.pending;
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${cls}`}>
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${cls}`}
+    >
       <Icon className="h-3 w-3" /> {status.replace("_", " ")}
     </span>
   );

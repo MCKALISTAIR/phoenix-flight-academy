@@ -2,7 +2,9 @@ import { test, expect } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.SUPABASE_URL || "https://bulrhflllebnjlacxdji.supabase.co";
-const supabaseAnonKey = process.env.SUPABASE_PUBLISHABLE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1bHJoZmxsbGVibmpsYWN4ZGppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwODkyMTYsImV4cCI6MjA5NDY2NTIxNn0.uk2MWb3LRSc3QFa6zX61BPhPIQioWpAKbN_iGE-Dcds";
+const supabaseAnonKey =
+  process.env.SUPABASE_PUBLISHABLE_KEY ||
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ1bHJoZmxsbGVibmpsYWN4ZGppIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwODkyMTYsImV4cCI6MjA5NDY2NTIxNn0.uk2MWb3LRSc3QFa6zX61BPhPIQioWpAKbN_iGE-Dcds";
 
 async function cleanUpBookings() {
   const client = createClient(supabaseUrl, supabaseAnonKey);
@@ -15,9 +17,7 @@ async function cleanUpBookings() {
     global: { headers: { Authorization: `Bearer ${data.session.access_token}` } },
     auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
   });
-  const { data: bookings } = await authClient
-    .from("bookings")
-    .select("id, status");
+  const { data: bookings } = await authClient.from("bookings").select("id, status");
   if (bookings && bookings.length > 0) {
     for (const b of bookings) {
       if (b.status !== "cancelled") {
@@ -51,7 +51,11 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
     page.on("requestfailed", (req) => {
       // Don't log expected aborted requests for blocked third-party resources
       const url = req.url();
-      if (!url.includes("fonts.googleapis.com") && !url.includes("fonts.gstatic.com") && !url.includes("unsplash.com")) {
+      if (
+        !url.includes("fonts.googleapis.com") &&
+        !url.includes("fonts.gstatic.com") &&
+        !url.includes("unsplash.com")
+      ) {
         console.log(`[Browser RequestFailed] ${url} - ${req.failure()?.errorText}`);
       }
     });
@@ -69,7 +73,7 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
 
   test("Homepage loads and contains primary headings and navigation links", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    
+
     // Check main hero text is present
     await expect(page.locator("h1")).toContainText("Cumbernauld Airport");
 
@@ -92,7 +96,7 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
     { name: "Experience Flights", path: "/flying/experience", heading: "Experience Flights" },
     { name: "Learn to Fly", path: "/flying/learn-to-fly", heading: "Learn to Fly" },
     { name: "Self Hire", path: "/flying/self-hire", heading: "Self-Hire Fleet" },
-    { name: "Book a Flight", path: "/booking", heading: "Book a flight" }
+    { name: "Book a Flight", path: "/booking", heading: "Book a flight" },
   ];
 
   for (const { name, path, heading } of publicPages) {
@@ -110,7 +114,7 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
     { name: "Ops Admin", path: "/booking/admin" },
     { name: "CMS Root", path: "/cms" },
     { name: "CMS Bookings", path: "/cms/bookings" },
-    { name: "CMS Users", path: "/cms/users" }
+    { name: "CMS Users", path: "/cms/users" },
   ];
 
   for (const { name, path } of protectedPages) {
@@ -182,7 +186,7 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
       { label: "Self-Hire Approvals", urlPath: "/cms/self-hire-approvals" },
       { label: "Mock Payments", urlPath: "/cms/mock-payments" },
       { label: "User Management", urlPath: "/cms/users" },
-      { label: "System Analytics", urlPath: "/cms/analytics" }
+      { label: "System Analytics", urlPath: "/cms/analytics" },
     ];
 
     for (const { label, urlPath } of cmsSubPages) {

@@ -8,9 +8,11 @@ description: >-
 # PDF Document Skill
 
 ## When to Use
+
 Use when creating printable certificates, flight endorsements, weight & balance sheets, or reading and splitting existing PDF files.
 
 ## Tooling & Patterns
+
 - **PDF Generation**:
   - HTML-to-PDF: Use Playwright (`page.pdf({ format: 'A4', printBackground: true })`) for pixel-perfect modern CSS/HTML rendering.
   - Programmatic: `pdf-lib` (Node.js) or `pypdf` / `reportlab` (Python).

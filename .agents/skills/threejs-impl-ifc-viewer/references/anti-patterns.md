@@ -4,20 +4,20 @@
 
 ```javascript
 // WRONG: web-ifc-three is deprecated and unmaintained
-import { IFCLoader } from 'web-ifc-three/IFCLoader';
+import { IFCLoader } from "web-ifc-three/IFCLoader";
 const loader = new IFCLoader();
-loader.ifcManager.setWasmPath('./');
-const model = await loader.loadAsync('/model.ifc');
+loader.ifcManager.setWasmPath("./");
+const model = await loader.loadAsync("/model.ifc");
 
 // CORRECT: Use web-ifc directly with manual Three.js conversion
-import * as WebIFC from 'web-ifc';
+import * as WebIFC from "web-ifc";
 const ifcApi = new WebIFC.IfcAPI();
-ifcApi.SetWasmPath('./');
+ifcApi.SetWasmPath("./");
 await ifcApi.Init();
 // ... extract geometry and convert to Three.js BufferGeometry
 
 // CORRECT: Or use @thatopen/components for a high-level approach
-import * as OBC from '@thatopen/components';
+import * as OBC from "@thatopen/components";
 const components = new OBC.Components();
 const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
@@ -91,7 +91,7 @@ world.renderer = new OBC.SimpleRenderer(components, container);
 
 // WRONG: Missing dispose -- memory leaks on unmount
 function destroyViewer() {
-  container.innerHTML = ''; // DOM cleared but Three.js objects still in memory
+  container.innerHTML = ""; // DOM cleared but Three.js objects still in memory
 }
 
 // CORRECT: ALWAYS init after setup, ALWAYS dispose on teardown
@@ -113,13 +113,13 @@ components.dispose(); // Releases ALL resources
 // WRONG: Using AGPL-licensed code in a proprietary application
 // Old IFC.js packages (openbim-components v1) were AGPL-3.0
 // Using them in closed-source software violates the license
-import { Components } from 'openbim-components'; // AGPL-3.0!
+import { Components } from "openbim-components"; // AGPL-3.0!
 
 // CORRECT: Use @thatopen/components v3.x (MIT licensed)
-import * as OBC from '@thatopen/components'; // MIT
+import * as OBC from "@thatopen/components"; // MIT
 
 // CORRECT: Or use web-ifc directly (MIT licensed)
-import * as WebIFC from 'web-ifc'; // MIT
+import * as WebIFC from "web-ifc"; // MIT
 ```
 
 **WHY**: AGPL-3.0 requires that ANY application using the library (including over a network) must release its complete source code under AGPL-3.0. This applies even if the AGPL code runs server-side. The @thatopen packages v3.x moved to MIT, but ALWAYS verify the license field in `package.json` of your installed version.
@@ -136,11 +136,11 @@ await ifcApi.Init(); // Error: web-ifc.wasm not found
 // WRONG: Setting WASM path AFTER Init
 const ifcApi = new WebIFC.IfcAPI();
 await ifcApi.Init();
-ifcApi.SetWasmPath('./wasm/'); // Too late -- Init already failed or used wrong path
+ifcApi.SetWasmPath("./wasm/"); // Too late -- Init already failed or used wrong path
 
 // CORRECT: Set WASM path BEFORE Init
 const ifcApi = new WebIFC.IfcAPI();
-ifcApi.SetWasmPath('./wasm/'); // MUST point to directory with web-ifc.wasm
+ifcApi.SetWasmPath("./wasm/"); // MUST point to directory with web-ifc.wasm
 await ifcApi.Init();
 ```
 

@@ -11,12 +11,12 @@ function App() {
     <Canvas>
       <Model />
     </Canvas>
-  )
+  );
 }
 
 function Model() {
-  const { nodes } = useGLTF('/model.glb') // Suspense throw with no boundary
-  return <mesh geometry={nodes.Body.geometry} />
+  const { nodes } = useGLTF("/model.glb"); // Suspense throw with no boundary
+  return <mesh geometry={nodes.Body.geometry} />;
 }
 ```
 
@@ -29,7 +29,7 @@ function App() {
         <Model />
       </Suspense>
     </Canvas>
-  )
+  );
 }
 ```
 
@@ -83,18 +83,18 @@ function App() {
 ```jsx
 // WRONG — model loads only when component mounts, causing visible pop-in
 function Model() {
-  const { nodes } = useGLTF('/hero-model.glb')
-  return <mesh geometry={nodes.Body.geometry} />
+  const { nodes } = useGLTF("/hero-model.glb");
+  return <mesh geometry={nodes.Body.geometry} />;
 }
 ```
 
 ```jsx
 // CORRECT — preload at module scope, asset is ready before mount
 function Model() {
-  const { nodes } = useGLTF('/hero-model.glb')
-  return <mesh geometry={nodes.Body.geometry} />
+  const { nodes } = useGLTF("/hero-model.glb");
+  return <mesh geometry={nodes.Body.geometry} />;
 }
-useGLTF.preload('/hero-model.glb')  // starts loading immediately at import time
+useGLTF.preload("/hero-model.glb"); // starts loading immediately at import time
 ```
 
 **Why:** Without `.preload()`, the asset download begins only when the component first renders. For hero models or textures that are visible immediately, this causes a jarring flash of empty content followed by sudden appearance. Preloading moves the network request to module evaluation time, overlapping with other initialization work.
@@ -107,12 +107,14 @@ useGLTF.preload('/hero-model.glb')  // starts loading immediately at import time
 
 ```jsx
 // WRONG — 1000 draw calls, one per mesh
-{positions.map((pos, i) => (
-  <mesh key={i} position={pos}>
-    <boxGeometry args={[0.5, 0.5, 0.5]} />
-    <meshStandardMaterial color="orange" />
-  </mesh>
-))}
+{
+  positions.map((pos, i) => (
+    <mesh key={i} position={pos}>
+      <boxGeometry args={[0.5, 0.5, 0.5]} />
+      <meshStandardMaterial color="orange" />
+    </mesh>
+  ));
+}
 ```
 
 ```jsx
@@ -142,21 +144,21 @@ function MyMesh() {
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          array={new Float32Array(computeVertices())}  // new array every render
+          array={new Float32Array(computeVertices())} // new array every render
           count={vertexCount}
           itemSize={3}
         />
       </bufferGeometry>
       <meshStandardMaterial color="red" />
     </mesh>
-  )
+  );
 }
 ```
 
 ```jsx
 // CORRECT — memoize computed data
 function MyMesh() {
-  const vertices = useMemo(() => new Float32Array(computeVertices()), [])
+  const vertices = useMemo(() => new Float32Array(computeVertices()), []);
   return (
     <mesh>
       <bufferGeometry>
@@ -169,7 +171,7 @@ function MyMesh() {
       </bufferGeometry>
       <meshStandardMaterial color="red" />
     </mesh>
-  )
+  );
 }
 ```
 
@@ -190,12 +192,7 @@ function MyMesh() {
 
 ```jsx
 // CORRECT — label scales with distance and hides behind objects
-<Html
-  transform
-  distanceFactor={10}
-  occlude
-  center
->
+<Html transform distanceFactor={10} occlude center>
   <div>Label</div>
 </Html>
 ```
@@ -210,12 +207,7 @@ function MyMesh() {
 
 ```jsx
 // WRONG — re-renders shadow every frame for a static scene
-<ContactShadows
-  opacity={0.5}
-  scale={10}
-  blur={2}
-  resolution={1024}
-/>
+<ContactShadows opacity={0.5} scale={10} blur={2} resolution={1024} />
 ```
 
 ```jsx
@@ -225,7 +217,7 @@ function MyMesh() {
   scale={10}
   blur={2}
   resolution={1024}
-  frames={1}           // render once and stop
+  frames={1} // render once and stop
 />
 ```
 
@@ -246,7 +238,7 @@ function MyMesh() {
 ```jsx
 // CORRECT — disable orbit controls while dragging the gizmo
 function Scene() {
-  const orbitRef = useRef()
+  const orbitRef = useRef();
   return (
     <>
       <OrbitControls ref={orbitRef} makeDefault />
@@ -256,7 +248,7 @@ function Scene() {
         onMouseUp={() => (orbitRef.current.enabled = true)}
       />
     </>
-  )
+  );
 }
 ```
 
@@ -276,32 +268,32 @@ function App() {
       <Model position={[0, 0, 0]} />
       <Model position={[5, 0, 0]} />
     </>
-  )
+  );
 }
 
 function Model({ position }) {
-  const gltf = useGLTF('/model.glb')
-  return <primitive object={gltf.scene} position={position} />
+  const gltf = useGLTF("/model.glb");
+  return <primitive object={gltf.scene} position={position} />;
 }
 ```
 
 ```jsx
 // CORRECT — clone the scene for each instance, or use individual nodes
 function Model({ position }) {
-  const { nodes, materials } = useGLTF('/model.glb')
+  const { nodes, materials } = useGLTF("/model.glb");
   return (
     <group position={position}>
       <mesh geometry={nodes.Body.geometry} material={materials.Metal} />
     </group>
-  )
+  );
 }
 
 // ALTERNATIVE — use Clone from Drei
-import { Clone } from '@react-three/drei'
+import { Clone } from "@react-three/drei";
 
 function Model({ position }) {
-  const { scene } = useGLTF('/model.glb')
-  return <Clone object={scene} position={position} />
+  const { scene } = useGLTF("/model.glb");
+  return <Clone object={scene} position={position} />;
 }
 ```
 

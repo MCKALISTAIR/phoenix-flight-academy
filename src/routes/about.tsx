@@ -9,7 +9,11 @@ export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About Our Team & CFI | Phoenix Flight Training" },
-      { name: "description", content: "Meet the professional flight operations team at Cumbernauld Airport. Experienced instructors dedicated to flight safety and PPL mentoring." }
+      {
+        name: "description",
+        content:
+          "Meet the professional flight operations team at Cumbernauld Airport. Experienced instructors dedicated to flight safety and PPL mentoring.",
+      },
     ],
   }),
 });
@@ -27,7 +31,7 @@ function useScrollReveal(selector: string, totalCount: number) {
           }
         });
       },
-      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" },
     );
     const elements = document.querySelectorAll(selector);
     elements.forEach((el) => observer.observe(el));
@@ -42,18 +46,18 @@ function AboutPage() {
     {
       title: "Safety First",
       desc: "Our primary, non-negotiable metric. We train pilots to be risk-aware, checklist-focused, and operationally rigorous.",
-      icon: ShieldCheck
+      icon: ShieldCheck,
     },
     {
       title: "Patience & Empathy",
       desc: "Flight training is highly demanding. We believe that learning flows from supportive, constructive flight deck instruction.",
-      icon: HeartHandshake
+      icon: HeartHandshake,
     },
     {
       title: "Cumbernauld Focus",
       desc: "Based at Cumbernauld, we leverage local Scottish terrain, coastal winds, and uncontrolled airspace to build resilient airmen.",
-      icon: Compass
-    }
+      icon: Compass,
+    },
   ];
 
   const { data: instructorRows = [] } = useQuery({
@@ -93,12 +97,15 @@ function AboutPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/70 to-transparent" />
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <span className="text-sm font-semibold uppercase tracking-wider text-primary">About Us</span>
+          <span className="text-sm font-semibold uppercase tracking-wider text-primary">
+            About Us
+          </span>
           <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
             Phoenix Flight Training
           </h1>
           <p className="mt-6 max-w-2xl text-lg sm:text-xl text-white/85 leading-relaxed">
-            Professional general aviation mentorship based at Cumbernauld Airport, committed to forging confident, skilled, and safe pilots.
+            Professional general aviation mentorship based at Cumbernauld Airport, committed to
+            forging confident, skilled, and safe pilots.
           </p>
         </div>
       </div>
@@ -132,10 +139,15 @@ function AboutPage() {
         {/* Instructor Bios — staggered reveal from bottom */}
         <div className="mt-24 space-y-12">
           <div className="text-center max-w-xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-widest text-primary">Our Instructors</span>
-            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-foreground">Meet Your Flight Deck Team</h2>
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">
+              Our Instructors
+            </span>
+            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-foreground">
+              Meet Your Flight Deck Team
+            </h2>
             <p className="mt-4 text-sm sm:text-base text-muted-foreground leading-relaxed">
-              Every instructor at Phoenix holds full CAA certification and is deeply experienced flying in the challenging and beautiful Scottish airspace.
+              Every instructor at Phoenix holds full CAA certification and is deeply experienced
+              flying in the challenging and beautiful Scottish airspace.
             </p>
           </div>
 
@@ -148,7 +160,9 @@ function AboutPage() {
                   data-reveal-instructor
                   data-reveal-index={idx}
                   className={`group flex flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-sm transition-all duration-700 ease-out hover:-translate-y-2 hover:shadow-xl hover:border-primary/20 ${
-                    isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-12 scale-[0.97]"
+                    isVisible
+                      ? "opacity-100 translate-y-0 scale-100"
+                      : "opacity-0 translate-y-12 scale-[0.97]"
                   }`}
                   style={{ transitionDelay: `${idx * 150}ms` }}
                 >
@@ -167,9 +181,13 @@ function AboutPage() {
 
                   {/* Profile detail */}
                   <div className="p-6 flex-1 flex flex-col">
-                    <span className="text-xs font-bold uppercase tracking-wider text-primary">{ins.role}</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-primary">
+                      {ins.role}
+                    </span>
                     <h3 className="mt-1 text-xl font-bold text-foreground">{ins.name}</h3>
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground flex-1">{ins.bio}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground flex-1">
+                      {ins.bio}
+                    </p>
                   </div>
                 </div>
               );

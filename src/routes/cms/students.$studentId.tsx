@@ -110,7 +110,7 @@ function StudentDetail() {
   const totalMin = flights.reduce((acc, f) => acc + (f.total_minutes ?? 0), 0);
   const dualMin = flights.reduce((acc, f) => acc + (f.dual_received_minutes ?? 0), 0);
   const picMin = flights.reduce(
-    (acc, f) => acc + (f.capacity === "pic" ? f.total_minutes ?? 0 : 0),
+    (acc, f) => acc + (f.capacity === "pic" ? (f.total_minutes ?? 0) : 0),
     0,
   );
   const nightMin = flights.reduce((acc, f) => acc + (f.night_minutes ?? 0), 0);
@@ -151,16 +151,16 @@ function StudentDetail() {
             </div>
           </div>
         </div>
-        <StatusEditor
-          studentId={student.id}
-          status={student.status}
-          onSaved={invalidate}
-        />
+        <StatusEditor studentId={student.id} status={student.status} onSaved={invalidate} />
       </div>
 
       {/* Summary cards */}
       <div className="grid grid-cols-5 gap-3">
-        <SummaryCard label="Total time" value={fmtHours(totalMin)} hint={`${flights.length} flights`} />
+        <SummaryCard
+          label="Total time"
+          value={fmtHours(totalMin)}
+          hint={`${flights.length} flights`}
+        />
         <SummaryCard label="Dual received" value={fmtHours(dualMin)} />
         <SummaryCard label="PIC time" value={fmtHours(picMin)} />
         <SummaryCard label="Night" value={fmtHours(nightMin)} />
@@ -178,7 +178,7 @@ function StudentDetail() {
               onClick={() => setTab(t.key)}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 -mb-px transition-colors ${
                 active
-                  ? "border-[oklch(0.70_0.18_270)] text-white"
+                  ? "border-primary text-white"
                   : "border-transparent text-white/40 hover:text-white/70"
               }`}
             >
@@ -205,29 +205,15 @@ function StudentDetail() {
           onChange={invalidate}
         />
       )}
-      {tab === "syllabus" && (
-        <SyllabusTab flights={flights} flightExercises={flightExercises} />
-      )}
+      {tab === "syllabus" && <SyllabusTab flights={flights} flightExercises={flightExercises} />}
       {tab === "documents" && (
-        <DocumentsTab
-          studentId={student.id}
-          documents={documents}
-          onChange={invalidate}
-        />
+        <DocumentsTab studentId={student.id} documents={documents} onChange={invalidate} />
       )}
       {tab === "endorsements" && (
-        <EndorsementsTab
-          studentId={student.id}
-          endorsements={endorsements}
-          onChange={invalidate}
-        />
+        <EndorsementsTab studentId={student.id} endorsements={endorsements} onChange={invalidate} />
       )}
       {tab === "theory" && (
-        <TheoryTab
-          studentId={student.id}
-          theory={theory}
-          onChange={invalidate}
-        />
+        <TheoryTab studentId={student.id} theory={theory} onChange={invalidate} />
       )}
     </div>
   );
@@ -261,7 +247,9 @@ function StatusEditor({
   return (
     <select
       value={status}
-      onChange={(e) => mut.mutate(e.target.value as "active" | "paused" | "completed" | "withdrawn")}
+      onChange={(e) =>
+        mut.mutate(e.target.value as "active" | "paused" | "completed" | "withdrawn")
+      }
       className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-white"
     >
       <option value="active">Active</option>
@@ -336,7 +324,7 @@ function OverviewTab({
                 {lastFlightExercises.map((e) => (
                   <span
                     key={e.id}
-                    className="rounded-md bg-[oklch(0.55_0.22_270)]/15 text-[oklch(0.75_0.18_270)] px-2 py-0.5 text-xs"
+                    className="rounded-md bg-primary/15 text-primary px-2 py-0.5 text-xs"
                   >
                     Ex covered · {e.grade}
                   </span>
@@ -411,7 +399,7 @@ function FlightsTab({
       <div className="flex justify-end">
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] px-4 py-2 text-sm font-bold text-white hover:bg-[oklch(0.60_0.22_270)]"
+          className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary"
         >
           <Plus className="h-4 w-4" /> Add Flight
         </button>
@@ -453,7 +441,9 @@ function FlightsTab({
                         {f.departure_aerodrome} → {f.arrival_aerodrome}
                       </td>
                       <td className="px-3 py-2 uppercase">{f.capacity}</td>
-                      <td className="px-3 py-2 text-right font-bold">{fmtHours(f.total_minutes)}</td>
+                      <td className="px-3 py-2 text-right font-bold">
+                        {fmtHours(f.total_minutes)}
+                      </td>
                       <td className="px-3 py-2 text-right">{fmtHours(f.dual_received_minutes)}</td>
                       <td className="px-3 py-2 text-right">{fmtHours(f.night_minutes)}</td>
                       <td className="px-3 py-2 text-right">{fmtHours(f.ifr_minutes)}</td>
@@ -466,7 +456,7 @@ function FlightsTab({
                           {f.remarks ?? "—"}
                         </div>
                         {exs.length > 0 && (
-                          <div className="mt-1 text-[10px] text-[oklch(0.75_0.18_270)]">
+                          <div className="mt-1 text-[10px] text-primary">
                             {exs.length} exercise{exs.length === 1 ? "" : "s"} covered
                           </div>
                         )}
@@ -528,7 +518,9 @@ function AddFlightModal({
   const [off, setOff] = useState("");
   const [on, setOn] = useState("");
   const [picName, setPicName] = useState("");
-  const [capacity, setCapacity] = useState<"dual" | "pic" | "put" | "picus" | "instructor" | "examiner">("dual");
+  const [capacity, setCapacity] = useState<
+    "dual" | "pic" | "put" | "picus" | "instructor" | "examiner"
+  >("dual");
   const [landingsDay, setLandingsDay] = useState(1);
   const [landingsNight, setLandingsNight] = useState(0);
   const [nightMin, setNightMin] = useState(0);
@@ -593,15 +585,17 @@ function AddFlightModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl border border-white/10 bg-[oklch(0.10_0.04_270)] shadow-2xl">
-        <div className="sticky top-0 z-10 bg-[oklch(0.10_0.04_270)] border-b border-white/10 px-6 py-4 flex items-center justify-between">
+      <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl border border-white/10 bg-surface-navy shadow-2xl">
+        <div className="sticky top-0 z-10 bg-surface-navy border-b border-white/10 px-6 py-4 flex items-center justify-between">
           <div>
             <h3 className="text-base font-bold text-white">Log Flight (UK CAA)</h3>
             <p className="text-xs text-white/40">
               All fields below match the CAA pilot logbook record columns.
             </p>
           </div>
-          <button onClick={onClose} className="text-white/30 hover:text-white/70 text-xl">×</button>
+          <button onClick={onClose} className="text-white/30 hover:text-white/70 text-xl">
+            ×
+          </button>
         </div>
 
         <form
@@ -820,7 +814,7 @@ function AddFlightModal({
             <button
               type="submit"
               disabled={createMut.isPending}
-              className="rounded-xl bg-[oklch(0.55_0.22_270)] px-6 py-2.5 text-sm font-bold text-white hover:bg-[oklch(0.60_0.22_270)] disabled:opacity-50"
+              className="rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-white hover:bg-primary disabled:opacity-50"
             >
               {createMut.isPending ? "Saving…" : "Sign & Save Flight"}
             </button>
@@ -832,7 +826,7 @@ function AddFlightModal({
 }
 
 const inputCls =
-  "w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/20 outline-none focus:border-[oklch(0.65_0.22_270)]";
+  "w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/20 outline-none focus:border-primary";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -846,13 +840,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 /* ============ SYLLABUS ============ */
-function SyllabusTab({
-  flights,
-  flightExercises,
-}: {
-  flights: any[];
-  flightExercises: any[];
-}) {
+function SyllabusTab({ flights, flightExercises }: { flights: any[]; flightExercises: any[] }) {
   const syllabusFn = useServerFn(listSyllabus);
   const { data } = useQuery({ queryKey: ["syllabus"], queryFn: () => syllabusFn() });
   const exercises = data?.exercises ?? [];
@@ -860,10 +848,7 @@ function SyllabusTab({
   const flightById = new Map(flights.map((f) => [f.id, f]));
 
   const progressByExercise = useMemo(() => {
-    const map = new Map<
-      string,
-      { lastDate: string | null; bestGrade: string; count: number }
-    >();
+    const map = new Map<string, { lastDate: string | null; bestGrade: string; count: number }>();
     const gradeRank: Record<string, number> = {
       intro: 1,
       practiced: 2,
@@ -897,8 +882,10 @@ function SyllabusTab({
         </div>
         <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden">
           <div
-            className="h-full bg-[oklch(0.55_0.22_270)]"
-            style={{ width: `${exercises.length ? (competentCount / exercises.length) * 100 : 0}%` }}
+            className="h-full bg-primary"
+            style={{
+              width: `${exercises.length ? (competentCount / exercises.length) * 100 : 0}%`,
+            }}
           />
         </div>
       </div>
@@ -977,7 +964,17 @@ function DocumentsTab({
 
   const [show, setShow] = useState(false);
   const [docType, setDocType] = useState<
-    "medical_class1" | "medical_class2" | "medical_lapl" | "student_pilot_license" | "ppl" | "lapl" | "rt_license" | "passport" | "photo_id" | "language_proficiency" | "other"
+    | "medical_class1"
+    | "medical_class2"
+    | "medical_lapl"
+    | "student_pilot_license"
+    | "ppl"
+    | "lapl"
+    | "rt_license"
+    | "passport"
+    | "photo_id"
+    | "language_proficiency"
+    | "other"
   >("medical_class2");
   const [docNumber, setDocNumber] = useState("");
   const [issued, setIssued] = useState("");
@@ -989,7 +986,7 @@ function DocumentsTab({
       <div className="flex justify-end">
         <button
           onClick={() => setShow(true)}
-          className="flex items-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] px-4 py-2 text-sm font-bold text-white hover:bg-[oklch(0.60_0.22_270)]"
+          className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary"
         >
           <Plus className="h-4 w-4" /> Add Document
         </button>
@@ -1019,7 +1016,9 @@ function DocumentsTab({
                     <td className="px-3 py-2 font-mono">{d.document_number ?? "—"}</td>
                     <td className="px-3 py-2">{d.issued_on ?? "—"}</td>
                     <td className="px-3 py-2">{d.expires_on ?? "—"}</td>
-                    <td className="px-3 py-2"><ExpiryPill days={days} /></td>
+                    <td className="px-3 py-2">
+                      <ExpiryPill days={days} />
+                    </td>
                     <td className="px-3 py-2">
                       <button
                         onClick={() => {
@@ -1052,13 +1051,19 @@ function DocumentsTab({
                 issuing_authority: authority || null,
               });
               setShow(false);
-              setDocNumber(""); setIssued(""); setExpires("");
+              setDocNumber("");
+              setIssued("");
+              setExpires("");
             }}
-            className="w-full max-w-md rounded-3xl border border-white/10 bg-[oklch(0.10_0.04_270)] p-6 space-y-4"
+            className="w-full max-w-md rounded-3xl border border-white/10 bg-surface-navy p-6 space-y-4"
           >
             <h3 className="text-base font-bold text-white">Add Document</h3>
             <Field label="Type">
-              <select value={docType} onChange={(e) => setDocType(e.target.value as typeof docType)} className={inputCls}>
+              <select
+                value={docType}
+                onChange={(e) => setDocType(e.target.value as typeof docType)}
+                className={inputCls}
+              >
                 <option value="medical_class1">Medical Class 1</option>
                 <option value="medical_class2">Medical Class 2</option>
                 <option value="medical_lapl">Medical LAPL</option>
@@ -1073,16 +1078,53 @@ function DocumentsTab({
               </select>
             </Field>
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Number"><input value={docNumber} onChange={(e) => setDocNumber(e.target.value)} className={inputCls} /></Field>
-              <Field label="Authority"><input value={authority} onChange={(e) => setAuthority(e.target.value)} className={inputCls} /></Field>
+              <Field label="Number">
+                <input
+                  value={docNumber}
+                  onChange={(e) => setDocNumber(e.target.value)}
+                  className={inputCls}
+                />
+              </Field>
+              <Field label="Authority">
+                <input
+                  value={authority}
+                  onChange={(e) => setAuthority(e.target.value)}
+                  className={inputCls}
+                />
+              </Field>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <Field label="Issued on"><input type="date" value={issued} onChange={(e) => setIssued(e.target.value)} className={inputCls} /></Field>
-              <Field label="Expires on"><input type="date" value={expires} onChange={(e) => setExpires(e.target.value)} className={inputCls} /></Field>
+              <Field label="Issued on">
+                <input
+                  type="date"
+                  value={issued}
+                  onChange={(e) => setIssued(e.target.value)}
+                  className={inputCls}
+                />
+              </Field>
+              <Field label="Expires on">
+                <input
+                  type="date"
+                  value={expires}
+                  onChange={(e) => setExpires(e.target.value)}
+                  className={inputCls}
+                />
+              </Field>
             </div>
             <div className="flex justify-end gap-2">
-              <button type="button" onClick={() => setShow(false)} className="rounded-xl border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
-              <button type="submit" className="rounded-xl bg-[oklch(0.55_0.22_270)] px-5 py-2 text-sm font-bold text-white hover:bg-[oklch(0.60_0.22_270)]">Save</button>
+              <button
+                type="button"
+                onClick={() => setShow(false)}
+                className="rounded-xl border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="rounded-xl bg-primary px-5 py-2 text-sm font-bold text-white hover:bg-primary"
+              >
+                Save
+              </button>
             </div>
           </form>
         </div>
@@ -1103,11 +1145,27 @@ function EndorsementsTab({
 }) {
   const create = useServerFn(createEndorsement);
   const del = useServerFn(deleteEndorsement);
-  const createMut = useMutation({ mutationFn: (d: any) => create({ data: d }), onSuccess: onChange });
-  const delMut = useMutation({ mutationFn: (id: string) => del({ data: { id } }), onSuccess: onChange });
+  const createMut = useMutation({
+    mutationFn: (d: any) => create({ data: d }),
+    onSuccess: onChange,
+  });
+  const delMut = useMutation({
+    mutationFn: (id: string) => del({ data: { id } }),
+    onSuccess: onChange,
+  });
 
   const [show, setShow] = useState(false);
-  const [type, setType] = useState<"first_solo" | "solo_circuits" | "solo_local" | "solo_nav" | "solo_cross_country" | "type_endorsement" | "night_rating" | "differences_training" | "other">("first_solo");
+  const [type, setType] = useState<
+    | "first_solo"
+    | "solo_circuits"
+    | "solo_local"
+    | "solo_nav"
+    | "solo_cross_country"
+    | "type_endorsement"
+    | "night_rating"
+    | "differences_training"
+    | "other"
+  >("first_solo");
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
   const [validUntil, setValidUntil] = useState("");
@@ -1117,7 +1175,7 @@ function EndorsementsTab({
       <div className="flex justify-end">
         <button
           onClick={() => setShow(true)}
-          className="flex items-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] px-4 py-2 text-sm font-bold text-white hover:bg-[oklch(0.60_0.22_270)]"
+          className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white hover:bg-primary"
         >
           <Plus className="h-4 w-4" /> Add Endorsement
         </button>
@@ -1142,11 +1200,15 @@ function EndorsementsTab({
                     {e.valid_until && ` · valid until ${e.valid_until}`}
                   </div>
                   {e.details && (
-                    <div className="text-xs text-white/60 mt-1 whitespace-pre-wrap">{e.details}</div>
+                    <div className="text-xs text-white/60 mt-1 whitespace-pre-wrap">
+                      {e.details}
+                    </div>
                   )}
                 </div>
                 <button
-                  onClick={() => { if (confirm("Delete?")) delMut.mutate(e.id); }}
+                  onClick={() => {
+                    if (confirm("Delete?")) delMut.mutate(e.id);
+                  }}
                   className="text-white/30 hover:text-red-400"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
@@ -1170,13 +1232,19 @@ function EndorsementsTab({
                 valid_until: validUntil || null,
               });
               setShow(false);
-              setTitle(""); setDetails(""); setValidUntil("");
+              setTitle("");
+              setDetails("");
+              setValidUntil("");
             }}
-            className="w-full max-w-md rounded-3xl border border-white/10 bg-[oklch(0.10_0.04_270)] p-6 space-y-4"
+            className="w-full max-w-md rounded-3xl border border-white/10 bg-surface-navy p-6 space-y-4"
           >
             <h3 className="text-base font-bold text-white">Sign Endorsement</h3>
             <Field label="Type">
-              <select value={type} onChange={(e) => setType(e.target.value as typeof type)} className={inputCls}>
+              <select
+                value={type}
+                onChange={(e) => setType(e.target.value as typeof type)}
+                className={inputCls}
+              >
                 <option value="first_solo">First Solo</option>
                 <option value="solo_circuits">Solo Circuits</option>
                 <option value="solo_local">Solo Local</option>
@@ -1189,17 +1257,44 @@ function EndorsementsTab({
               </select>
             </Field>
             <Field label="Title">
-              <input required value={title} onChange={(e) => setTitle(e.target.value)} className={inputCls} placeholder="e.g. First solo — circuits at EGBJ" />
+              <input
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className={inputCls}
+                placeholder="e.g. First solo — circuits at EGBJ"
+              />
             </Field>
             <Field label="Details">
-              <textarea value={details} onChange={(e) => setDetails(e.target.value)} rows={3} className={inputCls} />
+              <textarea
+                value={details}
+                onChange={(e) => setDetails(e.target.value)}
+                rows={3}
+                className={inputCls}
+              />
             </Field>
             <Field label="Valid until (optional)">
-              <input type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} className={inputCls} />
+              <input
+                type="date"
+                value={validUntil}
+                onChange={(e) => setValidUntil(e.target.value)}
+                className={inputCls}
+              />
             </Field>
             <div className="flex justify-end gap-2">
-              <button type="button" onClick={() => setShow(false)} className="rounded-xl border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5">Cancel</button>
-              <button type="submit" className="rounded-xl bg-[oklch(0.55_0.22_270)] px-5 py-2 text-sm font-bold text-white hover:bg-[oklch(0.60_0.22_270)]">Sign &amp; Save</button>
+              <button
+                type="button"
+                onClick={() => setShow(false)}
+                className="rounded-xl border border-white/10 px-4 py-2 text-sm text-white/60 hover:bg-white/5"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="rounded-xl bg-primary px-5 py-2 text-sm font-bold text-white hover:bg-primary"
+              >
+                Sign &amp; Save
+              </button>
             </div>
           </form>
         </div>
@@ -1221,7 +1316,10 @@ function TheoryTab({
   const upsert = useServerFn(upsertTheoryResult);
   const del = useServerFn(deleteTheoryResult);
   const upMut = useMutation({ mutationFn: (d: any) => upsert({ data: d }), onSuccess: onChange });
-  const delMut = useMutation({ mutationFn: (id: string) => del({ data: { id } }), onSuccess: onChange });
+  const delMut = useMutation({
+    mutationFn: (id: string) => del({ data: { id } }),
+    onSuccess: onChange,
+  });
 
   const bySubject = new Map(theory.map((t) => [t.subject, t]));
 
@@ -1309,7 +1407,9 @@ function TheoryTab({
                 <td className="px-3 py-2">
                   {t && (
                     <button
-                      onClick={() => { if (confirm("Reset this exam?")) delMut.mutate(t.id); }}
+                      onClick={() => {
+                        if (confirm("Reset this exam?")) delMut.mutate(t.id);
+                      }}
                       className="text-white/30 hover:text-red-400"
                     >
                       <Trash2 className="h-3.5 w-3.5" />

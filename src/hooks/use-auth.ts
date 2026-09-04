@@ -11,7 +11,9 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_e, s) => {
       setSession(s);
       setUser(s?.user ?? null);
     });
@@ -48,7 +50,9 @@ export function useRoles() {
         setRoles((data ?? []).map((r) => r.role as AppRole));
         setLoading(false);
       });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [user, authLoading]);
 
   const hasRole = (role: AppRole) => roles.includes(role);

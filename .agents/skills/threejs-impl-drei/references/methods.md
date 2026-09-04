@@ -44,6 +44,7 @@
 ```
 
 Imperative methods via ref:
+
 - `ref.current.setLookAt(posX, posY, posZ, targetX, targetY, targetZ, enableTransition)`
 - `ref.current.dolly(distance, enableTransition)`
 - `ref.current.truck(x, y, enableTransition)`
@@ -69,12 +70,12 @@ Imperative methods via ref:
 ```
 
 ```tsx
-const scroll = useScroll()
-scroll.offset    // normalized scroll position 0..1
-scroll.delta     // scroll speed
-scroll.visible(from, range)  // visibility within range
-scroll.range(from, range)    // clamped progress within range
-scroll.curve(from, range)    // bell curve within range
+const scroll = useScroll();
+scroll.offset; // normalized scroll position 0..1
+scroll.delta; // scroll speed
+scroll.visible(from, range); // visibility within range
+scroll.range(from, range); // clamped progress within range
+scroll.curve(from, range); // bell curve within range
 ```
 
 ### PresentationControls
@@ -113,9 +114,9 @@ scroll.curve(from, range)    // bell curve within range
 ```tsx
 <KeyboardControls
   map={[
-    { name: 'forward', keys: ['ArrowUp', 'KeyW'] },
-    { name: 'backward', keys: ['ArrowDown', 'KeyS'] },
-    { name: 'jump', keys: ['Space'] },
+    { name: "forward", keys: ["ArrowUp", "KeyW"] },
+    { name: "backward", keys: ["ArrowDown", "KeyS"] },
+    { name: "jump", keys: ["Space"] },
   ]}
 >
   {children}
@@ -123,13 +124,13 @@ scroll.curve(from, range)    // bell curve within range
 ```
 
 ```tsx
-const [subscribeKeys, getKeys] = useKeyboardControls()
-const pressed = getKeys()       // { forward: true, backward: false, jump: false }
-subscribeKeys((state) => { })   // subscribe to all changes
+const [subscribeKeys, getKeys] = useKeyboardControls();
+const pressed = getKeys(); // { forward: true, backward: false, jump: false }
+subscribeKeys((state) => {}); // subscribe to all changes
 subscribeKeys(
-  (state) => state.jump,        // selector
-  (pressed) => { }              // callback when jump changes
-)
+  (state) => state.jump, // selector
+  (pressed) => {}, // callback when jump changes
+);
 ```
 
 ---
@@ -473,9 +474,9 @@ const texture = useVideoTexture(
 
 ```tsx
 <Detailed distances={[0, 50, 100]}>
-  <HighPolyMesh />   // shown 0-50 units
-  <MidPolyMesh />    // shown 50-100 units
-  <LowPolyMesh />    // shown 100+ units
+  <HighPolyMesh /> // shown 0-50 units
+  <MidPolyMesh /> // shown 50-100 units
+  <LowPolyMesh /> // shown 100+ units
 </Detailed>
 ```
 

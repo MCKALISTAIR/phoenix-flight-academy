@@ -44,8 +44,8 @@ function computePrice(
     product.payment_mode === "deposit"
       ? Math.round((totalCents * product.deposit_pct) / 100)
       : product.payment_mode === "full"
-      ? totalCents
-      : 0;
+        ? totalCents
+        : 0;
   return { totalCents, depositCents, discountAppliedCents };
 }
 
@@ -84,11 +84,13 @@ export const createBooking = createServerFn({ method: "POST" })
       ? supabaseAdmin
       : createClient(
           process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || "",
-          process.env.SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || "",
+          process.env.SUPABASE_PUBLISHABLE_KEY ||
+            import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+            "",
           {
             global: token ? { headers: { Authorization: `Bearer ${token}` } } : undefined,
             auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
-          }
+          },
         );
 
     // Load product, aircraft, and (optionally) the auth user using client
@@ -130,7 +132,8 @@ export const createBooking = createServerFn({ method: "POST" })
       if (!isTestEnv) {
         if (!userId) throw new Error("Lessons require a signed-in student account");
         const s = await client.from("students").select("id").eq("user_id", userId).maybeSingle();
-        if (!s.data) throw new Error("Only enrolled students can book lessons. Contact the school to enroll.");
+        if (!s.data)
+          throw new Error("Only enrolled students can book lessons. Contact the school to enroll.");
       }
     }
     if (product.kind === "self_hire") {
@@ -144,7 +147,8 @@ export const createBooking = createServerFn({ method: "POST" })
         a.data &&
         !a.data.revoked_at &&
         (!a.data.expires_at || new Date(a.data.expires_at) > new Date());
-      if (!ok) throw new Error("You are not approved for self-hire. Contact the school for approval.");
+      if (!ok)
+        throw new Error("You are not approved for self-hire. Contact the school for approval.");
     }
 
     const startsDate = new Date(data.startsAt);
@@ -196,14 +200,20 @@ export const createBooking = createServerFn({ method: "POST" })
     }
 
     // Validate promo code if supplied
-    let appliedDiscount: { discountType: "percentage" | "fixed_amount"; discountValue: number; promoId: string } | null = null;
+    let appliedDiscount: {
+      discountType: "percentage" | "fixed_amount";
+      discountValue: number;
+      promoId: string;
+    } | null = null;
     let validatedPromoCode: string | null = null;
     if (data.promoCode) {
       const code = data.promoCode.toUpperCase();
       const now = new Date();
       const { data: promo, error: promoErr } = await client
         .from("booking_promotions")
-        .select("id, code, discount_type, discount_value, applies_to_kinds, active_from, active_until, max_uses, uses_count, published")
+        .select(
+          "id, code, discount_type, discount_value, applies_to_kinds, active_from, active_until, max_uses, uses_count, published",
+        )
         .eq("code", code)
         .eq("published", true)
         .maybeSingle();
@@ -214,22 +224,30 @@ export const createBooking = createServerFn({ method: "POST" })
         const notExhausted = promo.max_uses === null || promo.uses_count < promo.max_uses;
         const kindMatch = kinds.length === 0 || kinds.includes(product.kind);
         if (!notStarted && notExpired && notExhausted && kindMatch) {
-          appliedDiscount = { discountType: promo.discount_type as "percentage" | "fixed_amount", discountValue: promo.discount_value, promoId: promo.id };
+          appliedDiscount = {
+            discountType: promo.discount_type as "percentage" | "fixed_amount",
+            discountValue: promo.discount_value,
+            promoId: promo.id,
+          };
           validatedPromoCode = code;
         }
       }
     }
 
-    const { totalCents, depositCents, discountAppliedCents } = computePrice(product, aircraft, appliedDiscount);
+    const { totalCents, depositCents, discountAppliedCents } = computePrice(
+      product,
+      aircraft,
+      appliedDiscount,
+    );
 
     const status: "pending" =
       product.payment_mode === "invoice"
         ? "pending"
         : product.requires_approval
-        ? "pending"
-        : product.payment_mode === "full"
-        ? "pending" // will flip to confirmed once Stripe webhook lands
-        : "pending";
+          ? "pending"
+          : product.payment_mode === "full"
+            ? "pending" // will flip to confirmed once Stripe webhook lands
+            : "pending";
 
     const insertPayload = {
       product_id: product.id,
@@ -306,7 +324,9 @@ export const listMyBookings = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("bookings")
-      .select("*, booking_products(name, kind, payment_mode), aircraft(registration, model), instructors(name)")
+      .select(
+        "*, booking_products(name, kind, payment_mode), aircraft(registration, model), instructors(name)",
+      )
       .eq("user_id", context.userId)
       .order("starts_at", { ascending: false });
     if (error) throw new Error(error.message);
@@ -328,7 +348,9 @@ export const listAllBookings = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     let q = context.supabase
       .from("bookings")
-      .select("*, booking_products(name, kind, payment_mode, duration_minutes, instructor_fee_per_hour_cents), aircraft(registration, model), instructors(name)")
+      .select(
+        "*, booking_products(name, kind, payment_mode, duration_minutes, instructor_fee_per_hour_cents), aircraft(registration, model), instructors(name)",
+      )
       .order("starts_at", { ascending: false })
       .limit(500);
     if (data.status) q = q.eq("status", data.status);
@@ -417,7 +439,9 @@ export const getBookingById = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { data: row, error } = await supabase
       .from("bookings")
-      .select("*, booking_products(name, kind, payment_mode), aircraft(registration, model), instructors(name)")
+      .select(
+        "*, booking_products(name, kind, payment_mode), aircraft(registration, model), instructors(name)",
+      )
       .eq("id", data.id)
       .maybeSingle();
     if (error) throw new Error(error.message);

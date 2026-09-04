@@ -1,5 +1,17 @@
 import { createFileRoute, Link, redirect, isRedirect } from "@tanstack/react-router";
-import { FileText, Users, CheckCircle2, Clock, AlertCircle, TrendingUp, UserPlus, ShieldAlert, Plane, Wrench, Activity } from "lucide-react";
+import {
+  FileText,
+  Users,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  TrendingUp,
+  UserPlus,
+  ShieldAlert,
+  Plane,
+  Wrench,
+  Activity,
+} from "lucide-react";
 import { requireAdmin } from "@/lib/auth-guards";
 
 export const Route = createFileRoute("/cms/")({
@@ -55,10 +67,10 @@ function CmsDashboard() {
   ];
 
   const stats = [
-    { label: "Editable Sections", value: "6", icon: FileText, color: "text-[oklch(0.70_0.18_270)]" },
-    { label: "Instructor Profiles", value: "3", icon: Users, color: "text-[oklch(0.70_0.18_270)]" },
-    { label: "Registered Fleet", value: "3", icon: Plane, color: "text-[oklch(0.70_0.18_270)]" },
-    { label: "Active Portal Users", value: "6", icon: UserPlus, color: "text-[oklch(0.70_0.18_270)]" },
+    { label: "Editable Sections", value: "6", icon: FileText, color: "text-primary" },
+    { label: "Instructor Profiles", value: "3", icon: Users, color: "text-primary" },
+    { label: "Registered Fleet", value: "3", icon: Plane, color: "text-primary" },
+    { label: "Active Portal Users", value: "6", icon: UserPlus, color: "text-primary" },
   ];
 
   return (
@@ -67,7 +79,8 @@ function CmsDashboard() {
       <div>
         <h1 className="text-2xl font-extrabold text-white">CMS Overview</h1>
         <p className="mt-1 text-sm text-white/50">
-          Manage all publicly-visible content, control user access roles, and monitor flight school aircraft status.
+          Manage all publicly-visible content, control user access roles, and monitor flight school
+          aircraft status.
         </p>
       </div>
 
@@ -81,7 +94,9 @@ function CmsDashboard() {
               className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wider text-white/40">{stat.label}</span>
+                <span className="text-xs font-semibold uppercase tracking-wider text-white/40">
+                  {stat.label}
+                </span>
                 <Icon className={`h-4 w-4 ${stat.color}`} />
               </div>
               <p className={`mt-3 text-3xl font-black ${stat.color}`}>{stat.value}</p>
@@ -96,10 +111,7 @@ function CmsDashboard() {
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-bold text-white">Content Sections</h2>
-            <Link
-              to="/cms/content"
-              className="text-xs font-semibold text-[oklch(0.70_0.18_270)] hover:underline"
-            >
+            <Link to="/cms/content" className="text-xs font-semibold text-primary hover:underline">
               Edit all →
             </Link>
           </div>
@@ -107,7 +119,7 @@ function CmsDashboard() {
             {sections.map((section, idx) => (
               <div
                 key={idx}
-                className="group flex flex-col justify-between rounded-2xl border border-white/10 bg-white/5 p-5 transition-all hover:border-[oklch(0.55_0.22_270)]/40 hover:bg-white/8 backdrop-blur-sm"
+                className="group flex flex-col justify-between rounded-2xl border border-white/10 bg-white/5 p-5 transition-all hover:border-primary/40 hover:bg-white/8 backdrop-blur-sm"
               >
                 <div className="flex items-start justify-between">
                   <div>
@@ -122,7 +134,7 @@ function CmsDashboard() {
                   <span className="text-xs text-white/30">Last edited: {section.lastEdited}</span>
                   <Link
                     to="/cms/content"
-                    className="rounded-lg border border-[oklch(0.55_0.22_270)]/30 bg-[oklch(0.55_0.22_270)]/10 px-3 py-1 text-xs font-semibold text-[oklch(0.70_0.18_270)] opacity-0 transition-all group-hover:opacity-100 hover:bg-[oklch(0.55_0.22_270)]/20"
+                    className="rounded-lg border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary opacity-0 transition-all group-hover:opacity-100 hover:bg-primary/20"
                   >
                     Edit
                   </Link>
@@ -137,19 +149,20 @@ function CmsDashboard() {
           <div className="space-y-4">
             <h2 className="text-base font-bold text-white">System Controls</h2>
             <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-6 space-y-6 backdrop-blur-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[oklch(0.55_0.22_270)]/20 text-[oklch(0.70_0.18_270)]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/20 text-primary">
                 <ShieldAlert className="h-6 w-6" />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-white">User Access & Roles</h3>
                 <p className="mt-1 text-xs text-white/40 leading-relaxed">
-                  Configure access control for flight school staff, senior instructors, students, and self-hire pilots. Issue invitation keys to new team members.
+                  Configure access control for flight school staff, senior instructors, students,
+                  and self-hire pilots. Issue invitation keys to new team members.
                 </p>
               </div>
               <div className="space-y-2 pt-2">
                 <Link
                   to="/cms/users"
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] py-3 text-xs font-bold text-white shadow-lg shadow-[oklch(0.55_0.22_270)]/20 transition-all hover:scale-[1.02] hover:bg-[oklch(0.60_0.22_270)]"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-xs font-bold text-white shadow-lg shadow-[var(--color-primary)]/20 transition-all hover:scale-[1.02] hover:bg-primary"
                 >
                   <UserPlus className="h-3.5 w-3.5" />
                   Manage User Access
@@ -160,13 +173,14 @@ function CmsDashboard() {
 
           <div className="space-y-4">
             <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-6 space-y-6 backdrop-blur-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[oklch(0.55_0.22_270)]/20 text-[oklch(0.70_0.18_270)]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/20 text-primary">
                 <Plane className="h-6 w-6" />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-white">Fleet & Maintenance</h3>
                 <p className="mt-1 text-xs text-white/40 leading-relaxed">
-                  Track Hobbs/Tacho hours, toggle flight serviceability, ground aircraft (AOG) due to inspection thresholds, and adjust solo wet hire hourly rates.
+                  Track Hobbs/Tacho hours, toggle flight serviceability, ground aircraft (AOG) due
+                  to inspection thresholds, and adjust solo wet hire hourly rates.
                 </p>
               </div>
               <div className="space-y-2 pt-2">
@@ -183,13 +197,14 @@ function CmsDashboard() {
 
           <div className="space-y-4">
             <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-6 space-y-6 backdrop-blur-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[oklch(0.55_0.22_270)]/20 text-[oklch(0.70_0.18_270)]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/20 text-primary">
                 <Activity className="h-6 w-6 animate-pulse" />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-white">System Health & Traffic</h3>
                 <p className="mt-1 text-xs text-white/40 leading-relaxed">
-                  Monitor live active pageviews, route conversion percentages, and real-time backend PostgreSQL or client API bundle load exceptions.
+                  Monitor live active pageviews, route conversion percentages, and real-time backend
+                  PostgreSQL or client API bundle load exceptions.
                 </p>
               </div>
               <div className="space-y-2 pt-2">
@@ -212,7 +227,11 @@ function CmsDashboard() {
         <div>
           <p className="text-sm font-semibold text-yellow-300">Supabase Integration Pending</p>
           <p className="mt-1 text-xs text-yellow-400/70">
-            Content changes, role configurations, and aircraft status adjustments are currently stored in local component state. Once Supabase is wired in, saving here will write directly to the <code className="font-mono bg-yellow-500/10 px-1 rounded">cms_content</code> and user/aircraft schemas.
+            Content changes, role configurations, and aircraft status adjustments are currently
+            stored in local component state. Once Supabase is wired in, saving here will write
+            directly to the{" "}
+            <code className="font-mono bg-yellow-500/10 px-1 rounded">cms_content</code> and
+            user/aircraft schemas.
           </p>
         </div>
       </div>

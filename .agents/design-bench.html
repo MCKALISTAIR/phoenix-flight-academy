@@ -1,542 +1,853 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Design Bench — Phoenix Flight Academy</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,300..600&display=swap">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Design Bench — Phoenix Flight Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,300..600&display=swap"
+    />
 
-<style>
-:root{
-  --ground:#EFF3F1;
-  --panel:#FBFCFC;
-  --panel-2:#E5EBE8;
-  --ink:#131A18;
-  --ink-2:#3C4946;
-  --ink-3:#6A7975;
-  --rule:#CBD5D1;
-  --rule-soft:#DDE5E2;
-  --accent:#0C6355;
-  --accent-deep:#08453B;
-  --accent-wash:#DBEAE5;
-  --caution:#8A5810;
-  --caution-wash:#F2E7D2;
-  --builtin:#425663;
-  --builtin-wash:#DEE5E9;
-  --shadow:0 1px 0 rgba(19,26,24,.03), 0 6px 18px -12px rgba(19,26,24,.22);
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --ground:#0D1312;
-    --panel:#151D1B;
-    --panel-2:#1C2624;
-    --ink:#E7EEEB;
-    --ink-2:#AEBDB9;
-    --ink-3:#7C8D88;
-    --rule:#2A3835;
-    --rule-soft:#202B29;
-    --accent:#54CFB5;
-    --accent-deep:#8AE3CF;
-    --accent-wash:#11302A;
-    --caution:#DFAE5C;
-    --caution-wash:#332714;
-    --builtin:#9FB4BE;
-    --builtin-wash:#1C2A31;
-    --shadow:0 1px 0 rgba(0,0,0,.2), 0 6px 18px -12px rgba(0,0,0,.6);
-  }
-}
-:root[data-theme="dark"]{
-  --ground:#0D1312;
-  --panel:#151D1B;
-  --panel-2:#1C2624;
-  --ink:#E7EEEB;
-  --ink-2:#AEBDB9;
-  --ink-3:#7C8D88;
-  --rule:#2A3835;
-  --rule-soft:#202B29;
-  --accent:#54CFB5;
-  --accent-deep:#8AE3CF;
-  --accent-wash:#11302A;
-  --caution:#DFAE5C;
-  --caution-wash:#332714;
-  --builtin:#9FB4BE;
-  --builtin-wash:#1C2A31;
-  --shadow:0 1px 0 rgba(0,0,0,.2), 0 6px 18px -12px rgba(0,0,0,.6);
-}
+    <style>
+      :root {
+        --ground: #eff3f1;
+        --panel: #fbfcfc;
+        --panel-2: #e5ebe8;
+        --ink: #131a18;
+        --ink-2: #3c4946;
+        --ink-3: #6a7975;
+        --rule: #cbd5d1;
+        --rule-soft: #dde5e2;
+        --accent: #0c6355;
+        --accent-deep: #08453b;
+        --accent-wash: #dbeae5;
+        --caution: #8a5810;
+        --caution-wash: #f2e7d2;
+        --builtin: #425663;
+        --builtin-wash: #dee5e9;
+        --shadow: 0 1px 0 rgba(19, 26, 24, 0.03), 0 6px 18px -12px rgba(19, 26, 24, 0.22);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --ground: #0d1312;
+          --panel: #151d1b;
+          --panel-2: #1c2624;
+          --ink: #e7eeeb;
+          --ink-2: #aebdb9;
+          --ink-3: #7c8d88;
+          --rule: #2a3835;
+          --rule-soft: #202b29;
+          --accent: #54cfb5;
+          --accent-deep: #8ae3cf;
+          --accent-wash: #11302a;
+          --caution: #dfae5c;
+          --caution-wash: #332714;
+          --builtin: #9fb4be;
+          --builtin-wash: #1c2a31;
+          --shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 6px 18px -12px rgba(0, 0, 0, 0.6);
+        }
+      }
+      :root[data-theme="dark"] {
+        --ground: #0d1312;
+        --panel: #151d1b;
+        --panel-2: #1c2624;
+        --ink: #e7eeeb;
+        --ink-2: #aebdb9;
+        --ink-3: #7c8d88;
+        --rule: #2a3835;
+        --rule-soft: #202b29;
+        --accent: #54cfb5;
+        --accent-deep: #8ae3cf;
+        --accent-wash: #11302a;
+        --caution: #dfae5c;
+        --caution-wash: #332714;
+        --builtin: #9fb4be;
+        --builtin-wash: #1c2a31;
+        --shadow: 0 1px 0 rgba(0, 0, 0, 0.2), 0 6px 18px -12px rgba(0, 0, 0, 0.6);
+      }
 
-*{box-sizing:border-box}
+      * {
+        box-sizing: border-box;
+      }
 
-body{
-  margin:0;
-  background:var(--ground);
-  color:var(--ink);
-  font-family:"Source Serif 4",Georgia,"Times New Roman",serif;
-  font-optical-sizing:auto;
-  font-size:17px;
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-}
+      body {
+        margin: 0;
+        background: var(--ground);
+        color: var(--ink);
+        font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+        font-optical-sizing: auto;
+        font-size: 17px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
 
-.wrap{max-width:1180px;margin:0 auto;padding:0 28px 96px}
+      .wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 28px 96px;
+      }
 
-.masthead{
-  padding:60px 0 34px;
-  border-bottom:1px solid var(--rule);
-  position:relative;
-}
-.eyebrow{
-  font-family:"IBM Plex Mono",ui-monospace,monospace;
-  font-size:11px;
-  font-weight:500;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-  color:var(--accent);
-  margin:0 0 18px;
-}
-h1{
-  font-family:"Archivo",system-ui,sans-serif;
-  font-variation-settings:"wdth" 112,"wght" 700;
-  font-size:clamp(2.6rem,6.4vw,4.4rem);
-  line-height:.98;
-  letter-spacing:-.022em;
-  margin:0 0 20px;
-  text-wrap:balance;
-}
-.standfirst{
-  font-size:1.16rem;
-  line-height:1.55;
-  color:var(--ink-2);
-  max-width:60ch;
-  margin:0;
-}
-.standfirst strong{color:var(--ink);font-weight:600}
+      .masthead {
+        padding: 60px 0 34px;
+        border-bottom: 1px solid var(--rule);
+        position: relative;
+      }
+      .eyebrow {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin: 0 0 18px;
+      }
+      h1 {
+        font-family: "Archivo", system-ui, sans-serif;
+        font-variation-settings:
+          "wdth" 112,
+          "wght" 700;
+        font-size: clamp(2.6rem, 6.4vw, 4.4rem);
+        line-height: 0.98;
+        letter-spacing: -0.022em;
+        margin: 0 0 20px;
+        text-wrap: balance;
+      }
+      .standfirst {
+        font-size: 1.16rem;
+        line-height: 1.55;
+        color: var(--ink-2);
+        max-width: 60ch;
+        margin: 0;
+      }
+      .standfirst strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
 
-.tally{
-  display:flex;
-  flex-wrap:wrap;
-  gap:0;
-  margin-top:34px;
-  border-top:1px solid var(--rule-soft);
-}
-.tally div{
-  padding:16px 26px 4px 0;
-  margin-right:26px;
-  border-right:1px solid var(--rule-soft);
-}
-.tally div:last-child{border-right:0}
-.tally b{
-  display:block;
-  font-family:"Archivo",system-ui,sans-serif;
-  font-variation-settings:"wdth" 88,"wght" 700;
-  font-size:2rem;
-  line-height:1;
-  letter-spacing:-.02em;
-  font-variant-numeric:tabular-nums;
-}
-.tally span{
-  font-family:"IBM Plex Mono",ui-monospace,monospace;
-  font-size:10.5px;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  color:var(--ink-3);
-}
+      .tally {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0;
+        margin-top: 34px;
+        border-top: 1px solid var(--rule-soft);
+      }
+      .tally div {
+        padding: 16px 26px 4px 0;
+        margin-right: 26px;
+        border-right: 1px solid var(--rule-soft);
+      }
+      .tally div:last-child {
+        border-right: 0;
+      }
+      .tally b {
+        display: block;
+        font-family: "Archivo", system-ui, sans-serif;
+        font-variation-settings:
+          "wdth" 88,
+          "wght" 700;
+        font-size: 2rem;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        font-variant-numeric: tabular-nums;
+      }
+      .tally span {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+      }
 
-.controls{
-  position:sticky;
-  top:0;
-  z-index:20;
-  background:var(--ground);
-  border-bottom:1px solid var(--rule);
-  padding:14px 0;
-  display:flex;
-  flex-wrap:wrap;
-  align-items:center;
-  gap:12px;
-}
-.search{
-  flex:1 1 250px;
-  min-width:0;
-  display:flex;
-  align-items:center;
-  gap:9px;
-  background:var(--panel);
-  border:1px solid var(--rule);
-  border-radius:2px;
-  padding:0 12px;
-  height:38px;
-}
-.search svg{flex:none;color:var(--ink-3)}
-.search input{
-  flex:1;
-  min-width:0;
-  border:0;
-  background:none;
-  color:var(--ink);
-  font-family:"IBM Plex Mono",ui-monospace,monospace;
-  font-size:13px;
-  height:100%;
-  outline:none;
-}
-.search input::placeholder{color:var(--ink-3)}
-.search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-wash)}
+      .controls {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: var(--ground);
+        border-bottom: 1px solid var(--rule);
+        padding: 14px 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+      }
+      .search {
+        flex: 1 1 250px;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        background: var(--panel);
+        border: 1px solid var(--rule);
+        border-radius: 2px;
+        padding: 0 12px;
+        height: 38px;
+      }
+      .search svg {
+        flex: none;
+        color: var(--ink-3);
+      }
+      .search input {
+        flex: 1;
+        min-width: 0;
+        border: 0;
+        background: none;
+        color: var(--ink);
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 13px;
+        height: 100%;
+        outline: none;
+      }
+      .search input::placeholder {
+        color: var(--ink-3);
+      }
+      .search:focus-within {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-wash);
+      }
 
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{
-  font-family:"IBM Plex Mono",ui-monospace,monospace;
-  font-size:11px;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  padding:7px 12px;
-  border:1px solid var(--rule);
-  background:var(--panel);
-  color:var(--ink-2);
-  border-radius:2px;
-  cursor:pointer;
-  transition:background .14s,border-color .14s,color .14s;
-}
-.chip:hover{border-color:var(--ink-3)}
-.chip[aria-pressed="true"]{
-  background:var(--accent);
-  border-color:var(--accent);
-  color:var(--ground);
-}
-.chip:focus-visible{
-  outline:2px solid var(--accent);
-  outline-offset:2px;
-}
-:root[data-theme="dark"] .chip[aria-pressed="true"],
-:root:not([data-theme="light"]) .chip[aria-pressed="true"]{color:#0D1312}
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .chip {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 7px 12px;
+        border: 1px solid var(--rule);
+        background: var(--panel);
+        color: var(--ink-2);
+        border-radius: 2px;
+        cursor: pointer;
+        transition:
+          background 0.14s,
+          border-color 0.14s,
+          color 0.14s;
+      }
+      .chip:hover {
+        border-color: var(--ink-3);
+      }
+      .chip[aria-pressed="true"] {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: var(--ground);
+      }
+      .chip:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      :root[data-theme="dark"] .chip[aria-pressed="true"],
+      :root:not([data-theme="light"]) .chip[aria-pressed="true"] {
+        color: #0d1312;
+      }
 
-.body-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:0 52px;
-  margin-top:44px;
-}
-@media (min-width:940px){
-  .body-grid{grid-template-columns:186px minmax(0,1fr)}
-}
+      .body-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0 52px;
+        margin-top: 44px;
+      }
+      @media (min-width: 940px) {
+        .body-grid {
+          grid-template-columns: 186px minmax(0, 1fr);
+        }
+      }
 
-nav.index{display:none}
-@media (min-width:940px){
-  nav.index{
-    display:block;
-    position:sticky;
-    top:82px;
-    align-self:start;
-    max-height:calc(100vh - 120px);
-    overflow-y:auto;
-  }
-}
-nav.index p{
-  font-family:"IBM Plex Mono",ui-monospace,monospace;
-  font-size:10px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--ink-3);
-  margin:0 0 12px;
-  padding-bottom:10px;
-  border-bottom:1px solid var(--rule);
-}
-nav.index a{
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  font-family:"Archivo",system-ui,sans-serif;
-  font-variation-settings:"wdth" 96,"wght" 500;
-  font-size:13.5px;
-  color:var(--ink-2);
-  text-decoration:none;
-  padding:7px 0;
-  border-bottom:1px solid var(--rule-soft);
-  line-height:1.25;
-}
-nav.index a:hover{color:var(--accent)}
-nav.index a i{
-  font-style:normal;
-  font-family:"IBM Plex Mono",ui-monospace,monospace;
-  font-size:11px;
-  color:var(--ink-3);
-  font-variant-numeric:tabular-nums;
-}
+      nav.index {
+        display: none;
+      }
+      @media (min-width: 940px) {
+        nav.index {
+          display: block;
+          position: sticky;
+          top: 82px;
+          align-self: start;
+          max-height: calc(100vh - 120px);
+          overflow-y: auto;
+        }
+      }
+      nav.index p {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin: 0 0 12px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--rule);
+      }
+      nav.index a {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        font-family: "Archivo", system-ui, sans-serif;
+        font-variation-settings:
+          "wdth" 96,
+          "wght" 500;
+        font-size: 13.5px;
+        color: var(--ink-2);
+        text-decoration: none;
+        padding: 7px 0;
+        border-bottom: 1px solid var(--rule-soft);
+        line-height: 1.25;
+      }
+      nav.index a:hover {
+        color: var(--accent);
+      }
+      nav.index a i {
+        font-style: normal;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 11px;
+        color: var(--ink-3);
+        font-variant-numeric: tabular-nums;
+      }
 
-main{min-width:0}
+      main {
+        min-width: 0;
+      }
 
-section{margin-bottom:52px;scroll-margin-top:86px}
-section[hidden]{display:none}
+      section {
+        margin-bottom: 52px;
+        scroll-margin-top: 86px;
+      }
+      section[hidden] {
+        display: none;
+      }
 
-.sec-head{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:18px;
-  flex-wrap:wrap;
-  padding-bottom:12px;
-  border-bottom:2px solid var(--ink);
-  margin-bottom:0;
-}
-h2{
-  font-family:"Archivo",system-ui,sans-serif;
-  font-variation-settings:"wdth" 104,"wght" 700;
-  font-size:1.42rem;
-  letter-spacing:-.014em;
-  margin:0;
-  line-height:1.1;
-}
-.sec-note{
-  font-size:.97rem;
-  color:var(--ink-2);
-  margin:14px 0 20px;
-  max-width:66ch;
-  line-height:1.55;
-}
+      .sec-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--ink);
+        margin-bottom: 0;
+      }
+      h2 {
+        font-family: "Archivo", system-ui, sans-serif;
+        font-variation-settings:
+          "wdth" 104,
+          "wght" 700;
+        font-size: 1.42rem;
+        letter-spacing: -0.014em;
+        margin: 0;
+        line-height: 1.1;
+      }
+      .sec-note {
+        font-size: 0.97rem;
+        color: var(--ink-2);
+        margin: 14px 0 20px;
+        max-width: 66ch;
+        line-height: 1.55;
+      }
 
-.tag{
-  font-family:"IBM Plex Mono",ui-monospace,monospace;
-  font-size:10px;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  padding:4px 8px;
-  border-radius:2px;
-  white-space:nowrap;
-  flex:none;
-  margin-top:3px;
-}
-.tag.official{background:var(--accent-wash);color:var(--accent-deep)}
-.tag.builtin{background:var(--builtin-wash);color:var(--builtin)}
-.tag.community{background:var(--caution-wash);color:var(--caution)}
+      .tag {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 4px 8px;
+        border-radius: 2px;
+        white-space: nowrap;
+        flex: none;
+        margin-top: 3px;
+      }
+      .tag.official {
+        background: var(--accent-wash);
+        color: var(--accent-deep);
+      }
+      .tag.builtin {
+        background: var(--builtin-wash);
+        color: var(--builtin);
+      }
+      .tag.community {
+        background: var(--caution-wash);
+        color: var(--caution);
+      }
 
-ul.rows{list-style:none;margin:0;padding:0}
-ul.rows li{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:2px 20px;
-  padding:13px 0;
-  border-bottom:1px solid var(--rule-soft);
-  align-items:baseline;
-}
-@media (min-width:620px){
-  ul.rows li{grid-template-columns:236px minmax(0,1fr)}
-}
-ul.rows li[hidden]{display:none}
-.name{
-  font-family:"IBM Plex Mono",ui-monospace,monospace;
-  font-size:12.5px;
-  font-weight:500;
-  color:var(--accent-deep);
-  word-break:break-word;
-  line-height:1.45;
-}
-:root[data-theme="dark"] .name,
-:root:not([data-theme="light"]) .name{color:var(--accent)}
-.what{color:var(--ink-2);font-size:.98rem;line-height:1.5}
-.what em{color:var(--ink);font-style:italic}
+      ul.rows {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      ul.rows li {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2px 20px;
+        padding: 13px 0;
+        border-bottom: 1px solid var(--rule-soft);
+        align-items: baseline;
+      }
+      @media (min-width: 620px) {
+        ul.rows li {
+          grid-template-columns: 236px minmax(0, 1fr);
+        }
+      }
+      ul.rows li[hidden] {
+        display: none;
+      }
+      .name {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 12.5px;
+        font-weight: 500;
+        color: var(--accent-deep);
+        word-break: break-word;
+        line-height: 1.45;
+      }
+      :root[data-theme="dark"] .name,
+      :root:not([data-theme="light"]) .name {
+        color: var(--accent);
+      }
+      .what {
+        color: var(--ink-2);
+        font-size: 0.98rem;
+        line-height: 1.5;
+      }
+      .what em {
+        color: var(--ink);
+        font-style: italic;
+      }
 
-.group-label{
-  font-family:"IBM Plex Mono",ui-monospace,monospace;
-  font-size:10px;
-  letter-spacing:.13em;
-  text-transform:uppercase;
-  color:var(--ink-3);
-  padding:22px 0 8px;
-  border-bottom:1px solid var(--rule);
-  margin-bottom:0;
-}
-.group-label:first-of-type{padding-top:14px}
+      .group-label {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 10px;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        padding: 22px 0 8px;
+        border-bottom: 1px solid var(--rule);
+        margin-bottom: 0;
+      }
+      .group-label:first-of-type {
+        padding-top: 14px;
+      }
 
-.empty{
-  display:none;
-  font-family:"IBM Plex Mono",ui-monospace,monospace;
-  font-size:13px;
-  color:var(--ink-3);
-  padding:40px 0;
-  border-bottom:1px solid var(--rule-soft);
-}
-.empty.on{display:block}
+      .empty {
+        display: none;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 13px;
+        color: var(--ink-3);
+        padding: 40px 0;
+        border-bottom: 1px solid var(--rule-soft);
+      }
+      .empty.on {
+        display: block;
+      }
 
-footer{
-  margin-top:58px;
-  padding-top:20px;
-  border-top:1px solid var(--rule);
-  font-family:"IBM Plex Mono",ui-monospace,monospace;
-  font-size:11px;
-  letter-spacing:.05em;
-  color:var(--ink-3);
-  line-height:1.8;
-}
-</style>
-</head>
-<body>
+      footer {
+        margin-top: 58px;
+        padding-top: 20px;
+        border-top: 1px solid var(--rule);
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 11px;
+        letter-spacing: 0.05em;
+        color: var(--ink-3);
+        line-height: 1.8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="masthead">
+        <p class="eyebrow">Capability inventory / Phoenix Flight Academy</p>
+        <h1>The Design Bench</h1>
+        <p class="standfirst">
+          All <strong>42 skills</strong> wired into <code>.agents/skills/</code> for design, motion,
+          3D, document generation, and visual craft. Powered by Antigravity progressive disclosure.
+        </p>
+        <div class="tally">
+          <div><b>42</b><span>Skills Installed</span></div>
+          <div><b>9</b><span>Motion & GSAP</span></div>
+          <div><b>24</b><span>3D & Three.js</span></div>
+          <div><b>9</b><span>Craft & Output</span></div>
+        </div>
+      </header>
 
-<div class="wrap">
+      <div class="controls">
+        <label class="search">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+          >
+            <circle cx="10.5" cy="10.5" r="7" />
+            <path d="M20 20l-4.5-4.5" />
+          </svg>
+          <input id="q" type="search" placeholder="filter 42 skills" aria-label="Filter skills" />
+        </label>
+        <div class="chips" role="group" aria-label="Filter by category">
+          <button class="chip" data-cat="motion" aria-pressed="false">Motion (9)</button>
+          <button class="chip" data-cat="three" aria-pressed="false">3D / WebGL (24)</button>
+          <button class="chip" data-cat="craft" aria-pressed="false">Craft & Doc (9)</button>
+        </div>
+      </div>
 
-<header class="masthead">
-  <p class="eyebrow">Capability inventory / Phoenix Flight Academy</p>
-  <h1>The Design Bench</h1>
-  <p class="standfirst">All <strong>42 skills</strong> wired into <code>.agents/skills/</code> for design, motion, 3D, document generation, and visual craft. Powered by Antigravity progressive disclosure.</p>
-  <div class="tally">
-    <div><b>42</b><span>Skills Installed</span></div>
-    <div><b>9</b><span>Motion & GSAP</span></div>
-    <div><b>24</b><span>3D & Three.js</span></div>
-    <div><b>9</b><span>Craft & Output</span></div>
-  </div>
-</header>
+      <div class="body-grid">
+        <nav class="index" aria-label="Sections">
+          <p>Contents</p>
+          <a href="#motion">Motion and animation <i>9</i></a>
+          <a href="#three">3D and WebGL <i>24</i></a>
+          <a href="#craft">Artifact & Document Craft <i>9</i></a>
+        </nav>
 
-<div class="controls">
-  <label class="search">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="10.5" cy="10.5" r="7"/><path d="M20 20l-4.5-4.5"/></svg>
-    <input id="q" type="search" placeholder="filter 42 skills" aria-label="Filter skills">
-  </label>
-  <div class="chips" role="group" aria-label="Filter by category">
-    <button class="chip" data-cat="motion" aria-pressed="false">Motion (9)</button>
-    <button class="chip" data-cat="three" aria-pressed="false">3D / WebGL (24)</button>
-    <button class="chip" data-cat="craft" aria-pressed="false">Craft & Doc (9)</button>
-  </div>
-</div>
+        <main>
+          <p class="empty" id="empty">No match found.</p>
 
-<div class="body-grid">
+          <section id="motion" data-cat="motion">
+            <div class="sec-head">
+              <h2>Motion and animation</h2>
+              <span class="tag official">Vendor Official</span>
+            </div>
+            <p class="sec-note">
+              LottieFiles motion principles combined with GreenSock (GSAP) execution skills.
+            </p>
+            <ul class="rows">
+              <li>
+                <span class="name">motion-design</span
+                ><span class="what"
+                  >Timing & easing tables, Disney's 12 principles adapted for UI, personality
+                  archetypes.</span
+                >
+              </li>
+              <li>
+                <span class="name">gsap-core</span
+                ><span class="what"
+                  >Core tweens, easing, stagger, transform aliases, autoAlpha, and matchMedia.</span
+                >
+              </li>
+              <li>
+                <span class="name">gsap-timeline</span
+                ><span class="what"
+                  >Sequencing: position parameter, labels, nesting, playback control.</span
+                >
+              </li>
+              <li>
+                <span class="name">gsap-scrolltrigger</span
+                ><span class="what"
+                  >Scroll-linked animation, pinning, scrub, horizontal scroll.</span
+                >
+              </li>
+              <li>
+                <span class="name">gsap-plugins</span
+                ><span class="what"
+                  >SplitText, MorphSVG, DrawSVG, Flip, Draggable, Observer, MotionPath.</span
+                >
+              </li>
+              <li>
+                <span class="name">gsap-utils</span
+                ><span class="what"
+                  >clamp, mapRange, normalize, interpolate, snap, distribute, wrap.</span
+                >
+              </li>
+              <li>
+                <span class="name">gsap-react</span
+                ><span class="what"
+                  >The useGSAP hook, scoped refs, contextSafe callbacks, and unmount cleanup.</span
+                >
+              </li>
+              <li>
+                <span class="name">gsap-frameworks</span
+                ><span class="what"
+                  >Framework lifecycle patterns, selector scoping, and cleanup.</span
+                >
+              </li>
+              <li>
+                <span class="name">gsap-performance</span
+                ><span class="what"
+                  >Transforms over layout properties, will-change discipline, quickTo for
+                  60fps.</span
+                >
+              </li>
+            </ul>
+          </section>
 
-<nav class="index" aria-label="Sections">
-  <p>Contents</p>
-  <a href="#motion">Motion and animation <i>9</i></a>
-  <a href="#three">3D and WebGL <i>24</i></a>
-  <a href="#craft">Artifact & Document Craft <i>9</i></a>
-</nav>
+          <section id="three" data-cat="three">
+            <div class="sec-head">
+              <h2>3D and WebGL</h2>
+              <span class="tag community">OpenAEC / Three.js</span>
+            </div>
+            <p class="sec-note">
+              24 deterministic skills covering Three.js r160+, React Three Fiber, Drei, shaders, and
+              performance.
+            </p>
+            <ul class="rows">
+              <li>
+                <span class="name">threejs-core-scene-graph</span
+                ><span class="what"
+                  >Object3D hierarchies, add vs attach, traversal, layers, fog, disposal.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-core-renderer</span
+                ><span class="what"
+                  >WebGLRenderer setup, render loop, resize handling, tone mapping, color
+                  space.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-core-math</span
+                ><span class="what"
+                  >Vector3, Matrix4, Quaternion, Euler, rotation order, lerp and slerp.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-core-raycaster</span
+                ><span class="what"
+                  >Mouse picking, hover detection, object selection, InstancedMesh picking.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-syntax-geometries</span
+                ><span class="what"
+                  >BufferGeometry, 21 built-ins, InstancedMesh, extrusion, particles.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-syntax-materials</span
+                ><span class="what"
+                  >15 material types, PBR metalness/roughness, texture maps, color space.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-syntax-shaders</span
+                ><span class="what"
+                  >ShaderMaterial, GLSL vertex and fragment shaders, uniforms,
+                  onBeforeCompile.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-syntax-loaders</span
+                ><span class="what">GLTF, GLB, FBX, OBJ, HDR, DRACOLoader, KTX2 setup.</span>
+              </li>
+              <li>
+                <span class="name">threejs-syntax-controls</span
+                ><span class="what"
+                  >OrbitControls, MapControls, FlyControls, PointerLockControls,
+                  TransformControls.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-impl-lighting</span
+                ><span class="what"
+                  >7 light types, HDR environment maps, PMREMGenerator, physically correct
+                  intensity.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-impl-shadows</span
+                ><span class="what"
+                  >Shadow map types, frustum config, bias tuning, acne diagnosis.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-impl-animation</span
+                ><span class="what"
+                  >AnimationMixer, clips and actions, crossfading, GLTF skeletal animation.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-impl-post-processing</span
+                ><span class="what"
+                  >EffectComposer, bloom, SSAO, depth of field, outline, SMAA.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-impl-physics</span
+                ><span class="what"
+                  >cannon-es and Rapier, rigid bodies, colliders, constraints.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-impl-react-three-fiber</span
+                ><span class="what"
+                  >Declarative 3D in React: Canvas, useFrame, useThree, useLoader, event
+                  system.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-impl-drei</span
+                ><span class="what">150+ Drei helper components for rapid R3F scene building.</span>
+              </li>
+              <li>
+                <span class="name">threejs-impl-webgpu</span
+                ><span class="what"
+                  >WebGPURenderer, node materials, TSL, compute shaders, WebGL fallback.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-impl-xr</span
+                ><span class="what"
+                  >WebXR for VR and AR: controllers, hand tracking, hit testing,
+                  teleportation.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-impl-audio</span
+                ><span class="what"
+                  >Spatial audio, PositionalAudio, AudioAnalyser for visualization.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-impl-ifc-viewer</span
+                ><span class="what"
+                  >IFC and BIM models in the browser with @thatopen/components.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-errors-rendering</span
+                ><span class="what"
+                  >Black screen, invisible objects, wrong colors, z-fighting, broken shadows.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-errors-performance</span
+                ><span class="what"
+                  >Low FPS, memory leaks, draw call counts, missing dispose calls, GPU memory.</span
+                >
+              </li>
+              <li>
+                <span class="name">threejs-agents-scene-builder</span
+                ><span class="what">Decision trees for composing a 3D scene from nothing.</span>
+              </li>
+              <li>
+                <span class="name">threejs-agents-model-optimizer</span
+                ><span class="what"
+                  >GLTF optimization pipeline using gltf-transform, Draco, KTX2, LOD.</span
+                >
+              </li>
+            </ul>
+          </section>
 
-<main>
+          <section id="craft" data-cat="craft">
+            <div class="sec-head">
+              <h2>Artifact & Document Craft</h2>
+              <span class="tag builtin">Built-in / Core</span>
+            </div>
+            <p class="sec-note">
+              Governing visual artifacts, executive documents, generative media, and skill creation.
+            </p>
+            <ul class="rows">
+              <li>
+                <span class="name">artifact-design</span
+                ><span class="what"
+                  >Anti-AI design manifesto, dual-theme token discipline, typographical
+                  pairing.</span
+                >
+              </li>
+              <li>
+                <span class="name">artifact-diagramming</span
+                ><span class="what"
+                  >Clear mechanism diagrams with Mermaid.js and dual-theme inline SVG.</span
+                >
+              </li>
+              <li>
+                <span class="name">artifact-capabilities</span
+                ><span class="what"
+                  >Self-contained interactive HTML/CSS/JS widgets, search tables, and client
+                  state.</span
+                >
+              </li>
+              <li>
+                <span class="name">docx</span
+                ><span class="what">Creating, inspecting, and styling Word documents (.docx).</span>
+              </li>
+              <li>
+                <span class="name">pptx</span
+                ><span class="what"
+                  >PowerPoint presentation decks, briefings, and curriculum slides.</span
+                >
+              </li>
+              <li>
+                <span class="name">xlsx</span
+                ><span class="what"
+                  >Excel spreadsheets, flight hour logs, maintenance calculations, formulas.</span
+                >
+              </li>
+              <li>
+                <span class="name">pdf</span
+                ><span class="what"
+                  >PDF generation, form filling, logbook endorsements, weight & balance
+                  sheets.</span
+                >
+              </li>
+              <li>
+                <span class="name">krea-media</span
+                ><span class="what"
+                  >Generative media prompting, style consistency, and asset synthesis.</span
+                >
+              </li>
+              <li>
+                <span class="name">skill-creator</span
+                ><span class="what">Authoring, testing, and evaluating Antigravity skills.</span>
+              </li>
+            </ul>
+          </section>
 
-<p class="empty" id="empty">No match found.</p>
+          <footer>
+            Installed in <code>.agents/skills/</code> &middot; Phoenix Flight Academy &middot; 42
+            Skills Active
+          </footer>
+        </main>
+      </div>
+    </div>
 
-<section id="motion" data-cat="motion">
-  <div class="sec-head">
-    <h2>Motion and animation</h2>
-    <span class="tag official">Vendor Official</span>
-  </div>
-  <p class="sec-note">LottieFiles motion principles combined with GreenSock (GSAP) execution skills.</p>
-  <ul class="rows">
-    <li><span class="name">motion-design</span><span class="what">Timing & easing tables, Disney's 12 principles adapted for UI, personality archetypes.</span></li>
-    <li><span class="name">gsap-core</span><span class="what">Core tweens, easing, stagger, transform aliases, autoAlpha, and matchMedia.</span></li>
-    <li><span class="name">gsap-timeline</span><span class="what">Sequencing: position parameter, labels, nesting, playback control.</span></li>
-    <li><span class="name">gsap-scrolltrigger</span><span class="what">Scroll-linked animation, pinning, scrub, horizontal scroll.</span></li>
-    <li><span class="name">gsap-plugins</span><span class="what">SplitText, MorphSVG, DrawSVG, Flip, Draggable, Observer, MotionPath.</span></li>
-    <li><span class="name">gsap-utils</span><span class="what">clamp, mapRange, normalize, interpolate, snap, distribute, wrap.</span></li>
-    <li><span class="name">gsap-react</span><span class="what">The useGSAP hook, scoped refs, contextSafe callbacks, and unmount cleanup.</span></li>
-    <li><span class="name">gsap-frameworks</span><span class="what">Framework lifecycle patterns, selector scoping, and cleanup.</span></li>
-    <li><span class="name">gsap-performance</span><span class="what">Transforms over layout properties, will-change discipline, quickTo for 60fps.</span></li>
-  </ul>
-</section>
+    <script>
+      (function () {
+        var q = document.getElementById("q");
+        var chips = Array.prototype.slice.call(document.querySelectorAll(".chip"));
+        var rows = Array.prototype.slice.call(document.querySelectorAll("ul.rows li"));
+        var sections = Array.prototype.slice.call(document.querySelectorAll("main > section"));
+        var empty = document.getElementById("empty");
+        var active = null;
 
-<section id="three" data-cat="three">
-  <div class="sec-head">
-    <h2>3D and WebGL</h2>
-    <span class="tag community">OpenAEC / Three.js</span>
-  </div>
-  <p class="sec-note">24 deterministic skills covering Three.js r160+, React Three Fiber, Drei, shaders, and performance.</p>
-  <ul class="rows">
-    <li><span class="name">threejs-core-scene-graph</span><span class="what">Object3D hierarchies, add vs attach, traversal, layers, fog, disposal.</span></li>
-    <li><span class="name">threejs-core-renderer</span><span class="what">WebGLRenderer setup, render loop, resize handling, tone mapping, color space.</span></li>
-    <li><span class="name">threejs-core-math</span><span class="what">Vector3, Matrix4, Quaternion, Euler, rotation order, lerp and slerp.</span></li>
-    <li><span class="name">threejs-core-raycaster</span><span class="what">Mouse picking, hover detection, object selection, InstancedMesh picking.</span></li>
-    <li><span class="name">threejs-syntax-geometries</span><span class="what">BufferGeometry, 21 built-ins, InstancedMesh, extrusion, particles.</span></li>
-    <li><span class="name">threejs-syntax-materials</span><span class="what">15 material types, PBR metalness/roughness, texture maps, color space.</span></li>
-    <li><span class="name">threejs-syntax-shaders</span><span class="what">ShaderMaterial, GLSL vertex and fragment shaders, uniforms, onBeforeCompile.</span></li>
-    <li><span class="name">threejs-syntax-loaders</span><span class="what">GLTF, GLB, FBX, OBJ, HDR, DRACOLoader, KTX2 setup.</span></li>
-    <li><span class="name">threejs-syntax-controls</span><span class="what">OrbitControls, MapControls, FlyControls, PointerLockControls, TransformControls.</span></li>
-    <li><span class="name">threejs-impl-lighting</span><span class="what">7 light types, HDR environment maps, PMREMGenerator, physically correct intensity.</span></li>
-    <li><span class="name">threejs-impl-shadows</span><span class="what">Shadow map types, frustum config, bias tuning, acne diagnosis.</span></li>
-    <li><span class="name">threejs-impl-animation</span><span class="what">AnimationMixer, clips and actions, crossfading, GLTF skeletal animation.</span></li>
-    <li><span class="name">threejs-impl-post-processing</span><span class="what">EffectComposer, bloom, SSAO, depth of field, outline, SMAA.</span></li>
-    <li><span class="name">threejs-impl-physics</span><span class="what">cannon-es and Rapier, rigid bodies, colliders, constraints.</span></li>
-    <li><span class="name">threejs-impl-react-three-fiber</span><span class="what">Declarative 3D in React: Canvas, useFrame, useThree, useLoader, event system.</span></li>
-    <li><span class="name">threejs-impl-drei</span><span class="what">150+ Drei helper components for rapid R3F scene building.</span></li>
-    <li><span class="name">threejs-impl-webgpu</span><span class="what">WebGPURenderer, node materials, TSL, compute shaders, WebGL fallback.</span></li>
-    <li><span class="name">threejs-impl-xr</span><span class="what">WebXR for VR and AR: controllers, hand tracking, hit testing, teleportation.</span></li>
-    <li><span class="name">threejs-impl-audio</span><span class="what">Spatial audio, PositionalAudio, AudioAnalyser for visualization.</span></li>
-    <li><span class="name">threejs-impl-ifc-viewer</span><span class="what">IFC and BIM models in the browser with @thatopen/components.</span></li>
-    <li><span class="name">threejs-errors-rendering</span><span class="what">Black screen, invisible objects, wrong colors, z-fighting, broken shadows.</span></li>
-    <li><span class="name">threejs-errors-performance</span><span class="what">Low FPS, memory leaks, draw call counts, missing dispose calls, GPU memory.</span></li>
-    <li><span class="name">threejs-agents-scene-builder</span><span class="what">Decision trees for composing a 3D scene from nothing.</span></li>
-    <li><span class="name">threejs-agents-model-optimizer</span><span class="what">GLTF optimization pipeline using gltf-transform, Draco, KTX2, LOD.</span></li>
-  </ul>
-</section>
+        function apply() {
+          var term = q.value.trim().toLowerCase();
+          var anyVisible = false;
 
-<section id="craft" data-cat="craft">
-  <div class="sec-head">
-    <h2>Artifact & Document Craft</h2>
-    <span class="tag builtin">Built-in / Core</span>
-  </div>
-  <p class="sec-note">Governing visual artifacts, executive documents, generative media, and skill creation.</p>
-  <ul class="rows">
-    <li><span class="name">artifact-design</span><span class="what">Anti-AI design manifesto, dual-theme token discipline, typographical pairing.</span></li>
-    <li><span class="name">artifact-diagramming</span><span class="what">Clear mechanism diagrams with Mermaid.js and dual-theme inline SVG.</span></li>
-    <li><span class="name">artifact-capabilities</span><span class="what">Self-contained interactive HTML/CSS/JS widgets, search tables, and client state.</span></li>
-    <li><span class="name">docx</span><span class="what">Creating, inspecting, and styling Word documents (.docx).</span></li>
-    <li><span class="name">pptx</span><span class="what">PowerPoint presentation decks, briefings, and curriculum slides.</span></li>
-    <li><span class="name">xlsx</span><span class="what">Excel spreadsheets, flight hour logs, maintenance calculations, formulas.</span></li>
-    <li><span class="name">pdf</span><span class="what">PDF generation, form filling, logbook endorsements, weight & balance sheets.</span></li>
-    <li><span class="name">krea-media</span><span class="what">Generative media prompting, style consistency, and asset synthesis.</span></li>
-    <li><span class="name">skill-creator</span><span class="what">Authoring, testing, and evaluating Antigravity skills.</span></li>
-  </ul>
-</section>
+          function test(el, secCat) {
+            var okText = !term || el.textContent.toLowerCase().indexOf(term) > -1;
+            var okCat = !active || secCat === active;
+            return okText && okCat;
+          }
 
-<footer>
-  Installed in <code>.agents/skills/</code> &middot; Phoenix Flight Academy &middot; 42 Skills Active
-</footer>
+          sections.forEach(function (sec) {
+            var secCat = sec.getAttribute("data-cat");
+            var items = sec.querySelectorAll("ul.rows li");
+            var live = 0;
+            Array.prototype.forEach.call(items, function (i) {
+              var show = test(i, secCat);
+              i.hidden = !show;
+              if (show) live++;
+            });
+            sec.hidden = items.length > 0 && live === 0;
+            if (live > 0) anyVisible = true;
+          });
 
-</main>
-</div>
-</div>
+          empty.classList.toggle("on", !anyVisible);
+        }
 
-<script>
-(function(){
-  var q = document.getElementById('q');
-  var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
-  var rows = Array.prototype.slice.call(document.querySelectorAll('ul.rows li'));
-  var sections = Array.prototype.slice.call(document.querySelectorAll('main > section'));
-  var empty = document.getElementById('empty');
-  var active = null;
+        q.addEventListener("input", apply);
 
-  function apply(){
-    var term = q.value.trim().toLowerCase();
-    var anyVisible = false;
-
-    function test(el, secCat){
-      var okText = !term || el.textContent.toLowerCase().indexOf(term) > -1;
-      var okCat = !active || secCat === active;
-      return okText && okCat;
-    }
-
-    sections.forEach(function(sec){
-      var secCat = sec.getAttribute('data-cat');
-      var items = sec.querySelectorAll('ul.rows li');
-      var live = 0;
-      Array.prototype.forEach.call(items, function(i){
-        var show = test(i, secCat);
-        i.hidden = !show;
-        if (show) live++;
-      });
-      sec.hidden = (items.length > 0 && live === 0);
-      if (live > 0) anyVisible = true;
-    });
-
-    empty.classList.toggle('on', !anyVisible);
-  }
-
-  q.addEventListener('input', apply);
-
-  chips.forEach(function(c){
-    c.addEventListener('click', function(){
-      var cat = c.getAttribute('data-cat');
-      active = (active === cat) ? null : cat;
-      chips.forEach(function(o){
-        o.setAttribute('aria-pressed', String(o.getAttribute('data-cat') === active));
-      });
-      apply();
-    });
-  });
-})();
-</script>
-</body>
+        chips.forEach(function (c) {
+          c.addEventListener("click", function () {
+            var cat = c.getAttribute("data-cat");
+            active = active === cat ? null : cat;
+            chips.forEach(function (o) {
+              o.setAttribute("aria-pressed", String(o.getAttribute("data-cat") === active));
+            });
+            apply();
+          });
+        });
+      })();
+    </script>
+  </body>
 </html>

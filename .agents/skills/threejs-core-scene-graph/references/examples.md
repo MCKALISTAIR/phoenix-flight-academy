@@ -6,10 +6,15 @@ A minimal scene with a mesh, camera, light, and render loop.
 
 ```javascript
 import {
-  Scene, PerspectiveCamera, WebGLRenderer,
-  Mesh, BoxGeometry, MeshStandardMaterial,
-  DirectionalLight, Color
-} from 'three';
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  Mesh,
+  BoxGeometry,
+  MeshStandardMaterial,
+  DirectionalLight,
+  Color,
+} from "three";
 
 // Create scene
 const scene = new Scene();
@@ -27,10 +32,7 @@ light.castShadow = true;
 scene.add(light);
 
 // Create mesh
-const mesh = new Mesh(
-  new BoxGeometry(1, 1, 1),
-  new MeshStandardMaterial({ color: 0x00ff88 })
-);
+const mesh = new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial({ color: 0x00ff88 }));
 mesh.castShadow = true;
 mesh.receiveShadow = true;
 scene.add(mesh);
@@ -49,7 +51,7 @@ renderer.setAnimationLoop((time) => {
 });
 
 // Handle resize
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -64,40 +66,42 @@ Demonstrates parent-child relationships and group transforms.
 
 ```javascript
 import {
-  Scene, Group, Mesh, BoxGeometry, CylinderGeometry,
-  MeshStandardMaterial, Vector3
-} from 'three';
+  Scene,
+  Group,
+  Mesh,
+  BoxGeometry,
+  CylinderGeometry,
+  MeshStandardMaterial,
+  Vector3,
+} from "three";
 
 const scene = new Scene();
 
 // Create a building as a group of parts
 const building = new Group();
-building.name = 'building-01';
+building.name = "building-01";
 
 // Foundation
 const foundation = new Mesh(
   new BoxGeometry(10, 0.5, 10),
-  new MeshStandardMaterial({ color: 0x888888 })
+  new MeshStandardMaterial({ color: 0x888888 }),
 );
 foundation.position.y = 0.25;
-foundation.name = 'foundation';
+foundation.name = "foundation";
 
 // Walls
-const walls = new Mesh(
-  new BoxGeometry(9, 6, 9),
-  new MeshStandardMaterial({ color: 0xddccbb })
-);
+const walls = new Mesh(new BoxGeometry(9, 6, 9), new MeshStandardMaterial({ color: 0xddccbb }));
 walls.position.y = 3.5;
-walls.name = 'walls';
+walls.name = "walls";
 
 // Roof
 const roof = new Mesh(
   new CylinderGeometry(0, 7, 3, 4),
-  new MeshStandardMaterial({ color: 0xcc4444 })
+  new MeshStandardMaterial({ color: 0xcc4444 }),
 );
 roof.position.y = 8;
 roof.rotation.y = Math.PI / 4;
-roof.name = 'roof';
+roof.name = "roof";
 
 // Assemble -- all parts move together when building moves
 building.add(foundation, walls, roof);
@@ -108,7 +112,7 @@ building.position.set(20, 0, -15);
 building.rotation.y = Math.PI / 6;
 
 // Find parts by name
-const roofRef = building.getObjectByName('roof');
+const roofRef = building.getObjectByName("roof");
 if (roofRef) {
   roofRef.material.color.set(0x2244cc); // change roof color
 }
@@ -121,9 +125,7 @@ if (roofRef) {
 Demonstrates the critical difference when moving objects between groups.
 
 ```javascript
-import {
-  Scene, Group, Mesh, SphereGeometry, MeshBasicMaterial, Vector3
-} from 'three';
+import { Scene, Group, Mesh, SphereGeometry, MeshBasicMaterial, Vector3 } from "three";
 
 const scene = new Scene();
 
@@ -135,10 +137,7 @@ const hand = new Group();
 hand.position.set(3, 0, 0); // 3 units from arm pivot
 arm.add(hand);
 
-const ball = new Mesh(
-  new SphereGeometry(0.5),
-  new MeshBasicMaterial({ color: 0xff0000 })
-);
+const ball = new Mesh(new SphereGeometry(0.5), new MeshBasicMaterial({ color: 0xff0000 }));
 ball.position.set(0, 0, 0);
 hand.add(ball);
 // Ball world position = arm(5,0,0) + hand(3,0,0) + ball(0,0,0) = (8,0,0)
@@ -165,10 +164,16 @@ Using layers to separate visible objects from helpers and bloom effects.
 
 ```javascript
 import {
-  Scene, PerspectiveCamera, WebGLRenderer,
-  Mesh, BoxGeometry, MeshStandardMaterial, MeshBasicMaterial,
-  AxesHelper, GridHelper
-} from 'three';
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  Mesh,
+  BoxGeometry,
+  MeshStandardMaterial,
+  MeshBasicMaterial,
+  AxesHelper,
+  GridHelper,
+} from "three";
 
 const LAYERS = {
   DEFAULT: 0,
@@ -190,10 +195,7 @@ debugCamera.lookAt(0, 0, 0);
 debugCamera.layers.enable(LAYERS.HELPERS);
 
 // Regular mesh on layer 0 (default)
-const cube = new Mesh(
-  new BoxGeometry(1, 1, 1),
-  new MeshStandardMaterial({ color: 0x00ff00 })
-);
+const cube = new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial({ color: 0x00ff00 }));
 scene.add(cube);
 
 // Helper on layer 1 -- invisible to prodCamera
@@ -208,7 +210,7 @@ scene.add(grid);
 // Bloom mesh on layer 2
 const glowCube = new Mesh(
   new BoxGeometry(0.5, 0.5, 0.5),
-  new MeshBasicMaterial({ color: 0xff8800 })
+  new MeshBasicMaterial({ color: 0xff8800 }),
 );
 glowCube.layers.enable(LAYERS.BLOOM); // on layers 0 AND 2
 glowCube.position.set(2, 1, 0);
@@ -235,12 +237,21 @@ Setting up fog and environment-based lighting.
 
 ```javascript
 import {
-  Scene, PerspectiveCamera, WebGLRenderer,
-  Mesh, PlaneGeometry, BoxGeometry,
-  MeshStandardMaterial, MeshBasicMaterial,
-  Fog, FogExp2, Color, ACESFilmicToneMapping, SRGBColorSpace
-} from 'three';
-import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  Mesh,
+  PlaneGeometry,
+  BoxGeometry,
+  MeshStandardMaterial,
+  MeshBasicMaterial,
+  Fog,
+  FogExp2,
+  Color,
+  ACESFilmicToneMapping,
+  SRGBColorSpace,
+} from "three";
+import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 
 const scene = new Scene();
 scene.background = new Color(0xaabbcc);
@@ -252,19 +263,13 @@ scene.fog = new Fog(0xaabbcc, 10, 150);
 // scene.fog = new FogExp2(0xaabbcc, 0.015);
 
 // Ground plane -- receives fog
-const ground = new Mesh(
-  new PlaneGeometry(200, 200),
-  new MeshStandardMaterial({ color: 0x556655 })
-);
+const ground = new Mesh(new PlaneGeometry(200, 200), new MeshStandardMaterial({ color: 0x556655 }));
 ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 
 // Row of boxes fading into fog
 for (let i = 0; i < 20; i++) {
-  const box = new Mesh(
-    new BoxGeometry(2, 2, 2),
-    new MeshStandardMaterial({ color: 0xcc8844 })
-  );
+  const box = new Mesh(new BoxGeometry(2, 2, 2), new MeshStandardMaterial({ color: 0xcc8844 }));
   box.position.set(0, 1, -i * 8);
   scene.add(box);
 }
@@ -272,14 +277,14 @@ for (let i = 0; i < 20; i++) {
 // Sky material ignores fog
 const sky = new Mesh(
   new PlaneGeometry(500, 500),
-  new MeshBasicMaterial({ color: 0xaabbcc, fog: false }) // fog: false
+  new MeshBasicMaterial({ color: 0xaabbcc, fog: false }), // fog: false
 );
 sky.position.set(0, 100, -200);
 scene.add(sky);
 
 // Load HDR environment for PBR lighting
 const rgbeLoader = new RGBELoader();
-rgbeLoader.load('environment.hdr', (texture) => {
+rgbeLoader.load("environment.hdr", (texture) => {
   scene.environment = texture;
   scene.environmentIntensity = 0.8;
 });

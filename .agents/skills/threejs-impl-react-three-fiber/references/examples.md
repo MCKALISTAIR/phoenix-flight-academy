@@ -7,25 +7,25 @@
 ## Example 1: Basic Scene with Animated Mesh
 
 ```tsx
-import { Canvas, useFrame } from '@react-three/fiber'
-import { useRef } from 'react'
-import * as THREE from 'three'
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef } from "react";
+import * as THREE from "three";
 
 function SpinningBox() {
-  const meshRef = useRef<THREE.Mesh>(null!)
+  const meshRef = useRef<THREE.Mesh>(null!);
 
   useFrame((state, delta) => {
     // ALWAYS use delta for frame-rate-independent rotation
-    meshRef.current.rotation.x += delta
-    meshRef.current.rotation.y += delta * 0.5
-  })
+    meshRef.current.rotation.x += delta;
+    meshRef.current.rotation.y += delta * 0.5;
+  });
 
   return (
     <mesh ref={meshRef}>
       <boxGeometry args={[1, 1, 1]} />
       <meshStandardMaterial color="royalblue" />
     </mesh>
-  )
+  );
 }
 
 export default function App() {
@@ -35,11 +35,12 @@ export default function App() {
       <directionalLight position={[5, 5, 5]} />
       <SpinningBox />
     </Canvas>
-  )
+  );
 }
 ```
 
 **Key points:**
+
 - `useFrame` callback receives `delta` -- ALWAYS use it for animation timing.
 - `meshRef` uses `null!` assertion for non-null initial value in TypeScript.
 - Geometry and material are declared as JSX children, auto-attached.
@@ -49,17 +50,17 @@ export default function App() {
 ## Example 2: Loading a GLTF Model with Suspense
 
 ```tsx
-import { Canvas, useLoader } from '@react-three/fiber'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { Suspense } from 'react'
+import { Canvas, useLoader } from "@react-three/fiber";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { Suspense } from "react";
 
 // Preload at module scope for instant availability
-useLoader.preload(GLTFLoader, '/models/robot.glb')
+useLoader.preload(GLTFLoader, "/models/robot.glb");
 
 function Robot() {
-  const gltf = useLoader(GLTFLoader, '/models/robot.glb')
+  const gltf = useLoader(GLTFLoader, "/models/robot.glb");
 
-  return <primitive object={gltf.scene} scale={0.5} position={[0, -1, 0]} />
+  return <primitive object={gltf.scene} scale={0.5} position={[0, -1, 0]} />;
 }
 
 export default function App() {
@@ -71,11 +72,12 @@ export default function App() {
         <Robot />
       </Suspense>
     </Canvas>
-  )
+  );
 }
 ```
 
 **Key points:**
+
 - `useLoader.preload()` at module scope starts loading before mount.
 - ALWAYS wrap in `<Suspense>` -- without it, the component throws.
 - `<primitive>` inserts the loaded scene into the R3F tree.
@@ -85,34 +87,34 @@ export default function App() {
 ## Example 3: On-Demand Rendering for Static Scenes
 
 ```tsx
-import { Canvas, useThree } from '@react-three/fiber'
-import { useEffect } from 'react'
+import { Canvas, useThree } from "@react-three/fiber";
+import { useEffect } from "react";
 
 function SceneController() {
-  const invalidate = useThree((state) => state.invalidate)
+  const invalidate = useThree((state) => state.invalidate);
 
   useEffect(() => {
     // Trigger a re-render after data changes
-    invalidate()
-  }, [invalidate])
+    invalidate();
+  }, [invalidate]);
 
-  return null
+  return null;
 }
 
 function InteractiveBox() {
-  const invalidate = useThree((state) => state.invalidate)
+  const invalidate = useThree((state) => state.invalidate);
 
   return (
     <mesh
       onClick={(event) => {
-        event.object.material.color.set('orange')
-        invalidate() // Request render after color change
+        event.object.material.color.set("orange");
+        invalidate(); // Request render after color change
       }}
     >
       <boxGeometry args={[2, 2, 2]} />
       <meshStandardMaterial color="green" />
     </mesh>
-  )
+  );
 }
 
 export default function Configurator() {
@@ -123,11 +125,12 @@ export default function Configurator() {
       <InteractiveBox />
       <SceneController />
     </Canvas>
-  )
+  );
 }
 ```
 
 **Key points:**
+
 - `frameloop="demand"` stops continuous rendering -- saves GPU.
 - ALWAYS call `invalidate()` after any visual change in demand mode.
 - Use `useThree` with a selector to avoid unnecessary re-renders.
@@ -137,35 +140,35 @@ export default function Configurator() {
 ## Example 4: Custom Class with extend() and Events
 
 ```tsx
-import { Canvas, extend, useFrame } from '@react-three/fiber'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { useRef, useState } from 'react'
-import * as THREE from 'three'
+import { Canvas, extend, useFrame } from "@react-three/fiber";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { useRef, useState } from "react";
+import * as THREE from "three";
 
 // Register OrbitControls as a JSX element
-extend({ OrbitControls })
+extend({ OrbitControls });
 
 // Declare the JSX intrinsic element for TypeScript
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      orbitControls: any
+      orbitControls: any;
     }
   }
 }
 
 function Controls() {
-  const { camera, gl } = useThree()
-  return <orbitControls args={[camera, gl.domElement]} />
+  const { camera, gl } = useThree();
+  return <orbitControls args={[camera, gl.domElement]} />;
 }
 
 function HoverableSphere() {
-  const [hovered, setHovered] = useState(false)
-  const meshRef = useRef<THREE.Mesh>(null!)
+  const [hovered, setHovered] = useState(false);
+  const meshRef = useRef<THREE.Mesh>(null!);
 
   useFrame((state, delta) => {
-    meshRef.current.rotation.y += delta * 0.3
-  })
+    meshRef.current.rotation.y += delta * 0.3;
+  });
 
   return (
     <mesh
@@ -175,9 +178,9 @@ function HoverableSphere() {
       scale={hovered ? 1.2 : 1}
     >
       <sphereGeometry args={[1, 32, 32]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'mediumpurple'} />
+      <meshStandardMaterial color={hovered ? "hotpink" : "mediumpurple"} />
     </mesh>
-  )
+  );
 }
 
 export default function App() {
@@ -188,11 +191,12 @@ export default function App() {
       <HoverableSphere />
       <Controls />
     </Canvas>
-  )
+  );
 }
 ```
 
 **Key points:**
+
 - `extend()` MUST be called before using the custom element in JSX.
 - `onPointerEnter`/`onPointerLeave` fire once (not continuously like `onPointerOver`/`onPointerOut`).
 - State changes via `useState` trigger re-renders and R3F reconciles props.
@@ -202,29 +206,26 @@ export default function App() {
 ## Example 5: Portal for Off-Screen Rendering
 
 ```tsx
-import { Canvas, createPortal, useFrame, useThree } from '@react-three/fiber'
-import { useMemo, useRef } from 'react'
-import * as THREE from 'three'
+import { Canvas, createPortal, useFrame, useThree } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import * as THREE from "three";
 
 function MiniMap() {
-  const { gl, scene, size } = useThree()
-  const miniMapScene = useMemo(() => new THREE.Scene(), [])
-  const miniMapCamera = useMemo(
-    () => new THREE.OrthographicCamera(-5, 5, 5, -5, 0.1, 100),
-    []
-  )
+  const { gl, scene, size } = useThree();
+  const miniMapScene = useMemo(() => new THREE.Scene(), []);
+  const miniMapCamera = useMemo(() => new THREE.OrthographicCamera(-5, 5, 5, -5, 0.1, 100), []);
 
   useFrame(() => {
     // Render the minimap into a viewport corner
-    const width = size.width * 0.25
-    const height = size.height * 0.25
-    gl.setViewport(0, 0, width, height)
-    gl.setScissor(0, 0, width, height)
-    gl.setScissorTest(true)
-    gl.render(miniMapScene, miniMapCamera)
-    gl.setScissorTest(false)
-    gl.setViewport(0, 0, size.width, size.height)
-  }, 1) // priority > 0: manual rendering
+    const width = size.width * 0.25;
+    const height = size.height * 0.25;
+    gl.setViewport(0, 0, width, height);
+    gl.setScissor(0, 0, width, height);
+    gl.setScissorTest(true);
+    gl.render(miniMapScene, miniMapCamera);
+    gl.setScissorTest(false);
+    gl.setViewport(0, 0, size.width, size.height);
+  }, 1); // priority > 0: manual rendering
 
   return createPortal(
     <>
@@ -234,8 +235,8 @@ function MiniMap() {
         <meshBasicMaterial color="lightgray" />
       </mesh>
     </>,
-    miniMapScene
-  )
+    miniMapScene,
+  );
 }
 
 export default function App() {
@@ -248,11 +249,12 @@ export default function App() {
       </mesh>
       <MiniMap />
     </Canvas>
-  )
+  );
 }
 ```
 
 **Key points:**
+
 - `createPortal` renders children into a separate scene.
 - Priority > 0 disables auto-render -- the callback MUST render manually.
 - `useMemo` prevents recreating the scene and camera on every render.

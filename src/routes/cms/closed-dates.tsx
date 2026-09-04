@@ -95,38 +95,44 @@ function ClosedDatesPage() {
         <h2 className="text-sm font-semibold text-white mb-4">Add closed date range</h2>
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
           <div>
-            <label className="block text-[10px] font-semibold uppercase tracking-wider text-white/50 mb-1">From</label>
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-white/50 mb-1">
+              From
+            </label>
             <input
               type="date"
               value={startsOn}
               onChange={(e) => setStartsOn(e.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-[oklch(0.10_0.04_270)] px-3 py-2 text-sm text-white focus:border-white/30 focus:outline-none"
+              className="w-full rounded-lg border border-white/10 bg-surface-navy px-3 py-2 text-sm text-white focus:border-white/30 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-[10px] font-semibold uppercase tracking-wider text-white/50 mb-1">To</label>
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-white/50 mb-1">
+              To
+            </label>
             <input
               type="date"
               value={endsOn}
               onChange={(e) => setEndsOn(e.target.value)}
-              className="w-full rounded-lg border border-white/10 bg-[oklch(0.10_0.04_270)] px-3 py-2 text-sm text-white focus:border-white/30 focus:outline-none"
+              className="w-full rounded-lg border border-white/10 bg-surface-navy px-3 py-2 text-sm text-white focus:border-white/30 focus:outline-none"
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-[10px] font-semibold uppercase tracking-wider text-white/50 mb-1">Reason</label>
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-white/50 mb-1">
+              Reason
+            </label>
             <input
               type="text"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="e.g. Christmas break"
-              className="w-full rounded-lg border border-white/10 bg-[oklch(0.10_0.04_270)] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-white/30 focus:outline-none"
+              className="w-full rounded-lg border border-white/10 bg-surface-navy px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-white/30 focus:outline-none"
             />
           </div>
         </div>
         <button
           onClick={add}
           disabled={saving || !startsOn || !endsOn}
-          className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[oklch(0.55_0.22_270)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
+          className="mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
           Add
@@ -135,7 +141,8 @@ function ClosedDatesPage() {
 
       {error && (
         <div className="mb-4 flex items-start gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-400">
-          <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" /><span>{error}</span>
+          <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+          <span>{error}</span>
         </div>
       )}
 

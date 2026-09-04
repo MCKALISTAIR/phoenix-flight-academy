@@ -1,5 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BadgeCheck, Scale, CalendarDays, ArrowRight, MapPin, ChevronDown, ClipboardCheck, UserCheck, PlaneTakeoff, CircleCheckBig } from "lucide-react";
+import {
+  BadgeCheck,
+  Scale,
+  CalendarDays,
+  ArrowRight,
+  MapPin,
+  ChevronDown,
+  ClipboardCheck,
+  UserCheck,
+  PlaneTakeoff,
+  CircleCheckBig,
+} from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/flying/self-hire")({
@@ -7,7 +18,11 @@ export const Route = createFileRoute("/flying/self-hire")({
   head: () => ({
     meta: [
       { title: "Self-Hire & Plane Rental Cumbernauld | Phoenix Flight Training" },
-      { name: "description", content: "Hire our well-maintained Cessna 172 and Piper PA28 aircraft at competitive wet/dry rates. Overnight cross-country trip policies." }
+      {
+        name: "description",
+        content:
+          "Hire our well-maintained Cessna 172 and Piper PA28 aircraft at competitive wet/dry rates. Overnight cross-country trip policies.",
+      },
     ],
   }),
 });
@@ -42,23 +57,23 @@ const checkoutSteps = [
 const faqs = [
   {
     q: "What insurance is included?",
-    a: "Full hull and third-party liability insurance is included in the wet hire rate. There is no excess for normal operations. Negligent damage may be subject to the pilot's personal liability as per club terms."
+    a: "Full hull and third-party liability insurance is included in the wet hire rate. There is no excess for normal operations. Negligent damage may be subject to the pilot's personal liability as per club terms.",
   },
   {
     q: "How is fuel handled?",
-    a: "Wet rates include standard Avgas uplift at Cumbernauld. If you refuel away from base, retain your receipt and we'll reimburse at the club fuel rate (currently £2.40/litre) up to the amount used."
+    a: "Wet rates include standard Avgas uplift at Cumbernauld. If you refuel away from base, retain your receipt and we'll reimburse at the club fuel rate (currently £2.40/litre) up to the amount used.",
   },
   {
     q: "Can I fly overnight or multi-day trips?",
-    a: "Yes — multi-day hires are encouraged for cross-country touring. A minimum daily billing of 2 tachometer hours applies. Please book multi-day trips at least 7 days in advance."
+    a: "Yes — multi-day hires are encouraged for cross-country touring. A minimum daily billing of 2 tachometer hours applies. Please book multi-day trips at least 7 days in advance.",
   },
   {
     q: "What license do I need?",
-    a: "You need a valid UK PPL(A), LAPL(A), or CPL/ATPL with a current Class 2 or LAPL medical. Student pilots are not eligible for self-hire but can book dual instruction flights."
+    a: "You need a valid UK PPL(A), LAPL(A), or CPL/ATPL with a current Class 2 or LAPL medical. Student pilots are not eligible for self-hire but can book dual instruction flights.",
   },
   {
     q: "How far in advance can I book?",
-    a: "Aircraft can be booked up to 4 weeks in advance via the online portal. Cancellations within 24 hours of the booking may incur a £30 slot-holding fee."
+    a: "Aircraft can be booked up to 4 weeks in advance via the online portal. Cancellations within 24 hours of the booking may incur a £30 slot-holding fee.",
   },
 ];
 
@@ -69,18 +84,18 @@ function SelfHirePage() {
     {
       title: "Checkout Flight",
       desc: "All renters must complete a 1-hour club checkout flight with a Phoenix instructor to verify landing skills, emergency procedures, and circuit competence.",
-      icon: BadgeCheck
+      icon: BadgeCheck,
     },
     {
       title: "Overnight & Multi-day Hires",
       desc: "Planning a trip to Barra or the Hebrides? Multi-day hires are permitted, subject to a minimum engine-logged billing of 2 hours per day.",
-      icon: CalendarDays
+      icon: CalendarDays,
     },
     {
       title: "Cumbernauld Landings",
       desc: "Cumbernauld home landing fees are not included in the hourly wet rate. Block landing packages are available through airfield operations.",
-      icon: Scale
-    }
+      icon: Scale,
+    },
   ];
 
   return (
@@ -96,22 +111,26 @@ function SelfHirePage() {
           <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/60 to-transparent" />
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <span className="text-sm font-semibold uppercase tracking-wider text-primary">Aircraft Rental</span>
+          <span className="text-sm font-semibold uppercase tracking-wider text-primary">
+            Aircraft Rental
+          </span>
           <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
             Self-Hire Fleet
           </h1>
           <p className="mt-6 max-w-2xl text-lg sm:text-xl text-white/85 leading-relaxed">
-            Rent our exceptionally maintained Cessna 172 and Piper PA28 fleet. Competitive wet rates, modern avionics, and flexible booking policies.
+            Rent our exceptionally maintained Cessna 172 and Piper PA28 fleet. Competitive wet
+            rates, modern avionics, and flexible booking policies.
           </p>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
-
         {/* Checkout Process Timeline */}
         <div className="mb-20">
           <div className="text-center max-w-xl mx-auto mb-12">
-            <span className="text-xs font-bold uppercase tracking-widest text-primary">Getting Started</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">
+              Getting Started
+            </span>
             <h2 className="mt-2 text-3xl font-extrabold text-foreground">Checkout Process</h2>
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
               From application to approved renter in four straightforward steps.
@@ -144,13 +163,15 @@ function SelfHirePage() {
 
         {/* Main Content Grid */}
         <div className="grid gap-16 lg:grid-cols-3">
-          
           {/* Main Policies Column */}
           <div className="lg:col-span-2 space-y-12">
             <div>
-              <h2 className="text-3xl font-extrabold text-foreground">Rental Policies & Guidelines</h2>
+              <h2 className="text-3xl font-extrabold text-foreground">
+                Rental Policies & Guidelines
+              </h2>
               <p className="mt-2 text-muted-foreground leading-relaxed">
-                We support active general aviation pilots, hour builders, and cross-country tourers. Read our core hire policies:
+                We support active general aviation pilots, hour builders, and cross-country tourers.
+                Read our core hire policies:
               </p>
             </div>
 
@@ -158,12 +179,17 @@ function SelfHirePage() {
               {policies.map((policy, idx) => {
                 const Icon = policy.icon;
                 return (
-                  <div key={idx} className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/20 hover:-translate-y-1 hover:shadow-md">
+                  <div
+                    key={idx}
+                    className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-primary/20 hover:-translate-y-1 hover:shadow-md"
+                  >
                     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                       <Icon className="h-5 w-5" />
                     </div>
                     <h3 className="mt-4 text-lg font-bold text-foreground">{policy.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{policy.desc}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {policy.desc}
+                    </p>
                   </div>
                 );
               })}
@@ -172,7 +198,8 @@ function SelfHirePage() {
                 <div>
                   <h3 className="text-lg font-bold text-foreground">Equipped for Safety</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    Both G-PHNX Cessna and our Piper fleet are fully IFR capable with 8.33kHz radios, Garmin GNS430 GPS navigation units, and Mode S transponders.
+                    Both G-PHNX Cessna and our Piper fleet are fully IFR capable with 8.33kHz
+                    radios, Garmin GNS430 GPS navigation units, and Mode S transponders.
                   </p>
                 </div>
                 <Link
@@ -185,90 +212,126 @@ function SelfHirePage() {
               </div>
             </div>
 
-            <div className="relative aspect-video rounded-3xl overflow-hidden shadow-lg border border-border mt-8">
+            <div className="relative aspect-video rounded-xl overflow-hidden shadow-sm border border-border mt-8">
               <img
                 src="https://images.unsplash.com/photo-1555513220-410a69a03bc7?q=80&w=1200&auto=format&fit=crop"
                 alt="Aircraft hangar ramp"
                 className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               />
-              <div className="absolute bottom-4 left-4 bg-slate-900/90 backdrop-blur-sm px-4 py-2 rounded-xl text-xs font-semibold text-slate-100 border border-white/10 flex items-center gap-2">
+              <div className="absolute bottom-3 left-3 bg-surface-navy/90 px-3 py-1.5 rounded-md text-xs font-mono text-white border border-white/10 flex items-center gap-2">
                 <MapPin className="h-3.5 w-3.5 text-primary" />
-                Cumbernauld Airport Flight Line
+                <span>EGPG Cumbernauld Flight Line</span>
               </div>
             </div>
           </div>
 
           {/* Hire Pricing Column */}
           <div className="space-y-8">
-            <div className="rounded-2xl border border-border bg-card p-8 shadow-sm sticky top-28 space-y-6">
+            <div className="rounded-xl border border-border bg-card p-6 shadow-sm sticky top-28 space-y-6">
               <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-primary">Rental Rates</span>
-                <h3 className="mt-2 text-2xl font-bold text-foreground">Competitive Solo Rates</h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                  Wet rates include standard fuel. Fuel uploaded away from Cumbernauld is reimbursed at club rate up to UK limits.
+                <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-primary">
+                  Rental Rates & Wet Hire
+                </span>
+                <h3 className="mt-1.5 text-xl font-bold text-foreground">Self-Hire Rates</h3>
+                <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                  Wet rates include standard fuel. Fuel uploaded away from Cumbernauld is reimbursed
+                  at club rate up to UK limits.
                 </p>
               </div>
 
               <hr className="border-border" />
 
-              <div className="space-y-4">
+              <div className="space-y-3.5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="font-semibold text-foreground">Cessna 172 Solo Hire</span>
-                    <p className="text-xs text-muted-foreground">Wet rate / tachometer hour</p>
+                    <span className="text-sm font-semibold text-foreground">
+                      Cessna 172 Skyhawk
+                    </span>
+                    <p className="text-[11px] text-muted-foreground">Wet rate / tachometer hour</p>
                   </div>
-                  <span className="text-xl font-bold text-foreground">£175</span>
+                  <span className="font-mono text-base font-bold text-foreground tabular-nums">
+                    £175.00
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="font-semibold text-foreground">Piper PA28 Solo Hire</span>
-                    <p className="text-xs text-muted-foreground">Wet rate / tachometer hour</p>
+                    <span className="text-sm font-semibold text-foreground">
+                      Piper PA28 Cherokee
+                    </span>
+                    <p className="text-[11px] text-muted-foreground">Wet rate / tachometer hour</p>
                   </div>
-                  <span className="text-xl font-bold text-foreground">£175</span>
+                  <span className="font-mono text-base font-bold text-foreground tabular-nums">
+                    £175.00
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="font-semibold text-foreground">Annual Pilot Membership</span>
-                    <p className="text-xs text-muted-foreground">Required for active club renters</p>
+                    <span className="text-sm font-semibold text-foreground">
+                      Annual Flying Membership
+                    </span>
+                    <p className="text-[11px] text-muted-foreground">
+                      Required for active club renters
+                    </p>
                   </div>
-                  <span className="text-xl font-bold text-foreground">£120</span>
+                  <span className="font-mono text-base font-bold text-foreground tabular-nums">
+                    £120.00
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="font-semibold text-foreground">Club Checkout Flight</span>
-                    <p className="text-xs text-muted-foreground">Instructor checkflight (one-off)</p>
+                    <span className="text-sm font-semibold text-foreground">
+                      Club Checkout Flight
+                    </span>
+                    <p className="text-[11px] text-muted-foreground">
+                      One-off dual checkout with instructor
+                    </p>
                   </div>
-                  <span className="text-xl font-bold text-foreground">£60</span>
+                  <span className="font-mono text-base font-bold text-foreground tabular-nums">
+                    £60.00
+                  </span>
                 </div>
+              </div>
+
+              <div className="rounded-lg bg-muted/30 p-3.5 border border-border text-[11px] text-muted-foreground space-y-1">
+                <span className="font-mono font-bold uppercase tracking-wider text-foreground block">
+                  Currency Notice (Part-FCL.060)
+                </span>
+                <p>
+                  Pilots must have logged 3 takeoffs and landings in the preceding 90 days on type
+                  to carry passengers.
+                </p>
               </div>
 
               <hr className="border-border" />
 
-              <div className="flex flex-col gap-3 pt-2">
+              <div className="flex flex-col gap-2.5 pt-1">
                 <Link
                   to="/booking"
-                  className="inline-flex h-12 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground shadow-md transition-transform hover:scale-[1.01]"
+                  className="inline-flex h-11 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground shadow-sm transition-all active:scale-[0.98] active:translate-y-[0.5px] hover:bg-primary/90"
                 >
                   Access Booking Portal
                 </Link>
                 <Link
                   to="/contact"
                   search={{ subject: "self-hire" }}
-                  className="inline-flex h-12 items-center justify-center rounded-lg border border-input bg-background text-sm font-bold text-foreground transition-colors hover:bg-muted/50"
+                  className="inline-flex h-11 items-center justify-center rounded-lg border border-border bg-background text-xs font-bold text-foreground transition-all active:scale-[0.98] active:translate-y-[0.5px] hover:bg-muted"
                 >
                   Inquire About Checkout
                 </Link>
               </div>
             </div>
           </div>
-
         </div>
 
         {/* FAQ Section */}
         <div className="mt-24 max-w-3xl mx-auto">
           <div className="text-center mb-12">
-            <span className="text-xs font-bold uppercase tracking-widest text-primary">Self-Hire Questions</span>
-            <h2 className="mt-2 text-3xl font-extrabold text-foreground">Frequently Asked Questions</h2>
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">
+              Self-Hire Questions
+            </span>
+            <h2 className="mt-2 text-3xl font-extrabold text-foreground">
+              Frequently Asked Questions
+            </h2>
           </div>
 
           <div className="space-y-3">
@@ -299,7 +362,6 @@ function SelfHirePage() {
             ))}
           </div>
         </div>
-
       </div>
     </div>
   );

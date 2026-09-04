@@ -2,15 +2,7 @@ import { createFileRoute, redirect, isRedirect } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import {
-  Tag,
-  Plus,
-  Trash2,
-  Pencil,
-  CheckCircle2,
-  XCircle,
-  PercentIcon,
-} from "lucide-react";
+import { Tag, Plus, Trash2, Pencil, CheckCircle2, XCircle, PercentIcon } from "lucide-react";
 import { requireSuperAdmin } from "@/lib/auth-guards";
 import {
   listAllPromotions,
@@ -131,7 +123,7 @@ function PromotionsManager() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="flex items-center gap-2 text-2xl font-extrabold text-white">
-            <Tag className="h-6 w-6 text-[oklch(0.75_0.18_270)]" />
+            <Tag className="h-6 w-6 text-primary" />
             Promotions & Discount Codes
           </h1>
           <p className="mt-1 text-sm text-white/40">
@@ -140,7 +132,7 @@ function PromotionsManager() {
         </div>
         <button
           onClick={startNew}
-          className="flex items-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 transition-opacity"
+          className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 transition-opacity"
         >
           <Plus className="h-4 w-4" /> New Promo Code
         </button>
@@ -150,7 +142,7 @@ function PromotionsManager() {
       {editing && (
         <form
           onSubmit={handleSave}
-          className="rounded-2xl border border-[oklch(0.55_0.22_270)]/30 bg-[oklch(0.55_0.22_270)]/5 p-6 space-y-5"
+          className="rounded-2xl border border-primary/30 bg-primary/5 p-6 space-y-5"
         >
           <h2 className="text-sm font-bold text-white/70">
             {form.id ? "Edit Promo Code" : "New Promo Code"}
@@ -187,7 +179,7 @@ function PromotionsManager() {
                     discount_type: e.target.value as "percentage" | "fixed_amount",
                   }))
                 }
-                className="w-full rounded-lg border border-white/10 bg-[oklch(0.13_0.03_270)] px-3 py-2 text-sm text-white"
+                className="w-full rounded-lg border border-white/10 bg-[oklch(0.12_0.04_250)] px-3 py-2 text-sm text-white"
               >
                 <option value="percentage">Percentage (%)</option>
                 <option value="fixed_amount">Fixed Amount (pence)</option>
@@ -195,7 +187,11 @@ function PromotionsManager() {
             </div>
             <div>
               <label className="mb-1 block text-xs text-white/50">
-                Value ({form.discount_type === "percentage" ? "e.g. 20 = 20%" : "in pence, e.g. 1000 = £10"})
+                Value (
+                {form.discount_type === "percentage"
+                  ? "e.g. 20 = 20%"
+                  : "in pence, e.g. 1000 = £10"}
+                )
               </label>
               <input
                 required
@@ -226,7 +222,9 @@ function PromotionsManager() {
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-white/50">Max Uses (optional, blank = unlimited)</label>
+              <label className="mb-1 block text-xs text-white/50">
+                Max Uses (optional, blank = unlimited)
+              </label>
               <input
                 type="number"
                 min={0}
@@ -240,7 +238,7 @@ function PromotionsManager() {
               <button
                 type="button"
                 onClick={() => setForm((f) => ({ ...f, published: !f.published }))}
-                className={`h-6 w-11 rounded-full transition-colors ${form.published ? "bg-[oklch(0.55_0.22_270)]" : "bg-white/10"}`}
+                className={`h-6 w-11 rounded-full transition-colors ${form.published ? "bg-primary" : "bg-white/10"}`}
               >
                 <span
                   className={`block h-4 w-4 rounded-full bg-white shadow transition-transform mx-1 ${form.published ? "translate-x-5" : ""}`}
@@ -262,7 +260,7 @@ function PromotionsManager() {
                   onClick={() => toggleKind(kind)}
                   className={`rounded-lg border px-3 py-1.5 text-xs font-semibold capitalize transition-all ${
                     form.applies_to_kinds.includes(kind)
-                      ? "border-[oklch(0.55_0.22_270)] bg-[oklch(0.55_0.22_270)]/15 text-[oklch(0.75_0.18_270)]"
+                      ? "border-primary bg-primary/15 text-primary"
                       : "border-white/10 bg-white/5 text-white/50 hover:bg-white/10"
                   }`}
                 >
@@ -280,13 +278,16 @@ function PromotionsManager() {
             <button
               type="submit"
               disabled={saveMut.isPending}
-              className="rounded-xl bg-[oklch(0.55_0.22_270)] px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50 hover:opacity-90"
+              className="rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white disabled:opacity-50 hover:opacity-90"
             >
               {saveMut.isPending ? "Saving…" : form.id ? "Update" : "Create"}
             </button>
             <button
               type="button"
-              onClick={() => { setEditing(false); setForm(EMPTY_FORM); }}
+              onClick={() => {
+                setEditing(false);
+                setForm(EMPTY_FORM);
+              }}
               className="rounded-xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white/60 hover:bg-white/10"
             >
               Cancel
@@ -320,7 +321,7 @@ function PromotionsManager() {
             <tbody className="divide-y divide-white/5">
               {promos.map((p) => (
                 <tr key={p.id} className="text-white hover:bg-white/3 transition-colors">
-                  <td className="px-4 py-3 font-mono font-bold text-[oklch(0.75_0.18_270)]">{p.code}</td>
+                  <td className="px-4 py-3 font-mono font-bold text-primary">{p.code}</td>
                   <td className="px-4 py-3 text-white/80">{p.name}</td>
                   <td className="px-4 py-3">
                     <span className="flex items-center gap-1">

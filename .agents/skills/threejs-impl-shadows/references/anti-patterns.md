@@ -100,7 +100,7 @@ dirLight.shadow.bias = -0.05; // way too large
 **Correct**: Use minimal bias combined with normalBias.
 
 ```js
-dirLight.shadow.bias = -0.0001;   // small depth bias
+dirLight.shadow.bias = -0.0001; // small depth bias
 dirLight.shadow.normalBias = 0.02; // normal-based offset for curved surfaces
 ```
 

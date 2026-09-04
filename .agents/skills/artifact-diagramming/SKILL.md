@@ -9,6 +9,7 @@ description: >-
 # Artifact Diagramming Skill
 
 ## When to Use
+
 Use when an artifact requires a visual diagram to explain system architecture, execution flow, component hierarchies, or multi-agent handoffs.
 
 ## Principles

@@ -65,6 +65,7 @@ When orchestrating tasks (via slash commands like `/teamwork-preview` or in-chat
 ### 🚫 Forbidden Clichés (The "AI Slop" Anti-Patterns)
 
 Under no circumstances may agents generate or propose:
+
 - **Purple / Cyan Neon Gradients**: No glowing indigo-to-purple background radial gradients on dark cards.
 - **Overused Frosted Glassmorphism**: No heavy blurry backdrop filters with faint glowing border outlines where solid, crisp structural containers are needed.
 - **The Generic 3-Card Feature Grid**: No rows of 3 identical rounded cards containing a pastel-colored rounded square with a generic icon and 2 sentences of placeholder text.
@@ -72,7 +73,7 @@ Under no circumstances may agents generate or propose:
 - **The "Airy Void"**: No giant empty margins surrounding low-contrast centered text with zero information density. Flight operations require purposeful, organized density.
 - **Low-Contrast Washed Gray**: Never use light gray text on light gray backgrounds, or dim gray text on dark cards that violates contrast standards.
 - **Decorative Squiggly Charts**: Never add fake decorative line graphs without labeled axes, real units, or meaningful telemetry.
-- **Generic Marketing Copy**: Avoid bland filler like *"Effortless flight management for the modern aviator"*. Use authentic flight school domain language (e.g., *Hobbs & Tach Time, Cross-Country Dual Received, Solo Endorsements, Weight & Balance, PSTAR Prep, Class 1 Medical Status*).
+- **Generic Marketing Copy**: Avoid bland filler like _"Effortless flight management for the modern aviator"_. Use authentic flight school domain language (e.g., _Hobbs & Tach Time, Cross-Country Dual Received, Solo Endorsements, Weight & Balance, PSTAR Prep, Class 1 Medical Status_).
 
 ### ✅ Required Design Standards (World-Class Craft)
 
@@ -89,7 +90,7 @@ Under no circumstances may agents generate or propose:
    - Stick strictly to the semantic color system declared in `src/styles.css`:
      - **Background & Canvas**: Pure white / deep navy foundation (`oklch(0.2 0.05 250)`).
      - **Primary Accent (`--primary`)**: Phoenix Orange (`oklch(0.65 0.2 40)`). Use sparingly for primary calls-to-action, active indicators, and high-importance highlights—never paint an entire screen orange.
-     - **Status System**: 
+     - **Status System**:
        - Operational / Cleared: Crisp Emerald Green (never pastel mint).
        - Caution / Advisory: Amber / Aviation Yellow.
        - Grounded / Urgent / Exceeded: Destructive Crimson (`--destructive`).

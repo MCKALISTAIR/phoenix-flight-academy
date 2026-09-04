@@ -22,23 +22,23 @@ metadata:
 
 Three.js offers TWO incompatible post-processing systems. NEVER mix them.
 
-| System | Package | Approach | Best For |
-|--------|---------|----------|----------|
-| Built-in EffectComposer | `three/addons/postprocessing/` | One shader pass per effect | Simple setups, custom ShaderPass |
-| pmndrs/postprocessing | `postprocessing` (npm) | Merges effects into single pass | Performance-critical, R3F apps |
-| WebGPU PostProcessing | `three/addons/tsl/display/` | Node-based TSL graphs | WebGPU renderer only |
+| System                  | Package                        | Approach                        | Best For                         |
+| ----------------------- | ------------------------------ | ------------------------------- | -------------------------------- |
+| Built-in EffectComposer | `three/addons/postprocessing/` | One shader pass per effect      | Simple setups, custom ShaderPass |
+| pmndrs/postprocessing   | `postprocessing` (npm)         | Merges effects into single pass | Performance-critical, R3F apps   |
+| WebGPU PostProcessing   | `three/addons/tsl/display/`    | Node-based TSL graphs           | WebGPU renderer only             |
 
 ### Standard Pipeline (Built-in EffectComposer)
 
 ```js
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
-const composer = new EffectComposer( renderer );
-composer.addPass( new RenderPass( scene, camera ) ); // ALWAYS first
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera)); // ALWAYS first
 // ... effect passes here ...
-composer.addPass( new OutputPass() );                 // ALWAYS last
+composer.addPass(new OutputPass()); // ALWAYS last
 
 function animate() {
   composer.render(); // replaces renderer.render( scene, camera )
@@ -80,27 +80,27 @@ new EffectComposer( renderer: WebGLRenderer, renderTarget?: WebGLRenderTarget )
 
 ### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `.passes` | `Pass[]` | Ordered array of post-processing passes |
-| `.readBuffer` | `WebGLRenderTarget` | Internal read buffer |
-| `.writeBuffer` | `WebGLRenderTarget` | Internal write buffer |
-| `.renderToScreen` | `boolean` | Whether the final pass renders to screen (default `true`) |
-| `.renderer` | `WebGLRenderer` | The renderer instance |
+| Property          | Type                | Description                                               |
+| ----------------- | ------------------- | --------------------------------------------------------- |
+| `.passes`         | `Pass[]`            | Ordered array of post-processing passes                   |
+| `.readBuffer`     | `WebGLRenderTarget` | Internal read buffer                                      |
+| `.writeBuffer`    | `WebGLRenderTarget` | Internal write buffer                                     |
+| `.renderToScreen` | `boolean`           | Whether the final pass renders to screen (default `true`) |
+| `.renderer`       | `WebGLRenderer`     | The renderer instance                                     |
 
 ### Methods
 
-| Method | Description |
-|--------|-------------|
-| `.addPass( pass )` | Appends a pass to the end of the chain |
-| `.insertPass( pass, index )` | Inserts a pass at a specific position |
-| `.removePass( pass )` | Removes a pass from the chain |
-| `.render( deltaTime? )` | Executes all enabled passes in order |
-| `.setSize( width, height )` | Resizes all internal buffers and passes |
-| `.setPixelRatio( ratio )` | Configures device pixel ratio |
-| `.swapBuffers()` | Exchanges read/write buffers |
-| `.reset( renderTarget? )` | Restores internal state |
-| `.dispose()` | Frees all GPU resources |
+| Method                       | Description                             |
+| ---------------------------- | --------------------------------------- |
+| `.addPass( pass )`           | Appends a pass to the end of the chain  |
+| `.insertPass( pass, index )` | Inserts a pass at a specific position   |
+| `.removePass( pass )`        | Removes a pass from the chain           |
+| `.render( deltaTime? )`      | Executes all enabled passes in order    |
+| `.setSize( width, height )`  | Resizes all internal buffers and passes |
+| `.setPixelRatio( ratio )`    | Configures device pixel ratio           |
+| `.swapBuffers()`             | Exchanges read/write buffers            |
+| `.reset( renderTarget? )`    | Restores internal state                 |
+| `.dispose()`                 | Frees all GPU resources                 |
 
 ---
 
@@ -108,50 +108,50 @@ new EffectComposer( renderer: WebGLRenderer, renderTarget?: WebGLRenderTarget )
 
 ### Core Passes (ALWAYS needed)
 
-| Pass | Import | Purpose |
-|------|--------|---------|
-| `RenderPass` | `postprocessing/RenderPass.js` | Renders scene to buffer; ALWAYS first |
+| Pass         | Import                         | Purpose                                 |
+| ------------ | ------------------------------ | --------------------------------------- |
+| `RenderPass` | `postprocessing/RenderPass.js` | Renders scene to buffer; ALWAYS first   |
 | `OutputPass` | `postprocessing/OutputPass.js` | Tone mapping + color space; ALWAYS last |
 
 ### Effect Passes
 
-| Pass | Constructor | Purpose |
-|------|-------------|---------|
-| `UnrealBloomPass` | `( resolution, strength?, radius?, threshold? )` | HDR bloom glow |
-| `SSAOPass` | `( scene, camera, width?, height? )` | Screen-space ambient occlusion |
-| `GTAOPass` | `( scene, camera, width?, height? )` | Ground truth AO (higher quality) |
-| `SAOPass` | `( scene, camera )` | Scalable ambient obscurance |
-| `OutlinePass` | `( resolution, scene, camera, selectedObjects? )` | Object selection outlines |
-| `BokehPass` | `( scene, camera, params )` | Depth of field |
-| `SSRPass` | `( params )` | Screen-space reflections |
-| `FilmPass` | `( intensity?, grayscale? )` | Film grain / scanlines |
-| `GlitchPass` | `( dtSize? )` | Digital glitch effect |
-| `HalftonePass` | `( width, height, params )` | Halftone dot pattern |
-| `DotScreenPass` | `( center?, angle?, scale? )` | Dot screen overlay |
-| `AfterimagePass` | `( damp? )` | Motion trails / ghosting |
-| `LUTPass` | `( params )` | Color LUT grading |
-| `RenderPixelatedPass` | `( pixelSize, scene, camera )` | Pixelation effect |
+| Pass                  | Constructor                                       | Purpose                          |
+| --------------------- | ------------------------------------------------- | -------------------------------- |
+| `UnrealBloomPass`     | `( resolution, strength?, radius?, threshold? )`  | HDR bloom glow                   |
+| `SSAOPass`            | `( scene, camera, width?, height? )`              | Screen-space ambient occlusion   |
+| `GTAOPass`            | `( scene, camera, width?, height? )`              | Ground truth AO (higher quality) |
+| `SAOPass`             | `( scene, camera )`                               | Scalable ambient obscurance      |
+| `OutlinePass`         | `( resolution, scene, camera, selectedObjects? )` | Object selection outlines        |
+| `BokehPass`           | `( scene, camera, params )`                       | Depth of field                   |
+| `SSRPass`             | `( params )`                                      | Screen-space reflections         |
+| `FilmPass`            | `( intensity?, grayscale? )`                      | Film grain / scanlines           |
+| `GlitchPass`          | `( dtSize? )`                                     | Digital glitch effect            |
+| `HalftonePass`        | `( width, height, params )`                       | Halftone dot pattern             |
+| `DotScreenPass`       | `( center?, angle?, scale? )`                     | Dot screen overlay               |
+| `AfterimagePass`      | `( damp? )`                                       | Motion trails / ghosting         |
+| `LUTPass`             | `( params )`                                      | Color LUT grading                |
+| `RenderPixelatedPass` | `( pixelSize, scene, camera )`                    | Pixelation effect                |
 
 ### Anti-Aliasing Passes
 
-| Pass | Constructor | Quality | Cost |
-|------|-------------|---------|------|
-| `FXAAPass` | `()` | Low -- fast approximation | Cheapest |
-| `SMAAPass` | `( width, height )` | Medium -- subpixel morphological | Moderate |
-| `SSAARenderPass` | `( scene, camera )` | High -- super-sampling | Expensive |
-| `TAARenderPass` | `( scene, camera )` | High -- temporal accumulation | Expensive |
+| Pass             | Constructor         | Quality                          | Cost      |
+| ---------------- | ------------------- | -------------------------------- | --------- |
+| `FXAAPass`       | `()`                | Low -- fast approximation        | Cheapest  |
+| `SMAAPass`       | `( width, height )` | Medium -- subpixel morphological | Moderate  |
+| `SSAARenderPass` | `( scene, camera )` | High -- super-sampling           | Expensive |
+| `TAARenderPass`  | `( scene, camera )` | High -- temporal accumulation    | Expensive |
 
 ### Utility Passes
 
-| Pass | Purpose |
-|------|---------|
-| `ShaderPass` | Custom GLSL shader effect |
-| `MaskPass` | Stencil masking |
-| `ClearMaskPass` | Clears stencil mask |
-| `ClearPass` | Clears buffer |
-| `TexturePass` | Renders a texture |
-| `CubeTexturePass` | Renders cubemap background |
-| `SavePass` | Saves current buffer to render target |
+| Pass                   | Purpose                                |
+| ---------------------- | -------------------------------------- |
+| `ShaderPass`           | Custom GLSL shader effect              |
+| `MaskPass`             | Stencil masking                        |
+| `ClearMaskPass`        | Clears stencil mask                    |
+| `ClearPass`            | Clears buffer                          |
+| `TexturePass`          | Renders a texture                      |
+| `CubeTexturePass`      | Renders cubemap background             |
+| `SavePass`             | Saves current buffer to render target  |
 | `RenderTransitionPass` | Animated transition between two scenes |
 
 ALL passes import from `three/addons/postprocessing/{PassName}.js`.
@@ -163,13 +163,13 @@ ALL passes import from `three/addons/postprocessing/{PassName}.js`.
 ### UnrealBloomPass
 
 ```js
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 
 const bloom = new UnrealBloomPass(
-  new THREE.Vector2( window.innerWidth, window.innerHeight ),
-  1.5,  // strength -- bloom intensity [0, 3+]
-  0.4,  // radius -- bloom spread [0, 1]
-  0.85  // threshold -- luminance cutoff [0, 1]
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  1.5, // strength -- bloom intensity [0, 3+]
+  0.4, // radius -- bloom spread [0, 1]
+  0.85, // threshold -- luminance cutoff [0, 1]
 );
 ```
 
@@ -181,28 +181,29 @@ ALWAYS prefer `GTAOPass` over `SSAOPass` for production quality. Use `SSAOPass` 
 
 ```js
 // SSAOPass (faster, lower quality)
-const ssao = new SSAOPass( scene, camera, width, height );
+const ssao = new SSAOPass(scene, camera, width, height);
 ssao.kernelRadius = 8;
 ssao.minDistance = 0.005;
 ssao.maxDistance = 0.1;
 
 // GTAOPass (slower, production quality)
-const gtao = new GTAOPass( scene, camera, width, height );
+const gtao = new GTAOPass(scene, camera, width, height);
 ```
 
 ### OutlinePass
 
 ```js
 const outline = new OutlinePass(
-  new THREE.Vector2( window.innerWidth, window.innerHeight ),
-  scene, camera
+  new THREE.Vector2(window.innerWidth, window.innerHeight),
+  scene,
+  camera,
 );
-outline.selectedObjects = [ mesh1, mesh2 ];
+outline.selectedObjects = [mesh1, mesh2];
 outline.edgeStrength = 3;
 outline.edgeGlow = 0;
 outline.edgeThickness = 1;
-outline.visibleEdgeColor.set( 0xffffff );
-outline.hiddenEdgeColor.set( 0x190a05 );
+outline.visibleEdgeColor.set(0xffffff);
+outline.hiddenEdgeColor.set(0x190a05);
 ```
 
 ---
@@ -210,12 +211,12 @@ outline.hiddenEdgeColor.set( 0x190a05 );
 ## Custom ShaderPass
 
 ```js
-import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 
 const myShader = {
   uniforms: {
     tDiffuse: { value: null }, // ALWAYS include -- receives read buffer
-    amount: { value: 0.5 }
+    amount: { value: 0.5 },
   },
   vertexShader: `
     varying vec2 vUv;
@@ -232,11 +233,11 @@ const myShader = {
       vec4 color = texture2D( tDiffuse, vUv );
       gl_FragColor = mix( color, vec4( 1.0 - color.rgb, color.a ), amount );
     }
-  `
+  `,
 };
 
-const customPass = new ShaderPass( myShader );
-composer.insertPass( customPass, 1 ); // after RenderPass
+const customPass = new ShaderPass(myShader);
+composer.insertPass(customPass, 1); // after RenderPass
 ```
 
 The `textureID` parameter defaults to `'tDiffuse'`. If your shader uses a different uniform name for the input texture, pass it as the second argument: `new ShaderPass( myShader, 'myInputTexture' )`.
@@ -250,12 +251,11 @@ The `textureID` parameter defaults to `'tDiffuse'`. If your shader uses a differ
 The `pmndrs/postprocessing` library merges multiple effects into a SINGLE shader pass, reducing draw calls significantly compared to the built-in system.
 
 ```js
-import { EffectComposer, EffectPass, RenderPass, BloomEffect,
-         SMAAEffect } from 'postprocessing';
+import { EffectComposer, EffectPass, RenderPass, BloomEffect, SMAAEffect } from "postprocessing";
 
-const composer = new EffectComposer( renderer );
-composer.addPass( new RenderPass( scene, camera ) );
-composer.addPass( new EffectPass( camera, new BloomEffect(), new SMAAEffect() ) );
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(new EffectPass(camera, new BloomEffect(), new SMAAEffect()));
 
 function animate() {
   composer.render();
@@ -264,17 +264,17 @@ function animate() {
 
 ### Key Effects
 
-| Effect | Purpose |
-|--------|---------|
-| `BloomEffect` | Configurable bloom with mipmaps |
-| `SMAAEffect` | Subpixel morphological AA |
-| `SSAOEffect` | Screen-space ambient occlusion |
-| `DepthOfFieldEffect` | Bokeh depth-of-field |
-| `ToneMappingEffect` | Tone mapping operators |
-| `VignetteEffect` | Screen edge darkening |
-| `ChromaticAberrationEffect` | Color fringing |
-| `NoiseEffect` | Film grain |
-| `GodRaysEffect` | Volumetric light scattering |
+| Effect                      | Purpose                         |
+| --------------------------- | ------------------------------- |
+| `BloomEffect`               | Configurable bloom with mipmaps |
+| `SMAAEffect`                | Subpixel morphological AA       |
+| `SSAOEffect`                | Screen-space ambient occlusion  |
+| `DepthOfFieldEffect`        | Bokeh depth-of-field            |
+| `ToneMappingEffect`         | Tone mapping operators          |
+| `VignetteEffect`            | Screen edge darkening           |
+| `ChromaticAberrationEffect` | Color fringing                  |
+| `NoiseEffect`               | Film grain                      |
+| `GodRaysEffect`             | Volumetric light scattering     |
 
 For React Three Fiber, use `@react-three/postprocessing` which wraps these effects as JSX components.
 
@@ -285,11 +285,11 @@ For React Three Fiber, use `@react-three/postprocessing` which wraps these effec
 ALWAYS resize both the renderer AND the composer on window resize:
 
 ```js
-window.addEventListener( 'resize', () => {
+window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize( window.innerWidth, window.innerHeight );
-  composer.setSize( window.innerWidth, window.innerHeight ); // MUST resize
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight); // MUST resize
 });
 ```
 
@@ -300,9 +300,9 @@ window.addEventListener( 'resize', () => {
 The WebGPU renderer uses a SEPARATE node-based system:
 
 ```js
-import { PostProcessing } from 'three/addons/tsl/display/PostProcessing.js';
+import { PostProcessing } from "three/addons/tsl/display/PostProcessing.js";
 
-const postProcessing = new PostProcessing( renderer );
+const postProcessing = new PostProcessing(renderer);
 // Uses TSL (Three Shading Language) node graphs for effects
 ```
 

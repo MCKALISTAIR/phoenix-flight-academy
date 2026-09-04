@@ -75,10 +75,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Phoenix Flight Training | Learn to Fly at Cumbernauld" },
-      { name: "description", content: "Friendly instructors, premium training, and unforgettable experience flights based at Cumbernauld Airport." },
+      {
+        name: "description",
+        content:
+          "Friendly instructors, premium training, and unforgettable experience flights based at Cumbernauld Airport.",
+      },
       { name: "author", content: "Phoenix Flight Training" },
       { property: "og:title", content: "Phoenix Flight Training | Learn to Fly at Cumbernauld" },
-      { property: "og:description", content: "Friendly instructors, premium training, and unforgettable experience flights based at Cumbernauld Airport." },
+      {
+        property: "og:description",
+        content:
+          "Friendly instructors, premium training, and unforgettable experience flights based at Cumbernauld Airport.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -155,7 +163,9 @@ function RootComponent() {
   const isLoginRoute = location.pathname === "/login" || location.pathname === "/reset-password";
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
       router.invalidate();
       if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
@@ -168,9 +178,7 @@ function RootComponent() {
     const darkMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
     const applyTheme = () => {
-      const isDark =
-        storedTheme === "dark" ||
-        (storedTheme === "system" && darkMediaQuery.matches);
+      const isDark = storedTheme === "dark" || (storedTheme === "system" && darkMediaQuery.matches);
 
       if (isDark) {
         document.documentElement.classList.add("dark");

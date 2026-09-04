@@ -46,6 +46,7 @@ VRButton.createButton(renderer: THREE.WebGLRenderer): HTMLElement
 ```
 
 Returns a DOM button element that:
+
 - Checks for WebXR `immersive-vr` support
 - Shows "ENTER VR" when supported
 - Shows "VR NOT SUPPORTED" when unavailable
@@ -65,6 +66,7 @@ ARButton.createButton(
 ```
 
 Returns a DOM button element that:
+
 - Checks for WebXR `immersive-ar` support
 - Accepts optional `sessionInit` for required/optional features
 - Handles session request/end lifecycle automatically
@@ -73,8 +75,8 @@ Returns a DOM button element that:
 
 ```typescript
 interface XRSessionInit {
-  requiredFeatures?: string[];    // Session fails if unavailable
-  optionalFeatures?: string[];    // Session proceeds without these
+  requiredFeatures?: string[]; // Session fails if unavailable
+  optionalFeatures?: string[]; // Session proceeds without these
   domOverlay?: { root: HTMLElement };
 }
 ```
@@ -128,6 +130,7 @@ xrLight.directionalLight: THREE.DirectionalLight  // Primary directional light
 ```
 
 Events:
+
 - `'estimationstart'` — Light estimation data available
 - `'estimationend'` — Light estimation lost
 
@@ -205,7 +208,7 @@ hand.addEventListener('pinchend', (event) => void): void
 
 ```typescript
 // Request hit test source (once per session)
-const viewerSpace = await session.requestReferenceSpace('viewer');
+const viewerSpace = await session.requestReferenceSpace("viewer");
 const hitTestSource = await session.requestHitTestSource({ space: viewerSpace });
 
 // Each frame

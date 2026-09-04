@@ -3,21 +3,23 @@
 ## Anti-Pattern 1: Bare Uniform Values
 
 **WRONG:**
+
 ```javascript
 const material = new THREE.ShaderMaterial({
   uniforms: {
-    uTime: 0.0,                    // WRONG -- bare value
-    uColor: new THREE.Color(),     // WRONG -- bare value
+    uTime: 0.0, // WRONG -- bare value
+    uColor: new THREE.Color(), // WRONG -- bare value
   },
 });
 ```
 
 **CORRECT:**
+
 ```javascript
 const material = new THREE.ShaderMaterial({
   uniforms: {
-    uTime: { value: 0.0 },                    // ALWAYS wrap in { value: }
-    uColor: { value: new THREE.Color() },      // ALWAYS wrap in { value: }
+    uTime: { value: 0.0 }, // ALWAYS wrap in { value: }
+    uColor: { value: new THREE.Color() }, // ALWAYS wrap in { value: }
   },
 });
 ```
@@ -29,15 +31,17 @@ const material = new THREE.ShaderMaterial({
 ## Anti-Pattern 2: Replacing Uniform Objects Instead of Mutating .value
 
 **WRONG:**
+
 ```javascript
 // In animation loop
-material.uniforms.uTime = { value: performance.now() };  // WRONG -- replaces object
+material.uniforms.uTime = { value: performance.now() }; // WRONG -- replaces object
 ```
 
 **CORRECT:**
+
 ```javascript
 // In animation loop
-material.uniforms.uTime.value = performance.now();  // ALWAYS mutate .value
+material.uniforms.uTime.value = performance.now(); // ALWAYS mutate .value
 ```
 
 **Why:** Three.js caches internal references to uniform objects. Replacing the object breaks the reference, so the GPU never receives the updated value.
@@ -47,6 +51,7 @@ material.uniforms.uTime.value = performance.now();  // ALWAYS mutate .value
 ## Anti-Pattern 3: Declaring Built-in Uniforms in ShaderMaterial
 
 **WRONG:**
+
 ```glsl
 // In a ShaderMaterial vertex shader
 uniform mat4 modelViewMatrix;   // WRONG -- already injected
@@ -55,6 +60,7 @@ attribute vec3 position;        // WRONG -- already injected
 ```
 
 **CORRECT:**
+
 ```glsl
 // In a ShaderMaterial vertex shader -- just use them directly
 void main() {
@@ -69,25 +75,27 @@ void main() {
 ## Anti-Pattern 4: Forgetting customProgramCacheKey with onBeforeCompile
 
 **WRONG:**
+
 ```javascript
 material.onBeforeCompile = (shader) => {
   shader.vertexShader = shader.vertexShader.replace(
-    '#include <begin_vertex>',
-    '#include <begin_vertex>\ntransformed.y += 1.0;'
+    "#include <begin_vertex>",
+    "#include <begin_vertex>\ntransformed.y += 1.0;",
   );
 };
 // No customProgramCacheKey -- Three.js may reuse a cached unpatched program
 ```
 
 **CORRECT:**
+
 ```javascript
 material.onBeforeCompile = (shader) => {
   shader.vertexShader = shader.vertexShader.replace(
-    '#include <begin_vertex>',
-    '#include <begin_vertex>\ntransformed.y += 1.0;'
+    "#include <begin_vertex>",
+    "#include <begin_vertex>\ntransformed.y += 1.0;",
   );
 };
-material.customProgramCacheKey = () => 'my-displaced-material';
+material.customProgramCacheKey = () => "my-displaced-material";
 ```
 
 **Why:** Three.js caches compiled shader programs by material type and parameters. Without a unique cache key, Two materials of the same type may share a cached program, causing your `onBeforeCompile` modifications to silently disappear on the second instance.
@@ -97,6 +105,7 @@ material.customProgramCacheKey = () => 'my-displaced-material';
 ## Anti-Pattern 5: Using GLSL1 Syntax with glslVersion: GLSL3
 
 **WRONG:**
+
 ```javascript
 const material = new THREE.ShaderMaterial({
   glslVersion: THREE.GLSL3,
@@ -110,6 +119,7 @@ const material = new THREE.ShaderMaterial({
 ```
 
 **CORRECT:**
+
 ```javascript
 const material = new THREE.ShaderMaterial({
   glslVersion: THREE.GLSL3,
@@ -132,6 +142,7 @@ const material = new THREE.ShaderMaterial({
 ## Anti-Pattern 6: Forgetting precision in RawShaderMaterial
 
 **WRONG:**
+
 ```javascript
 const material = new THREE.RawShaderMaterial({
   vertexShader: `
@@ -149,6 +160,7 @@ const material = new THREE.RawShaderMaterial({
 ```
 
 **CORRECT:**
+
 ```javascript
 const material = new THREE.RawShaderMaterial({
   vertexShader: `
@@ -174,6 +186,7 @@ const material = new THREE.RawShaderMaterial({
 ## Anti-Pattern 7: Using #include Chunks in RawShaderMaterial
 
 **WRONG:**
+
 ```javascript
 const material = new THREE.RawShaderMaterial({
   vertexShader: `
@@ -188,6 +201,7 @@ const material = new THREE.RawShaderMaterial({
 ```
 
 **CORRECT (use ShaderMaterial instead):**
+
 ```javascript
 const material = new THREE.ShaderMaterial({
   vertexShader: `
@@ -200,6 +214,7 @@ const material = new THREE.ShaderMaterial({
 ```
 
 **Or manually inline the chunk:**
+
 ```javascript
 const material = new THREE.RawShaderMaterial({
   vertexShader: `
@@ -222,14 +237,16 @@ const material = new THREE.RawShaderMaterial({
 ## Anti-Pattern 8: Setting needsUpdate on Uniform Changes
 
 **WRONG:**
+
 ```javascript
 material.uniforms.uTime.value = 1.0;
-material.needsUpdate = true;          // WRONG -- unnecessary and expensive
+material.needsUpdate = true; // WRONG -- unnecessary and expensive
 ```
 
 **CORRECT:**
+
 ```javascript
-material.uniforms.uTime.value = 1.0;  // Just update the value -- no needsUpdate needed
+material.uniforms.uTime.value = 1.0; // Just update the value -- no needsUpdate needed
 ```
 
 **Why:** Uniform values are sent to the GPU every frame automatically. Setting `material.needsUpdate = true` triggers a full shader recompilation, which is extremely expensive (causes a frame stutter). ONLY set `needsUpdate = true` when changing `defines`, `vertexShader`, `fragmentShader`, `lights`, `fog`, or `clipping`.
@@ -239,6 +256,7 @@ material.uniforms.uTime.value = 1.0;  // Just update the value -- no needsUpdate
 ## Anti-Pattern 9: Storing onBeforeCompile Shader Reference Without Null Check
 
 **WRONG:**
+
 ```javascript
 material.onBeforeCompile = (shader) => {
   shader.uniforms.uTime = { value: 0 };
@@ -250,6 +268,7 @@ material.userData.shader.uniforms.uTime.value = clock.getElapsedTime();
 ```
 
 **CORRECT:**
+
 ```javascript
 material.onBeforeCompile = (shader) => {
   shader.uniforms.uTime = { value: 0 };

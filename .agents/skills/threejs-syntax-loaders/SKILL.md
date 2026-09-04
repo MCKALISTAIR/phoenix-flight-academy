@@ -32,18 +32,18 @@ const result = await loader.loadAsync(url, onProgress);
 
 ### Import Paths
 
-| Loader | Import |
-|--------|--------|
-| `TextureLoader` | `import { TextureLoader } from 'three';` |
-| `CubeTextureLoader` | `import { CubeTextureLoader } from 'three';` |
-| `GLTFLoader` | `import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';` |
-| `DRACOLoader` | `import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';` |
-| `KTX2Loader` | `import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';` |
-| `FBXLoader` | `import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';` |
-| `OBJLoader` | `import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';` |
-| `MTLLoader` | `import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';` |
-| `RGBELoader` | `import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';` |
-| `MeshoptDecoder` | `import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';` |
+| Loader              | Import                                                                          |
+| ------------------- | ------------------------------------------------------------------------------- |
+| `TextureLoader`     | `import { TextureLoader } from 'three';`                                        |
+| `CubeTextureLoader` | `import { CubeTextureLoader } from 'three';`                                    |
+| `GLTFLoader`        | `import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';`              |
+| `DRACOLoader`       | `import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';`            |
+| `KTX2Loader`        | `import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';`              |
+| `FBXLoader`         | `import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';`                |
+| `OBJLoader`         | `import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';`                |
+| `MTLLoader`         | `import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';`                |
+| `RGBELoader`        | `import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';`              |
+| `MeshoptDecoder`    | `import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';` |
 
 ### Format Recommendation
 
@@ -69,15 +69,15 @@ const result = await loader.loadAsync(url, onProgress);
 
 Every loader inherits these methods from `Loader`:
 
-| Method | Signature | Purpose |
-|--------|-----------|---------|
-| `load` | `(url, onLoad, onProgress, onError)` | Callback-based loading |
-| `loadAsync` | `(url, onProgress) => Promise` | Promise-based loading |
-| `setPath` | `(path: string)` | Set base URL prefix for all loads |
-| `setResourcePath` | `(path: string)` | Set resource resolution path |
-| `setCrossOrigin` | `(value: string)` | Set CORS mode |
-| `setWithCredentials` | `(value: boolean)` | Enable credentials for cross-origin |
-| `setRequestHeader` | `(header: object)` | Set custom HTTP headers |
+| Method               | Signature                            | Purpose                             |
+| -------------------- | ------------------------------------ | ----------------------------------- |
+| `load`               | `(url, onLoad, onProgress, onError)` | Callback-based loading              |
+| `loadAsync`          | `(url, onProgress) => Promise`       | Promise-based loading               |
+| `setPath`            | `(path: string)`                     | Set base URL prefix for all loads   |
+| `setResourcePath`    | `(path: string)`                     | Set resource resolution path        |
+| `setCrossOrigin`     | `(value: string)`                    | Set CORS mode                       |
+| `setWithCredentials` | `(value: boolean)`                   | Enable credentials for cross-origin |
+| `setRequestHeader`   | `(header: object)`                   | Set custom HTTP headers             |
 
 ---
 
@@ -86,12 +86,18 @@ Every loader inherits these methods from `Loader`:
 Coordinates multiple loaders and tracks overall progress.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const manager = new THREE.LoadingManager(
-  () => { console.log('All assets loaded'); },
-  (url, loaded, total) => { console.log(`Progress: ${loaded}/${total}`); },
-  (url) => { console.error(`Failed to load: ${url}`); }
+  () => {
+    console.log("All assets loaded");
+  },
+  (url, loaded, total) => {
+    console.log(`Progress: ${loaded}/${total}`);
+  },
+  (url) => {
+    console.error(`Failed to load: ${url}`);
+  },
 );
 
 // Pass manager to any loader
@@ -101,21 +107,21 @@ const gltfLoader = new GLTFLoader(manager);
 
 ### Manager Callbacks
 
-| Callback | Signature | When |
-|----------|-----------|------|
-| `onStart` | `(url, itemsLoaded, itemsTotal)` | First item begins loading |
-| `onLoad` | `()` | All items finished |
-| `onProgress` | `(url, itemsLoaded, itemsTotal)` | Each item completes |
-| `onError` | `(url)` | An item fails |
+| Callback     | Signature                        | When                      |
+| ------------ | -------------------------------- | ------------------------- |
+| `onStart`    | `(url, itemsLoaded, itemsTotal)` | First item begins loading |
+| `onLoad`     | `()`                             | All items finished        |
+| `onProgress` | `(url, itemsLoaded, itemsTotal)` | Each item completes       |
+| `onError`    | `(url)`                          | An item fails             |
 
 ### Manager Methods
 
-| Method | Purpose |
-|--------|---------|
-| `itemStart(url)` | Manually register a loading item |
-| `itemEnd(url)` | Manually mark item as loaded |
-| `itemError(url)` | Manually mark item as failed |
-| `resolveURL(url)` | Resolve URL through modifiers |
+| Method                     | Purpose                                           |
+| -------------------------- | ------------------------------------------------- |
+| `itemStart(url)`           | Manually register a loading item                  |
+| `itemEnd(url)`             | Manually mark item as loaded                      |
+| `itemError(url)`           | Manually mark item as failed                      |
+| `resolveURL(url)`          | Resolve URL through modifiers                     |
 | `setURLModifier(callback)` | Custom URL rewriting (blob URLs, service workers) |
 
 ---
@@ -127,11 +133,11 @@ The primary loader for 3D models. glTF 2.0 supports meshes, PBR materials, anima
 ### Setup with Draco Compression
 
 ```javascript
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+dracoLoader.setDecoderPath("https://www.gstatic.com/draco/versioned/decoders/1.5.6/");
 
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
@@ -140,10 +146,10 @@ gltfLoader.setDRACOLoader(dracoLoader);
 ### Setup with KTX2 Textures
 
 ```javascript
-import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
+import { KTX2Loader } from "three/addons/loaders/KTX2Loader.js";
 
 const ktx2Loader = new KTX2Loader();
-ktx2Loader.setTranscoderPath('/basis/');
+ktx2Loader.setTranscoderPath("/basis/");
 ktx2Loader.detectSupport(renderer); // MUST pass renderer instance
 
 gltfLoader.setKTX2Loader(ktx2Loader);
@@ -152,7 +158,7 @@ gltfLoader.setKTX2Loader(ktx2Loader);
 ### Setup with Meshopt Decoder
 
 ```javascript
-import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 
 await MeshoptDecoder.ready;
 gltfLoader.setMeshoptDecoder(MeshoptDecoder);
@@ -162,10 +168,10 @@ gltfLoader.setMeshoptDecoder(MeshoptDecoder);
 
 ```javascript
 try {
-  const gltf = await gltfLoader.loadAsync('model.glb');
+  const gltf = await gltfLoader.loadAsync("model.glb");
   scene.add(gltf.scene);
 } catch (error) {
-  console.error('Failed to load model:', error);
+  console.error("Failed to load model:", error);
 }
 ```
 
@@ -185,16 +191,16 @@ try {
 
 ### GLTFLoader Methods
 
-| Method | Signature | Purpose |
-|--------|-----------|---------|
-| `load` | `(url, onLoad, onProgress, onError)` | Load with callbacks |
-| `loadAsync` | `(url, onProgress) => Promise<GLTF>` | Load with Promise |
-| `parse` | `(data, path, onLoad, onError)` | Parse ArrayBuffer or JSON directly |
-| `setDRACOLoader` | `(dracoLoader: DRACOLoader)` | Enable Draco decompression |
-| `setKTX2Loader` | `(ktx2Loader: KTX2Loader)` | Enable KTX2 texture decompression |
-| `setMeshoptDecoder` | `(decoder)` | Enable meshopt decompression |
-| `register` | `(plugin)` | Register a glTF extension plugin |
-| `unregister` | `(plugin)` | Unregister a glTF extension plugin |
+| Method              | Signature                            | Purpose                            |
+| ------------------- | ------------------------------------ | ---------------------------------- |
+| `load`              | `(url, onLoad, onProgress, onError)` | Load with callbacks                |
+| `loadAsync`         | `(url, onProgress) => Promise<GLTF>` | Load with Promise                  |
+| `parse`             | `(data, path, onLoad, onError)`      | Parse ArrayBuffer or JSON directly |
+| `setDRACOLoader`    | `(dracoLoader: DRACOLoader)`         | Enable Draco decompression         |
+| `setKTX2Loader`     | `(ktx2Loader: KTX2Loader)`           | Enable KTX2 texture decompression  |
+| `setMeshoptDecoder` | `(decoder)`                          | Enable meshopt decompression       |
+| `register`          | `(plugin)`                           | Register a glTF extension plugin   |
+| `unregister`        | `(plugin)`                           | Unregister a glTF extension plugin |
 
 ---
 
@@ -202,12 +208,12 @@ try {
 
 Decodes Draco-compressed geometry. Reduces mesh file size by 80-90%.
 
-| Method | Signature | Purpose |
-|--------|-----------|---------|
-| `setDecoderPath` | `(path: string)` | Path to directory containing WASM decoders |
+| Method             | Signature          | Purpose                                                  |
+| ------------------ | ------------------ | -------------------------------------------------------- |
+| `setDecoderPath`   | `(path: string)`   | Path to directory containing WASM decoders               |
 | `setDecoderConfig` | `(config: object)` | `{ type: 'js' \| 'wasm' }` -- WASM is default and faster |
-| `preload` | `()` | Pre-fetch decoder WASM before first use |
-| `dispose` | `()` | Free WASM decoder memory |
+| `preload`          | `()`               | Pre-fetch decoder WASM before first use                  |
+| `dispose`          | `()`               | Free WASM decoder memory                                 |
 
 **ALWAYS** call `dracoLoader.dispose()` after loading all Draco-compressed models.
 
@@ -219,7 +225,7 @@ Loads 2D textures (PNG, JPG, WebP) into `THREE.Texture`.
 
 ```javascript
 const loader = new THREE.TextureLoader();
-const texture = await loader.loadAsync('diffuse.jpg');
+const texture = await loader.loadAsync("diffuse.jpg");
 texture.colorSpace = THREE.SRGBColorSpace; // ALWAYS for color textures
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
@@ -234,11 +240,14 @@ Loads six images as a cube map for skyboxes or environment reflections.
 
 ```javascript
 const cubeLoader = new THREE.CubeTextureLoader();
-cubeLoader.setPath('/textures/cube/');
+cubeLoader.setPath("/textures/cube/");
 const cubeTexture = cubeLoader.load([
-  'px.jpg', 'nx.jpg',  // positive-x, negative-x
-  'py.jpg', 'ny.jpg',  // positive-y, negative-y
-  'pz.jpg', 'nz.jpg'   // positive-z, negative-z
+  "px.jpg",
+  "nx.jpg", // positive-x, negative-x
+  "py.jpg",
+  "ny.jpg", // positive-y, negative-y
+  "pz.jpg",
+  "nz.jpg", // positive-z, negative-z
 ]);
 scene.background = cubeTexture;
 scene.environment = cubeTexture;
@@ -251,13 +260,13 @@ scene.environment = cubeTexture;
 Loads HDR environment maps in Radiance `.hdr` format.
 
 ```javascript
-import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 
 const rgbeLoader = new RGBELoader();
-rgbeLoader.load('environment.hdr', (texture) => {
+rgbeLoader.load("environment.hdr", (texture) => {
   texture.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = texture; // PBR environment lighting
-  scene.background = texture;  // Optional: visible HDR background
+  scene.background = texture; // Optional: visible HDR background
 });
 ```
 
@@ -270,10 +279,10 @@ The RGBELoader sets color space automatically. NEVER manually override the color
 Loads Autodesk FBX models. Supports meshes, materials, and skeletal animations.
 
 ```javascript
-import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 
 const fbxLoader = new FBXLoader();
-const model = await fbxLoader.loadAsync('character.fbx');
+const model = await fbxLoader.loadAsync("character.fbx");
 scene.add(model);
 ```
 
@@ -284,16 +293,16 @@ scene.add(model);
 Loads Wavefront OBJ geometry with optional MTL material files.
 
 ```javascript
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
+import { MTLLoader } from "three/addons/loaders/MTLLoader.js";
 
 const mtlLoader = new MTLLoader();
-const materials = await mtlLoader.loadAsync('model.mtl');
+const materials = await mtlLoader.loadAsync("model.mtl");
 materials.preload();
 
 const objLoader = new OBJLoader();
 objLoader.setMaterials(materials);
-const model = await objLoader.loadAsync('model.obj');
+const model = await objLoader.loadAsync("model.obj");
 scene.add(model);
 ```
 
@@ -325,7 +334,7 @@ function disposeModel(model) {
 function disposeMaterial(material) {
   for (const key of Object.keys(material)) {
     const value = material[key];
-    if (value && typeof value === 'object' && 'dispose' in value) {
+    if (value && typeof value === "object" && "dispose" in value) {
       value.dispose(); // Disposes textures
     }
   }

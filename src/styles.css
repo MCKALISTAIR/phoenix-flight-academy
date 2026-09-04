@@ -42,6 +42,11 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-surface-navy: var(--surface-navy);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -80,6 +85,11 @@
   --accent-foreground: oklch(0.2 0.05 250);
   --destructive: oklch(0.6 0.2 25);
   --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.62 0.19 145); /* Crisp Emerald Green (Operational/Cleared) */
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.75 0.18 75); /* Aviation Amber (Caution/Advisory) */
+  --warning-foreground: oklch(0.2 0.05 250);
+  --surface-navy: oklch(0.12 0.04 250); /* Deep Navy Cockpit Surface */
   --border: oklch(0.9 0.01 250);
   --input: oklch(0.9 0.01 250);
   --ring: oklch(0.65 0.2 40);
@@ -100,7 +110,7 @@
 
 .dark {
   /* Elevated Classic Dark Theme (Using Deep Navy instead of pure black) */
-  --background: oklch(0.15 0.04 250); 
+  --background: oklch(0.15 0.04 250);
   --foreground: oklch(0.96 0.01 250);
   --card: oklch(0.2 0.05 250);
   --card-foreground: oklch(0.96 0.01 250);
@@ -116,6 +126,11 @@
   --accent-foreground: oklch(0.96 0.01 250);
   --destructive: oklch(0.6 0.2 25);
   --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.7 0.17 145);
+  --success-foreground: oklch(0.15 0.04 250);
+  --warning: oklch(0.8 0.16 75);
+  --warning-foreground: oklch(0.15 0.04 250);
+  --surface-navy: oklch(0.1 0.04 250);
   --border: oklch(0.3 0.04 250);
   --input: oklch(0.3 0.04 250);
   --ring: oklch(0.65 0.2 40);
@@ -139,16 +154,25 @@
     border-color: var(--color-border);
   }
 
+  svg.lucide {
+    stroke-width: 1.5px;
+  }
+
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: "Inter", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
   }
 }
 
@@ -190,15 +214,27 @@
 }
 
 /* Stagger delay utilities for hero entrance */
-.animate-stagger-1 { animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both; }
-.animate-stagger-2 { animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both; }
-.animate-stagger-3 { animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both; }
-.animate-stagger-4 { animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both; }
+.animate-stagger-1 {
+  animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+.animate-stagger-2 {
+  animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+}
+.animate-stagger-3 {
+  animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+}
+.animate-stagger-4 {
+  animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+}
 
 /* Gradient shimmer for hero text */
 @keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
 .animate-shimmer {
@@ -219,16 +255,30 @@
 
 /* Count-up number flash */
 @keyframes countPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 /* Floating ambient particles */
 @keyframes float {
-  0%, 100% { transform: translateY(0) translateX(0); }
-  25% { transform: translateY(-12px) translateX(4px); }
-  50% { transform: translateY(-6px) translateX(-3px); }
-  75% { transform: translateY(-18px) translateX(2px); }
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-12px) translateX(4px);
+  }
+  50% {
+    transform: translateY(-6px) translateX(-3px);
+  }
+  75% {
+    transform: translateY(-18px) translateX(2px);
+  }
 }
 
 /* Testimonial slide */

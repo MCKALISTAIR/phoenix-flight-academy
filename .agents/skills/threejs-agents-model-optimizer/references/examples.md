@@ -114,12 +114,12 @@ done
 ### Loading LOD Chain in Three.js
 
 ```javascript
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 
 const dracoLoader = new DRACOLoader();
-dracoLoader.setDecoderPath('/draco/');
+dracoLoader.setDecoderPath("/draco/");
 dracoLoader.preload();
 
 const gltfLoader = new GLTFLoader();
@@ -128,17 +128,17 @@ gltfLoader.setDRACOLoader(dracoLoader);
 const lod = new THREE.LOD();
 
 const lodFiles = [
-  { file: 'compressed-lod0.glb', distance: 0 },
-  { file: 'compressed-lod1.glb', distance: 15 },
-  { file: 'compressed-lod2.glb', distance: 40 },
-  { file: 'compressed-lod3.glb', distance: 100 },
+  { file: "compressed-lod0.glb", distance: 0 },
+  { file: "compressed-lod1.glb", distance: 15 },
+  { file: "compressed-lod2.glb", distance: 40 },
+  { file: "compressed-lod3.glb", distance: 100 },
 ];
 
 // Load all LOD levels
 const loadPromises = lodFiles.map(({ file, distance }) =>
   gltfLoader.loadAsync(file).then((gltf) => {
     lod.addLevel(gltf.scene, distance);
-  })
+  }),
 );
 
 await Promise.all(loadPromises);
@@ -154,13 +154,20 @@ scene.add(lod);
 Programmatic optimization for build scripts or CI/CD.
 
 ```javascript
-import { NodeIO } from '@gltf-transform/core';
-import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
+import { NodeIO } from "@gltf-transform/core";
+import { ALL_EXTENSIONS } from "@gltf-transform/extensions";
 import {
-  dedup, flatten, join, weld, simplify,
-  textureCompress, draco, prune, quantize
-} from '@gltf-transform/functions';
-import draco3d from 'draco3dgltf';
+  dedup,
+  flatten,
+  join,
+  weld,
+  simplify,
+  textureCompress,
+  draco,
+  prune,
+  quantize,
+} from "@gltf-transform/functions";
+import draco3d from "draco3dgltf";
 
 async function optimizeModel(inputPath, outputPath, options = {}) {
   const {
@@ -175,26 +182,21 @@ async function optimizeModel(inputPath, outputPath, options = {}) {
 
   if (useDraco) {
     io.registerDependencies({
-      'draco3d.decoder': await draco3d.createDecoderModule(),
-      'draco3d.encoder': await draco3d.createEncoderModule(),
+      "draco3d.decoder": await draco3d.createDecoderModule(),
+      "draco3d.encoder": await draco3d.createEncoderModule(),
     });
   }
 
   const document = await io.read(inputPath);
 
-  const transforms = [
-    dedup(),
-    flatten(),
-    join(),
-    weld({ tolerance: 0.0001 }),
-  ];
+  const transforms = [dedup(), flatten(), join(), weld({ tolerance: 0.0001 })];
 
   if (simplifyRatio < 1.0) {
     transforms.push(simplify({ ratio: simplifyRatio, error: simplifyError }));
   }
 
   if (useKTX2) {
-    transforms.push(textureCompress({ targetFormat: 'ktx2' }));
+    transforms.push(textureCompress({ targetFormat: "ktx2" }));
   }
 
   if (useDraco) {
@@ -210,7 +212,7 @@ async function optimizeModel(inputPath, outputPath, options = {}) {
 }
 
 // Usage
-await optimizeModel('assets/building.glb', 'dist/building.glb', {
+await optimizeModel("assets/building.glb", "dist/building.glb", {
   simplifyRatio: 0.5,
   useDraco: true,
   useKTX2: true,
@@ -224,22 +226,22 @@ await optimizeModel('assets/building.glb', 'dist/building.glb', {
 Complete loader setup supporting Draco, KTX2, and Meshopt compressed models.
 
 ```javascript
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
-import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+import { KTX2Loader } from "three/addons/loaders/KTX2Loader.js";
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 
 function createOptimizedLoader(renderer) {
   // Draco decoder
   const dracoLoader = new DRACOLoader();
-  dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+  dracoLoader.setDecoderPath("https://www.gstatic.com/draco/versioned/decoders/1.5.6/");
   dracoLoader.preload();
 
   // KTX2 transcoder
   const ktx2Loader = new KTX2Loader();
   ktx2Loader.setTranscoderPath(
-    'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/basis/'
+    "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/basis/",
   );
   ktx2Loader.detectSupport(renderer);
 
@@ -262,7 +264,7 @@ function createOptimizedLoader(renderer) {
 const renderer = new THREE.WebGLRenderer();
 const { loader, dispose } = createOptimizedLoader(renderer);
 
-const gltf = await loader.loadAsync('optimized-model.glb');
+const gltf = await loader.loadAsync("optimized-model.glb");
 scene.add(gltf.scene);
 
 // ALWAYS dispose decoders when no longer needed
@@ -292,13 +294,13 @@ gltfpack -i model.glb -o optimized.glb -cc -tc -si 0.5 -tp
 ### Loading in Three.js
 
 ```javascript
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 
 const loader = new GLTFLoader();
 loader.setMeshoptDecoder(MeshoptDecoder);
 
-const gltf = await loader.loadAsync('optimized.glb');
+const gltf = await loader.loadAsync("optimized.glb");
 scene.add(gltf.scene);
 ```
 

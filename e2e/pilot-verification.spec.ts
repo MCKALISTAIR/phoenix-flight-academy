@@ -2,18 +2,21 @@ import { test, expect, type Page } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.SUPABASE_URL || "https://bulrhflllebnjlacxdji.supabase.co";
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 
 const TEST_EMAIL = `e2e-pilot-${Date.now()}@test.lovable.dev`;
 const TEST_PASSWORD = "TestPass!2026";
 const DISPLAY_NAME = "E2E Pilot Candidate";
 const LICENCE = `E2E-${Date.now()}`;
 
-const admin = createClient(supabaseUrl, serviceRoleKey, {
-  auth: { persistSession: false, autoRefreshToken: false },
-});
+const admin = serviceRoleKey
+  ? createClient(supabaseUrl, serviceRoleKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    })
+  : null;
 
 async function deleteUserByEmail(email: string) {
+  if (!admin) return;
   const { data } = await admin.auth.admin.listUsers();
   const u = data.users.find((x) => x.email === email);
   if (u) await admin.auth.admin.deleteUser(u.id);
@@ -26,13 +29,17 @@ async function signInUI(page: Page, email: string, password: string) {
   await page.goto("/login", { waitUntil: "domcontentloaded" });
   await page.locator("#loginEmail").fill(email);
   await page.locator("#loginPass").fill(password);
-  await page.getByRole("button", { name: /sign in to portal|sign in/i }).first().click();
+  await page
+    .getByRole("button", { name: /sign in to portal|sign in/i })
+    .first()
+    .click();
 }
 
 test.describe("Pilot verification end-to-end", () => {
   let userId: string;
 
   test.beforeAll(async () => {
+    if (!admin) return;
     await deleteUserByEmail(TEST_EMAIL);
     const { data, error } = await admin.auth.admin.createUser({
       email: TEST_EMAIL,
@@ -45,15 +52,14 @@ test.describe("Pilot verification end-to-end", () => {
   });
 
   test.afterAll(async () => {
+    if (!admin || !userId) return;
     // Wipe verification rows, profiles, storage objects, then user.
     await admin.from("pilot_verification_requests").delete().eq("user_id", userId);
     await admin.from("self_hire_approvals").delete().eq("user_id", userId);
     await admin.from("customer_profiles").delete().eq("user_id", userId);
     const { data: files } = await admin.storage.from("pilot-documents").list(userId);
     if (files?.length) {
-      await admin.storage
-        .from("pilot-documents")
-        .remove(files.map((f) => `${userId}/${f.name}`));
+      await admin.storage.from("pilot-documents").remove(files.map((f) => `${userId}/${f.name}`));
     }
     await deleteUserByEmail(TEST_EMAIL);
   });
@@ -64,6 +70,7 @@ test.describe("Pilot verification end-to-end", () => {
   });
 
   test("customer submits verification, admin approves, tier becomes pilot", async ({ page }) => {
+    test.skip(!serviceRoleKey, "SUPABASE_SERVICE_ROLE_KEY is required for this test");
     test.setTimeout(120_000);
 
     // ---- 1. Customer signs in and submits pilot verification with uploads ----
@@ -77,7 +84,7 @@ test.describe("Pilot verification end-to-end", () => {
     // Fill the verification form (rendered when tier is null and no pending request)
     await page.locator('input[maxlength="64"]').first().fill(LICENCE);
     // issuing authority already defaults to "UK CAA"
-    await page.locator('textarea').first().fill("SEP (Land), Night");
+    await page.locator("textarea").first().fill("SEP (Land), Night");
 
     // Upload licence + medical documents
     const fileInputs = page.locator('input[type="file"]');
@@ -113,9 +120,7 @@ test.describe("Pilot verification end-to-end", () => {
     await expect(card.getByRole("button", { name: /licence document/i })).toBeVisible();
     await expect(card.getByRole("button", { name: /medical document/i })).toBeVisible();
 
-    await card
-      .locator("input[placeholder*='Review notes']")
-      .fill("Approved by e2e test");
+    await card.locator("input[placeholder*='Review notes']").fill("Approved by e2e test");
     await card.getByRole("button", { name: /approve & grant self-hire/i }).click();
 
     // Card moves out of "pending" tab — expect empty state or card to be gone

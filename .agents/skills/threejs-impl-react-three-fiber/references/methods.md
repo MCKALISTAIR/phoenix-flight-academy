@@ -63,30 +63,30 @@ useThree<T>(selector: (state: RootState) => T): T
 
 **RootState properties:**
 
-| Property | Type |
-|----------|------|
-| `gl` | `THREE.WebGLRenderer` |
-| `scene` | `THREE.Scene` |
-| `camera` | `THREE.Camera` |
-| `raycaster` | `THREE.Raycaster` |
-| `pointer` | `THREE.Vector2` |
-| `clock` | `THREE.Clock` |
-| `size` | `{ width: number, height: number, top: number, left: number }` |
-| `viewport` | `{ width: number, height: number, initialDpr: number, dpr: number, factor: number, distance: number, aspect: number, getCurrentViewport: () => Viewport }` |
-| `linear` | `boolean` |
-| `flat` | `boolean` |
-| `legacy` | `boolean` |
-| `frameloop` | `"always" \| "demand" \| "never"` |
-| `performance` | `{ current: number, min: number, max: number, debounce: number, regress: () => void }` |
-| `set` | `(state: Partial<RootState>) => void` |
-| `get` | `() => RootState` |
-| `invalidate` | `() => void` |
-| `advance` | `(timestamp: number) => void` |
-| `setSize` | `(width: number, height: number) => void` |
-| `setDpr` | `(dpr: number \| [min, max]) => void` |
-| `setFrameloop` | `(mode: string) => void` |
-| `setEvents` | `(events: Partial<EventManager>) => void` |
-| `events` | `{ connected: boolean, handlers: object, connect: () => void, disconnect: () => void }` |
+| Property       | Type                                                                                                                                                       |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `gl`           | `THREE.WebGLRenderer`                                                                                                                                      |
+| `scene`        | `THREE.Scene`                                                                                                                                              |
+| `camera`       | `THREE.Camera`                                                                                                                                             |
+| `raycaster`    | `THREE.Raycaster`                                                                                                                                          |
+| `pointer`      | `THREE.Vector2`                                                                                                                                            |
+| `clock`        | `THREE.Clock`                                                                                                                                              |
+| `size`         | `{ width: number, height: number, top: number, left: number }`                                                                                             |
+| `viewport`     | `{ width: number, height: number, initialDpr: number, dpr: number, factor: number, distance: number, aspect: number, getCurrentViewport: () => Viewport }` |
+| `linear`       | `boolean`                                                                                                                                                  |
+| `flat`         | `boolean`                                                                                                                                                  |
+| `legacy`       | `boolean`                                                                                                                                                  |
+| `frameloop`    | `"always" \| "demand" \| "never"`                                                                                                                          |
+| `performance`  | `{ current: number, min: number, max: number, debounce: number, regress: () => void }`                                                                     |
+| `set`          | `(state: Partial<RootState>) => void`                                                                                                                      |
+| `get`          | `() => RootState`                                                                                                                                          |
+| `invalidate`   | `() => void`                                                                                                                                               |
+| `advance`      | `(timestamp: number) => void`                                                                                                                              |
+| `setSize`      | `(width: number, height: number) => void`                                                                                                                  |
+| `setDpr`       | `(dpr: number \| [min, max]) => void`                                                                                                                      |
+| `setFrameloop` | `(mode: string) => void`                                                                                                                                   |
+| `setEvents`    | `(events: Partial<EventManager>) => void`                                                                                                                  |
+| `events`       | `{ connected: boolean, handlers: object, connect: () => void, disconnect: () => void }`                                                                    |
 
 ### useLoader
 
@@ -168,46 +168,46 @@ Renders children into a different scene/container.
 
 Every R3F JSX element accepts these props:
 
-| Prop | Type | Purpose |
-|------|------|---------|
-| `args` | `any[]` | Constructor arguments |
-| `attach` | `string \| AttachFn` | Bind to parent property |
-| `dispose` | `null` | Prevent auto-disposal on unmount |
-| `ref` | `React.Ref` | Access underlying Three.js object |
-| `key` | `string \| number` | React reconciliation key |
-| `onClick` | `EventHandler` | Click event |
-| `onPointerOver` | `EventHandler` | Pointer enter (continuous) |
-| `onPointerOut` | `EventHandler` | Pointer leave |
-| `onPointerDown` | `EventHandler` | Pointer press |
-| `onPointerUp` | `EventHandler` | Pointer release |
-| `onPointerMove` | `EventHandler` | Pointer move |
-| `onPointerEnter` | `EventHandler` | Pointer enter (once) |
-| `onPointerLeave` | `EventHandler` | Pointer leave (once) |
-| `onDoubleClick` | `EventHandler` | Double click |
-| `onContextMenu` | `EventHandler` | Right-click |
-| `onWheel` | `EventHandler` | Scroll wheel |
-| `onUpdate` | `(self: Object3D) => void` | Called after prop updates |
+| Prop             | Type                       | Purpose                           |
+| ---------------- | -------------------------- | --------------------------------- |
+| `args`           | `any[]`                    | Constructor arguments             |
+| `attach`         | `string \| AttachFn`       | Bind to parent property           |
+| `dispose`        | `null`                     | Prevent auto-disposal on unmount  |
+| `ref`            | `React.Ref`                | Access underlying Three.js object |
+| `key`            | `string \| number`         | React reconciliation key          |
+| `onClick`        | `EventHandler`             | Click event                       |
+| `onPointerOver`  | `EventHandler`             | Pointer enter (continuous)        |
+| `onPointerOut`   | `EventHandler`             | Pointer leave                     |
+| `onPointerDown`  | `EventHandler`             | Pointer press                     |
+| `onPointerUp`    | `EventHandler`             | Pointer release                   |
+| `onPointerMove`  | `EventHandler`             | Pointer move                      |
+| `onPointerEnter` | `EventHandler`             | Pointer enter (once)              |
+| `onPointerLeave` | `EventHandler`             | Pointer leave (once)              |
+| `onDoubleClick`  | `EventHandler`             | Double click                      |
+| `onContextMenu`  | `EventHandler`             | Right-click                       |
+| `onWheel`        | `EventHandler`             | Scroll wheel                      |
+| `onUpdate`       | `(self: Object3D) => void` | Called after prop updates         |
 
 ### Event Handler Signature
 
 ```typescript
-type EventHandler = (event: ThreeEvent) => void
+type EventHandler = (event: ThreeEvent) => void;
 
 interface ThreeEvent {
-  object: THREE.Object3D        // Mesh actually hit
-  eventObject: THREE.Object3D   // Object with handler attached
-  point: THREE.Vector3           // World-space intersection
-  distance: number               // Camera-to-hit distance
-  uv: THREE.Vector2             // UV at intersection
-  face: THREE.Face              // Intersected face
-  faceIndex: number             // Face index
-  ray: THREE.Ray                // Intersection ray
-  camera: THREE.Camera          // Active camera
-  intersections: Intersection[] // All hits
-  delta: number                 // Pixel distance (down to up)
-  sourceEvent: Event            // Original DOM event
-  unprojectedPoint: THREE.Vector3
-  stopPropagation(): void       // Stop bubbling
+  object: THREE.Object3D; // Mesh actually hit
+  eventObject: THREE.Object3D; // Object with handler attached
+  point: THREE.Vector3; // World-space intersection
+  distance: number; // Camera-to-hit distance
+  uv: THREE.Vector2; // UV at intersection
+  face: THREE.Face; // Intersected face
+  faceIndex: number; // Face index
+  ray: THREE.Ray; // Intersection ray
+  camera: THREE.Camera; // Active camera
+  intersections: Intersection[]; // All hits
+  delta: number; // Pixel distance (down to up)
+  sourceEvent: Event; // Original DOM event
+  unprojectedPoint: THREE.Vector3;
+  stopPropagation(): void; // Stop bubbling
 }
 ```
 

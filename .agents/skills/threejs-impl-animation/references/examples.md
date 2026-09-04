@@ -9,8 +9,8 @@
 The most common animation workflow: load a GLTF model and play all embedded clips.
 
 ```js
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
@@ -24,7 +24,7 @@ const clock = new THREE.Clock();
 let mixer;
 
 const loader = new GLTFLoader();
-loader.load('character.glb', (gltf) => {
+loader.load("character.glb", (gltf) => {
   scene.add(gltf.scene);
 
   mixer = new THREE.AnimationMixer(gltf.scene);
@@ -50,20 +50,20 @@ renderer.setAnimationLoop(animate);
 Select and play a specific animation by name from the GLTF file.
 
 ```js
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const clock = new THREE.Clock();
 let mixer;
 
 const loader = new GLTFLoader();
-loader.load('character.glb', (gltf) => {
+loader.load("character.glb", (gltf) => {
   scene.add(gltf.scene);
 
   mixer = new THREE.AnimationMixer(gltf.scene);
 
   // Find a specific clip by name
-  const idleClip = THREE.AnimationClip.findByName(gltf.animations, 'Idle');
+  const idleClip = THREE.AnimationClip.findByName(gltf.animations, "Idle");
   if (idleClip) {
     const action = mixer.clipAction(idleClip);
     action.play();
@@ -85,8 +85,8 @@ renderer.setAnimationLoop(animate);
 Smooth transitions between idle, walk, and run states using crossfade.
 
 ```js
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const clock = new THREE.Clock();
 let mixer;
@@ -94,7 +94,7 @@ const actions = {};
 let currentAction;
 
 const loader = new GLTFLoader();
-loader.load('character.glb', (gltf) => {
+loader.load("character.glb", (gltf) => {
   scene.add(gltf.scene);
 
   mixer = new THREE.AnimationMixer(gltf.scene);
@@ -105,7 +105,7 @@ loader.load('character.glb', (gltf) => {
   });
 
   // Start with idle
-  currentAction = actions['Idle'];
+  currentAction = actions["Idle"];
   currentAction.play();
 });
 
@@ -125,11 +125,17 @@ function switchAction(toName, duration = 0.5) {
 }
 
 // Usage: respond to input
-document.addEventListener('keydown', (event) => {
+document.addEventListener("keydown", (event) => {
   switch (event.key) {
-    case 'w': switchAction('Walk'); break;
-    case 'r': switchAction('Run'); break;
-    case 'i': switchAction('Idle'); break;
+    case "w":
+      switchAction("Walk");
+      break;
+    case "r":
+      switchAction("Run");
+      break;
+    case "i":
+      switchAction("Idle");
+      break;
   }
 });
 
@@ -148,30 +154,26 @@ renderer.setAnimationLoop(animate);
 Layer an additive animation (e.g., breathing or damage reaction) on top of a base animation.
 
 ```js
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const clock = new THREE.Clock();
 let mixer;
 
 const loader = new GLTFLoader();
-loader.load('character.glb', (gltf) => {
+loader.load("character.glb", (gltf) => {
   scene.add(gltf.scene);
 
   mixer = new THREE.AnimationMixer(gltf.scene);
 
   // Base animation: normal blending
-  const idleClip = THREE.AnimationClip.findByName(gltf.animations, 'Idle');
+  const idleClip = THREE.AnimationClip.findByName(gltf.animations, "Idle");
   const baseAction = mixer.clipAction(idleClip);
   baseAction.play();
 
   // Additive animation: layered on top
-  const breatheClip = THREE.AnimationClip.findByName(gltf.animations, 'Breathe');
-  const additiveAction = mixer.clipAction(
-    breatheClip,
-    undefined,
-    THREE.AdditiveAnimationBlendMode
-  );
+  const breatheClip = THREE.AnimationClip.findByName(gltf.animations, "Breathe");
+  const additiveAction = mixer.clipAction(breatheClip, undefined, THREE.AdditiveAnimationBlendMode);
   additiveAction.play();
   additiveAction.setEffectiveWeight(0.5); // control blend strength
 });
@@ -191,19 +193,19 @@ renderer.setAnimationLoop(animate);
 Play an animation exactly once, clamp at the last frame, and detect completion.
 
 ```js
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const clock = new THREE.Clock();
 let mixer;
 
 const loader = new GLTFLoader();
-loader.load('door.glb', (gltf) => {
+loader.load("door.glb", (gltf) => {
   scene.add(gltf.scene);
 
   mixer = new THREE.AnimationMixer(gltf.scene);
 
-  const openClip = THREE.AnimationClip.findByName(gltf.animations, 'DoorOpen');
+  const openClip = THREE.AnimationClip.findByName(gltf.animations, "DoorOpen");
   const action = mixer.clipAction(openClip);
 
   // Configure play-once behavior
@@ -211,8 +213,8 @@ loader.load('door.glb', (gltf) => {
   action.clampWhenFinished = true; // ALWAYS set for LoopOnce
 
   // Listen for completion
-  mixer.addEventListener('finished', (event) => {
-    console.log('Animation finished:', event.action.getClip().name);
+  mixer.addEventListener("finished", (event) => {
+    console.log("Animation finished:", event.action.getClip().name);
   });
 
   action.play();
@@ -233,7 +235,7 @@ renderer.setAnimationLoop(animate);
 Create an animation entirely in code without loading a GLTF file.
 
 ```js
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const clock = new THREE.Clock();
 
@@ -241,37 +243,46 @@ const clock = new THREE.Clock();
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
 const cube = new THREE.Mesh(geometry, material);
-cube.name = 'MyCube';
+cube.name = "MyCube";
 scene.add(cube);
 
 // Define keyframe tracks
 const positionTrack = new THREE.VectorKeyframeTrack(
-  'MyCube.position',                 // PropertyBinding path
-  [0, 1, 2],                         // times in seconds
-  [0, 0, 0, 0, 2, 0, 0, 0, 0]       // values: [x,y,z] at each time
+  "MyCube.position", // PropertyBinding path
+  [0, 1, 2], // times in seconds
+  [0, 0, 0, 0, 2, 0, 0, 0, 0], // values: [x,y,z] at each time
 );
 
 const rotationTrack = new THREE.QuaternionKeyframeTrack(
-  'MyCube.quaternion',
+  "MyCube.quaternion",
   [0, 1, 2],
   [
-    0, 0, 0, 1,                       // identity at t=0
-    0, 0.707, 0, 0.707,              // 90deg Y at t=1
-    0, 0, 0, 1                        // identity at t=2
-  ]
+    0,
+    0,
+    0,
+    1, // identity at t=0
+    0,
+    0.707,
+    0,
+    0.707, // 90deg Y at t=1
+    0,
+    0,
+    0,
+    1, // identity at t=2
+  ],
 );
 
 const opacityTrack = new THREE.NumberKeyframeTrack(
-  'MyCube.material.opacity',
+  "MyCube.material.opacity",
   [0, 1, 2],
-  [1, 0.3, 1]
+  [1, 0.3, 1],
 );
 
 // Create clip from tracks
-const clip = new THREE.AnimationClip('BounceAndSpin', 2, [
+const clip = new THREE.AnimationClip("BounceAndSpin", 2, [
   positionTrack,
   rotationTrack,
-  opacityTrack
+  opacityTrack,
 ]);
 
 // Set up mixer and play
@@ -297,21 +308,21 @@ renderer.setAnimationLoop(animate);
 Animate morph targets (blend shapes) loaded from GLTF.
 
 ```js
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const clock = new THREE.Clock();
 let mixer;
 
 const loader = new GLTFLoader();
-loader.load('face.glb', (gltf) => {
+loader.load("face.glb", (gltf) => {
   scene.add(gltf.scene);
 
   mixer = new THREE.AnimationMixer(gltf.scene);
 
   // GLTF morph target animations are stored as regular clips
   // They target mesh.morphTargetInfluences[index]
-  const smileClip = THREE.AnimationClip.findByName(gltf.animations, 'Smile');
+  const smileClip = THREE.AnimationClip.findByName(gltf.animations, "Smile");
   if (smileClip) {
     const action = mixer.clipAction(smileClip);
     action.play();

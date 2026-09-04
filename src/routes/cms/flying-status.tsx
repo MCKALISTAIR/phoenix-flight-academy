@@ -96,9 +96,7 @@ function FlyingStatusPage() {
             onChange={(e) => setIsOpen(e.target.checked)}
             className="h-4 w-4"
           />
-          <span className="text-sm font-medium text-white">
-            Airfield is open for flying
-          </span>
+          <span className="text-sm font-medium text-white">Airfield is open for flying</span>
         </label>
 
         <div>
@@ -110,7 +108,7 @@ function FlyingStatusPage() {
             onChange={(e) => setMessage(e.target.value)}
             rows={3}
             placeholder="e.g. Closed today due to low cloud base."
-            className="w-full rounded-lg border border-white/10 bg-[oklch(0.10_0.04_270)] px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-white/30 focus:outline-none"
+            className="w-full rounded-lg border border-white/10 bg-surface-navy px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-white/30 focus:outline-none"
           />
         </div>
 
@@ -122,7 +120,11 @@ function FlyingStatusPage() {
                 : "border-red-500/30 bg-red-500/10 text-red-400"
             }`}
           >
-            {feedback.kind === "ok" ? <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" /> : <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />}
+            {feedback.kind === "ok" ? (
+              <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
+            ) : (
+              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+            )}
             <span>{feedback.text}</span>
           </div>
         )}
@@ -130,7 +132,7 @@ function FlyingStatusPage() {
         <button
           onClick={save}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-lg bg-[oklch(0.55_0.22_270)] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-50"
         >
           {saving && <Loader2 className="h-4 w-4 animate-spin" />}
           Save status

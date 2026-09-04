@@ -43,20 +43,20 @@ OUTPUT (optimized .glb)
 
 ### Target File Size Budgets
 
-| Platform | Max File Size | Max Polygons | Max Texture Size |
-|----------|--------------|--------------|------------------|
-| Mobile web | 2 MB | 50K triangles | 1024x1024 |
-| Desktop web | 5 MB | 200K triangles | 2048x2048 |
-| Desktop app | 20 MB | 500K triangles | 4096x4096 |
-| Hero asset (single) | 1 MB | 30K triangles | 1024x1024 |
+| Platform            | Max File Size | Max Polygons   | Max Texture Size |
+| ------------------- | ------------- | -------------- | ---------------- |
+| Mobile web          | 2 MB          | 50K triangles  | 1024x1024        |
+| Desktop web         | 5 MB          | 200K triangles | 2048x2048        |
+| Desktop app         | 20 MB         | 500K triangles | 4096x4096        |
+| Hero asset (single) | 1 MB          | 30K triangles  | 1024x1024        |
 
 ### Tool Selection
 
-| Tool | Best For | Install |
-|------|----------|---------|
+| Tool             | Best For                               | Install                     |
+| ---------------- | -------------------------------------- | --------------------------- |
 | `gltf-transform` | Full pipeline, scriptable, Node.js API | `npm i @gltf-transform/cli` |
-| `gltfpack` | Fast one-shot compression | `npm i -g gltfpack` |
-| Blender | Manual mesh editing, UV repacking | Blender 3.6+ |
+| `gltfpack`       | Fast one-shot compression              | `npm i -g gltfpack`         |
+| Blender          | Manual mesh editing, UV repacking      | Blender 3.6+                |
 
 ### Critical Warnings
 
@@ -104,14 +104,14 @@ File size > target budget?
 
 ### Polygon Count Guidelines
 
-| Asset Type | Target Triangles | Notes |
-|------------|-----------------|-------|
-| Background prop | 100-500 | Minimal detail |
-| Mid-ground object | 1K-5K | Visible but not hero |
-| Hero/focus object | 10K-50K | High detail, close-up |
-| Character | 15K-30K | With LOD chain |
-| Full scene | 100K-300K | All objects combined |
-| Architectural (BIM) | 200K-500K | Simplified from CAD |
+| Asset Type          | Target Triangles | Notes                 |
+| ------------------- | ---------------- | --------------------- |
+| Background prop     | 100-500          | Minimal detail        |
+| Mid-ground object   | 1K-5K            | Visible but not hero  |
+| Hero/focus object   | 10K-50K          | High detail, close-up |
+| Character           | 15K-30K          | With LOD chain        |
+| Full scene          | 100K-300K        | All objects combined  |
+| Architectural (BIM) | 200K-500K        | Simplified from CAD   |
 
 ---
 
@@ -153,20 +153,20 @@ npx gltf-transform optimize input.glb output.glb \
 
 ### Mesh Simplification Settings
 
-| Quality Level | Ratio | Error Tolerance | Use Case |
-|--------------|-------|-----------------|----------|
-| Minimal | 0.75 | 0.0005 | Subtle reduction, preserves detail |
-| Moderate | 0.50 | 0.001 | Balanced quality/size |
-| Aggressive | 0.25 | 0.005 | LOD1/LOD2 generation |
-| Extreme | 0.10 | 0.01 | LOD3, distant objects only |
+| Quality Level | Ratio | Error Tolerance | Use Case                           |
+| ------------- | ----- | --------------- | ---------------------------------- |
+| Minimal       | 0.75  | 0.0005          | Subtle reduction, preserves detail |
+| Moderate      | 0.50  | 0.001           | Balanced quality/size              |
+| Aggressive    | 0.25  | 0.005           | LOD1/LOD2 generation               |
+| Extreme       | 0.10  | 0.01            | LOD3, distant objects only         |
 
 ### Weld Settings
 
-| Tolerance | Effect |
-|-----------|--------|
-| 0.0001 | Conservative -- merges only nearly-identical vertices |
-| 0.001 | Standard -- good for most models |
-| 0.01 | Aggressive -- may cause visible seams on hard edges |
+| Tolerance | Effect                                                |
+| --------- | ----------------------------------------------------- |
+| 0.0001    | Conservative -- merges only nearly-identical vertices |
+| 0.001     | Standard -- good for most models                      |
+| 0.01      | Aggressive -- may cause visible seams on hard edges   |
 
 ---
 
@@ -206,13 +206,13 @@ npx gltf-transform ktx2 input.glb output.glb \
 
 ### KTX2: ETC1S vs UASTC
 
-| Property | ETC1S | UASTC |
-|----------|-------|-------|
-| File size | Very small (6-8x smaller) | Moderate (2-4x smaller) |
-| VRAM usage | Small | Large (8-16 bytes/texel) |
-| Quality | Good for color | Near-lossless |
-| Decode speed | Fast | Requires transcoding |
-| Best for | Color maps, ORM, emissive | Normal maps, detail textures |
+| Property     | ETC1S                     | UASTC                        |
+| ------------ | ------------------------- | ---------------------------- |
+| File size    | Very small (6-8x smaller) | Moderate (2-4x smaller)      |
+| VRAM usage   | Small                     | Large (8-16 bytes/texel)     |
+| Quality      | Good for color            | Near-lossless                |
+| Decode speed | Fast                      | Requires transcoding         |
+| Best for     | Color maps, ORM, emissive | Normal maps, detail textures |
 
 ### Texture Resize
 
@@ -245,11 +245,11 @@ npx gltf-transform draco input.glb output.glb \
 ### Draco Quantization Bits
 
 | Attribute | Default | High Quality | Aggressive |
-|-----------|---------|-------------|------------|
-| Position | 14 bits | 16 bits | 11 bits |
-| Normal | 10 bits | 12 bits | 8 bits |
-| TexCoord | 12 bits | 14 bits | 10 bits |
-| Color | 8 bits | 10 bits | 6 bits |
+| --------- | ------- | ------------ | ---------- |
+| Position  | 14 bits | 16 bits      | 11 bits    |
+| Normal    | 10 bits | 12 bits      | 8 bits     |
+| TexCoord  | 12 bits | 14 bits      | 10 bits    |
+| Color     | 8 bits  | 10 bits      | 6 bits     |
 
 Higher bits = better quality, larger file. 14-bit position is sufficient for most models.
 
@@ -263,18 +263,18 @@ npx gltf-transform quantize input.glb output.glb
 ### Loading Draco-Compressed Models in Three.js
 
 ```javascript
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 
 const dracoLoader = new DRACOLoader();
 // ALWAYS set the decoder path — Draco uses WASM
-dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+dracoLoader.setDecoderPath("https://www.gstatic.com/draco/versioned/decoders/1.5.6/");
 dracoLoader.preload();
 
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 
-gltfLoader.load('model-draco.glb', (gltf) => {
+gltfLoader.load("model-draco.glb", (gltf) => {
   scene.add(gltf.scene);
 });
 
@@ -285,11 +285,11 @@ dracoLoader.dispose();
 ### Loading KTX2-Compressed Textures
 
 ```javascript
-import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
+import { KTX2Loader } from "three/addons/loaders/KTX2Loader.js";
 
 const ktx2Loader = new KTX2Loader();
 // ALWAYS set the transcoder path — KTX2 uses WASM basis_transcoder
-ktx2Loader.setTranscoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/basis/');
+ktx2Loader.setTranscoderPath("https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/basis/");
 ktx2Loader.detectSupport(renderer);
 
 const gltfLoader = new GLTFLoader();
@@ -329,11 +329,11 @@ npx gltf-transform validate optimized.glb
 ### LOD Chain Strategy
 
 | LOD Level | Screen Coverage | Triangle Ratio | Distance |
-|-----------|----------------|----------------|----------|
-| LOD0 | >30% screen | 1.0 (full) | Near |
-| LOD1 | 10-30% screen | 0.5 | Medium |
-| LOD2 | 3-10% screen | 0.25 | Far |
-| LOD3 | <3% screen | 0.10 | Very far |
+| --------- | --------------- | -------------- | -------- |
+| LOD0      | >30% screen     | 1.0 (full)     | Near     |
+| LOD1      | 10-30% screen   | 0.5            | Medium   |
+| LOD2      | 3-10% screen    | 0.25           | Far      |
+| LOD3      | <3% screen      | 0.10           | Very far |
 
 ### Generating LODs with gltf-transform
 
@@ -348,15 +348,15 @@ npx gltf-transform simplify model.glb lod3.glb --ratio 0.10 --error 0.01
 ### Three.js LOD Implementation
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const lod = new THREE.LOD();
 
 // ALWAYS add LODs from highest to lowest detail
-lod.addLevel(meshLOD0, 0);    // distance 0 = closest
-lod.addLevel(meshLOD1, 10);   // switch at 10 units
-lod.addLevel(meshLOD2, 30);   // switch at 30 units
-lod.addLevel(meshLOD3, 80);   // switch at 80 units
+lod.addLevel(meshLOD0, 0); // distance 0 = closest
+lod.addLevel(meshLOD1, 10); // switch at 10 units
+lod.addLevel(meshLOD2, 30); // switch at 30 units
+lod.addLevel(meshLOD3, 80); // switch at 80 units
 
 scene.add(lod);
 
@@ -389,7 +389,7 @@ gltfpack -i input.glb -o output.glb -cc -tc
 ### Loading Meshopt-Compressed Models
 
 ```javascript
-import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 
 const gltfLoader = new GLTFLoader();
 gltfLoader.setMeshoptDecoder(MeshoptDecoder);
@@ -401,14 +401,14 @@ gltfLoader.setMeshoptDecoder(MeshoptDecoder);
 
 When exporting from Blender to glTF:
 
-| Setting | Recommended Value | Why |
-|---------|-------------------|-----|
-| Format | glTF Binary (.glb) | Single file, smaller |
-| Apply Modifiers | ON | Bakes procedural geometry |
-| Compression | OFF | Compress with gltf-transform after |
-| Textures | Include | Embedded in .glb |
-| Limit to | Selected Objects | Avoid exporting hidden/unused |
-| +Y Up | ON | Three.js convention |
+| Setting         | Recommended Value  | Why                                |
+| --------------- | ------------------ | ---------------------------------- |
+| Format          | glTF Binary (.glb) | Single file, smaller               |
+| Apply Modifiers | ON                 | Bakes procedural geometry          |
+| Compression     | OFF                | Compress with gltf-transform after |
+| Textures        | Include            | Embedded in .glb                   |
+| Limit to        | Selected Objects   | Avoid exporting hidden/unused      |
+| +Y Up           | ON                 | Three.js convention                |
 
 **NEVER** enable Draco in Blender's exporter -- Blender's Draco implementation is outdated. ALWAYS compress with gltf-transform or gltfpack after export.
 
@@ -417,20 +417,27 @@ When exporting from Blender to glTF:
 ## Node.js Scripting with gltf-transform API
 
 ```javascript
-import { NodeIO } from '@gltf-transform/core';
-import { dedup, flatten, join, weld, simplify,
-         textureCompress, draco, prune, quantize } from '@gltf-transform/functions';
-import draco3d from 'draco3dgltf';
-import sharp from 'sharp';
+import { NodeIO } from "@gltf-transform/core";
+import {
+  dedup,
+  flatten,
+  join,
+  weld,
+  simplify,
+  textureCompress,
+  draco,
+  prune,
+  quantize,
+} from "@gltf-transform/functions";
+import draco3d from "draco3dgltf";
+import sharp from "sharp";
 
-const io = new NodeIO()
-  .registerExtensions(KHRONOS_EXTENSIONS)
-  .registerDependencies({
-    'draco3d.decoder': await draco3d.createDecoderModule(),
-    'draco3d.encoder': await draco3d.createEncoderModule(),
-  });
+const io = new NodeIO().registerExtensions(KHRONOS_EXTENSIONS).registerDependencies({
+  "draco3d.decoder": await draco3d.createDecoderModule(),
+  "draco3d.encoder": await draco3d.createEncoderModule(),
+});
 
-const document = await io.read('input.glb');
+const document = await io.read("input.glb");
 
 // ALWAYS run transforms in dependency order
 await document.transform(
@@ -439,13 +446,13 @@ await document.transform(
   join(),
   weld({ tolerance: 0.0001 }),
   simplify({ ratio: 0.5, error: 0.001 }),
-  textureCompress({ targetFormat: 'ktx2' }),
+  textureCompress({ targetFormat: "ktx2" }),
   draco(),
   prune(),
   quantize(),
 );
 
-await io.write('output.glb', document);
+await io.write("output.glb", document);
 ```
 
 ---

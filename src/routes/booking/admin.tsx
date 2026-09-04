@@ -79,7 +79,9 @@ function AdminDashboard() {
   const pending = bookings.filter((b) => b.status === "pending");
   const confirmed = bookings.filter((b) => b.status === "confirmed");
   const today = new Date().toISOString().slice(0, 10);
-  const todayBookings = bookings.filter((b) => b.starts_at.slice(0, 10) === today && b.status === "confirmed");
+  const todayBookings = bookings.filter(
+    (b) => b.starts_at.slice(0, 10) === today && b.status === "confirmed",
+  );
   const revenueToday = todayBookings.reduce((s, b) => s + b.price_total_cents, 0);
   const revenueMonth = bookings
     .filter((b) => {
@@ -105,16 +107,16 @@ function AdminDashboard() {
   );
 
   return (
-    <div className="flex min-h-screen bg-[oklch(0.13_0.03_270)]">
+    <div className="flex min-h-screen bg-[oklch(0.12_0.04_250)]">
       {/* Sidebar */}
-      <aside className="w-64 flex-shrink-0 flex flex-col border-r border-white/10 bg-[oklch(0.10_0.04_270)]">
+      <aside className="w-64 flex-shrink-0 flex flex-col border-r border-white/10 bg-surface-navy">
         <div className="flex items-center gap-3 border-b border-white/10 px-6 py-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[oklch(0.55_0.22_270)]">
-            <Shield className="h-4 w-4 text-white" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+            <Shield className="h-4 w-4 text-primary-foreground" />
           </div>
           <div>
-            <span className="block text-sm font-bold text-white">Ops Portal</span>
-            <span className="block text-xs text-white/40">Operations Admin</span>
+            <span className="block text-sm font-bold text-white tracking-tight">Ops Portal</span>
+            <span className="block text-xs font-mono text-white/40">EGPG Operations</span>
           </div>
         </div>
         <nav className="flex-1 space-y-1 p-4">
@@ -127,9 +129,9 @@ function AdminDashboard() {
           ].map((item) => (
             <div
               key={item.label}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all cursor-pointer ${
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all cursor-pointer ${
                 item.active
-                  ? "bg-[oklch(0.55_0.22_270)]/20 text-[oklch(0.75_0.18_270)] border border-[oklch(0.55_0.22_270)]/30"
+                  ? "bg-primary/20 text-primary border border-primary/30"
                   : "text-white/50 hover:bg-white/5 hover:text-white/80"
               }`}
             >
@@ -141,7 +143,7 @@ function AdminDashboard() {
         <div className="border-t border-white/10 p-4">
           <Link
             to="/cms"
-            className="flex items-center gap-3 rounded-xl border border-[oklch(0.55_0.22_270)]/30 bg-[oklch(0.55_0.22_270)]/10 px-3 py-2.5 text-sm font-semibold text-[oklch(0.75_0.18_270)] transition-all hover:bg-[oklch(0.55_0.22_270)]/20"
+            className="flex items-center gap-3 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2.5 text-sm font-semibold text-primary transition-all hover:bg-primary/20"
           >
             <Crown className="h-4 w-4" />
             CMS Editor
@@ -157,7 +159,12 @@ function AdminDashboard() {
             <div>
               <h1 className="text-2xl font-extrabold text-white">Operations Dashboard</h1>
               <p className="mt-1 text-sm text-white/40">
-                {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                {new Date().toLocaleDateString("en-GB", {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
               </p>
             </div>
             <button
@@ -179,49 +186,77 @@ function AdminDashboard() {
               <p className="mt-3 text-3xl font-black text-amber-400">{pending.length}</p>
               <span className="text-[10px] text-white/30 font-medium">Awaiting action</span>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-5">
               <div className="flex items-center justify-between text-white/40">
-                <span className="text-xs font-semibold uppercase tracking-wider">Today's Flights</span>
-                <Plane className="h-4 w-4 text-[oklch(0.70_0.18_270)]" />
+                <span className="text-[11px] font-semibold uppercase tracking-wider">
+                  Today's Flights
+                </span>
+                <Plane className="h-4 w-4 text-primary" />
               </div>
-              <p className="mt-3 text-3xl font-black text-white">{todayBookings.length}</p>
-              <span className="text-[10px] text-white/30 font-medium">Confirmed</span>
+              <p className="mt-3 text-3xl font-black font-mono tabular-nums text-white">
+                {todayBookings.length}
+              </p>
+              <span className="text-[10px] text-white/40 font-medium">Confirmed</span>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-5">
               <div className="flex items-center justify-between text-white/40">
-                <span className="text-xs font-semibold uppercase tracking-wider">Revenue Today</span>
-                <PoundSterling className="h-4 w-4 text-emerald-400" />
+                <span className="text-[11px] font-semibold uppercase tracking-wider">
+                  Revenue Today
+                </span>
+                <PoundSterling className="h-4 w-4 text-success" />
               </div>
-              <p className="mt-3 text-3xl font-black text-emerald-400">{money(revenueToday)}</p>
-              <span className="text-[10px] text-white/30 font-medium">Confirmed bookings</span>
+              <p className="mt-3 text-3xl font-black font-mono tabular-nums text-success">
+                {money(revenueToday)}
+              </p>
+              <span className="text-[10px] text-white/40 font-medium">Confirmed bookings</span>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <div className="rounded-xl border border-white/10 bg-white/5 p-5">
               <div className="flex items-center justify-between text-white/40">
-                <span className="text-xs font-semibold uppercase tracking-wider">Monthly Revenue</span>
-                <TrendingUp className="h-4 w-4 text-[oklch(0.70_0.18_270)]" />
+                <span className="text-[11px] font-semibold uppercase tracking-wider">
+                  Monthly Revenue
+                </span>
+                <TrendingUp className="h-4 w-4 text-primary" />
               </div>
-              <p className="mt-3 text-3xl font-black text-white">{money(revenueMonth)}</p>
-              <span className="text-[10px] text-white/30 font-medium">This month</span>
+              <p className="mt-3 text-3xl font-black font-mono tabular-nums text-white">
+                {money(revenueMonth)}
+              </p>
+              <span className="text-[10px] text-white/40 font-medium">This month</span>
             </div>
           </div>
 
           {/* Secondary cards: discounts, flags */}
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            <div className="rounded-2xl border border-[oklch(0.55_0.22_270)]/20 bg-[oklch(0.55_0.22_270)]/5 p-5">
+            <div className="rounded-xl border border-primary/20 bg-primary/5 p-5">
               <div className="flex items-center justify-between text-white/40">
-                <span className="text-xs font-semibold uppercase tracking-wider">Promo Discounts</span>
-                <Tag className="h-4 w-4 text-[oklch(0.75_0.18_270)]" />
+                <span className="text-[11px] font-semibold uppercase tracking-wider">
+                  Promo Discounts
+                </span>
+                <Tag className="h-4 w-4 text-primary" />
               </div>
-              <p className="mt-3 text-3xl font-black text-[oklch(0.75_0.18_270)]">{withDiscounts.length}</p>
-              <span className="text-[10px] text-white/30 font-medium">Total: {money(totalDiscountsApplied)}</span>
+              <p className="mt-3 text-3xl font-black font-mono tabular-nums text-primary">
+                {withDiscounts.length}
+              </p>
+              <span className="text-[10px] text-white/40 font-mono">
+                Total: {money(totalDiscountsApplied)}
+              </span>
             </div>
-            <div className={`rounded-2xl border p-5 ${flagged.length > 0 ? "border-red-500/30 bg-red-500/5" : "border-white/10 bg-white/5"}`}>
+            <div
+              className={`rounded-xl border p-5 ${flagged.length > 0 ? "border-destructive/30 bg-destructive/5" : "border-white/10 bg-white/5"}`}
+            >
               <div className="flex items-center justify-between text-white/40">
-                <span className="text-xs font-semibold uppercase tracking-wider">Safety Flags</span>
-                <AlertTriangle className={`h-4 w-4 ${flagged.length > 0 ? "text-red-400" : "text-white/30"}`} />
+                <span className="text-[11px] font-semibold uppercase tracking-wider">
+                  Safety Flags
+                </span>
+                <AlertTriangle
+                  className={`h-4 w-4 ${flagged.length > 0 ? "text-destructive" : "text-white/30"}`}
+                />
               </div>
-              <p className={`mt-3 text-3xl font-black ${flagged.length > 0 ? "text-red-400" : "text-white/40"}`}>{flagged.length}</p>
-              <span className="text-[10px] text-white/30 font-medium">Requiring review</span>
+              <p
+                className={`mt-3 text-3xl font-black font-mono tabular-nums ${flagged.length > 0 ? "text-destructive" : "text-white/40"}`}
+              >
+                {flagged.length}
+              </p>
+              <span className="text-[10px] text-white/40 font-medium">Requiring review</span>
             </div>
           </div>
 
@@ -246,11 +281,13 @@ function AdminDashboard() {
               ) : (
                 <div className="divide-y divide-white/5">
                   {pending.slice(0, 8).map((b) => {
-                    const prod = (b as { booking_products: { name: string } | null }).booking_products;
+                    const prod = (b as { booking_products: { name: string } | null })
+                      .booking_products;
                     const ac = (b as { aircraft: { registration: string } | null }).aircraft;
                     const safetyFlag = (b as { safety_flag?: boolean }).safety_flag;
                     const expiredDocs = (b as any).expired_documents ?? [];
-                    const discountCents = (b as { discount_applied_cents?: number }).discount_applied_cents ?? 0;
+                    const discountCents =
+                      (b as { discount_applied_cents?: number }).discount_applied_cents ?? 0;
                     const promoCode = (b as { promo_code?: string }).promo_code;
                     return (
                       <div key={b.id} className="p-5 flex items-start justify-between gap-4">
@@ -263,7 +300,7 @@ function AdminDashboard() {
                               </span>
                             )}
                             {promoCode && (
-                              <span className="rounded-full bg-[oklch(0.55_0.22_270)]/15 px-2 py-0.5 text-[10px] font-bold text-[oklch(0.75_0.18_270)]">
+                              <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-mono font-bold text-primary">
                                 {promoCode} (−{money(discountCents)})
                               </span>
                             )}
@@ -271,21 +308,27 @@ function AdminDashboard() {
                           {expiredDocs.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-1">
                               {expiredDocs.map((doc: string) => (
-                                <span key={doc} className="inline-flex items-center rounded-md bg-red-500/10 px-1.5 py-0.5 text-[9px] font-medium text-red-300 border border-red-500/20">
+                                <span
+                                  key={doc}
+                                  className="inline-flex items-center rounded-md bg-destructive/10 px-1.5 py-0.5 text-[9px] font-medium text-destructive border border-destructive/20"
+                                >
                                   ⚠️ Expired {formatDocType(doc)}
                                 </span>
                               ))}
                             </div>
                           )}
                           <p className="mt-1 text-xs text-white/50">
-                            {prod?.name ?? "—"} · {ac?.registration ?? "—"} · {new Date(b.starts_at).toLocaleString("en-GB")}
+                            {prod?.name ?? "—"} · {ac?.registration ?? "—"} ·{" "}
+                            {new Date(b.starts_at).toLocaleString("en-GB")}
                           </p>
-                          <p className="mt-1 text-sm font-semibold text-white/70">{money(b.price_total_cents)}</p>
+                          <p className="mt-1 text-sm font-semibold font-mono tabular-nums text-white/80">
+                            {money(b.price_total_cents)}
+                          </p>
                         </div>
                         <div className="flex gap-1.5 shrink-0">
                           <button
                             onClick={() => mut.mutate({ data: { id: b.id, status: "confirmed" } })}
-                            className="rounded-lg bg-emerald-500/15 px-3 py-1.5 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/25"
+                            className="rounded-lg bg-success/15 px-3 py-1.5 text-xs font-semibold text-success hover:bg-success/25 transition-colors"
                           >
                             Approve
                           </button>
@@ -293,9 +336,15 @@ function AdminDashboard() {
                             onClick={() => {
                               const reason = window.prompt("Cancellation reason?");
                               if (reason === null) return;
-                              mut.mutate({ data: { id: b.id, status: "cancelled", cancellation_reason: reason || null } });
+                              mut.mutate({
+                                data: {
+                                  id: b.id,
+                                  status: "cancelled",
+                                  cancellation_reason: reason || null,
+                                },
+                              });
                             }}
-                            className="rounded-lg bg-red-500/15 px-3 py-1.5 text-xs font-semibold text-red-400 hover:bg-red-500/25"
+                            className="rounded-lg bg-destructive/15 px-3 py-1.5 text-xs font-semibold text-destructive hover:bg-destructive/25 transition-colors"
                           >
                             Cancel
                           </button>
@@ -308,7 +357,7 @@ function AdminDashboard() {
               <div className="border-t border-white/10 px-6 py-3 text-center">
                 <Link
                   to="/cms/bookings"
-                  className="text-xs text-[oklch(0.70_0.18_270)] hover:text-white transition-colors"
+                  className="text-xs text-primary hover:text-white transition-colors font-semibold"
                 >
                   View all bookings in CMS →
                 </Link>
@@ -317,21 +366,26 @@ function AdminDashboard() {
 
             {/* Today's Schedule */}
             <div className="space-y-4">
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+              <div className="overflow-hidden rounded-xl border border-white/10 bg-white/5">
                 <div className="border-b border-white/10 px-6 py-4">
                   <h2 className="font-semibold text-white">Today's Schedule</h2>
                 </div>
                 <div className="p-4">
                   {todayBookings.length === 0 ? (
-                    <p className="py-4 text-center text-sm text-white/40">No confirmed flights today.</p>
+                    <p className="py-4 text-center text-sm text-white/40">
+                      No confirmed flights today.
+                    </p>
                   ) : (
                     <div className="space-y-3">
                       {todayBookings.slice(0, 6).map((b) => {
                         const ac = (b as { aircraft: { registration: string } | null }).aircraft;
                         return (
-                          <div key={b.id} className="flex gap-3 border-l-2 border-[oklch(0.55_0.22_270)] pl-4">
+                          <div key={b.id} className="flex gap-3 border-l-2 border-primary pl-4">
                             <div className="w-14 shrink-0 text-xs font-mono font-semibold text-white/60">
-                              {new Date(b.starts_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+                              {new Date(b.starts_at).toLocaleTimeString("en-GB", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
                             </div>
                             <div>
                               <p className="text-xs font-semibold text-white">{b.customer_name}</p>
@@ -347,22 +401,27 @@ function AdminDashboard() {
 
               {/* Discount Summary */}
               {withDiscounts.length > 0 && (
-                <div className="overflow-hidden rounded-2xl border border-[oklch(0.55_0.22_270)]/20 bg-[oklch(0.55_0.22_270)]/5">
+                <div className="overflow-hidden rounded-xl border border-primary/20 bg-primary/5">
                   <div className="border-b border-white/10 px-5 py-3 flex items-center gap-2">
-                    <Tag className="h-3.5 w-3.5 text-[oklch(0.75_0.18_270)]" />
-                    <h3 className="text-xs font-bold text-white/70">Promo Codes Applied</h3>
+                    <Tag className="h-3.5 w-3.5 text-primary" />
+                    <h3 className="text-xs font-bold text-white/80 uppercase tracking-wider font-mono">
+                      Promo Codes Applied
+                    </h3>
                   </div>
                   <div className="divide-y divide-white/5">
                     {withDiscounts.slice(0, 5).map((b) => (
                       <div key={b.id} className="flex items-center justify-between px-5 py-2.5">
                         <div>
-                          <span className="font-mono text-xs font-bold text-[oklch(0.75_0.18_270)]">
+                          <span className="font-mono text-xs font-bold text-primary">
                             {(b as { promo_code?: string }).promo_code}
                           </span>
                           <p className="text-[10px] text-white/40">{b.customer_name}</p>
                         </div>
-                        <span className="text-xs font-semibold text-emerald-400">
-                          −{money((b as { discount_applied_cents?: number }).discount_applied_cents ?? 0)}
+                        <span className="text-xs font-mono tabular-nums font-semibold text-success">
+                          −
+                          {money(
+                            (b as { discount_applied_cents?: number }).discount_applied_cents ?? 0,
+                          )}
                         </span>
                       </div>
                     ))}

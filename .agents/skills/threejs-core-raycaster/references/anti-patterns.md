@@ -4,7 +4,7 @@
 
 ```javascript
 // WRONG: Raycasts on every single mousemove event (can fire 100+ times/second)
-canvas.addEventListener('mousemove', (event) => {
+canvas.addEventListener("mousemove", (event) => {
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
@@ -14,7 +14,7 @@ canvas.addEventListener('mousemove', (event) => {
 
 // CORRECT: Update coordinates in the event, raycast in the render loop
 let needsRaycast = false;
-canvas.addEventListener('pointermove', (event) => {
+canvas.addEventListener("pointermove", (event) => {
   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
   needsRaycast = true;

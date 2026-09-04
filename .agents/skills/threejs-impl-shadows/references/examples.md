@@ -5,7 +5,7 @@
 The most common shadow scenario: a single directional light casting shadows onto a ground plane.
 
 ```js
-import * as THREE from 'three';
+import * as THREE from "three";
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -46,7 +46,7 @@ scene.add(dirLight.target);
 // Step 3: Create objects with shadow flags
 const cube = new THREE.Mesh(
   new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshStandardMaterial({ color: 0x00ff00 })
+  new THREE.MeshStandardMaterial({ color: 0x00ff00 }),
 );
 cube.position.y = 0.5;
 cube.castShadow = true;
@@ -54,7 +54,7 @@ scene.add(cube);
 
 const ground = new THREE.Mesh(
   new THREE.PlaneGeometry(20, 20),
-  new THREE.MeshStandardMaterial({ color: 0x808080 })
+  new THREE.MeshStandardMaterial({ color: 0x808080 }),
 );
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
@@ -81,7 +81,7 @@ animate();
 SpotLight shadows auto-configure the perspective frustum from the light's cone angle.
 
 ```js
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.shadowMap.enabled = true;
@@ -110,7 +110,7 @@ scene.add(spotLight.target);
 // Shadow-casting sphere
 const sphere = new THREE.Mesh(
   new THREE.SphereGeometry(0.5, 32, 32),
-  new THREE.MeshStandardMaterial({ color: 0xff4444 })
+  new THREE.MeshStandardMaterial({ color: 0xff4444 }),
 );
 sphere.position.set(0, 1, 0);
 sphere.castShadow = true;
@@ -119,7 +119,7 @@ scene.add(sphere);
 // Ground plane receiving shadows
 const ground = new THREE.Mesh(
   new THREE.PlaneGeometry(15, 15),
-  new THREE.MeshStandardMaterial({ color: 0xcccccc })
+  new THREE.MeshStandardMaterial({ color: 0xcccccc }),
 );
 ground.rotation.x = -Math.PI / 2;
 ground.receiveShadow = true;
@@ -133,7 +133,7 @@ scene.add(ground);
 PointLight shadows render 6 cubemap faces. Use sparingly.
 
 ```js
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.shadowMap.enabled = true;
@@ -156,13 +156,16 @@ scene.add(pointLight);
 
 // Multiple objects casting shadows in all directions
 const positions = [
-  [-2, 0.5, -2], [2, 0.5, -2], [-2, 0.5, 2], [2, 0.5, 2]
+  [-2, 0.5, -2],
+  [2, 0.5, -2],
+  [-2, 0.5, 2],
+  [2, 0.5, 2],
 ];
 
 positions.forEach(([x, y, z]) => {
   const box = new THREE.Mesh(
     new THREE.BoxGeometry(0.8, 1, 0.8),
-    new THREE.MeshStandardMaterial({ color: 0x4488ff })
+    new THREE.MeshStandardMaterial({ color: 0x4488ff }),
   );
   box.position.set(x, y, z);
   box.castShadow = true;
@@ -193,11 +196,11 @@ scene.add(ceiling);
 Custom depth material enables correct shadows for alpha-tested geometry.
 
 ```js
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const loader = new THREE.TextureLoader();
-const leafTexture = loader.load('leaf-diffuse.png');
-const leafAlpha = loader.load('leaf-alpha.png');
+const leafTexture = loader.load("leaf-diffuse.png");
+const leafAlpha = loader.load("leaf-alpha.png");
 
 // Visible material with alpha test
 const leafMaterial = new THREE.MeshStandardMaterial({
@@ -215,10 +218,7 @@ const leafDepthMaterial = new THREE.MeshDepthMaterial({
   alphaTest: 0.5,
 });
 
-const leafMesh = new THREE.Mesh(
-  new THREE.PlaneGeometry(2, 2),
-  leafMaterial
-);
+const leafMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), leafMaterial);
 leafMesh.castShadow = true;
 leafMesh.customDepthMaterial = leafDepthMaterial;
 scene.add(leafMesh);
@@ -231,7 +231,7 @@ scene.add(leafMesh);
 For scenes where lights and casters are stationary, render shadows once and stop.
 
 ```js
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.shadowMap.enabled = true;
@@ -266,7 +266,7 @@ function onObjectMoved() {
 VSM shadow maps support `radius` and `blurSamples` for artistic control.
 
 ```js
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.shadowMap.enabled = true;
@@ -286,8 +286,8 @@ dirLight.shadow.camera.top = 15;
 dirLight.shadow.camera.bottom = -15;
 
 // VSM-specific: blur radius and sample count
-dirLight.shadow.radius = 4;        // larger = softer
-dirLight.shadow.blurSamples = 16;  // more = smoother blur
+dirLight.shadow.radius = 4; // larger = softer
+dirLight.shadow.blurSamples = 16; // more = smoother blur
 
 scene.add(dirLight);
 ```

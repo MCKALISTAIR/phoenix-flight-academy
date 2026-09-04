@@ -155,7 +155,7 @@ Sets or retrieves per-instance color. The `instanceColor` attribute is created o
 ### LOD Constructor
 
 ```typescript
-new LOD()
+new LOD();
 ```
 
 **Source**: https://threejs.org/docs/#api/en/objects/LOD
@@ -210,7 +210,7 @@ mergeGeometries(
 ### matrixAutoUpdate
 
 ```typescript
-matrixAutoUpdate: boolean // default: true
+matrixAutoUpdate: boolean; // default: true
 ```
 
 When `true`, the renderer recomputes the local matrix from `position`, `rotation`, `scale` every frame. Set to `false` for static objects to skip this computation. After setting to `false`, ALWAYS call `object.updateMatrix()` once to compute the final matrix.

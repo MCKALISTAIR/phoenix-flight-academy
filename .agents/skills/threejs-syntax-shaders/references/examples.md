@@ -5,7 +5,7 @@
 A minimal ShaderMaterial with a time-based color animation.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const material = new THREE.ShaderMaterial({
   uniforms: {
@@ -52,10 +52,10 @@ animate();
 Displaces vertices along their normals using a height map texture.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const loader = new THREE.TextureLoader();
-const heightMap = loader.load('/textures/heightmap.png');
+const heightMap = loader.load("/textures/heightmap.png");
 
 const material = new THREE.ShaderMaterial({
   uniforms: {
@@ -100,7 +100,7 @@ const mesh = new THREE.Mesh(geometry, material);
 Adds a wave vertex displacement to a standard PBR material while preserving all lighting and shadow behavior.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const material = new THREE.MeshStandardMaterial({
   color: 0x2194ce,
@@ -114,20 +114,21 @@ material.onBeforeCompile = (shader) => {
   shader.uniforms.uAmplitude = { value: 0.3 };
 
   // Inject uniform declaration at top of vertex shader
-  shader.vertexShader = `
+  shader.vertexShader =
+    `
     uniform float uTime;
     uniform float uAmplitude;
   ` + shader.vertexShader;
 
   // Replace begin_vertex chunk to add displacement
   shader.vertexShader = shader.vertexShader.replace(
-    '#include <begin_vertex>',
+    "#include <begin_vertex>",
     `
     #include <begin_vertex>
     float wave = sin(transformed.x * 4.0 + uTime * 2.0) *
                  cos(transformed.z * 4.0 + uTime * 1.5);
     transformed.y += wave * uAmplitude;
-    `
+    `,
   );
 
   // Store shader reference for uniform updates
@@ -135,7 +136,7 @@ material.onBeforeCompile = (shader) => {
 };
 
 // ALWAYS override customProgramCacheKey with onBeforeCompile
-material.customProgramCacheKey = () => 'wavy-standard';
+material.customProgramCacheKey = () => "wavy-standard";
 
 // Animation loop
 const clock = new THREE.Clock();
@@ -156,7 +157,7 @@ animate();
 A RawShaderMaterial using GLSL 3.0 ES syntax for full control.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const material = new THREE.RawShaderMaterial({
   glslVersion: THREE.GLSL3,
@@ -208,7 +209,7 @@ function animate() {
   mesh.updateMatrixWorld();
   material.uniforms.uModelViewMatrix.value.multiplyMatrices(
     camera.matrixWorldInverse,
-    mesh.matrixWorld
+    mesh.matrixWorld,
   );
   material.uniforms.uProjectionMatrix.value.copy(camera.projectionMatrix);
   material.uniforms.uTime.value = performance.now() / 1000;
@@ -224,7 +225,7 @@ function animate() {
 Using ShaderChunk includes to integrate with Three.js fog and lighting systems.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const material = new THREE.ShaderMaterial({
   uniforms: {
@@ -258,7 +259,7 @@ const material = new THREE.ShaderMaterial({
       #include <fog_fragment>
     }
   `,
-  fog: true,  // REQUIRED to enable fog uniform injection
+  fog: true, // REQUIRED to enable fog uniform injection
 });
 ```
 

@@ -1,5 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Mail, MapPin, Phone, MessageSquare, Compass, Send, CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
+import {
+  Mail,
+  MapPin,
+  Phone,
+  MessageSquare,
+  Compass,
+  Send,
+  CheckCircle2,
+  AlertTriangle,
+  Loader2,
+} from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -17,7 +27,11 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact Us & Location | Phoenix Flight Training" },
-      { name: "description", content: "Visit Phoenix Flight Training at Cumbernauld Airport. Phone, email, location directions, and direct message contact form." }
+      {
+        name: "description",
+        content:
+          "Visit Phoenix Flight Training at Cumbernauld Airport. Phone, email, location directions, and direct message contact form.",
+      },
     ],
   }),
 });
@@ -25,7 +39,7 @@ export const Route = createFileRoute("/contact")({
 function ContactPage() {
   const search = Route.useSearch();
   const initialSubject = search.subject || "general";
-  
+
   const [subject, setSubject] = useState(initialSubject);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -69,7 +83,8 @@ function ContactPage() {
     if (!message.trim()) {
       newErrors.message = "Please include some details about your enquiry.";
     } else if (message.trim().length < 10) {
-      newErrors.message = "Message is too short. Please provide at least 10 characters so we can assist you better.";
+      newErrors.message =
+        "Message is too short. Please provide at least 10 characters so we can assist you better.";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -101,7 +116,7 @@ function ContactPage() {
       setServerError(
         err instanceof Error
           ? err.message
-          : "Failed to send your message. Please try again or contact operations directly."
+          : "Failed to send your message. Please try again or contact operations directly.",
       );
     } finally {
       setSubmitting(false);
@@ -121,25 +136,28 @@ function ContactPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/60 to-transparent" />
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <span className="text-sm font-semibold uppercase tracking-wider text-primary">Get in Touch</span>
+          <span className="text-sm font-semibold uppercase tracking-wider text-primary">
+            Get in Touch
+          </span>
           <h1 className="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
             Contact Us
           </h1>
           <p className="mt-6 max-w-2xl text-lg sm:text-xl text-white/85 leading-relaxed">
-            Ready to book your first lesson or have questions about gaining your pilot license? The Phoenix flight operations line is always open.
+            Ready to book your first lesson or have questions about gaining your pilot license? The
+            Phoenix flight operations line is always open.
           </p>
         </div>
       </div>
-      
+
       <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-16 lg:grid-cols-2">
-          
           {/* Details side */}
           <div className="space-y-12">
             <div>
               <h2 className="text-3xl font-extrabold text-foreground">Flight Operations</h2>
               <p className="mt-4 text-base text-muted-foreground leading-relaxed">
-                We are based directly inside the main terminal facilities at Cumbernauld Airport. Pop in to meet the crew or reach out using the operational details below.
+                We are based directly inside the main terminal facilities at Cumbernauld Airport.
+                Pop in to meet the crew or reach out using the operational details below.
               </p>
             </div>
 
@@ -160,7 +178,9 @@ function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-bold text-foreground">Email Operations</h3>
-                  <p className="mt-1 text-base text-muted-foreground">info@phoenixflighttraining.co.uk</p>
+                  <p className="mt-1 text-base text-muted-foreground">
+                    info@phoenixflighttraining.co.uk
+                  </p>
                 </div>
               </div>
 
@@ -171,8 +191,10 @@ function ContactPage() {
                 <div>
                   <h3 className="font-bold text-foreground">Terminal Hangar Location</h3>
                   <p className="mt-1 text-base leading-relaxed text-muted-foreground">
-                    Phoenix Flight Training<br />
-                    Main Runway Terminal Building, Cumbernauld Airport<br />
+                    Phoenix Flight Training
+                    <br />
+                    Main Runway Terminal Building, Cumbernauld Airport
+                    <br />
                     G68 0PR
                   </p>
                 </div>
@@ -206,7 +228,10 @@ function ContactPage() {
                 <div>
                   <h3 className="text-2xl font-bold text-foreground">Inquiry Received</h3>
                   <p className="mt-2 text-sm text-muted-foreground max-w-sm">
-                    Thank you, {name}. Your inquiry regarding <strong className="text-primary">{getSubjectLabel()}</strong> has been dispatched directly to the Phoenix Flight operations desk at Cumbernauld. A flight coordinator will contact you shortly.
+                    Thank you, {name}. Your inquiry regarding{" "}
+                    <strong className="text-primary">{getSubjectLabel()}</strong> has been
+                    dispatched directly to the Phoenix Flight operations desk at Cumbernauld. A
+                    flight coordinator will contact you shortly.
                   </p>
                 </div>
                 <button
@@ -234,7 +259,8 @@ function ContactPage() {
 
                 {search.subject && (
                   <div className="mb-5 rounded-lg bg-primary/5 border border-primary/20 px-4 py-3 text-xs text-primary font-medium">
-                    🔍 Pre-selected route: <strong className="uppercase">{getSubjectLabel()}</strong>
+                    🔍 Pre-selected route:{" "}
+                    <strong className="uppercase">{getSubjectLabel()}</strong>
                   </div>
                 )}
 
@@ -247,22 +273,29 @@ function ContactPage() {
                     <p>{serverError}</p>
                   </div>
                 )}
-                
+
                 {Object.keys(errors).length > 0 && (
                   <div className="mb-5 rounded-xl bg-red-500/10 border border-red-500/25 p-4 text-xs text-red-700 dark:text-red-400 space-y-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
                     <p className="font-bold flex items-center gap-1.5 text-red-800 dark:text-red-300">
-                      <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400" /> 
+                      <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400" />
                       Please correct the following errors:
                     </p>
                     <ul className="list-disc list-inside pl-1 space-y-0.5">
-                      {Object.values(errors).map((err, i) => <li key={i}>{err}</li>)}
+                      {Object.values(errors).map((err, i) => (
+                        <li key={i}>{err}</li>
+                      ))}
                     </ul>
                   </div>
                 )}
-                
+
                 <form onSubmit={handleSubmit} className="space-y-5" noValidate>
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-semibold text-foreground">Enquiry Subject</label>
+                    <label
+                      htmlFor="subject"
+                      className="block text-sm font-semibold text-foreground"
+                    >
+                      Enquiry Subject
+                    </label>
                     <select
                       id="subject"
                       value={subject}
@@ -276,7 +309,9 @@ function ContactPage() {
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="name" className="block text-sm font-semibold text-foreground">Full Name</label>
+                    <label htmlFor="name" className="block text-sm font-semibold text-foreground">
+                      Full Name
+                    </label>
                     <input
                       type="text"
                       id="name"
@@ -293,7 +328,9 @@ function ContactPage() {
                     )}
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-semibold text-foreground">Email Address</label>
+                    <label htmlFor="email" className="block text-sm font-semibold text-foreground">
+                      Email Address
+                    </label>
                     <input
                       type="email"
                       id="email"
@@ -310,7 +347,12 @@ function ContactPage() {
                     )}
                   </div>
                   <div>
-                    <label htmlFor="message" className="block text-sm font-semibold text-foreground">Flight Request / Message</label>
+                    <label
+                      htmlFor="message"
+                      className="block text-sm font-semibold text-foreground"
+                    >
+                      Flight Request / Message
+                    </label>
                     <textarea
                       id="message"
                       rows={5}
@@ -347,7 +389,6 @@ function ContactPage() {
               </>
             )}
           </div>
-
         </div>
       </div>
     </div>

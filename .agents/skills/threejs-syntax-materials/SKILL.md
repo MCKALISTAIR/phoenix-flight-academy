@@ -20,50 +20,50 @@ metadata:
 
 ### Material Type Decision Tree
 
-| Use Case | Material | Why |
-|----------|----------|-----|
-| UI elements, unlit scenes | `MeshBasicMaterial` | Cheapest, no light computation |
-| Matte diffuse (low-end devices) | `MeshLambertMaterial` | Fast diffuse, no specular |
-| Legacy specular highlights | `MeshPhongMaterial` | Blinn-Phong model, not physically correct |
-| General-purpose 3D (recommended) | `MeshStandardMaterial` | PBR metalness/roughness, industry standard |
+| Use Case                               | Material               | Why                                                        |
+| -------------------------------------- | ---------------------- | ---------------------------------------------------------- |
+| UI elements, unlit scenes              | `MeshBasicMaterial`    | Cheapest, no light computation                             |
+| Matte diffuse (low-end devices)        | `MeshLambertMaterial`  | Fast diffuse, no specular                                  |
+| Legacy specular highlights             | `MeshPhongMaterial`    | Blinn-Phong model, not physically correct                  |
+| General-purpose 3D (recommended)       | `MeshStandardMaterial` | PBR metalness/roughness, industry standard                 |
 | Glass, car paint, fabric, soap bubbles | `MeshPhysicalMaterial` | Advanced PBR (clearcoat, transmission, sheen, iridescence) |
-| Cartoon/anime style | `MeshToonMaterial` | Discrete cel-shading steps |
-| Sculpting previews, no lights | `MeshMatcapMaterial` | Matcap texture, zero light setup |
-| Debug normals | `MeshNormalMaterial` | RGB = surface normal direction |
-| Invisible shadow receiver | `ShadowMaterial` | Transparent shadow catcher |
-| Solid lines | `LineBasicMaterial` | Simple colored lines |
-| Dashed lines | `LineDashedMaterial` | Requires `line.computeLineDistances()` |
-| Particles | `PointsMaterial` | Point cloud rendering |
-| Billboards | `SpriteMaterial` | Always-facing-camera quads |
+| Cartoon/anime style                    | `MeshToonMaterial`     | Discrete cel-shading steps                                 |
+| Sculpting previews, no lights          | `MeshMatcapMaterial`   | Matcap texture, zero light setup                           |
+| Debug normals                          | `MeshNormalMaterial`   | RGB = surface normal direction                             |
+| Invisible shadow receiver              | `ShadowMaterial`       | Transparent shadow catcher                                 |
+| Solid lines                            | `LineBasicMaterial`    | Simple colored lines                                       |
+| Dashed lines                           | `LineDashedMaterial`   | Requires `line.computeLineDistances()`                     |
+| Particles                              | `PointsMaterial`       | Point cloud rendering                                      |
+| Billboards                             | `SpriteMaterial`       | Always-facing-camera quads                                 |
 
 ### Base Material Properties (All Materials)
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `side` | `number` | `FrontSide` | `FrontSide`, `BackSide`, or `DoubleSide` |
-| `transparent` | `boolean` | `false` | Enable alpha blending |
-| `opacity` | `number` | `1` | Requires `transparent: true` to take effect below 1 |
-| `depthWrite` | `boolean` | `true` | Write to depth buffer |
-| `depthTest` | `boolean` | `true` | Test against depth buffer |
-| `blending` | `number` | `NormalBlending` | `NoBlending`, `AdditiveBlending`, `SubtractiveBlending`, `MultiplyBlending`, `CustomBlending` |
-| `alphaTest` | `number` | `0` | Discard fragments with alpha below this value |
-| `visible` | `boolean` | `true` | Whether to render this material |
-| `wireframe` | `boolean` | `false` | Wireframe rendering mode |
-| `fog` | `boolean` | `true` | Affected by scene fog |
-| `clippingPlanes` | `Plane[]` | `null` | Array of clipping planes |
-| `clipIntersection` | `boolean` | `false` | Clip where ALL planes intersect (vs union) |
-| `needsUpdate` | `boolean` | `false` | Set `true` to trigger shader recompilation |
-| `toneMapped` | `boolean` | `true` | Apply renderer tone mapping |
+| Property           | Type      | Default          | Description                                                                                   |
+| ------------------ | --------- | ---------------- | --------------------------------------------------------------------------------------------- |
+| `side`             | `number`  | `FrontSide`      | `FrontSide`, `BackSide`, or `DoubleSide`                                                      |
+| `transparent`      | `boolean` | `false`          | Enable alpha blending                                                                         |
+| `opacity`          | `number`  | `1`              | Requires `transparent: true` to take effect below 1                                           |
+| `depthWrite`       | `boolean` | `true`           | Write to depth buffer                                                                         |
+| `depthTest`        | `boolean` | `true`           | Test against depth buffer                                                                     |
+| `blending`         | `number`  | `NormalBlending` | `NoBlending`, `AdditiveBlending`, `SubtractiveBlending`, `MultiplyBlending`, `CustomBlending` |
+| `alphaTest`        | `number`  | `0`              | Discard fragments with alpha below this value                                                 |
+| `visible`          | `boolean` | `true`           | Whether to render this material                                                               |
+| `wireframe`        | `boolean` | `false`          | Wireframe rendering mode                                                                      |
+| `fog`              | `boolean` | `true`           | Affected by scene fog                                                                         |
+| `clippingPlanes`   | `Plane[]` | `null`           | Array of clipping planes                                                                      |
+| `clipIntersection` | `boolean` | `false`          | Clip where ALL planes intersect (vs union)                                                    |
+| `needsUpdate`      | `boolean` | `false`          | Set `true` to trigger shader recompilation                                                    |
+| `toneMapped`       | `boolean` | `true`           | Apply renderer tone mapping                                                                   |
 
 ### Base Material Methods
 
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `clone` | `(): Material` | Clone the material |
-| `copy` | `(source: Material): Material` | Copy properties from source |
-| `dispose` | `(): void` | Free GPU resources -- ALWAYS call when removing |
-| `onBeforeCompile` | `(shader, renderer): void` | Hook to modify shader before compilation |
-| `setValues` | `(values: Object): void` | Set multiple properties at once |
+| Method            | Signature                      | Description                                     |
+| ----------------- | ------------------------------ | ----------------------------------------------- |
+| `clone`           | `(): Material`                 | Clone the material                              |
+| `copy`            | `(source: Material): Material` | Copy properties from source                     |
+| `dispose`         | `(): void`                     | Free GPU resources -- ALWAYS call when removing |
+| `onBeforeCompile` | `(shader, renderer): void`     | Hook to modify shader before compilation        |
+| `setValues`       | `(values: Object): void`       | Set multiple properties at once                 |
 
 ### Critical Warnings
 
@@ -88,36 +88,36 @@ metadata:
 The recommended material for most 3D scenes. Uses physically-based metalness/roughness workflow.
 
 ```javascript
-import { MeshStandardMaterial, TextureLoader, SRGBColorSpace, RepeatWrapping } from 'three';
+import { MeshStandardMaterial, TextureLoader, SRGBColorSpace, RepeatWrapping } from "three";
 
 const loader = new TextureLoader();
 const material = new MeshStandardMaterial({
   color: 0xffffff,
-  roughness: 0.7,           // 0 = mirror, 1 = fully rough
-  metalness: 0.0,           // 0 = dielectric, 1 = metal
-  map: null,                // Diffuse/albedo texture
-  roughnessMap: null,       // Per-pixel roughness
-  metalnessMap: null,       // Per-pixel metalness
-  normalMap: null,          // Surface normal perturbation
+  roughness: 0.7, // 0 = mirror, 1 = fully rough
+  metalness: 0.0, // 0 = dielectric, 1 = metal
+  map: null, // Diffuse/albedo texture
+  roughnessMap: null, // Per-pixel roughness
+  metalnessMap: null, // Per-pixel metalness
+  normalMap: null, // Surface normal perturbation
   normalScale: new Vector2(1, 1),
-  aoMap: null,              // Ambient occlusion (requires uv2)
+  aoMap: null, // Ambient occlusion (requires uv2)
   aoMapIntensity: 1.0,
-  emissive: 0x000000,       // Emissive color
-  emissiveMap: null,        // Emissive texture
+  emissive: 0x000000, // Emissive color
+  emissiveMap: null, // Emissive texture
   emissiveIntensity: 1.0,
-  envMap: null,             // Environment reflection map
+  envMap: null, // Environment reflection map
   envMapIntensity: 1.0,
-  bumpMap: null,            // Grayscale height map
+  bumpMap: null, // Grayscale height map
   bumpScale: 1.0,
-  displacementMap: null,    // Vertex displacement map
+  displacementMap: null, // Vertex displacement map
   displacementScale: 1.0,
   displacementBias: 0.0,
-  alphaMap: null,           // Per-pixel transparency
-  lightMap: null,           // Baked lighting (requires uv2)
+  alphaMap: null, // Per-pixel transparency
+  lightMap: null, // Baked lighting (requires uv2)
   lightMapIntensity: 1.0,
   flatShading: false,
   wireframe: false,
-  fog: true
+  fog: true,
 });
 ```
 
@@ -127,31 +127,31 @@ const material = new MeshStandardMaterial({
 
 Extends `MeshStandardMaterial` with ALL its properties, plus:
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `clearcoat` | `float` | `0.0` | Clear coat layer intensity (0-1) |
-| `clearcoatRoughness` | `float` | `0.0` | Clear coat roughness |
-| `clearcoatMap` | `Texture` | `null` | Clear coat intensity map |
-| `clearcoatNormalMap` | `Texture` | `null` | Clear coat normal map |
-| `transmission` | `float` | `0.0` | Physically-based transparency (0-1) |
-| `transmissionMap` | `Texture` | `null` | Transmission map |
-| `thickness` | `float` | `0.0` | Volume thickness for transmission |
-| `thicknessMap` | `Texture` | `null` | Thickness map |
-| `ior` | `float` | `1.5` | Index of refraction (1.0-2.333) |
-| `attenuationDistance` | `float` | `Infinity` | Light attenuation distance in volume |
-| `attenuationColor` | `Color` | `white` | Light attenuation tint |
-| `sheen` | `float` | `0.0` | Sheen layer intensity (fabric-like) |
-| `sheenColor` | `Color` | `0x000000` | Sheen tint color |
-| `sheenRoughness` | `float` | `1.0` | Sheen roughness |
-| `iridescence` | `float` | `0.0` | Thin-film interference (0-1) |
-| `iridescenceIOR` | `float` | `1.3` | Iridescence index of refraction |
-| `iridescenceThicknessRange` | `[float, float]` | `[100, 400]` | Thin-film thickness range (nm) |
-| `anisotropy` | `float` | `0.0` | Anisotropic reflection strength |
-| `anisotropyRotation` | `float` | `0.0` | Anisotropy rotation (radians) |
-| `specularIntensity` | `float` | `1.0` | Specular layer intensity |
-| `specularColor` | `Color` | `white` | Specular tint color |
-| `dispersion` | `float` | `0.0` | Chromatic dispersion (rainbow effect) |
-| `reflectivity` | `float` | `0.5` | Reflectivity at normal incidence |
+| Property                    | Type             | Default      | Description                           |
+| --------------------------- | ---------------- | ------------ | ------------------------------------- |
+| `clearcoat`                 | `float`          | `0.0`        | Clear coat layer intensity (0-1)      |
+| `clearcoatRoughness`        | `float`          | `0.0`        | Clear coat roughness                  |
+| `clearcoatMap`              | `Texture`        | `null`       | Clear coat intensity map              |
+| `clearcoatNormalMap`        | `Texture`        | `null`       | Clear coat normal map                 |
+| `transmission`              | `float`          | `0.0`        | Physically-based transparency (0-1)   |
+| `transmissionMap`           | `Texture`        | `null`       | Transmission map                      |
+| `thickness`                 | `float`          | `0.0`        | Volume thickness for transmission     |
+| `thicknessMap`              | `Texture`        | `null`       | Thickness map                         |
+| `ior`                       | `float`          | `1.5`        | Index of refraction (1.0-2.333)       |
+| `attenuationDistance`       | `float`          | `Infinity`   | Light attenuation distance in volume  |
+| `attenuationColor`          | `Color`          | `white`      | Light attenuation tint                |
+| `sheen`                     | `float`          | `0.0`        | Sheen layer intensity (fabric-like)   |
+| `sheenColor`                | `Color`          | `0x000000`   | Sheen tint color                      |
+| `sheenRoughness`            | `float`          | `1.0`        | Sheen roughness                       |
+| `iridescence`               | `float`          | `0.0`        | Thin-film interference (0-1)          |
+| `iridescenceIOR`            | `float`          | `1.3`        | Iridescence index of refraction       |
+| `iridescenceThicknessRange` | `[float, float]` | `[100, 400]` | Thin-film thickness range (nm)        |
+| `anisotropy`                | `float`          | `0.0`        | Anisotropic reflection strength       |
+| `anisotropyRotation`        | `float`          | `0.0`        | Anisotropy rotation (radians)         |
+| `specularIntensity`         | `float`          | `1.0`        | Specular layer intensity              |
+| `specularColor`             | `Color`          | `white`      | Specular tint color                   |
+| `dispersion`                | `float`          | `0.0`        | Chromatic dispersion (rainbow effect) |
+| `reflectivity`              | `float`          | `0.5`        | Reflectivity at normal incidence      |
 
 ---
 
@@ -159,76 +159,76 @@ Extends `MeshStandardMaterial` with ALL its properties, plus:
 
 ### Color Space Rules (Critical)
 
-| Map Type | Color Space | Channels Used |
-|----------|-------------|---------------|
-| `map` (diffuse/albedo) | `SRGBColorSpace` | RGB(A) |
-| `emissiveMap` | `SRGBColorSpace` | RGB |
-| `lightMap` | `SRGBColorSpace` | RGB |
-| `envMap` | `SRGBColorSpace` | RGB |
-| `sheenColorMap` | `SRGBColorSpace` | RGB |
-| `specularColorMap` | `SRGBColorSpace` | RGB |
-| `normalMap` | `NoColorSpace` | RGB |
-| `roughnessMap` | `NoColorSpace` | G channel |
-| `metalnessMap` | `NoColorSpace` | B channel |
-| `aoMap` | `NoColorSpace` | R channel |
-| `bumpMap` | `NoColorSpace` | R channel |
-| `displacementMap` | `NoColorSpace` | R channel |
-| `alphaMap` | `NoColorSpace` | R channel |
-| `clearcoatMap` | `NoColorSpace` | R channel |
-| `clearcoatRoughnessMap` | `NoColorSpace` | R channel |
-| `clearcoatNormalMap` | `NoColorSpace` | RGB |
-| `transmissionMap` | `NoColorSpace` | R channel |
-| `thicknessMap` | `NoColorSpace` | R channel |
-| `iridescenceMap` | `NoColorSpace` | R channel |
-| `iridescenceThicknessMap` | `NoColorSpace` | R channel |
-| `sheenRoughnessMap` | `NoColorSpace` | R channel |
-| `anisotropyMap` | `NoColorSpace` | RG channels |
-| `specularIntensityMap` | `NoColorSpace` | A channel |
+| Map Type                  | Color Space      | Channels Used |
+| ------------------------- | ---------------- | ------------- |
+| `map` (diffuse/albedo)    | `SRGBColorSpace` | RGB(A)        |
+| `emissiveMap`             | `SRGBColorSpace` | RGB           |
+| `lightMap`                | `SRGBColorSpace` | RGB           |
+| `envMap`                  | `SRGBColorSpace` | RGB           |
+| `sheenColorMap`           | `SRGBColorSpace` | RGB           |
+| `specularColorMap`        | `SRGBColorSpace` | RGB           |
+| `normalMap`               | `NoColorSpace`   | RGB           |
+| `roughnessMap`            | `NoColorSpace`   | G channel     |
+| `metalnessMap`            | `NoColorSpace`   | B channel     |
+| `aoMap`                   | `NoColorSpace`   | R channel     |
+| `bumpMap`                 | `NoColorSpace`   | R channel     |
+| `displacementMap`         | `NoColorSpace`   | R channel     |
+| `alphaMap`                | `NoColorSpace`   | R channel     |
+| `clearcoatMap`            | `NoColorSpace`   | R channel     |
+| `clearcoatRoughnessMap`   | `NoColorSpace`   | R channel     |
+| `clearcoatNormalMap`      | `NoColorSpace`   | RGB           |
+| `transmissionMap`         | `NoColorSpace`   | R channel     |
+| `thicknessMap`            | `NoColorSpace`   | R channel     |
+| `iridescenceMap`          | `NoColorSpace`   | R channel     |
+| `iridescenceThicknessMap` | `NoColorSpace`   | R channel     |
+| `sheenRoughnessMap`       | `NoColorSpace`   | R channel     |
+| `anisotropyMap`           | `NoColorSpace`   | RG channels   |
+| `specularIntensityMap`    | `NoColorSpace`   | A channel     |
 
 **Rule**: Diffuse/emissive/color textures = `SRGBColorSpace`. ALL data textures = `NoColorSpace`. Getting this wrong causes washed-out or over-saturated rendering.
 
 ### Texture Loaders
 
-| Loader | Format | Import |
-|--------|--------|--------|
-| `TextureLoader` | PNG, JPG, WebP | `three` core |
-| `CubeTextureLoader` | 6x PNG/JPG cube maps | `three` core |
-| `RGBELoader` | .hdr (Radiance HDR) | `three/addons/loaders/RGBELoader.js` |
-| `EXRLoader` | .exr (OpenEXR HDR) | `three/addons/loaders/EXRLoader.js` |
-| `KTX2Loader` | .ktx2 (GPU compressed) | `three/addons/loaders/KTX2Loader.js` |
+| Loader              | Format                 | Import                               |
+| ------------------- | ---------------------- | ------------------------------------ |
+| `TextureLoader`     | PNG, JPG, WebP         | `three` core                         |
+| `CubeTextureLoader` | 6x PNG/JPG cube maps   | `three` core                         |
+| `RGBELoader`        | .hdr (Radiance HDR)    | `three/addons/loaders/RGBELoader.js` |
+| `EXRLoader`         | .exr (OpenEXR HDR)     | `three/addons/loaders/EXRLoader.js`  |
+| `KTX2Loader`        | .ktx2 (GPU compressed) | `three/addons/loaders/KTX2Loader.js` |
 
 ### Wrapping Modes
 
-| Constant | Description |
-|----------|-------------|
-| `ClampToEdgeWrapping` | Edge texels stretched (default) |
-| `RepeatWrapping` | Texture tiles/repeats |
-| `MirroredRepeatWrapping` | Tiles with alternating mirror |
+| Constant                 | Description                     |
+| ------------------------ | ------------------------------- |
+| `ClampToEdgeWrapping`    | Edge texels stretched (default) |
+| `RepeatWrapping`         | Texture tiles/repeats           |
+| `MirroredRepeatWrapping` | Tiles with alternating mirror   |
 
 ### Filter Modes
 
-| Constant | Type | Description |
-|----------|------|-------------|
-| `NearestFilter` | Mag/Min | Pixelated, crisp (retro, toon gradients) |
-| `LinearFilter` | Mag/Min | Smooth interpolation |
-| `LinearMipmapLinearFilter` | Min | Trilinear filtering (default, best quality) |
+| Constant                   | Type    | Description                                 |
+| -------------------------- | ------- | ------------------------------------------- |
+| `NearestFilter`            | Mag/Min | Pixelated, crisp (retro, toon gradients)    |
+| `LinearFilter`             | Mag/Min | Smooth interpolation                        |
+| `LinearMipmapLinearFilter` | Min     | Trilinear filtering (default, best quality) |
 
 ### Texture Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `wrapS` / `wrapT` | `number` | `ClampToEdgeWrapping` | Wrapping mode |
-| `magFilter` | `number` | `LinearFilter` | Magnification filter |
-| `minFilter` | `number` | `LinearMipmapLinearFilter` | Minification filter |
-| `anisotropy` | `number` | `1` | Anisotropic filtering (max = `renderer.capabilities.getMaxAnisotropy()`) |
-| `repeat` | `Vector2` | `(1, 1)` | UV repeat count |
-| `offset` | `Vector2` | `(0, 0)` | UV offset |
-| `rotation` | `number` | `0` | UV rotation in radians |
-| `center` | `Vector2` | `(0, 0)` | Center of rotation |
-| `flipY` | `boolean` | `true` | Flip vertically on upload |
-| `colorSpace` | `string` | `NoColorSpace` | Color space interpretation |
-| `generateMipmaps` | `boolean` | `true` | Auto-generate mipmaps |
-| `needsUpdate` | `boolean` | `false` | Trigger GPU re-upload |
+| Property          | Type      | Default                    | Description                                                              |
+| ----------------- | --------- | -------------------------- | ------------------------------------------------------------------------ |
+| `wrapS` / `wrapT` | `number`  | `ClampToEdgeWrapping`      | Wrapping mode                                                            |
+| `magFilter`       | `number`  | `LinearFilter`             | Magnification filter                                                     |
+| `minFilter`       | `number`  | `LinearMipmapLinearFilter` | Minification filter                                                      |
+| `anisotropy`      | `number`  | `1`                        | Anisotropic filtering (max = `renderer.capabilities.getMaxAnisotropy()`) |
+| `repeat`          | `Vector2` | `(1, 1)`                   | UV repeat count                                                          |
+| `offset`          | `Vector2` | `(0, 0)`                   | UV offset                                                                |
+| `rotation`        | `number`  | `0`                        | UV rotation in radians                                                   |
+| `center`          | `Vector2` | `(0, 0)`                   | Center of rotation                                                       |
+| `flipY`           | `boolean` | `true`                     | Flip vertically on upload                                                |
+| `colorSpace`      | `string`  | `NoColorSpace`             | Color space interpretation                                               |
+| `generateMipmaps` | `boolean` | `true`                     | Auto-generate mipmaps                                                    |
+| `needsUpdate`     | `boolean` | `false`                    | Trigger GPU re-upload                                                    |
 
 ### flipY Rules
 
@@ -263,6 +263,7 @@ function disposeMesh(mesh) {
 ## needsUpdate Flag
 
 ALWAYS set `material.needsUpdate = true` after changing these at runtime:
+
 - Toggling `flatShading`
 - Changing `side` (FrontSide/BackSide/DoubleSide)
 - Adding or removing a texture map (e.g., setting `map` from `null` to a texture)

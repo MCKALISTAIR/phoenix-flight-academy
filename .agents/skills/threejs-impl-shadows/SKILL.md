@@ -23,7 +23,7 @@ metadata:
 Shadows in Three.js require THREE explicit opt-in steps. Missing ANY step results in no shadows.
 
 ```js
-import * as THREE from 'three';
+import * as THREE from "three";
 
 // Step 1: Enable shadow maps on the renderer
 renderer.shadowMap.enabled = true;
@@ -33,18 +33,18 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 light.castShadow = true;
 
 // Step 3: Enable per-mesh shadow behavior
-mesh.castShadow = true;       // this mesh casts shadows
-ground.receiveShadow = true;  // this mesh receives shadows
+mesh.castShadow = true; // this mesh casts shadows
+ground.receiveShadow = true; // this mesh receives shadows
 ```
 
 ### Shadow Map Types
 
-| Type | Constant | Quality | Cost | Supports `.radius` |
-|------|----------|---------|------|---------------------|
-| Basic | `THREE.BasicShadowMap` | Hard edges, aliased | Lowest | No |
-| PCF | `THREE.PCFShadowMap` | Slightly softened | Moderate | No |
-| PCF Soft | `THREE.PCFSoftShadowMap` | Soft penumbra | Higher | No (ignores it) |
-| VSM | `THREE.VSMShadowMap` | Gaussian blur | Moderate | Yes |
+| Type     | Constant                 | Quality             | Cost     | Supports `.radius` |
+| -------- | ------------------------ | ------------------- | -------- | ------------------ |
+| Basic    | `THREE.BasicShadowMap`   | Hard edges, aliased | Lowest   | No                 |
+| PCF      | `THREE.PCFShadowMap`     | Slightly softened   | Moderate | No                 |
+| PCF Soft | `THREE.PCFSoftShadowMap` | Soft penumbra       | Higher   | No (ignores it)    |
+| VSM      | `THREE.VSMShadowMap`     | Gaussian blur       | Moderate | Yes                |
 
 - **Default** in r160+: `THREE.PCFShadowMap`
 - **PCFSoftShadowMap**: best general-purpose choice; IGNORES the `shadow.radius` property
@@ -137,6 +137,7 @@ scene.add(spotLight.target);
 ```
 
 SpotLightShadow exposes:
+
 - `.focus` (number, default `1`) -- adjusts shadow camera FOV relative to spotlight FOV, range `[0, 1]`
 
 ### PointLight Shadows
@@ -220,9 +221,9 @@ Shadows on transparent/alpha-tested materials incorrect?
 By default, shadows treat ALL geometry as fully opaque. For alpha-tested materials (e.g., tree leaves), assign a `customDepthMaterial`:
 
 ```js
-import * as THREE from 'three';
+import * as THREE from "three";
 
-const alphaMap = new THREE.TextureLoader().load('leaf-alpha.png');
+const alphaMap = new THREE.TextureLoader().load("leaf-alpha.png");
 
 const leafMaterial = new THREE.MeshStandardMaterial({
   map: texture,
@@ -260,6 +261,7 @@ renderer.shadowMap.needsUpdate = true; // render shadows once
 Set `renderer.shadowMap.needsUpdate = true` ONLY when something changes. This eliminates per-frame shadow map rendering entirely for static scenes.
 
 Per-light control:
+
 ```js
 light.shadow.autoUpdate = false;
 light.shadow.needsUpdate = true; // update this light's shadow once
@@ -272,15 +274,9 @@ light.shadow.needsUpdate = true; // update this light's shadow once
 For ground-plane shadows, Drei's `<ContactShadows>` provides high-quality soft shadows at lower cost than shadow maps:
 
 ```jsx
-import { ContactShadows } from '@react-three/drei';
+import { ContactShadows } from "@react-three/drei";
 
-<ContactShadows
-  position={[0, 0, 0]}
-  opacity={0.5}
-  scale={10}
-  blur={1.5}
-  far={1}
-/>
+<ContactShadows position={[0, 0, 0]} opacity={0.5} scale={10} blur={1.5} far={1} />;
 ```
 
 **Limitations**: Works ONLY for ground-plane shadows. Does NOT project onto arbitrary geometry. Does NOT replace shadow maps for complex scenes.
@@ -289,11 +285,11 @@ import { ContactShadows } from '@react-three/drei';
 
 ## Performance Budget
 
-| Shadow Type | Cost per Frame | Max Recommended |
-|-------------|---------------|-----------------|
-| DirectionalLight shadow | 1 render pass | 1-2 lights |
-| SpotLight shadow | 1 render pass | 2-4 lights |
-| PointLight shadow | 6 render passes | 1 light max |
+| Shadow Type             | Cost per Frame  | Max Recommended |
+| ----------------------- | --------------- | --------------- |
+| DirectionalLight shadow | 1 render pass   | 1-2 lights      |
+| SpotLight shadow        | 1 render pass   | 2-4 lights      |
+| PointLight shadow       | 6 render passes | 1 light max     |
 
 **Shadow map resolution impact**: Doubling `mapSize` quadruples GPU memory usage. NEVER exceed 4096x4096 on mobile; prefer 2048x2048 or lower.
 

@@ -3,7 +3,7 @@
 ## Example 1: Complete Black Screen Diagnosis
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 // Step 1: Create renderer with correct size
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -19,16 +19,14 @@ dirLight.position.set(5, 10, 7);
 scene.add(dirLight);
 
 // Step 3: Camera positioned away from origin
-const camera = new THREE.PerspectiveCamera(
-  75, window.innerWidth / window.innerHeight, 0.1, 1000
-);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(0, 2, 5);
 camera.lookAt(0, 0, 0);
 
 // Step 4: Add visible object
 const mesh = new THREE.Mesh(
   new THREE.BoxGeometry(1, 1, 1),
-  new THREE.MeshStandardMaterial({ color: 0x00ff00 })
+  new THREE.MeshStandardMaterial({ color: 0x00ff00 }),
 );
 scene.add(mesh);
 
@@ -43,7 +41,7 @@ animate();
 ## Example 2: Color Space Correct Setup
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const renderer = new THREE.WebGLRenderer();
 renderer.outputColorSpace = THREE.SRGBColorSpace; // default in r160+
@@ -53,15 +51,15 @@ renderer.toneMappingExposure = 1.0;
 const textureLoader = new THREE.TextureLoader();
 
 // Color texture: ALWAYS SRGBColorSpace
-const diffuseMap = textureLoader.load('albedo.png');
+const diffuseMap = textureLoader.load("albedo.png");
 diffuseMap.colorSpace = THREE.SRGBColorSpace;
 
 // Normal map: NEVER SRGBColorSpace
-const normalMap = textureLoader.load('normal.png');
+const normalMap = textureLoader.load("normal.png");
 // normalMap.colorSpace remains LinearSRGBColorSpace (default)
 
 // Roughness map: NEVER SRGBColorSpace
-const roughnessMap = textureLoader.load('roughness.png');
+const roughnessMap = textureLoader.load("roughness.png");
 // roughnessMap.colorSpace remains LinearSRGBColorSpace (default)
 
 const material = new THREE.MeshStandardMaterial({
@@ -69,19 +67,19 @@ const material = new THREE.MeshStandardMaterial({
   normalMap: normalMap,
   roughnessMap: roughnessMap,
   roughness: 1.0,
-  metalness: 0.0
+  metalness: 0.0,
 });
 ```
 
 ## Example 3: Z-Fighting Fix with Polygon Offset
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 // Ground plane
 const ground = new THREE.Mesh(
   new THREE.PlaneGeometry(10, 10),
-  new THREE.MeshStandardMaterial({ color: 0x808080 })
+  new THREE.MeshStandardMaterial({ color: 0x808080 }),
 );
 ground.rotation.x = -Math.PI / 2;
 
@@ -92,8 +90,8 @@ const decal = new THREE.Mesh(
     color: 0xff0000,
     polygonOffset: true,
     polygonOffsetFactor: -1,
-    polygonOffsetUnits: -1
-  })
+    polygonOffsetUnits: -1,
+  }),
 );
 decal.rotation.x = -Math.PI / 2;
 decal.position.y = 0.001; // tiny offset as additional safety
@@ -105,12 +103,12 @@ scene.add(decal);
 ## Example 4: Transparent Object Ordering
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 // Background opaque object
 const wall = new THREE.Mesh(
   new THREE.PlaneGeometry(5, 5),
-  new THREE.MeshStandardMaterial({ color: 0x444444 })
+  new THREE.MeshStandardMaterial({ color: 0x444444 }),
 );
 wall.position.z = -2;
 wall.renderOrder = 0;
@@ -124,8 +122,8 @@ const glass = new THREE.Mesh(
     transparent: true,
     opacity: 0.3,
     depthWrite: false, // prevents depth conflicts with other transparent objects
-    side: THREE.DoubleSide
-  })
+    side: THREE.DoubleSide,
+  }),
 );
 glass.renderOrder = 1;
 scene.add(glass);
@@ -138,8 +136,8 @@ const frontGlass = new THREE.Mesh(
     transparent: true,
     opacity: 0.5,
     depthWrite: false,
-    side: THREE.DoubleSide
-  })
+    side: THREE.DoubleSide,
+  }),
 );
 frontGlass.position.z = 1;
 frontGlass.renderOrder = 2;
@@ -149,7 +147,7 @@ scene.add(frontGlass);
 ## Example 5: WebGL Context Loss Recovery
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 let renderer, scene, camera, animationId;
 
@@ -159,10 +157,9 @@ function initScene() {
   camera.position.set(0, 2, 5);
 
   scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-  scene.add(new THREE.Mesh(
-    new THREE.BoxGeometry(),
-    new THREE.MeshStandardMaterial({ color: 0x00ff00 })
-  ));
+  scene.add(
+    new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshStandardMaterial({ color: 0x00ff00 })),
+  );
 }
 
 function init() {
@@ -171,17 +168,25 @@ function init() {
   document.body.appendChild(renderer.domElement);
 
   // ALWAYS add context loss handlers
-  renderer.domElement.addEventListener('webglcontextlost', (event) => {
-    event.preventDefault();
-    cancelAnimationFrame(animationId);
-    console.warn('WebGL context lost. Waiting for restoration...');
-  }, false);
+  renderer.domElement.addEventListener(
+    "webglcontextlost",
+    (event) => {
+      event.preventDefault();
+      cancelAnimationFrame(animationId);
+      console.warn("WebGL context lost. Waiting for restoration...");
+    },
+    false,
+  );
 
-  renderer.domElement.addEventListener('webglcontextrestored', () => {
-    console.log('WebGL context restored. Re-initializing...');
-    initScene();
-    animate();
-  }, false);
+  renderer.domElement.addEventListener(
+    "webglcontextrestored",
+    () => {
+      console.log("WebGL context restored. Re-initializing...");
+      initScene();
+      animate();
+    },
+    false,
+  );
 
   initScene();
   animate();
@@ -198,13 +203,13 @@ init();
 ## Example 6: Resize Handler with updateProjectionMatrix
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix(); // NEVER forget this after changing camera properties
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -215,17 +220,17 @@ window.addEventListener('resize', () => {
 ## Example 7: Foliage with alphaTest (Not Transparency)
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const textureLoader = new THREE.TextureLoader();
-const leafTexture = textureLoader.load('leaf.png');
+const leafTexture = textureLoader.load("leaf.png");
 leafTexture.colorSpace = THREE.SRGBColorSpace;
 
 // Use alphaTest for hard-edge alpha, NOT transparent: true
 const leafMaterial = new THREE.MeshStandardMaterial({
   map: leafTexture,
   alphaTest: 0.5,
-  side: THREE.DoubleSide
+  side: THREE.DoubleSide,
   // transparent: true is NOT needed and would cause sorting issues
 });
 
@@ -250,18 +255,18 @@ function diagnoseInvisible(object, camera) {
 
   // Check layers
   if (!camera.layers.test(object.layers)) {
-    console.error('Layer mismatch: camera and object share no layers');
+    console.error("Layer mismatch: camera and object share no layers");
     return;
   }
 
   // Check material
   if (object.material) {
     if (!object.material.visible) {
-      console.error('Material.visible is false');
+      console.error("Material.visible is false");
       return;
     }
     if (object.material.opacity === 0 && object.material.transparent) {
-      console.error('Material is fully transparent (opacity=0)');
+      console.error("Material is fully transparent (opacity=0)");
       return;
     }
   }
@@ -280,6 +285,6 @@ function diagnoseInvisible(object, camera) {
     return;
   }
 
-  console.log('No obvious issue found. Check geometry and frustum culling.');
+  console.log("No obvious issue found. Check geometry and frustum culling.");
 }
 ```

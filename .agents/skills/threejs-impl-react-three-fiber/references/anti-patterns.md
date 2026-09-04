@@ -12,13 +12,9 @@
 function BadAnimation() {
   useFrame((state) => {
     // WRONG: allocates a new Vector3 every frame (60+ times per second)
-    const target = new THREE.Vector3(
-      Math.sin(state.clock.elapsedTime),
-      0,
-      0
-    )
-    meshRef.current.position.copy(target)
-  })
+    const target = new THREE.Vector3(Math.sin(state.clock.elapsedTime), 0, 0);
+    meshRef.current.position.copy(target);
+  });
 }
 ```
 
@@ -30,12 +26,12 @@ function BadAnimation() {
 
 ```tsx
 function GoodAnimation() {
-  const target = useMemo(() => new THREE.Vector3(), [])
+  const target = useMemo(() => new THREE.Vector3(), []);
 
   useFrame((state) => {
-    target.set(Math.sin(state.clock.elapsedTime), 0, 0)
-    meshRef.current.position.copy(target)
-  })
+    target.set(Math.sin(state.clock.elapsedTime), 0, 0);
+    meshRef.current.position.copy(target);
+  });
 }
 ```
 
@@ -49,8 +45,8 @@ ALWAYS create reusable objects with `useMemo` or `useRef` outside `useFrame`.
 
 ```tsx
 function Model() {
-  const gltf = useLoader(GLTFLoader, '/model.glb')
-  return <primitive object={gltf.scene} />
+  const gltf = useLoader(GLTFLoader, "/model.glb");
+  return <primitive object={gltf.scene} />;
 }
 
 // No Suspense boundary -- crashes with unhandled suspension
@@ -59,7 +55,7 @@ function App() {
     <Canvas>
       <Model />
     </Canvas>
-  )
+  );
 }
 ```
 
@@ -77,7 +73,7 @@ function App() {
         <Model />
       </Suspense>
     </Canvas>
-  )
+  );
 }
 ```
 
@@ -92,9 +88,9 @@ ALWAYS wrap components that use `useLoader` in `<Suspense fallback={...}>`.
 ```tsx
 function CameraLogger() {
   // WRONG: subscribes to the ENTIRE state -- re-renders on every frame
-  const state = useThree()
-  console.log(state.camera.position)
-  return null
+  const state = useThree();
+  console.log(state.camera.position);
+  return null;
 }
 ```
 
@@ -107,9 +103,9 @@ function CameraLogger() {
 ```tsx
 function CameraLogger() {
   // Selector: only re-renders when the camera itself changes
-  const camera = useThree((state) => state.camera)
-  console.log(camera.position)
-  return null
+  const camera = useThree((state) => state.camera);
+  console.log(camera.position);
+  return null;
 }
 ```
 
@@ -123,29 +119,30 @@ ALWAYS use a selector function when you only need specific properties from the R
 
 ```tsx
 function BadMesh() {
-  const { scene } = useThree()
+  const { scene } = useThree();
 
   useEffect(() => {
     const mesh = new THREE.Mesh(
       new THREE.BoxGeometry(),
-      new THREE.MeshBasicMaterial({ color: 'red' })
-    )
-    scene.add(mesh) // WRONG: bypasses R3F reconciler
+      new THREE.MeshBasicMaterial({ color: "red" }),
+    );
+    scene.add(mesh); // WRONG: bypasses R3F reconciler
 
     return () => {
-      scene.remove(mesh)
-      mesh.geometry.dispose()
-      mesh.material.dispose()
-    }
-  }, [scene])
+      scene.remove(mesh);
+      mesh.geometry.dispose();
+      mesh.material.dispose();
+    };
+  }, [scene]);
 
-  return null
+  return null;
 }
 ```
 
 ### WHY IT FAILS
 
 R3F manages the scene graph declaratively. Imperatively adding objects via `scene.add()` bypasses the reconciler, which means:
+
 - R3F does not track the object for events or disposal.
 - The object may conflict with R3F's internal state.
 - Manual cleanup is error-prone and often missed.
@@ -159,7 +156,7 @@ function GoodMesh() {
       <boxGeometry />
       <meshBasicMaterial color="red" />
     </mesh>
-  )
+  );
 }
 ```
 
@@ -173,7 +170,7 @@ ALWAYS use JSX elements for scene objects. R3F handles creation, updates, and di
 
 ```tsx
 function BadDuplication() {
-  const gltf = useLoader(GLTFLoader, '/model.glb')
+  const gltf = useLoader(GLTFLoader, "/model.glb");
 
   return (
     <>
@@ -181,7 +178,7 @@ function BadDuplication() {
       <primitive object={gltf.scene} position={[0, 0, 0]} />
       <primitive object={gltf.scene} position={[5, 0, 0]} />
     </>
-  )
+  );
 }
 ```
 
@@ -193,18 +190,18 @@ Three.js objects can only have ONE parent. Adding the same object to two locatio
 
 ```tsx
 function GoodDuplication() {
-  const gltf = useLoader(GLTFLoader, '/model.glb')
+  const gltf = useLoader(GLTFLoader, "/model.glb");
 
   // Clone for each instance
-  const clone1 = useMemo(() => gltf.scene.clone(), [gltf])
-  const clone2 = useMemo(() => gltf.scene.clone(), [gltf])
+  const clone1 = useMemo(() => gltf.scene.clone(), [gltf]);
+  const clone2 = useMemo(() => gltf.scene.clone(), [gltf]);
 
   return (
     <>
       <primitive object={clone1} position={[0, 0, 0]} />
       <primitive object={clone2} position={[5, 0, 0]} />
     </>
-  )
+  );
 }
 ```
 
@@ -217,7 +214,7 @@ ALWAYS clone objects when placing them at multiple positions. Use `useMemo` to a
 ### WRONG
 
 ```tsx
-const sharedGeometry = new THREE.SphereGeometry(1, 32, 32)
+const sharedGeometry = new THREE.SphereGeometry(1, 32, 32);
 
 function Particle({ position }) {
   return (
@@ -226,7 +223,7 @@ function Particle({ position }) {
       <primitive object={sharedGeometry} attach="geometry" />
       <meshBasicMaterial color="white" />
     </mesh>
-  )
+  );
 }
 ```
 
@@ -243,7 +240,7 @@ function Particle({ position }) {
       <primitive object={sharedGeometry} attach="geometry" dispose={null} />
       <meshBasicMaterial color="white" />
     </mesh>
-  )
+  );
 }
 ```
 
@@ -257,14 +254,19 @@ ALWAYS set `dispose={null}` on shared resources to prevent premature disposal.
 
 ```tsx
 function BadRotation() {
-  const meshRef = useRef<THREE.Mesh>(null!)
+  const meshRef = useRef<THREE.Mesh>(null!);
 
   useFrame(() => {
     // WRONG: rotates at different speeds depending on frame rate
-    meshRef.current.rotation.y += 0.01
-  })
+    meshRef.current.rotation.y += 0.01;
+  });
 
-  return <mesh ref={meshRef}><boxGeometry /><meshNormalMaterial /></mesh>
+  return (
+    <mesh ref={meshRef}>
+      <boxGeometry />
+      <meshNormalMaterial />
+    </mesh>
+  );
 }
 ```
 
@@ -276,14 +278,19 @@ A fixed increment per frame means the animation runs faster on 144Hz monitors an
 
 ```tsx
 function GoodRotation() {
-  const meshRef = useRef<THREE.Mesh>(null!)
+  const meshRef = useRef<THREE.Mesh>(null!);
 
   useFrame((state, delta) => {
     // Consistent rotation speed regardless of frame rate
-    meshRef.current.rotation.y += delta * 0.5
-  })
+    meshRef.current.rotation.y += delta * 0.5;
+  });
 
-  return <mesh ref={meshRef}><boxGeometry /><meshNormalMaterial /></mesh>
+  return (
+    <mesh ref={meshRef}>
+      <boxGeometry />
+      <meshNormalMaterial />
+    </mesh>
+  );
 }
 ```
 
@@ -302,14 +309,14 @@ function BadDemandMode() {
       <mesh
         onClick={(e) => {
           // WRONG: changes color but never requests a re-render
-          e.object.material.color.set('red')
+          e.object.material.color.set("red");
         }}
       >
         <boxGeometry />
         <meshStandardMaterial />
       </mesh>
     </Canvas>
-  )
+  );
 }
 ```
 
@@ -321,19 +328,19 @@ In `frameloop="demand"` mode, R3F does NOT render continuously. Changing a prope
 
 ```tsx
 function GoodDemandMode() {
-  const invalidate = useThree((s) => s.invalidate)
+  const invalidate = useThree((s) => s.invalidate);
 
   return (
     <mesh
       onClick={(e) => {
-        e.object.material.color.set('red')
-        invalidate() // Tell R3F to render the next frame
+        e.object.material.color.set("red");
+        invalidate(); // Tell R3F to render the next frame
       }}
     >
       <boxGeometry />
       <meshStandardMaterial />
     </mesh>
-  )
+  );
 }
 ```
 

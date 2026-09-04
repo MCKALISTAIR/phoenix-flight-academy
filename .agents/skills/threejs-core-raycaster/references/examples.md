@@ -5,7 +5,7 @@
 Select an object by clicking on it. Uses a flat array of selectable objects and a reusable intersections array.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -38,7 +38,7 @@ const mouse = new THREE.Vector2();
 const intersections = [];
 let selectedObject = null;
 
-renderer.domElement.addEventListener('click', (event) => {
+renderer.domElement.addEventListener("click", (event) => {
   // Convert mouse to NDC
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -76,7 +76,7 @@ animate();
 Highlight objects on mouse hover. Uses a flag to throttle raycasting to the render loop.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -109,7 +109,7 @@ const intersections = [];
 let hoveredObject = null;
 let needsRaycast = false;
 
-renderer.domElement.addEventListener('pointermove', (event) => {
+renderer.domElement.addEventListener("pointermove", (event) => {
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -133,9 +133,9 @@ function animate() {
       hoveredObject = intersections[0].object;
       hoveredObject.material.color.set(0xffcc00);
       hoveredObject.material.emissive.set(0x333300);
-      renderer.domElement.style.cursor = 'pointer';
+      renderer.domElement.style.cursor = "pointer";
     } else {
-      renderer.domElement.style.cursor = 'default';
+      renderer.domElement.style.cursor = "default";
     }
 
     intersections.length = 0;
@@ -155,7 +155,7 @@ animate();
 Pick individual instances from an InstancedMesh using `instanceId`.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -176,11 +176,7 @@ const dummy = new THREE.Object3D();
 const defaultColor = new THREE.Color(0x4488ff);
 
 for (let i = 0; i < count; i++) {
-  dummy.position.set(
-    (i % 10) * 1.5 - 7.5,
-    0,
-    Math.floor(i / 10) * 1.5 - 7.5
-  );
+  dummy.position.set((i % 10) * 1.5 - 7.5, 0, Math.floor(i / 10) * 1.5 - 7.5);
   dummy.updateMatrix();
   instancedMesh.setMatrixAt(i, dummy.matrix);
   instancedMesh.setColorAt(i, defaultColor);
@@ -197,7 +193,7 @@ const intersections = [];
 const selectedColor = new THREE.Color(0xff4444);
 let lastSelectedId = -1;
 
-renderer.domElement.addEventListener('click', (event) => {
+renderer.domElement.addEventListener("click", (event) => {
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -243,7 +239,7 @@ animate();
 Use layers to separate interactive objects from non-interactive decoration.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -268,7 +264,7 @@ const interactiveGroup = [];
 for (let i = 0; i < 5; i++) {
   const mesh = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
-    new THREE.MeshStandardMaterial({ color: 0x4488ff })
+    new THREE.MeshStandardMaterial({ color: 0x4488ff }),
   );
   mesh.position.set(i * 2 - 4, 0, 0);
   mesh.layers.set(LAYER_INTERACTIVE);
@@ -280,12 +276,12 @@ for (let i = 0; i < 5; i++) {
 for (let i = 0; i < 20; i++) {
   const mesh = new THREE.Mesh(
     new THREE.SphereGeometry(0.2, 8, 8),
-    new THREE.MeshStandardMaterial({ color: 0x888888 })
+    new THREE.MeshStandardMaterial({ color: 0x888888 }),
   );
   mesh.position.set(
     (Math.random() - 0.5) * 12,
     (Math.random() - 0.5) * 6,
-    (Math.random() - 0.5) * 6
+    (Math.random() - 0.5) * 6,
   );
   mesh.layers.set(LAYER_DECORATION);
   scene.add(mesh);
@@ -301,7 +297,7 @@ raycaster.layers.set(LAYER_INTERACTIVE);
 const mouse = new THREE.Vector2();
 const intersections = [];
 
-renderer.domElement.addEventListener('click', (event) => {
+renderer.domElement.addEventListener("click", (event) => {
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -311,7 +307,7 @@ renderer.domElement.addEventListener('click', (event) => {
   raycaster.intersectObjects(scene.children, false, intersections);
 
   if (intersections.length > 0) {
-    console.log('Hit interactive object:', intersections[0].object);
+    console.log("Hit interactive object:", intersections[0].object);
   }
 
   intersections.length = 0;
@@ -331,7 +327,7 @@ animate();
 Cast a ray downward from an object to snap it to terrain height.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -354,14 +350,14 @@ for (let i = 0; i < vertices.count; i++) {
 terrainGeometry.computeVertexNormals();
 const terrain = new THREE.Mesh(
   terrainGeometry,
-  new THREE.MeshStandardMaterial({ color: 0x44aa44 })
+  new THREE.MeshStandardMaterial({ color: 0x44aa44 }),
 );
 scene.add(terrain);
 
 // Object to snap to ground
 const character = new THREE.Mesh(
   new THREE.CapsuleGeometry(0.3, 1, 8, 16),
-  new THREE.MeshStandardMaterial({ color: 0xff8800 })
+  new THREE.MeshStandardMaterial({ color: 0xff8800 }),
 );
 scene.add(character);
 

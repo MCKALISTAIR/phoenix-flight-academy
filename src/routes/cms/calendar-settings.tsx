@@ -18,7 +18,12 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/cms/calendar-settings")({
   beforeLoad: async ({ location }) => {
-    try { await requireSuperAdmin(location.href); } catch (e) { if (isRedirect(e)) throw e; throw redirect({ to: "/login", search: { redirect: location.href } }); }
+    try {
+      await requireSuperAdmin(location.href);
+    } catch (e) {
+      if (isRedirect(e)) throw e;
+      throw redirect({ to: "/login", search: { redirect: location.href } });
+    }
   },
   component: CalendarAdmin,
 });
@@ -37,13 +42,22 @@ function CalendarAdmin() {
   const addBlock = useServerFn(addResourceBlock);
   const delBlock = useServerFn(deleteResourceBlock);
 
-  const { data: settings } = useQuery({ queryKey: ["calendar-settings"], queryFn: () => fetchSettings() });
+  const { data: settings } = useQuery({
+    queryKey: ["calendar-settings"],
+    queryFn: () => fetchSettings(),
+  });
   const { data: closed } = useQuery({ queryKey: ["closed-dates"], queryFn: () => fetchClosed() });
-  const { data: blocks } = useQuery({ queryKey: ["resource-blocks"], queryFn: () => fetchBlocks() });
+  const { data: blocks } = useQuery({
+    queryKey: ["resource-blocks"],
+    queryFn: () => fetchBlocks(),
+  });
   const { data: aircraft } = useQuery({
     queryKey: ["aircraft-all"],
     queryFn: async () => {
-      const { data } = await supabase.from("aircraft").select("id, registration").order("display_order");
+      const { data } = await supabase
+        .from("aircraft")
+        .select("id, registration")
+        .order("display_order");
       return data ?? [];
     },
   });
@@ -55,7 +69,14 @@ function CalendarAdmin() {
     },
   });
 
-  const [form, setForm] = useState<{ open_time: string; close_time: string; slot_minutes: number; buffer_minutes: number; weekday_mask: string; timezone: string } | null>(null);
+  const [form, setForm] = useState<{
+    open_time: string;
+    close_time: string;
+    slot_minutes: number;
+    buffer_minutes: number;
+    weekday_mask: string;
+    timezone: string;
+  } | null>(null);
 
   useEffect(() => {
     if (settings && !form) {
@@ -79,23 +100,49 @@ function CalendarAdmin() {
   const [closedForm, setClosedForm] = useState({ starts_on: "", ends_on: "", reason: "" });
   const addClosedMut = useMutation({
     mutationFn: addClosed,
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["closed-dates"] }); setClosedForm({ starts_on: "", ends_on: "", reason: "" }); },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["closed-dates"] });
+      setClosedForm({ starts_on: "", ends_on: "", reason: "" });
+    },
   });
-  const delClosedMut = useMutation({ mutationFn: delClosed, onSuccess: () => qc.invalidateQueries({ queryKey: ["closed-dates"] }) });
+  const delClosedMut = useMutation({
+    mutationFn: delClosed,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["closed-dates"] }),
+  });
 
   // Resource block form
-  const [blockForm, setBlockForm] = useState({ resource_kind: "aircraft" as "aircraft" | "instructor", resource_id: "", starts_at: "", ends_at: "", reason: "" });
+  const [blockForm, setBlockForm] = useState({
+    resource_kind: "aircraft" as "aircraft" | "instructor",
+    resource_id: "",
+    starts_at: "",
+    ends_at: "",
+    reason: "",
+  });
   const addBlockMut = useMutation({
     mutationFn: addBlock,
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["resource-blocks"] }); setBlockForm({ resource_kind: "aircraft", resource_id: "", starts_at: "", ends_at: "", reason: "" }); },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["resource-blocks"] });
+      setBlockForm({
+        resource_kind: "aircraft",
+        resource_id: "",
+        starts_at: "",
+        ends_at: "",
+        reason: "",
+      });
+    },
   });
-  const delBlockMut = useMutation({ mutationFn: delBlock, onSuccess: () => qc.invalidateQueries({ queryKey: ["resource-blocks"] }) });
+  const delBlockMut = useMutation({
+    mutationFn: delBlock,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["resource-blocks"] }),
+  });
 
   return (
     <div className="p-8 space-y-8">
       <div>
         <h1 className="text-2xl font-extrabold text-white">Calendar Settings</h1>
-        <p className="mt-1 text-sm text-white/50">Opening hours, closed dates, and per-resource availability.</p>
+        <p className="mt-1 text-sm text-white/50">
+          Opening hours, closed dates, and per-resource availability.
+        </p>
       </div>
 
       {/* Settings */}
@@ -104,19 +151,43 @@ function CalendarAdmin() {
           <h2 className="text-base font-bold text-white">Operating hours</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Field label="Open time">
-              <input type="time" value={form.open_time} onChange={(e) => setForm({ ...form, open_time: e.target.value })} className={inputCls} />
+              <input
+                type="time"
+                value={form.open_time}
+                onChange={(e) => setForm({ ...form, open_time: e.target.value })}
+                className={inputCls}
+              />
             </Field>
             <Field label="Close time">
-              <input type="time" value={form.close_time} onChange={(e) => setForm({ ...form, close_time: e.target.value })} className={inputCls} />
+              <input
+                type="time"
+                value={form.close_time}
+                onChange={(e) => setForm({ ...form, close_time: e.target.value })}
+                className={inputCls}
+              />
             </Field>
             <Field label="Slot length (min)">
-              <input type="number" value={form.slot_minutes} onChange={(e) => setForm({ ...form, slot_minutes: Number(e.target.value) })} className={inputCls} />
+              <input
+                type="number"
+                value={form.slot_minutes}
+                onChange={(e) => setForm({ ...form, slot_minutes: Number(e.target.value) })}
+                className={inputCls}
+              />
             </Field>
             <Field label="Buffer between bookings (min)">
-              <input type="number" value={form.buffer_minutes} onChange={(e) => setForm({ ...form, buffer_minutes: Number(e.target.value) })} className={inputCls} />
+              <input
+                type="number"
+                value={form.buffer_minutes}
+                onChange={(e) => setForm({ ...form, buffer_minutes: Number(e.target.value) })}
+                className={inputCls}
+              />
             </Field>
             <Field label="Timezone">
-              <input value={form.timezone} onChange={(e) => setForm({ ...form, timezone: e.target.value })} className={inputCls} />
+              <input
+                value={form.timezone}
+                onChange={(e) => setForm({ ...form, timezone: e.target.value })}
+                className={inputCls}
+              />
             </Field>
           </div>
           <div className="mt-4">
@@ -134,7 +205,9 @@ function CalendarAdmin() {
                       setForm({ ...form, weekday_mask: chars.join("") });
                     }}
                     className={`rounded-lg border px-3 py-1.5 text-xs font-semibold ${
-                      on ? "border-[oklch(0.55_0.22_270)] bg-[oklch(0.55_0.22_270)]/15 text-[oklch(0.75_0.18_270)]" : "border-white/10 bg-white/5 text-white/40"
+                      on
+                        ? "border-primary bg-primary/15 text-primary"
+                        : "border-white/10 bg-white/5 text-white/40"
                     }`}
                   >
                     {d}
@@ -146,7 +219,7 @@ function CalendarAdmin() {
           <div className="mt-5">
             <button
               onClick={() => settings && saveMut.mutate({ data: { id: settings.id, ...form } })}
-              className="inline-flex items-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] px-4 py-2 text-sm font-bold text-white"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white"
             >
               <Save className="h-4 w-4" /> Save settings
             </button>
@@ -157,93 +230,180 @@ function CalendarAdmin() {
       {/* Closed dates */}
       <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
         <h2 className="text-base font-bold text-white">Closed dates</h2>
-        <p className="mt-1 text-sm text-white/50">Block entire days (weather, holidays, airshows).</p>
+        <p className="mt-1 text-sm text-white/50">
+          Block entire days (weather, holidays, airshows).
+        </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-4">
-          <input type="date" value={closedForm.starts_on} onChange={(e) => setClosedForm({ ...closedForm, starts_on: e.target.value })} className={inputCls} />
-          <input type="date" value={closedForm.ends_on} onChange={(e) => setClosedForm({ ...closedForm, ends_on: e.target.value })} className={inputCls} />
-          <input placeholder="Reason (optional)" value={closedForm.reason} onChange={(e) => setClosedForm({ ...closedForm, reason: e.target.value })} className={`${inputCls} sm:col-span-1`} />
+          <input
+            type="date"
+            value={closedForm.starts_on}
+            onChange={(e) => setClosedForm({ ...closedForm, starts_on: e.target.value })}
+            className={inputCls}
+          />
+          <input
+            type="date"
+            value={closedForm.ends_on}
+            onChange={(e) => setClosedForm({ ...closedForm, ends_on: e.target.value })}
+            className={inputCls}
+          />
+          <input
+            placeholder="Reason (optional)"
+            value={closedForm.reason}
+            onChange={(e) => setClosedForm({ ...closedForm, reason: e.target.value })}
+            className={`${inputCls} sm:col-span-1`}
+          />
           <button
             onClick={() => {
               if (!closedForm.starts_on || !closedForm.ends_on) return;
-              addClosedMut.mutate({ data: { starts_on: closedForm.starts_on, ends_on: closedForm.ends_on, reason: closedForm.reason || null } });
+              addClosedMut.mutate({
+                data: {
+                  starts_on: closedForm.starts_on,
+                  ends_on: closedForm.ends_on,
+                  reason: closedForm.reason || null,
+                },
+              });
             }}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] px-4 py-2 text-sm font-bold text-white"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white"
           >
             <Plus className="h-4 w-4" /> Add
           </button>
         </div>
         <div className="mt-4 space-y-2">
           {(closed ?? []).map((c) => (
-            <div key={c.id} className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm">
+            <div
+              key={c.id}
+              className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm"
+            >
               <div>
-                <span className="text-white">{c.starts_on}{c.starts_on !== c.ends_on && ` → ${c.ends_on}`}</span>
+                <span className="text-white">
+                  {c.starts_on}
+                  {c.starts_on !== c.ends_on && ` → ${c.ends_on}`}
+                </span>
                 {c.reason && <span className="ml-3 text-white/50">{c.reason}</span>}
               </div>
-              <button onClick={() => delClosedMut.mutate({ data: { id: c.id } })} className="text-red-400 hover:text-red-300">
+              <button
+                onClick={() => delClosedMut.mutate({ data: { id: c.id } })}
+                className="text-red-400 hover:text-red-300"
+              >
                 <Trash2 className="h-4 w-4" />
               </button>
             </div>
           ))}
-          {(closed ?? []).length === 0 && <p className="text-sm text-white/40">No upcoming closed dates.</p>}
+          {(closed ?? []).length === 0 && (
+            <p className="text-sm text-white/40">No upcoming closed dates.</p>
+          )}
         </div>
       </section>
 
       {/* Resource blocks */}
       <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
         <h2 className="text-base font-bold text-white">Resource blocks</h2>
-        <p className="mt-1 text-sm text-white/50">Mark an aircraft or instructor unavailable for a window (maintenance, leave).</p>
+        <p className="mt-1 text-sm text-white/50">
+          Mark an aircraft or instructor unavailable for a window (maintenance, leave).
+        </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          <select value={blockForm.resource_kind} onChange={(e) => setBlockForm({ ...blockForm, resource_kind: e.target.value as "aircraft" | "instructor", resource_id: "" })} className={inputCls}>
+          <select
+            value={blockForm.resource_kind}
+            onChange={(e) =>
+              setBlockForm({
+                ...blockForm,
+                resource_kind: e.target.value as "aircraft" | "instructor",
+                resource_id: "",
+              })
+            }
+            className={inputCls}
+          >
             <option value="aircraft">Aircraft</option>
             <option value="instructor">Instructor</option>
           </select>
-          <select value={blockForm.resource_id} onChange={(e) => setBlockForm({ ...blockForm, resource_id: e.target.value })} className={inputCls}>
+          <select
+            value={blockForm.resource_id}
+            onChange={(e) => setBlockForm({ ...blockForm, resource_id: e.target.value })}
+            className={inputCls}
+          >
             <option value="">Choose…</option>
             {blockForm.resource_kind === "aircraft"
-              ? (aircraft ?? []).map((a) => <option key={a.id} value={a.id}>{a.registration}</option>)
-              : (instructors ?? []).map((i) => <option key={i.id} value={i.id}>{i.name}</option>)}
+              ? (aircraft ?? []).map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.registration}
+                  </option>
+                ))
+              : (instructors ?? []).map((i) => (
+                  <option key={i.id} value={i.id}>
+                    {i.name}
+                  </option>
+                ))}
           </select>
-          <input type="datetime-local" value={blockForm.starts_at} onChange={(e) => setBlockForm({ ...blockForm, starts_at: e.target.value })} className={inputCls} />
-          <input type="datetime-local" value={blockForm.ends_at} onChange={(e) => setBlockForm({ ...blockForm, ends_at: e.target.value })} className={inputCls} />
-          <input placeholder="Reason" value={blockForm.reason} onChange={(e) => setBlockForm({ ...blockForm, reason: e.target.value })} className={inputCls} />
+          <input
+            type="datetime-local"
+            value={blockForm.starts_at}
+            onChange={(e) => setBlockForm({ ...blockForm, starts_at: e.target.value })}
+            className={inputCls}
+          />
+          <input
+            type="datetime-local"
+            value={blockForm.ends_at}
+            onChange={(e) => setBlockForm({ ...blockForm, ends_at: e.target.value })}
+            className={inputCls}
+          />
+          <input
+            placeholder="Reason"
+            value={blockForm.reason}
+            onChange={(e) => setBlockForm({ ...blockForm, reason: e.target.value })}
+            className={inputCls}
+          />
           <button
             onClick={() => {
               if (!blockForm.resource_id || !blockForm.starts_at || !blockForm.ends_at) return;
               addBlockMut.mutate({
                 data: {
                   resource_kind: blockForm.resource_kind,
-                  aircraft_id: blockForm.resource_kind === "aircraft" ? blockForm.resource_id : null,
-                  instructor_id: blockForm.resource_kind === "instructor" ? blockForm.resource_id : null,
+                  aircraft_id:
+                    blockForm.resource_kind === "aircraft" ? blockForm.resource_id : null,
+                  instructor_id:
+                    blockForm.resource_kind === "instructor" ? blockForm.resource_id : null,
                   starts_at: new Date(blockForm.starts_at).toISOString(),
                   ends_at: new Date(blockForm.ends_at).toISOString(),
                   reason: blockForm.reason || null,
                 },
               });
             }}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] px-4 py-2 text-sm font-bold text-white"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-white"
           >
             <Plus className="h-4 w-4" /> Block
           </button>
         </div>
         <div className="mt-4 space-y-2">
           {(blocks ?? []).map((b) => {
-            const label = b.resource_kind === "aircraft"
-              ? aircraft?.find((a) => a.id === b.aircraft_id)?.registration ?? "Aircraft"
-              : instructors?.find((i) => i.id === b.instructor_id)?.name ?? "Instructor";
+            const label =
+              b.resource_kind === "aircraft"
+                ? (aircraft?.find((a) => a.id === b.aircraft_id)?.registration ?? "Aircraft")
+                : (instructors?.find((i) => i.id === b.instructor_id)?.name ?? "Instructor");
             return (
-              <div key={b.id} className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm">
+              <div
+                key={b.id}
+                className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm"
+              >
                 <div>
                   <span className="font-semibold text-white">{label}</span>
-                  <span className="ml-3 text-white/60">{new Date(b.starts_at).toLocaleString("en-GB")} → {new Date(b.ends_at).toLocaleString("en-GB")}</span>
+                  <span className="ml-3 text-white/60">
+                    {new Date(b.starts_at).toLocaleString("en-GB")} →{" "}
+                    {new Date(b.ends_at).toLocaleString("en-GB")}
+                  </span>
                   {b.reason && <span className="ml-3 text-white/40">{b.reason}</span>}
                 </div>
-                <button onClick={() => delBlockMut.mutate({ data: { id: b.id } })} className="text-red-400 hover:text-red-300">
+                <button
+                  onClick={() => delBlockMut.mutate({ data: { id: b.id } })}
+                  className="text-red-400 hover:text-red-300"
+                >
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>
             );
           })}
-          {(blocks ?? []).length === 0 && <p className="text-sm text-white/40">No upcoming blocks.</p>}
+          {(blocks ?? []).length === 0 && (
+            <p className="text-sm text-white/40">No upcoming blocks.</p>
+          )}
         </div>
       </section>
     </div>

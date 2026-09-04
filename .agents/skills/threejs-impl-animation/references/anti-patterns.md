@@ -247,11 +247,7 @@ mixer.clipAction(idleClip).play();
 **WRONG:**
 
 ```js
-const track = new THREE.NumberKeyframeTrack(
-  'Mesh.material.opacity',
-  [0, 1],
-  [1, 0]
-);
+const track = new THREE.NumberKeyframeTrack("Mesh.material.opacity", [0, 1], [1, 0]);
 // Opacity changes but object remains fully visible
 ```
 
@@ -262,11 +258,7 @@ const track = new THREE.NumberKeyframeTrack(
 ```js
 material.transparent = true; // MUST set before animating opacity
 
-const track = new THREE.NumberKeyframeTrack(
-  'Mesh.material.opacity',
-  [0, 1],
-  [1, 0]
-);
+const track = new THREE.NumberKeyframeTrack("Mesh.material.opacity", [0, 1], [1, 0]);
 ```
 
 ---

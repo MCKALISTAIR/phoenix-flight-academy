@@ -338,16 +338,16 @@ clock.stop(): void              // halts without resetting
 
 ```ts
 // Loop modes
-THREE.LoopOnce        // plays once and stops
-THREE.LoopRepeat      // loops, restarting from beginning (default)
-THREE.LoopPingPong    // alternates forward/backward
+THREE.LoopOnce; // plays once and stops
+THREE.LoopRepeat; // loops, restarting from beginning (default)
+THREE.LoopPingPong; // alternates forward/backward
 
 // Blend modes
-THREE.NormalAnimationBlendMode    // standard blending (default)
-THREE.AdditiveAnimationBlendMode  // additive layering
+THREE.NormalAnimationBlendMode; // standard blending (default)
+THREE.AdditiveAnimationBlendMode; // additive layering
 
 // Interpolation modes
-THREE.InterpolateDiscrete  // step function
-THREE.InterpolateLinear    // linear (default)
-THREE.InterpolateSmooth    // cubic spline
+THREE.InterpolateDiscrete; // step function
+THREE.InterpolateLinear; // linear (default)
+THREE.InterpolateSmooth; // cubic spline
 ```

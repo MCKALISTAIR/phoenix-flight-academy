@@ -21,31 +21,31 @@ metadata:
 
 ### ShaderMaterial vs RawShaderMaterial
 
-| Aspect | ShaderMaterial | RawShaderMaterial |
-|--------|----------------|-------------------|
-| Built-in uniforms | Automatically injected | NONE -- you MUST declare everything |
-| Built-in attributes | Automatically declared | NONE -- you MUST declare everything |
-| `#include <chunk>` | Supported | NOT supported |
-| Precision declaration | Automatic | You MUST add `precision mediump float;` |
-| Use case | Extend Three.js rendering | Full shader control, porting external shaders |
-| Performance | Slight overhead from unused built-ins | Minimal shader overhead |
+| Aspect                | ShaderMaterial                        | RawShaderMaterial                             |
+| --------------------- | ------------------------------------- | --------------------------------------------- |
+| Built-in uniforms     | Automatically injected                | NONE -- you MUST declare everything           |
+| Built-in attributes   | Automatically declared                | NONE -- you MUST declare everything           |
+| `#include <chunk>`    | Supported                             | NOT supported                                 |
+| Precision declaration | Automatic                             | You MUST add `precision mediump float;`       |
+| Use case              | Extend Three.js rendering             | Full shader control, porting external shaders |
+| Performance           | Slight overhead from unused built-ins | Minimal shader overhead                       |
 
 ### Uniform Type Map
 
-| GLSL Type | JavaScript Value |
-|-----------|-----------------|
-| `float` | `{ value: 1.0 }` |
-| `int` | `{ value: 1 }` |
-| `bool` | `{ value: true }` |
-| `vec2` | `{ value: new THREE.Vector2() }` |
-| `vec3` | `{ value: new THREE.Vector3() }` or `{ value: new THREE.Color() }` |
-| `vec4` | `{ value: new THREE.Vector4() }` |
-| `mat3` | `{ value: new THREE.Matrix3() }` |
-| `mat4` | `{ value: new THREE.Matrix4() }` |
-| `sampler2D` | `{ value: texture }` (a `THREE.Texture` instance) |
-| `samplerCube` | `{ value: cubeTexture }` |
-| `float[]` | `{ value: [1.0, 2.0, 3.0] }` |
-| `vec3[]` | `{ value: [new THREE.Vector3(), ...] }` |
+| GLSL Type     | JavaScript Value                                                   |
+| ------------- | ------------------------------------------------------------------ |
+| `float`       | `{ value: 1.0 }`                                                   |
+| `int`         | `{ value: 1 }`                                                     |
+| `bool`        | `{ value: true }`                                                  |
+| `vec2`        | `{ value: new THREE.Vector2() }`                                   |
+| `vec3`        | `{ value: new THREE.Vector3() }` or `{ value: new THREE.Color() }` |
+| `vec4`        | `{ value: new THREE.Vector4() }`                                   |
+| `mat3`        | `{ value: new THREE.Matrix3() }`                                   |
+| `mat4`        | `{ value: new THREE.Matrix4() }`                                   |
+| `sampler2D`   | `{ value: texture }` (a `THREE.Texture` instance)                  |
+| `samplerCube` | `{ value: cubeTexture }`                                           |
+| `float[]`     | `{ value: [1.0, 2.0, 3.0] }`                                       |
+| `vec3[]`      | `{ value: [new THREE.Vector3(), ...] }`                            |
 
 ### Critical Warnings
 
@@ -66,7 +66,7 @@ metadata:
 ### Constructor
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const material = new THREE.ShaderMaterial({
   uniforms: {
@@ -97,20 +97,20 @@ const material = new THREE.ShaderMaterial({
 
 ### Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `uniforms` | `Object` | `{}` | `{ name: { value: ... } }` format |
-| `uniformsGroups` | `Array` | `[]` | Uniform buffer objects (UBO) |
-| `vertexShader` | `string` | -- | GLSL vertex shader source |
-| `fragmentShader` | `string` | -- | GLSL fragment shader source |
-| `defines` | `Object` | `{}` | Preprocessor `#define` directives |
-| `extensions` | `Object` | `{}` | GLSL extensions to enable |
-| `wireframe` | `boolean` | `false` | Wireframe rendering |
-| `lights` | `boolean` | `false` | Pass light uniforms to shader |
-| `fog` | `boolean` | `false` | Pass fog uniforms to shader |
-| `clipping` | `boolean` | `false` | Enable clipping planes |
-| `glslVersion` | `string \| null` | `null` | `null` for GLSL1, `THREE.GLSL3` for GLSL 3.0 ES |
-| `defaultAttributeValues` | `Object` | -- | Fallback values for missing attributes |
+| Property                 | Type             | Default | Description                                     |
+| ------------------------ | ---------------- | ------- | ----------------------------------------------- |
+| `uniforms`               | `Object`         | `{}`    | `{ name: { value: ... } }` format               |
+| `uniformsGroups`         | `Array`          | `[]`    | Uniform buffer objects (UBO)                    |
+| `vertexShader`           | `string`         | --      | GLSL vertex shader source                       |
+| `fragmentShader`         | `string`         | --      | GLSL fragment shader source                     |
+| `defines`                | `Object`         | `{}`    | Preprocessor `#define` directives               |
+| `extensions`             | `Object`         | `{}`    | GLSL extensions to enable                       |
+| `wireframe`              | `boolean`        | `false` | Wireframe rendering                             |
+| `lights`                 | `boolean`        | `false` | Pass light uniforms to shader                   |
+| `fog`                    | `boolean`        | `false` | Pass fog uniforms to shader                     |
+| `clipping`               | `boolean`        | `false` | Enable clipping planes                          |
+| `glslVersion`            | `string \| null` | `null`  | `null` for GLSL1, `THREE.GLSL3` for GLSL 3.0 ES |
+| `defaultAttributeValues` | `Object`         | --      | Fallback values for missing attributes          |
 
 ---
 
@@ -187,18 +187,18 @@ const material = new THREE.RawShaderMaterial({
 
 ### Common Chunks
 
-| Chunk | Purpose |
-|-------|---------|
-| `<common>` | Shared constants and functions (PI, saturate, etc.) |
-| `<fog_pars_vertex>` / `<fog_vertex>` | Fog support (vertex) |
-| `<fog_pars_fragment>` / `<fog_fragment>` | Fog support (fragment) |
-| `<shadowmap_pars_vertex>` / `<shadowmap_vertex>` | Shadow support (vertex) |
-| `<shadowmap_pars_fragment>` / `<shadowmap_fragment>` | Shadow support (fragment) |
-| `<lights_pars_begin>` | Light structure declarations |
-| `<begin_vertex>` | Initializes `transformed` variable from `position` |
-| `<project_vertex>` | Applies modelViewMatrix and projectionMatrix |
-| `<normal_fragment_begin>` | Normal mapping setup |
-| `<color_pars_vertex>` / `<color_vertex>` | Vertex color support |
+| Chunk                                                | Purpose                                             |
+| ---------------------------------------------------- | --------------------------------------------------- |
+| `<common>`                                           | Shared constants and functions (PI, saturate, etc.) |
+| `<fog_pars_vertex>` / `<fog_vertex>`                 | Fog support (vertex)                                |
+| `<fog_pars_fragment>` / `<fog_fragment>`             | Fog support (fragment)                              |
+| `<shadowmap_pars_vertex>` / `<shadowmap_vertex>`     | Shadow support (vertex)                             |
+| `<shadowmap_pars_fragment>` / `<shadowmap_fragment>` | Shadow support (fragment)                           |
+| `<lights_pars_begin>`                                | Light structure declarations                        |
+| `<begin_vertex>`                                     | Initializes `transformed` variable from `position`  |
+| `<project_vertex>`                                   | Applies modelViewMatrix and projectionMatrix        |
+| `<normal_fragment_begin>`                            | Normal mapping setup                                |
+| `<color_pars_vertex>` / `<color_vertex>`             | Vertex color support                                |
 
 ### Accessing Chunks Programmatically
 
@@ -221,11 +221,11 @@ material.onBeforeCompile = (shader) => {
   shader.uniforms.uTime = { value: 0.0 };
 
   shader.vertexShader = shader.vertexShader.replace(
-    '#include <begin_vertex>',
+    "#include <begin_vertex>",
     `
     #include <begin_vertex>
     transformed.y += sin(transformed.x * 5.0 + uTime) * 0.5;
-    `
+    `,
   );
 
   // Store reference for uniform updates
@@ -233,7 +233,7 @@ material.onBeforeCompile = (shader) => {
 };
 
 // ALWAYS override customProgramCacheKey when using onBeforeCompile
-material.customProgramCacheKey = () => 'my-wavy-material';
+material.customProgramCacheKey = () => "my-wavy-material";
 
 // In animation loop
 if (material.userData.shader) {
@@ -252,9 +252,9 @@ if (material.userData.shader) {
 ```javascript
 const material = new THREE.ShaderMaterial({
   defines: {
-    USE_FOG: '',           // #define USE_FOG
-    MAX_LIGHTS: 4,         // #define MAX_LIGHTS 4
-    EPSILON: '0.001',      // #define EPSILON 0.001
+    USE_FOG: "", // #define USE_FOG
+    MAX_LIGHTS: 4, // #define MAX_LIGHTS 4
+    EPSILON: "0.001", // #define EPSILON 0.001
   },
   // ...shaders
 });
@@ -264,7 +264,7 @@ Changing defines at runtime:
 
 ```javascript
 material.defines.MAX_LIGHTS = 8;
-material.needsUpdate = true;  // REQUIRED -- triggers recompilation
+material.needsUpdate = true; // REQUIRED -- triggers recompilation
 ```
 
 ---
@@ -299,14 +299,14 @@ const material = new THREE.ShaderMaterial({
 
 ### GLSL1 vs GLSL3 Syntax
 
-| GLSL1 | GLSL3 | Context |
-|-------|-------|---------|
-| `attribute` | `in` | Vertex shader inputs |
-| `varying` (vertex) | `out` | Vertex shader outputs |
-| `varying` (fragment) | `in` | Fragment shader inputs |
-| `gl_FragColor` | Declared `out vec4` | Fragment shader output |
-| `texture2D()` | `texture()` | Texture sampling |
-| `textureCube()` | `texture()` | Cube texture sampling |
+| GLSL1                | GLSL3               | Context                |
+| -------------------- | ------------------- | ---------------------- |
+| `attribute`          | `in`                | Vertex shader inputs   |
+| `varying` (vertex)   | `out`               | Vertex shader outputs  |
+| `varying` (fragment) | `in`                | Fragment shader inputs |
+| `gl_FragColor`       | Declared `out vec4` | Fragment shader output |
+| `texture2D()`        | `texture()`         | Texture sampling       |
+| `textureCube()`      | `texture()`         | Cube texture sampling  |
 
 ---
 
@@ -320,8 +320,8 @@ const material = new THREE.ShaderMaterial({
     uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
     uMouse: { value: new THREE.Vector2() },
   },
-  vertexShader: '...',
-  fragmentShader: '...',
+  vertexShader: "...",
+  fragmentShader: "...",
 });
 
 // In animation loop -- update the .value property directly

@@ -5,8 +5,8 @@
 A React-style cleanup pattern that disposes ALL GPU resources when a 3D view is destroyed.
 
 ```javascript
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 function createScene(container) {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -14,7 +14,12 @@ function createScene(container) {
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+  const camera = new THREE.PerspectiveCamera(
+    75,
+    container.clientWidth / container.clientHeight,
+    0.1,
+    1000,
+  );
   camera.position.z = 5;
 
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -57,9 +62,19 @@ function createScene(container) {
 
 function disposeMaterial(material) {
   const textureProps = [
-    'map', 'lightMap', 'bumpMap', 'normalMap', 'specularMap',
-    'envMap', 'alphaMap', 'aoMap', 'displacementMap',
-    'emissiveMap', 'gradientMap', 'metalnessMap', 'roughnessMap'
+    "map",
+    "lightMap",
+    "bumpMap",
+    "normalMap",
+    "specularMap",
+    "envMap",
+    "alphaMap",
+    "aoMap",
+    "displacementMap",
+    "emissiveMap",
+    "gradientMap",
+    "metalnessMap",
+    "roughnessMap",
   ];
   for (const prop of textureProps) {
     if (material[prop]) material[prop].dispose();
@@ -75,7 +90,7 @@ function disposeMaterial(material) {
 Renders 10,000 trees with a single draw call using InstancedMesh.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 function createForest(scene, treeGeometry, treeMaterial) {
   const count = 10000;
@@ -85,11 +100,7 @@ function createForest(scene, treeGeometry, treeMaterial) {
 
   for (let i = 0; i < count; i++) {
     // Random position in a 500x500 area
-    dummy.position.set(
-      Math.random() * 500 - 250,
-      0,
-      Math.random() * 500 - 250
-    );
+    dummy.position.set(Math.random() * 500 - 250, 0, Math.random() * 500 - 250);
     // Random Y rotation
     dummy.rotation.y = Math.random() * Math.PI * 2;
     // Random scale variation
@@ -122,7 +133,7 @@ function createForest(scene, treeGeometry, treeMaterial) {
 Switches between high, medium, and low detail based on camera distance.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 function createLODBuilding(highGeo, medGeo, lowGeo, material) {
   const lod = new THREE.LOD();
@@ -131,9 +142,9 @@ function createLODBuilding(highGeo, medGeo, lowGeo, material) {
   const medMesh = new THREE.Mesh(medGeo, material);
   const lowMesh = new THREE.Mesh(lowGeo, material);
 
-  lod.addLevel(highMesh, 0);     // 0-50 units: full detail
-  lod.addLevel(medMesh, 50);     // 50-200 units: medium detail
-  lod.addLevel(lowMesh, 200);    // 200+ units: low detail
+  lod.addLevel(highMesh, 0); // 0-50 units: full detail
+  lod.addLevel(medMesh, 50); // 50-200 units: medium detail
+  lod.addLevel(lowMesh, 200); // 200+ units: low detail
 
   return lod;
 }
@@ -155,8 +166,8 @@ function animate() {
 Real-time overlay showing draw calls, triangles, and memory usage.
 
 ```javascript
-import * as THREE from 'three';
-import Stats from 'three/addons/libs/stats.module.js';
+import * as THREE from "three";
+import Stats from "three/addons/libs/stats.module.js";
 
 function createPerformanceMonitor(renderer) {
   // FPS counter
@@ -165,10 +176,10 @@ function createPerformanceMonitor(renderer) {
   document.body.appendChild(stats.dom);
 
   // Custom info panel
-  const infoDiv = document.createElement('div');
+  const infoDiv = document.createElement("div");
   infoDiv.style.cssText =
-    'position:fixed;top:0;right:0;padding:8px;background:rgba(0,0,0,0.7);' +
-    'color:#0f0;font:12px monospace;z-index:10000;white-space:pre;';
+    "position:fixed;top:0;right:0;padding:8px;background:rgba(0,0,0,0.7);" +
+    "color:#0f0;font:12px monospace;z-index:10000;white-space:pre;";
   document.body.appendChild(infoDiv);
 
   function update() {
@@ -208,7 +219,7 @@ function animate() {
 Reuses mesh objects instead of creating/destroying them every frame.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 class ProjectilePool {
   constructor(scene, count) {

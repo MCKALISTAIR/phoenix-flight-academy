@@ -20,13 +20,13 @@ metadata:
 
 ### Library Comparison
 
-| Library | License | Level | Status | Use Case |
-|---------|---------|-------|--------|----------|
-| `web-ifc` | MIT | Low-level WASM parser | Active (v0.77+) | Custom pipelines, full control |
-| `@thatopen/components` | MIT (v3.x) | High-level BIM toolkit | Active (v3.3.2+) | Full BIM viewers, rapid prototyping |
-| `@thatopen/components-front` | MIT | Browser-specific extensions | Active | UI, advanced visualization |
-| `web-ifc-three` | — | Deprecated bridge | **DEAD** | **NEVER use** |
-| `openbim-components` (v1) | — | Deprecated toolkit | **DEAD** | **NEVER use** |
+| Library                      | License    | Level                       | Status           | Use Case                            |
+| ---------------------------- | ---------- | --------------------------- | ---------------- | ----------------------------------- |
+| `web-ifc`                    | MIT        | Low-level WASM parser       | Active (v0.77+)  | Custom pipelines, full control      |
+| `@thatopen/components`       | MIT (v3.x) | High-level BIM toolkit      | Active (v3.3.2+) | Full BIM viewers, rapid prototyping |
+| `@thatopen/components-front` | MIT        | Browser-specific extensions | Active           | UI, advanced visualization          |
+| `web-ifc-three`              | —          | Deprecated bridge           | **DEAD**         | **NEVER use**                       |
+| `openbim-components` (v1)    | —          | Deprecated toolkit          | **DEAD**         | **NEVER use**                       |
 
 ### Package Installation
 
@@ -68,30 +68,30 @@ npm install @thatopen/components @thatopen/components-front web-ifc three
 ### WASM Setup
 
 ```javascript
-import * as WebIFC from 'web-ifc';
+import * as WebIFC from "web-ifc";
 
 const ifcApi = new WebIFC.IfcAPI();
-ifcApi.SetWasmPath('./');  // MUST point to directory containing web-ifc.wasm
-await ifcApi.Init();       // ALWAYS await before any operations
+ifcApi.SetWasmPath("./"); // MUST point to directory containing web-ifc.wasm
+await ifcApi.Init(); // ALWAYS await before any operations
 ```
 
 **WASM file requirement**: The `web-ifc.wasm` file MUST be served from a location accessible by the browser. Copy it from `node_modules/web-ifc/` to your public/static directory. Bundlers like Vite require explicit configuration to serve WASM files.
 
 ### IfcAPI Core Methods
 
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `Init()` | `() => Promise<void>` | Initialize WASM module |
-| `SetWasmPath(path)` | `(string) => void` | Set directory containing .wasm file |
-| `OpenModel(data, settings?)` | `(Uint8Array, object?) => number` | Load IFC data, returns modelID |
-| `CloseModel(modelID)` | `(number) => void` | Release model memory |
-| `GetGeometry(modelID, expressID)` | `(number, number) => object` | Get geometry for element |
-| `GetFlatMesh(modelID, expressID)` | `(number, number) => FlatMesh` | Get flattened mesh data |
-| `GetPlacedGeometry(modelID, pg)` | `(number, PlacedGeometry) => MeshData` | Get positioned geometry with transform |
-| `GetLine(modelID, expressID, flatten?)` | `(number, number, boolean?) => object` | Read single IFC entity by expressID |
-| `GetAllLines(modelID)` | `(number) => number[]` | Get all express IDs in model |
-| `GetLineIDsWithType(modelID, type)` | `(number, number) => number[]` | Get IDs by IFC type constant |
-| `GetAllTypesOfModel(modelID)` | `(number) => TypeInfo[]` | List all entity types in model |
+| Method                                  | Signature                              | Description                            |
+| --------------------------------------- | -------------------------------------- | -------------------------------------- |
+| `Init()`                                | `() => Promise<void>`                  | Initialize WASM module                 |
+| `SetWasmPath(path)`                     | `(string) => void`                     | Set directory containing .wasm file    |
+| `OpenModel(data, settings?)`            | `(Uint8Array, object?) => number`      | Load IFC data, returns modelID         |
+| `CloseModel(modelID)`                   | `(number) => void`                     | Release model memory                   |
+| `GetGeometry(modelID, expressID)`       | `(number, number) => object`           | Get geometry for element               |
+| `GetFlatMesh(modelID, expressID)`       | `(number, number) => FlatMesh`         | Get flattened mesh data                |
+| `GetPlacedGeometry(modelID, pg)`        | `(number, PlacedGeometry) => MeshData` | Get positioned geometry with transform |
+| `GetLine(modelID, expressID, flatten?)` | `(number, number, boolean?) => object` | Read single IFC entity by expressID    |
+| `GetAllLines(modelID)`                  | `(number) => number[]`                 | Get all express IDs in model           |
+| `GetLineIDsWithType(modelID, type)`     | `(number, number) => number[]`         | Get IDs by IFC type constant           |
+| `GetAllTypesOfModel(modelID)`           | `(number) => TypeInfo[]`               | List all entity types in model         |
 
 ### Geometry Extraction Pattern
 
@@ -116,7 +116,7 @@ ifcApi.CloseModel(modelID); // ALWAYS release when done
 ### Converting web-ifc Geometry to Three.js
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 function ifcMeshToThree(meshData, placedGeometry) {
   const { vertexData, indexData } = meshData;
@@ -126,17 +126,17 @@ function ifcMeshToThree(meshData, placedGeometry) {
   const normFloats = new Float32Array(vertexData.length / 2);
   for (let i = 0; i < vertexData.length; i += 6) {
     const j = i / 2;
-    posFloats[j]     = vertexData[i];
+    posFloats[j] = vertexData[i];
     posFloats[j + 1] = vertexData[i + 1];
     posFloats[j + 2] = vertexData[i + 2];
-    normFloats[j]     = vertexData[i + 3];
+    normFloats[j] = vertexData[i + 3];
     normFloats[j + 1] = vertexData[i + 4];
     normFloats[j + 2] = vertexData[i + 5];
   }
 
   const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.BufferAttribute(posFloats, 3));
-  geometry.setAttribute('normal', new THREE.BufferAttribute(normFloats, 3));
+  geometry.setAttribute("position", new THREE.BufferAttribute(posFloats, 3));
+  geometry.setAttribute("normal", new THREE.BufferAttribute(normFloats, 3));
   geometry.setIndex(new THREE.BufferAttribute(indexData, 1));
 
   const { x: r, y: g, z: b, w: a } = placedGeometry.color;
@@ -163,8 +163,8 @@ function ifcMeshToThree(meshData, placedGeometry) {
 ```javascript
 // Read a specific entity
 const wall = ifcApi.GetLine(modelID, wallExpressID, true); // flatten=true resolves references
-console.log(wall.Name?.value);       // "Basic Wall:Generic - 200mm"
-console.log(wall.GlobalId?.value);   // IFC GUID
+console.log(wall.Name?.value); // "Basic Wall:Generic - 200mm"
+console.log(wall.GlobalId?.value); // IFC GUID
 
 // Get all property sets for an element
 const relDefines = ifcApi.GetLineIDsWithType(modelID, WebIFC.IFCRELDEFINESBYPROPERTIES);
@@ -178,25 +178,25 @@ for (const relID of relDefines) {
 
 ### IFC Type Constants
 
-| Constant | IFC Entity |
-|----------|-----------|
-| `WebIFC.IFCWALL` | Walls |
-| `WebIFC.IFCWALLSTANDARDCASE` | Standard walls |
-| `WebIFC.IFCSLAB` | Slabs / floors |
-| `WebIFC.IFCCOLUMN` | Columns |
-| `WebIFC.IFCBEAM` | Beams |
-| `WebIFC.IFCDOOR` | Doors |
-| `WebIFC.IFCWINDOW` | Windows |
-| `WebIFC.IFCROOF` | Roofs |
-| `WebIFC.IFCSTAIR` | Stairs |
-| `WebIFC.IFCSPACE` | Spaces / rooms |
-| `WebIFC.IFCSITE` | Site |
-| `WebIFC.IFCBUILDING` | Building |
-| `WebIFC.IFCBUILDINGSTOREY` | Storey / floor level |
-| `WebIFC.IFCPROJECT` | Project root |
-| `WebIFC.IFCRELDEFINESBYPROPERTIES` | Property set relations |
-| `WebIFC.IFCPROPERTYSET` | Property sets |
-| `WebIFC.IFCPROPERTYSINGLEVALUE` | Individual property values |
+| Constant                           | IFC Entity                 |
+| ---------------------------------- | -------------------------- |
+| `WebIFC.IFCWALL`                   | Walls                      |
+| `WebIFC.IFCWALLSTANDARDCASE`       | Standard walls             |
+| `WebIFC.IFCSLAB`                   | Slabs / floors             |
+| `WebIFC.IFCCOLUMN`                 | Columns                    |
+| `WebIFC.IFCBEAM`                   | Beams                      |
+| `WebIFC.IFCDOOR`                   | Doors                      |
+| `WebIFC.IFCWINDOW`                 | Windows                    |
+| `WebIFC.IFCROOF`                   | Roofs                      |
+| `WebIFC.IFCSTAIR`                  | Stairs                     |
+| `WebIFC.IFCSPACE`                  | Spaces / rooms             |
+| `WebIFC.IFCSITE`                   | Site                       |
+| `WebIFC.IFCBUILDING`               | Building                   |
+| `WebIFC.IFCBUILDINGSTOREY`         | Storey / floor level       |
+| `WebIFC.IFCPROJECT`                | Project root               |
+| `WebIFC.IFCRELDEFINESBYPROPERTIES` | Property set relations     |
+| `WebIFC.IFCPROPERTYSET`            | Property sets              |
+| `WebIFC.IFCPROPERTYSINGLEVALUE`    | Individual property values |
 
 ---
 
@@ -212,7 +212,7 @@ for (const relID of relDefines) {
 ### Architecture Setup
 
 ```javascript
-import * as OBC from '@thatopen/components';
+import * as OBC from "@thatopen/components";
 
 const components = new OBC.Components();
 const worlds = components.get(OBC.Worlds);
@@ -250,18 +250,18 @@ const model = await ifcLoader.load(data);
 
 ### Key Components
 
-| Component | Access Pattern | Purpose |
-|-----------|---------------|---------|
-| `OBC.Components` | `new OBC.Components()` | Central manager for all subsystems |
-| `OBC.Worlds` | `components.get(OBC.Worlds)` | Multi-world environment management |
-| `OBC.SimpleScene` | Constructor | Three.js scene wrapper with defaults |
-| `OBC.SimpleCamera` | Constructor | Camera with built-in orbit controls |
-| `OBC.SimpleRenderer` | Constructor | WebGL renderer bound to DOM element |
-| `OBC.IfcLoader` | `components.get(OBC.IfcLoader)` | IFC file loading and fragment conversion |
-| `OBC.FragmentsManager` | `components.get(OBC.FragmentsManager)` | Efficient batched geometry management |
-| `OBC.Highlighter` | `components.get(OBC.Highlighter)` | Element selection and highlighting |
-| `OBC.Clipper` | `components.get(OBC.Clipper)` | Section plane tools |
-| `OBC.Plans` | `components.get(OBC.Plans)` | Floor plan generation |
+| Component              | Access Pattern                         | Purpose                                  |
+| ---------------------- | -------------------------------------- | ---------------------------------------- |
+| `OBC.Components`       | `new OBC.Components()`                 | Central manager for all subsystems       |
+| `OBC.Worlds`           | `components.get(OBC.Worlds)`           | Multi-world environment management       |
+| `OBC.SimpleScene`      | Constructor                            | Three.js scene wrapper with defaults     |
+| `OBC.SimpleCamera`     | Constructor                            | Camera with built-in orbit controls      |
+| `OBC.SimpleRenderer`   | Constructor                            | WebGL renderer bound to DOM element      |
+| `OBC.IfcLoader`        | `components.get(OBC.IfcLoader)`        | IFC file loading and fragment conversion |
+| `OBC.FragmentsManager` | `components.get(OBC.FragmentsManager)` | Efficient batched geometry management    |
+| `OBC.Highlighter`      | `components.get(OBC.Highlighter)`      | Element selection and highlighting       |
+| `OBC.Clipper`          | `components.get(OBC.Clipper)`          | Section plane tools                      |
+| `OBC.Plans`            | `components.get(OBC.Plans)`            | Floor plan generation                    |
 
 ### Fragment System
 
@@ -307,12 +307,12 @@ Spatial containment is defined by `IFCRELCONTAINEDINSPATIALSTRUCTURE` and `IFCRE
 
 ## Memory Management for Large IFC Files
 
-| File Size | Strategy |
-|-----------|----------|
-| <10MB | Load entirely, render all geometry at once |
-| 10-50MB | Load entirely, use fragment batching |
-| 50-200MB | Stream geometry by storey or type, dispose unused |
-| >200MB | Server-side preprocessing into fragments, load on demand |
+| File Size | Strategy                                                 |
+| --------- | -------------------------------------------------------- |
+| <10MB     | Load entirely, render all geometry at once               |
+| 10-50MB   | Load entirely, use fragment batching                     |
+| 50-200MB  | Stream geometry by storey or type, dispose unused        |
+| >200MB    | Server-side preprocessing into fragments, load on demand |
 
 ### Rules
 

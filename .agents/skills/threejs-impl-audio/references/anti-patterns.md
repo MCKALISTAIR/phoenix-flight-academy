@@ -9,10 +9,10 @@
 ### Wrong
 
 ```js
-const sound = new THREE.Audio( listener );
-audioLoader.load( 'music.mp3', ( buffer ) => {
-    sound.setBuffer( buffer );
-    sound.play(); // FAILS silently — AudioContext is suspended
+const sound = new THREE.Audio(listener);
+audioLoader.load("music.mp3", (buffer) => {
+  sound.setBuffer(buffer);
+  sound.play(); // FAILS silently — AudioContext is suspended
 });
 ```
 
@@ -23,18 +23,22 @@ Modern browsers (Chrome, Firefox, Safari) enforce autoplay policies. The `AudioC
 ### Correct
 
 ```js
-audioLoader.load( 'music.mp3', ( buffer ) => {
-    sound.setBuffer( buffer );
+audioLoader.load("music.mp3", (buffer) => {
+  sound.setBuffer(buffer);
 });
 
-document.addEventListener( 'click', () => {
-    if ( listener.context.state === 'suspended' ) {
-        listener.context.resume();
+document.addEventListener(
+  "click",
+  () => {
+    if (listener.context.state === "suspended") {
+      listener.context.resume();
     }
-    if ( !sound.isPlaying ) {
-        sound.play();
+    if (!sound.isPlaying) {
+      sound.play();
     }
-}, { once: true } );
+  },
+  { once: true },
+);
 ```
 
 ---
@@ -46,8 +50,8 @@ document.addEventListener( 'click', () => {
 ```js
 const listener = new THREE.AudioListener();
 // listener is never added to the scene graph
-const positionalSound = new THREE.PositionalAudio( listener );
-mesh.add( positionalSound );
+const positionalSound = new THREE.PositionalAudio(listener);
+mesh.add(positionalSound);
 ```
 
 ### Why It Fails
@@ -58,7 +62,7 @@ The `AudioListener` derives its world position and orientation from its parent i
 
 ```js
 const listener = new THREE.AudioListener();
-camera.add( listener ); // ALWAYS add to camera
+camera.add(listener); // ALWAYS add to camera
 ```
 
 ---
@@ -70,11 +74,11 @@ camera.add( listener ); // ALWAYS add to camera
 ```js
 const listener1 = new THREE.AudioListener();
 const listener2 = new THREE.AudioListener();
-camera.add( listener1 );
-camera.add( listener2 );
+camera.add(listener1);
+camera.add(listener2);
 
-const music = new THREE.Audio( listener1 );
-const sfx = new THREE.Audio( listener2 );
+const music = new THREE.Audio(listener1);
+const sfx = new THREE.Audio(listener2);
 ```
 
 ### Why It Fails
@@ -85,11 +89,11 @@ Each `AudioListener` creates its own `AudioContext`. The Web Audio API uses a si
 
 ```js
 const listener = new THREE.AudioListener();
-camera.add( listener );
+camera.add(listener);
 
-const music = new THREE.Audio( listener );     // shares same listener
-const sfx = new THREE.Audio( listener );       // shares same listener
-const spatial = new THREE.PositionalAudio( listener ); // shares same listener
+const music = new THREE.Audio(listener); // shares same listener
+const sfx = new THREE.Audio(listener); // shares same listener
+const spatial = new THREE.PositionalAudio(listener); // shares same listener
 ```
 
 ---
@@ -99,11 +103,11 @@ const spatial = new THREE.PositionalAudio( listener ); // shares same listener
 ### Wrong
 
 ```js
-const sound = new THREE.Audio( listener );
+const sound = new THREE.Audio(listener);
 sound.autoplay = true; // will be blocked by browser
 
-audioLoader.load( 'music.mp3', ( buffer ) => {
-    sound.setBuffer( buffer ); // autoplay triggers here — but AudioContext is suspended
+audioLoader.load("music.mp3", (buffer) => {
+  sound.setBuffer(buffer); // autoplay triggers here — but AudioContext is suspended
 });
 ```
 
@@ -114,19 +118,23 @@ Setting `autoplay = true` causes `play()` to be called automatically when `setBu
 ### Correct
 
 ```js
-const sound = new THREE.Audio( listener );
+const sound = new THREE.Audio(listener);
 // Do NOT use autoplay — explicitly play after user interaction
 
-audioLoader.load( 'music.mp3', ( buffer ) => {
-    sound.setBuffer( buffer );
-    sound.setLoop( true );
+audioLoader.load("music.mp3", (buffer) => {
+  sound.setBuffer(buffer);
+  sound.setLoop(true);
 });
 
-document.addEventListener( 'click', () => {
-    listener.context.resume().then( () => {
-        sound.play();
+document.addEventListener(
+  "click",
+  () => {
+    listener.context.resume().then(() => {
+      sound.play();
     });
-}, { once: true } );
+  },
+  { once: true },
+);
 ```
 
 ---
@@ -136,9 +144,9 @@ document.addEventListener( 'click', () => {
 ### Wrong
 
 ```js
-const sound = new THREE.PositionalAudio( listener );
-sound.setDistanceModel( 'inverse' );
-sound.setMaxDistance( 50 ); // maxDistance has NO effect with 'inverse' model
+const sound = new THREE.PositionalAudio(listener);
+sound.setDistanceModel("inverse");
+sound.setMaxDistance(50); // maxDistance has NO effect with 'inverse' model
 ```
 
 ### Why It Fails
@@ -149,15 +157,15 @@ The `maxDistance` parameter is ONLY used by the `'linear'` distance model. For `
 
 ```js
 // Option A: Use 'linear' if you need a hard cutoff
-sound.setDistanceModel( 'linear' );
-sound.setRefDistance( 1 );
-sound.setMaxDistance( 50 );    // sound reaches zero at 50 units
-sound.setRolloffFactor( 1 );
+sound.setDistanceModel("linear");
+sound.setRefDistance(1);
+sound.setMaxDistance(50); // sound reaches zero at 50 units
+sound.setRolloffFactor(1);
 
 // Option B: Use 'inverse' with appropriate rolloffFactor for natural falloff
-sound.setDistanceModel( 'inverse' );
-sound.setRefDistance( 5 );     // full volume within 5 units
-sound.setRolloffFactor( 2 );  // higher = faster falloff (but never zero)
+sound.setDistanceModel("inverse");
+sound.setRefDistance(5); // full volume within 5 units
+sound.setRolloffFactor(2); // higher = faster falloff (but never zero)
 ```
 
 ---
@@ -167,9 +175,9 @@ sound.setRolloffFactor( 2 );  // higher = faster falloff (but never zero)
 ### Wrong
 
 ```js
-audioLoader.load( 'sound.ogg', ( buffer ) => {
-    sound.setBuffer( buffer );
-    sound.play();
+audioLoader.load("sound.ogg", (buffer) => {
+  sound.setBuffer(buffer);
+  sound.play();
 });
 // No error callback — if file is missing, fails silently
 ```
@@ -182,15 +190,15 @@ audioLoader.load( 'sound.ogg', ( buffer ) => {
 
 ```js
 audioLoader.load(
-    'sound.ogg',
-    ( buffer ) => {
-        sound.setBuffer( buffer );
-    },
-    undefined, // onProgress (optional)
-    ( err ) => {
-        console.error( 'Failed to load audio:', err );
-        // Fallback: try alternative format, show UI message, etc.
-    }
+  "sound.ogg",
+  (buffer) => {
+    sound.setBuffer(buffer);
+  },
+  undefined, // onProgress (optional)
+  (err) => {
+    console.error("Failed to load audio:", err);
+    // Fallback: try alternative format, show UI message, etc.
+  },
 );
 ```
 
@@ -201,8 +209,8 @@ audioLoader.load(
 ### Wrong
 
 ```js
-document.addEventListener( 'click', () => {
-    sound.play(); // Called on EVERY click — error on second click
+document.addEventListener("click", () => {
+  sound.play(); // Called on EVERY click — error on second click
 });
 ```
 
@@ -213,10 +221,10 @@ Calling `play()` on an `Audio` instance that is already playing throws an error 
 ### Correct
 
 ```js
-document.addEventListener( 'click', () => {
-    if ( !sound.isPlaying ) {
-        sound.play();
-    }
+document.addEventListener("click", () => {
+  if (!sound.isPlaying) {
+    sound.play();
+  }
 });
 ```
 
@@ -227,11 +235,11 @@ document.addEventListener( 'click', () => {
 ### Wrong
 
 ```js
-const audioEl = document.createElement( 'audio' );
-audioEl.src = 'podcast.mp3';
+const audioEl = document.createElement("audio");
+audioEl.src = "podcast.mp3";
 
-const sound = new THREE.Audio( listener );
-sound.setMediaElementSource( audioEl );
+const sound = new THREE.Audio(listener);
+sound.setMediaElementSource(audioEl);
 sound.play(); // Does NOT work as expected
 ```
 
@@ -242,17 +250,21 @@ When using `setMediaElementSource()`, the Three.js `Audio` object wraps an HTML5
 ### Correct
 
 ```js
-const audioEl = document.createElement( 'audio' );
-audioEl.src = 'podcast.mp3';
-audioEl.crossOrigin = 'anonymous';
+const audioEl = document.createElement("audio");
+audioEl.src = "podcast.mp3";
+audioEl.crossOrigin = "anonymous";
 
-const sound = new THREE.Audio( listener );
-sound.setMediaElementSource( audioEl );
-sound.setVolume( 0.5 ); // volume control works through Three.js
+const sound = new THREE.Audio(listener);
+sound.setMediaElementSource(audioEl);
+sound.setVolume(0.5); // volume control works through Three.js
 
 // Control playback via the HTML element
-document.addEventListener( 'click', () => {
+document.addEventListener(
+  "click",
+  () => {
     listener.context.resume();
     audioEl.play(); // use the HTML element's play()
-}, { once: true } );
+  },
+  { once: true },
+);
 ```

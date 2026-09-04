@@ -46,7 +46,9 @@ function MockPaymentsPage() {
     setBusyId(id);
     try {
       const res = await pay({ data: { bookingId: id, outcome } });
-      setResult(`Booking ${id.slice(0, 8)}… → status: ${res.status}, payment: ${res.paymentStatus}`);
+      setResult(
+        `Booking ${id.slice(0, 8)}… → status: ${res.status}, payment: ${res.paymentStatus}`,
+      );
       await qc.invalidateQueries({ queryKey: ["cms-bookings-all"] });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed.");
@@ -76,11 +78,12 @@ function MockPaymentsPage() {
   return (
     <div className="p-8 text-white">
       <div className="mb-6 flex items-center gap-3">
-        <CreditCard className="h-6 w-6 text-[oklch(0.75_0.18_270)]" />
+        <CreditCard className="h-6 w-6 text-primary" />
         <div>
           <h1 className="text-2xl font-extrabold">Mock Payments</h1>
           <p className="text-sm text-white/50">
-            Simulate the payment-provider webhook for any booking. Dev/admin only — replace when a real provider is live.
+            Simulate the payment-provider webhook for any booking. Dev/admin only — replace when a
+            real provider is live.
           </p>
         </div>
       </div>
@@ -88,15 +91,17 @@ function MockPaymentsPage() {
       <div className="mb-6 flex items-start gap-3 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-sm">
         <AlertCircle className="mt-0.5 h-4 w-4 text-amber-400" />
         <p className="text-amber-200/90">
-          "Paid" sets payment_status to <code>paid</code> / <code>deposit_paid</code> (depending on payment mode) and
-          flips status to <code>confirmed</code> unless the product requires approval. "Failed" leaves the booking
-          unpaid.
+          "Paid" sets payment_status to <code>paid</code> / <code>deposit_paid</code> (depending on
+          payment mode) and flips status to <code>confirmed</code> unless the product requires
+          approval. "Failed" leaves the booking unpaid.
         </p>
       </div>
 
       {/* Manual ID form */}
       <section className="mb-8 rounded-2xl border border-white/10 bg-white/5 p-6">
-        <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-white/60">Mark by booking ID</h2>
+        <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-white/60">
+          Mark by booking ID
+        </h2>
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30" />
@@ -113,7 +118,11 @@ function MockPaymentsPage() {
             onClick={() => lookupAndPay("paid")}
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500/90 px-4 py-2 text-sm font-bold text-white hover:bg-emerald-500 disabled:opacity-50"
           >
-            {busyId === manualId.trim() ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+            {busyId === manualId.trim() ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <CheckCircle2 className="h-4 w-4" />
+            )}
             Mark paid
           </button>
           <button
@@ -131,7 +140,9 @@ function MockPaymentsPage() {
 
       {/* Recent bookings list */}
       <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-        <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-white/60">Recent bookings</h2>
+        <h2 className="mb-3 text-sm font-bold uppercase tracking-wider text-white/60">
+          Recent bookings
+        </h2>
         {isLoading ? (
           <p className="text-sm text-white/40">Loading…</p>
         ) : (
@@ -174,7 +185,9 @@ function MockPaymentsPage() {
                       <td className="py-2 pr-3 capitalize">{row.status}</td>
                       <td className="py-2 pr-3 capitalize">{row.payment_status}</td>
                       <td className="py-2 pr-3">{money(row.price_total_cents)}</td>
-                      <td className="py-2 pr-3 font-mono text-xs text-white/40">{row.id.slice(0, 8)}…</td>
+                      <td className="py-2 pr-3 font-mono text-xs text-white/40">
+                        {row.id.slice(0, 8)}…
+                      </td>
                       <td className="py-2 pr-3 text-right">
                         <div className="inline-flex gap-2">
                           <button
@@ -183,7 +196,11 @@ function MockPaymentsPage() {
                             onClick={() => run(row.id, "paid")}
                             className="inline-flex items-center gap-1 rounded-lg bg-emerald-500/20 px-2.5 py-1 text-xs font-semibold text-emerald-300 hover:bg-emerald-500/30 disabled:opacity-50"
                           >
-                            {busyId === row.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <CheckCircle2 className="h-3 w-3" />}
+                            {busyId === row.id ? (
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                            ) : (
+                              <CheckCircle2 className="h-3 w-3" />
+                            )}
                             Paid
                           </button>
                           <button

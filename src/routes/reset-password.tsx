@@ -35,10 +35,14 @@ function ResetPasswordPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
       <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-sm">
         <h1 className="text-2xl font-bold text-foreground">Set a new password</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Choose a strong password you haven't used before.</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Choose a strong password you haven't used before.
+        </p>
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">New password</label>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              New password
+            </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <input
@@ -53,12 +57,14 @@ function ResetPasswordPage() {
           </div>
           {error && (
             <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
-              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" /><span>{error}</span>
+              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+              <span>{error}</span>
             </div>
           )}
           {done && (
             <div className="flex items-start gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs text-emerald-600 dark:text-emerald-400">
-              <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" /><span>Password updated. Redirecting…</span>
+              <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
+              <span>Password updated. Redirecting…</span>
             </div>
           )}
           <button

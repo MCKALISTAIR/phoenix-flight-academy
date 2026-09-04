@@ -46,47 +46,47 @@ npm install @react-three/drei @react-three/fiber three
 The most common camera control. Orbit, zoom, and pan around a target.
 
 ```jsx
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls } from "@react-three/drei";
 
 <OrbitControls
-  makeDefault           // ALWAYS add — integrates with R3F events
-  enableDamping         // smooth movement
+  makeDefault // ALWAYS add — integrates with R3F events
+  enableDamping // smooth movement
   dampingFactor={0.05}
   minDistance={2}
   maxDistance={20}
   minPolarAngle={0}
-  maxPolarAngle={Math.PI / 2}  // prevent going below ground
-/>
+  maxPolarAngle={Math.PI / 2} // prevent going below ground
+/>;
 ```
 
 ### Other Controls
 
-| Component | Use Case |
-|-----------|----------|
-| `CameraControls` | Full-featured camera (recommended for complex scenes) |
-| `MapControls` | Top-down map navigation (orbit restricted to vertical axis) |
-| `PresentationControls` | Drag-to-rotate with spring physics (product viewers) |
-| `ScrollControls` | Scroll-driven animation (`pages` prop sets scroll length) |
-| `TransformControls` | Translate/rotate/scale gizmo on selected objects |
-| `DragControls` | Drag objects in 3D space |
-| `KeyboardControls` | Keyboard input as React context |
-| `FaceControls` | Face-tracking camera movement |
+| Component              | Use Case                                                    |
+| ---------------------- | ----------------------------------------------------------- |
+| `CameraControls`       | Full-featured camera (recommended for complex scenes)       |
+| `MapControls`          | Top-down map navigation (orbit restricted to vertical axis) |
+| `PresentationControls` | Drag-to-rotate with spring physics (product viewers)        |
+| `ScrollControls`       | Scroll-driven animation (`pages` prop sets scroll length)   |
+| `TransformControls`    | Translate/rotate/scale gizmo on selected objects            |
+| `DragControls`         | Drag objects in 3D space                                    |
+| `KeyboardControls`     | Keyboard input as React context                             |
+| `FaceControls`         | Face-tracking camera movement                               |
 
 ### ScrollControls Pattern
 
 ```jsx
-import { ScrollControls, useScroll } from '@react-three/drei'
+import { ScrollControls, useScroll } from "@react-three/drei";
 
 <ScrollControls pages={3} damping={0.1}>
   <ScrollScene />
-</ScrollControls>
+</ScrollControls>;
 
 function ScrollScene() {
-  const scroll = useScroll()
+  const scroll = useScroll();
   useFrame(() => {
-    const offset = scroll.offset // 0 to 1
-  })
-  return <mesh />
+    const offset = scroll.offset; // 0 to 1
+  });
+  return <mesh />;
 }
 ```
 
@@ -120,22 +120,22 @@ import { Environment } from '@react-three/drei'
 Complete lighting and shadow setup in one component. Ideal for product viewers.
 
 ```jsx
-import { Stage } from '@react-three/drei'
+import { Stage } from "@react-three/drei";
 
 <Stage preset="rembrandt" intensity={0.5} environment="city" adjustCamera>
   <Model />
-</Stage>
+</Stage>;
 ```
 
 ### Shadow Components
 
-| Component | Use Case | Key Props |
-|-----------|----------|-----------|
-| `ContactShadows` | Soft ground shadows (no light needed) | `opacity`, `scale`, `blur`, `far`, `resolution`, `color` |
-| `AccumulativeShadows` | High-quality baked soft shadows | `frames`, `alphaTest`, `scale`, `opacity` |
-| `RandomizedLight` | Child of AccumulativeShadows | `amount`, `radius`, `intensity`, `position` |
-| `BakeShadows` | Bake shadow maps once, stop updating | — |
-| `SoftShadows` | PCSS soft shadows for real-time lights | — |
+| Component             | Use Case                               | Key Props                                                |
+| --------------------- | -------------------------------------- | -------------------------------------------------------- |
+| `ContactShadows`      | Soft ground shadows (no light needed)  | `opacity`, `scale`, `blur`, `far`, `resolution`, `color` |
+| `AccumulativeShadows` | High-quality baked soft shadows        | `frames`, `alphaTest`, `scale`, `opacity`                |
+| `RandomizedLight`     | Child of AccumulativeShadows           | `amount`, `radius`, `intensity`, `position`              |
+| `BakeShadows`         | Bake shadow maps once, stop updating   | —                                                        |
+| `SoftShadows`         | PCSS soft shadows for real-time lights | —                                                        |
 
 ### AccumulativeShadows Pattern
 
@@ -147,12 +147,12 @@ import { Stage } from '@react-three/drei'
 
 ### Atmosphere
 
-| Component | Purpose | Key Props |
-|-----------|---------|-----------|
-| `Sky` | Procedural sky dome | `sunPosition`, `turbidity`, `rayleigh` |
-| `Stars` | Particle starfield | `radius`, `count`, `factor`, `fade` |
-| `Sparkles` | Floating particles | `count`, `size`, `speed`, `color` |
-| `Cloud` | Volumetric clouds | `opacity`, `speed`, `segments`, `bounds` |
+| Component  | Purpose             | Key Props                                |
+| ---------- | ------------------- | ---------------------------------------- |
+| `Sky`      | Procedural sky dome | `sunPosition`, `turbidity`, `rayleigh`   |
+| `Stars`    | Particle starfield  | `radius`, `count`, `factor`, `fade`      |
+| `Sparkles` | Floating particles  | `count`, `size`, `speed`, `color`        |
+| `Cloud`    | Volumetric clouds   | `opacity`, `speed`, `segments`, `bounds` |
 
 ---
 
@@ -163,7 +163,7 @@ import { Stage } from '@react-three/drei'
 High-quality 2D text rendered with signed distance fields via troika-three-text.
 
 ```jsx
-import { Text } from '@react-three/drei'
+import { Text } from "@react-three/drei";
 
 <Text
   fontSize={0.5}
@@ -174,7 +174,7 @@ import { Text } from '@react-three/drei'
   font="/fonts/Inter-Bold.woff"
 >
   Hello World
-</Text>
+</Text>;
 ```
 
 ### Text3D
@@ -182,14 +182,14 @@ import { Text } from '@react-three/drei'
 Extruded 3D geometry text. Requires a JSON font file (use `facetype.js` to convert).
 
 ```jsx
-import { Text3D, Center } from '@react-three/drei'
+import { Text3D, Center } from "@react-three/drei";
 
 <Center>
   <Text3D font="/fonts/Inter_Bold.json" size={0.75} height={0.2} bevelEnabled bevelSize={0.02}>
     Hello
     <meshStandardMaterial color="orange" />
   </Text3D>
-</Center>
+</Center>;
 ```
 
 ### Html
@@ -197,19 +197,19 @@ import { Text3D, Center } from '@react-three/drei'
 Renders DOM elements positioned in 3D space.
 
 ```jsx
-import { Html } from '@react-three/drei'
+import { Html } from "@react-three/drei";
 
 <mesh position={[0, 2, 0]}>
   <Html
-    transform            // transforms with 3D position
-    distanceFactor={10}  // scales with distance
-    occlude              // hides behind 3D objects
-    center               // centers the HTML element
+    transform // transforms with 3D position
+    distanceFactor={10} // scales with distance
+    occlude // hides behind 3D objects
+    center // centers the HTML element
     className="label"
   >
-    <div style={{ color: 'white' }}>Annotation</div>
+    <div style={{ color: "white" }}>Annotation</div>
   </Html>
-</mesh>
+</mesh>;
 ```
 
 ### Billboard
@@ -217,11 +217,11 @@ import { Html } from '@react-three/drei'
 ALWAYS faces the camera. Use for labels and sprites.
 
 ```jsx
-import { Billboard, Text } from '@react-three/drei'
+import { Billboard, Text } from "@react-three/drei";
 
 <Billboard follow={true} lockX={false} lockY={false} lockZ={false}>
   <Text fontSize={0.5}>Always Visible</Text>
-</Billboard>
+</Billboard>;
 ```
 
 ### Hud
@@ -229,27 +229,29 @@ import { Billboard, Text } from '@react-three/drei'
 Renders a heads-up display in a separate orthographic scene.
 
 ```jsx
-import { Hud, OrthographicCamera } from '@react-three/drei'
+import { Hud, OrthographicCamera } from "@react-three/drei";
 
 <Hud renderPriority={1}>
   <OrthographicCamera makeDefault position={[0, 0, 5]} />
-  <Text position={[0, 0, 0]} fontSize={0.1}>HUD Text</Text>
-</Hud>
+  <Text position={[0, 0, 0]} fontSize={0.1}>
+    HUD Text
+  </Text>
+</Hud>;
 ```
 
 ---
 
 ## Materials
 
-| Component | Purpose |
-|-----------|---------|
-| `MeshReflectorMaterial` | Reflective floors with blur, distortion, resolution |
+| Component                  | Purpose                                                |
+| -------------------------- | ------------------------------------------------------ |
+| `MeshReflectorMaterial`    | Reflective floors with blur, distortion, resolution    |
 | `MeshTransmissionMaterial` | Glass with chromatic aberration, distortion, thickness |
-| `MeshRefractionMaterial` | Refraction using environment cube map |
-| `MeshWobbleMaterial` | Animated wobble on MeshStandardMaterial |
-| `MeshDistortMaterial` | Perlin noise distortion on MeshStandardMaterial |
-| `MeshDiscardMaterial` | Renders nothing (shadow-only objects) |
-| `shaderMaterial` | Helper to create custom ShaderMaterial as JSX |
+| `MeshRefractionMaterial`   | Refraction using environment cube map                  |
+| `MeshWobbleMaterial`       | Animated wobble on MeshStandardMaterial                |
+| `MeshDistortMaterial`      | Perlin noise distortion on MeshStandardMaterial        |
+| `MeshDiscardMaterial`      | Renders nothing (shadow-only objects)                  |
+| `shaderMaterial`           | Helper to create custom ShaderMaterial as JSX          |
 
 ### MeshReflectorMaterial Example
 
@@ -274,15 +276,15 @@ import { Hud, OrthographicCamera } from '@react-three/drei'
 ### shaderMaterial Helper
 
 ```jsx
-import { shaderMaterial } from '@react-three/drei'
-import { extend } from '@react-three/fiber'
+import { shaderMaterial } from "@react-three/drei";
+import { extend } from "@react-three/fiber";
 
 const WaveMaterial = shaderMaterial(
   { uTime: 0, uColor: new THREE.Color(0.2, 0.0, 0.1) },
   /* vertex */ `varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
-  /* fragment */ `uniform float uTime; uniform vec3 uColor; varying vec2 vUv; void main() { gl_FragColor = vec4(vUv * uColor, 1.0); }`
-)
-extend({ WaveMaterial })
+  /* fragment */ `uniform float uTime; uniform vec3 uColor; varying vec2 vUv; void main() { gl_FragColor = vec4(vUv * uColor, 1.0); }`,
+);
+extend({ WaveMaterial });
 // Usage: <waveMaterial uTime={clock.elapsedTime} />
 ```
 
@@ -292,30 +294,30 @@ extend({ WaveMaterial })
 
 **ALWAYS** wrap loader-consuming components in `<Suspense>`.
 
-| Hook | Returns | Preload |
-|------|---------|---------|
-| `useGLTF(url)` | `{ nodes, materials, scene, animations }` | `useGLTF.preload(url)` |
-| `useTexture(url)` | `THREE.Texture` or map object | `useTexture.preload(url)` |
-| `useFBX(url)` | `THREE.Group` | `useFBX.preload(url)` |
-| `useKTX2(url)` | Compressed texture | `useKTX2.preload(url)` |
-| `useFont(url)` | Font data for Text3D | `useFont.preload(url)` |
-| `useAnimations(clips, ref)` | `{ actions, names, mixer, ref }` | — |
-| `useVideoTexture(url)` | `THREE.VideoTexture` | — |
+| Hook                        | Returns                                   | Preload                   |
+| --------------------------- | ----------------------------------------- | ------------------------- |
+| `useGLTF(url)`              | `{ nodes, materials, scene, animations }` | `useGLTF.preload(url)`    |
+| `useTexture(url)`           | `THREE.Texture` or map object             | `useTexture.preload(url)` |
+| `useFBX(url)`               | `THREE.Group`                             | `useFBX.preload(url)`     |
+| `useKTX2(url)`              | Compressed texture                        | `useKTX2.preload(url)`    |
+| `useFont(url)`              | Font data for Text3D                      | `useFont.preload(url)`    |
+| `useAnimations(clips, ref)` | `{ actions, names, mixer, ref }`          | —                         |
+| `useVideoTexture(url)`      | `THREE.VideoTexture`                      | —                         |
 
 ### useGLTF Pattern
 
 ```jsx
-import { useGLTF } from '@react-three/drei'
+import { useGLTF } from "@react-three/drei";
 
 function Model(props) {
-  const { nodes, materials } = useGLTF('/model.glb')
+  const { nodes, materials } = useGLTF("/model.glb");
   return (
     <group {...props}>
       <mesh geometry={nodes.Body.geometry} material={materials.Metal} />
     </group>
-  )
+  );
 }
-useGLTF.preload('/model.glb')
+useGLTF.preload("/model.glb");
 ```
 
 ### useTexture with Multiple Maps
@@ -335,16 +337,20 @@ const textures = useTexture({
 
 ```jsx
 function AnimatedModel() {
-  const group = useRef()
-  const { nodes, animations } = useGLTF('/character.glb')
-  const { actions } = useAnimations(animations, group)
+  const group = useRef();
+  const { nodes, animations } = useGLTF("/character.glb");
+  const { actions } = useAnimations(animations, group);
 
   useEffect(() => {
-    actions['Walk']?.play()
-    return () => actions['Walk']?.stop()
-  }, [actions])
+    actions["Walk"]?.play();
+    return () => actions["Walk"]?.stop();
+  }, [actions]);
 
-  return <group ref={group}><primitive object={nodes.Scene} /></group>
+  return (
+    <group ref={group}>
+      <primitive object={nodes.Scene} />
+    </group>
+  );
 }
 ```
 
@@ -357,7 +363,7 @@ function AnimatedModel() {
 ALWAYS use for large numbers of identical meshes (>100). Reduces draw calls from N to 1.
 
 ```jsx
-import { Instances, Instance } from '@react-three/drei'
+import { Instances, Instance } from "@react-three/drei";
 
 <Instances limit={1000} range={1000}>
   <boxGeometry />
@@ -365,7 +371,7 @@ import { Instances, Instance } from '@react-three/drei'
   {positions.map((pos, i) => (
     <Instance key={i} position={pos} color="orange" />
   ))}
-</Instances>
+</Instances>;
 ```
 
 ### Merged
@@ -373,7 +379,7 @@ import { Instances, Instance } from '@react-three/drei'
 Merges different geometries into a single draw call.
 
 ```jsx
-import { Merged } from '@react-three/drei'
+import { Merged } from "@react-three/drei";
 
 function Furniture({ nodes }) {
   return (
@@ -386,21 +392,21 @@ function Furniture({ nodes }) {
         </>
       )}
     </Merged>
-  )
+  );
 }
 ```
 
 ### Performance Helpers
 
-| Component | Purpose |
-|-----------|---------|
-| `Detailed` | LOD — switches geometry based on camera distance |
-| `BakeShadows` | Bakes shadows once, stops updating |
-| `AdaptiveDpr` | Lowers device pixel ratio during performance drops |
-| `AdaptiveEvents` | Reduces event frequency during performance drops |
-| `PerformanceMonitor` | Monitors FPS, triggers regression callbacks |
-| `Bvh` | BVH-accelerated raycasting for complex meshes |
-| `meshBounds` | Fast bounding-box raycasting (replaces per-triangle) |
+| Component            | Purpose                                              |
+| -------------------- | ---------------------------------------------------- |
+| `Detailed`           | LOD — switches geometry based on camera distance     |
+| `BakeShadows`        | Bakes shadows once, stops updating                   |
+| `AdaptiveDpr`        | Lowers device pixel ratio during performance drops   |
+| `AdaptiveEvents`     | Reduces event frequency during performance drops     |
+| `PerformanceMonitor` | Monitors FPS, triggers regression callbacks          |
+| `Bvh`                | BVH-accelerated raycasting for complex meshes        |
+| `meshBounds`         | Fast bounding-box raycasting (replaces per-triangle) |
 
 ### PerformanceMonitor Pattern
 
@@ -417,57 +423,57 @@ function Furniture({ nodes }) {
 
 ## Staging and Layout
 
-| Component | Purpose | Key Props |
-|-----------|---------|-----------|
-| `Center` | Centers children at origin | `top`, `right`, `bottom`, `left`, `front`, `back` |
-| `Float` | Floating hover animation | `speed`, `rotationIntensity`, `floatIntensity` |
-| `Bounds` | Auto-fit camera to content | `fit`, `clip`, `observe`, `margin` |
-| `Resize` | Normalizes children to unit size | `width`, `height`, `depth` |
+| Component | Purpose                          | Key Props                                         |
+| --------- | -------------------------------- | ------------------------------------------------- |
+| `Center`  | Centers children at origin       | `top`, `right`, `bottom`, `left`, `front`, `back` |
+| `Float`   | Floating hover animation         | `speed`, `rotationIntensity`, `floatIntensity`    |
+| `Bounds`  | Auto-fit camera to content       | `fit`, `clip`, `observe`, `margin`                |
+| `Resize`  | Normalizes children to unit size | `width`, `height`, `depth`                        |
 
 ---
 
 ## Abstractions and Effects
 
-| Component | Purpose |
-|-----------|---------|
-| `Edges` | Renders wireframe edges |
-| `Outlines` | Screen-space outlines |
-| `Trail` | Motion trail behind objects |
-| `Decal` | Project texture onto mesh surface |
-| `Splat` | Gaussian splatting renderer |
-| `Clone` | Deep clone with shared geometry/materials |
-| `Image` | Texture-mapped plane with shader effects |
+| Component            | Purpose                                    |
+| -------------------- | ------------------------------------------ |
+| `Edges`              | Renders wireframe edges                    |
+| `Outlines`           | Screen-space outlines                      |
+| `Trail`              | Motion trail behind objects                |
+| `Decal`              | Project texture onto mesh surface          |
+| `Splat`              | Gaussian splatting renderer                |
+| `Clone`              | Deep clone with shared geometry/materials  |
+| `Image`              | Texture-mapped plane with shader effects   |
 | `MeshPortalMaterial` | Portal — renders scene inside mesh surface |
-| `GradientTexture` | Procedural gradient texture |
+| `GradientTexture`    | Procedural gradient texture                |
 
 ---
 
 ## Gizmos
 
-| Component | Purpose |
-|-----------|---------|
-| `GizmoHelper` | Viewport orientation widget |
-| `PivotControls` | Interactive pivot gizmo (translate/rotate/scale) |
-| `TransformControls` | Three.js TransformControls wrapper |
-| `Grid` | Infinite configurable grid plane |
-| `Helper / useHelper` | Visualize light/camera helpers |
+| Component            | Purpose                                          |
+| -------------------- | ------------------------------------------------ |
+| `GizmoHelper`        | Viewport orientation widget                      |
+| `PivotControls`      | Interactive pivot gizmo (translate/rotate/scale) |
+| `TransformControls`  | Three.js TransformControls wrapper               |
+| `Grid`               | Infinite configurable grid plane                 |
+| `Helper / useHelper` | Visualize light/camera helpers                   |
 
 ---
 
 ## Component Selection Guide
 
-| Scenario | Component |
-|----------|-----------|
-| Product viewer | `Stage` + `OrbitControls` + `Environment` |
+| Scenario                  | Component                                           |
+| ------------------------- | --------------------------------------------------- |
+| Product viewer            | `Stage` + `OrbitControls` + `Environment`           |
 | Architectural walkthrough | `CameraControls` + `Environment` + `ContactShadows` |
-| Scrolling experience | `ScrollControls` + `useScroll` |
-| Data visualization | `Instances` + `Html` + `Billboard` |
-| Text labels in 3D | `Text` (2D) or `Text3D` (extruded) + `Billboard` |
-| Glass/transparent objects | `MeshTransmissionMaterial` + `Environment` |
-| Reflective floors | `MeshReflectorMaterial` |
-| Large identical meshes | `Instances` (>100) or `Merged` (mixed geometries) |
-| Model loading | `useGLTF` + `Suspense` + `.preload()` |
-| HUD / overlay | `Hud` or `Html` with `fullscreen` |
+| Scrolling experience      | `ScrollControls` + `useScroll`                      |
+| Data visualization        | `Instances` + `Html` + `Billboard`                  |
+| Text labels in 3D         | `Text` (2D) or `Text3D` (extruded) + `Billboard`    |
+| Glass/transparent objects | `MeshTransmissionMaterial` + `Environment`          |
+| Reflective floors         | `MeshReflectorMaterial`                             |
+| Large identical meshes    | `Instances` (>100) or `Merged` (mixed geometries)   |
+| Model loading             | `useGLTF` + `Suspense` + `.preload()`               |
+| HUD / overlay             | `Hud` or `Html` with `fullscreen`                   |
 
 ---
 

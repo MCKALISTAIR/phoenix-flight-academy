@@ -14,7 +14,7 @@ export async function requireAuth(href: string) {
 
 export async function requireRole(
   href: string,
-  allowed: AppRole[]
+  allowed: AppRole[],
 ): Promise<{ user: { id: string; email?: string }; roles: AppRole[] }> {
   const user = await requireAuth(href);
 
@@ -44,10 +44,7 @@ export async function requireAdmin(href: string) {
   return requireRole(href, ["admin", "super_admin"]);
 }
 
-export async function requireAuthOrRedirect(
-  href: string,
-  options?: { allowedRoles?: AppRole[] }
-) {
+export async function requireAuthOrRedirect(href: string, options?: { allowedRoles?: AppRole[] }) {
   try {
     const user = await requireAuth(href);
     if (!options?.allowedRoles?.length) {

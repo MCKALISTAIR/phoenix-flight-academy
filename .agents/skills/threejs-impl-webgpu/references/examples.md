@@ -3,8 +3,8 @@
 ## Example 1: Minimal WebGPU Scene with Fallback
 
 ```javascript
-import * as THREE from 'three/webgpu';
-import { WebGPU } from 'three/webgpu';
+import * as THREE from "three/webgpu";
+import { WebGPU } from "three/webgpu";
 
 async function init() {
   let renderer;
@@ -21,9 +21,7 @@ async function init() {
   document.body.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    75, window.innerWidth / window.innerHeight, 0.1, 1000
-  );
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.z = 5;
 
   const geometry = new THREE.BoxGeometry();
@@ -50,8 +48,8 @@ init();
 ## Example 2: TSL Custom Material with Animated Color
 
 ```javascript
-import * as THREE from 'three/webgpu';
-import { color, oscSine, time, mix, vec4 } from 'three/tsl';
+import * as THREE from "three/webgpu";
+import { color, oscSine, time, mix, vec4 } from "three/tsl";
 
 async function init() {
   const renderer = new THREE.WebGPURenderer({ antialias: true });
@@ -67,7 +65,7 @@ async function init() {
   const material = new THREE.MeshStandardNodeMaterial();
   const colorA = color(0xff0000); // red
   const colorB = color(0x0000ff); // blue
-  const t = oscSine(time);        // oscillate 0-1 over time
+  const t = oscSine(time); // oscillate 0-1 over time
   material.colorNode = vec4(mix(colorA, colorB, t), 1.0);
 
   const sphere = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 32), material);
@@ -91,8 +89,8 @@ init();
 ## Example 3: Vertex Displacement with TSL
 
 ```javascript
-import * as THREE from 'three/webgpu';
-import { positionLocal, normalLocal, sin, time, float, vec3 } from 'three/tsl';
+import * as THREE from "three/webgpu";
+import { positionLocal, normalLocal, sin, time, float, vec3 } from "three/tsl";
 
 async function init() {
   const renderer = new THREE.WebGPURenderer({ antialias: true });
@@ -107,9 +105,9 @@ async function init() {
   const material = new THREE.MeshStandardNodeMaterial({ color: 0x44aaff });
 
   // Displace vertices along their normals using a sine wave
-  const displacement = sin(
-    positionLocal.y.mul(float(4.0)).add(time.mul(float(2.0)))
-  ).mul(float(0.3));
+  const displacement = sin(positionLocal.y.mul(float(4.0)).add(time.mul(float(2.0)))).mul(
+    float(0.3),
+  );
 
   material.positionNode = positionLocal.add(normalLocal.mul(displacement));
 
@@ -135,11 +133,8 @@ init();
 ## Example 4: Compute Shader — Particle Position Update
 
 ```javascript
-import * as THREE from 'three/webgpu';
-import {
-  compute, storage, float, vec3, Fn,
-  globalId, sin, cos, time
-} from 'three/tsl';
+import * as THREE from "three/webgpu";
+import { compute, storage, float, vec3, Fn, globalId, sin, cos, time } from "three/tsl";
 
 async function init() {
   const renderer = new THREE.WebGPURenderer({ antialias: true });
@@ -155,20 +150,22 @@ async function init() {
 
   // Create storage buffer for positions
   const positionAttribute = new THREE.StorageBufferAttribute(
-    new Float32Array(particleCount * 3), 3
+    new Float32Array(particleCount * 3),
+    3,
   );
 
   // Initialize positions
   for (let i = 0; i < particleCount; i++) {
-    positionAttribute.setXYZ(i,
+    positionAttribute.setXYZ(
+      i,
       (Math.random() - 0.5) * 40,
       (Math.random() - 0.5) * 40,
-      (Math.random() - 0.5) * 40
+      (Math.random() - 0.5) * 40,
     );
   }
 
   // Compute shader: update positions with circular motion
-  const positionStorage = storage(positionAttribute, 'vec3', particleCount);
+  const positionStorage = storage(positionAttribute, "vec3", particleCount);
   const computeFn = Fn(() => {
     const idx = globalId.x;
     const pos = positionStorage.element(idx);
@@ -181,7 +178,7 @@ async function init() {
 
   // Create points geometry
   const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', positionAttribute);
+  geometry.setAttribute("position", positionAttribute);
 
   const material = new THREE.PointsNodeMaterial({
     size: 0.2,
@@ -206,9 +203,9 @@ init();
 ## Example 5: WebGPU Post-Processing with Bloom
 
 ```javascript
-import * as THREE from 'three/webgpu';
-import { PostProcessing } from 'three/webgpu';
-import { pass, bloom, renderOutput } from 'three/tsl';
+import * as THREE from "three/webgpu";
+import { PostProcessing } from "three/webgpu";
+import { pass, bloom, renderOutput } from "three/tsl";
 
 async function init() {
   const renderer = new THREE.WebGPURenderer({ antialias: true });

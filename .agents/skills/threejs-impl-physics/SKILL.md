@@ -20,15 +20,15 @@ metadata:
 
 ### Engine Selection Decision Tree
 
-| Criterion | cannon-es | Rapier |
-|-----------|-----------|--------|
-| Scene size | < 100 bodies | 100–10,000+ bodies |
-| Determinism needed | No | Yes (cross-platform) |
-| CCD (fast objects) | Limited | Full support |
-| Bundle size budget | ~100 KB | ~300–600 KB (WASM) |
-| Initialization | Synchronous | Async (MUST `await init()`) |
-| Prototyping speed | Faster (simpler API) | Slower (builder pattern) |
-| R3F integration | `@react-three/cannon` | `@react-three/rapier` |
+| Criterion          | cannon-es             | Rapier                      |
+| ------------------ | --------------------- | --------------------------- |
+| Scene size         | < 100 bodies          | 100–10,000+ bodies          |
+| Determinism needed | No                    | Yes (cross-platform)        |
+| CCD (fast objects) | Limited               | Full support                |
+| Bundle size budget | ~100 KB               | ~300–600 KB (WASM)          |
+| Initialization     | Synchronous           | Async (MUST `await init()`) |
+| Prototyping speed  | Faster (simpler API)  | Slower (builder pattern)    |
+| R3F integration    | `@react-three/cannon` | `@react-three/rapier`       |
 
 **Rule:** ALWAYS use Rapier for production applications requiring determinism, CCD, or > 100 bodies. Use cannon-es for prototyping and simple scenes.
 
@@ -51,7 +51,7 @@ metadata:
 ### World Setup
 
 ```js
-import * as CANNON from 'cannon-es';
+import * as CANNON from "cannon-es";
 
 const world = new CANNON.World();
 world.gravity.set(0, -9.82, 0);
@@ -66,11 +66,11 @@ ALWAYS use `SAPBroadphase` for scenes with > 20 bodies. `NaiveBroadphase` is O(n
 
 ### Body Types
 
-| Type | Mass | Behavior |
-|------|------|----------|
-| `CANNON.Body.DYNAMIC` | > 0 | Affected by forces and collisions |
-| `CANNON.Body.STATIC` | 0 | Immovable, infinite mass |
-| `CANNON.Body.KINEMATIC` | 0 | Moved programmatically, pushes dynamic bodies |
+| Type                    | Mass | Behavior                                      |
+| ----------------------- | ---- | --------------------------------------------- |
+| `CANNON.Body.DYNAMIC`   | > 0  | Affected by forces and collisions             |
+| `CANNON.Body.STATIC`    | 0    | Immovable, infinite mass                      |
+| `CANNON.Body.KINEMATIC` | 0    | Moved programmatically, pushes dynamic bodies |
 
 ```js
 const body = new CANNON.Body({
@@ -85,22 +85,22 @@ world.addBody(body);
 
 ### Shape Types
 
-| Shape | Constructor | Notes |
-|-------|------------|-------|
-| `Box` | `new CANNON.Box(halfExtents: Vec3)` | Axis-aligned box |
-| `Sphere` | `new CANNON.Sphere(radius)` | Cheapest collision shape |
-| `Cylinder` | `new CANNON.Cylinder(rTop, rBottom, height, segments)` | Cylinder |
-| `Plane` | `new CANNON.Plane()` | Infinite ground plane |
-| `ConvexPolyhedron` | `new CANNON.ConvexPolyhedron({vertices, faces})` | Custom convex hull |
-| `Trimesh` | `new CANNON.Trimesh(vertices, indices)` | STATIC only |
-| `Heightfield` | `new CANNON.Heightfield(data, {elementSize})` | Terrain |
-| `Particle` | `new CANNON.Particle()` | Point particle |
+| Shape              | Constructor                                            | Notes                    |
+| ------------------ | ------------------------------------------------------ | ------------------------ |
+| `Box`              | `new CANNON.Box(halfExtents: Vec3)`                    | Axis-aligned box         |
+| `Sphere`           | `new CANNON.Sphere(radius)`                            | Cheapest collision shape |
+| `Cylinder`         | `new CANNON.Cylinder(rTop, rBottom, height, segments)` | Cylinder                 |
+| `Plane`            | `new CANNON.Plane()`                                   | Infinite ground plane    |
+| `ConvexPolyhedron` | `new CANNON.ConvexPolyhedron({vertices, faces})`       | Custom convex hull       |
+| `Trimesh`          | `new CANNON.Trimesh(vertices, indices)`                | STATIC only              |
+| `Heightfield`      | `new CANNON.Heightfield(data, {elementSize})`          | Terrain                  |
+| `Particle`         | `new CANNON.Particle()`                                | Point particle           |
 
 ### Materials and Contacts
 
 ```js
-const groundMat = new CANNON.Material('ground');
-const ballMat = new CANNON.Material('ball');
+const groundMat = new CANNON.Material("ground");
+const ballMat = new CANNON.Material("ball");
 const contact = new CANNON.ContactMaterial(groundMat, ballMat, {
   friction: 0.4,
   restitution: 0.6,
@@ -116,14 +116,14 @@ ALWAYS assign materials to bodies after creating ContactMaterial — without ass
 
 ### Constraints
 
-| Constraint | Constructor | Use Case |
-|-----------|------------|----------|
-| `PointToPointConstraint` | `(bodyA, pivotA, bodyB, pivotB)` | Ball joint |
-| `DistanceConstraint` | `(bodyA, bodyB, distance)` | Fixed distance rod |
-| `HingeConstraint` | `(bodyA, bodyB, {pivotA, axisA, pivotB, axisB})` | Door hinge |
-| `LockConstraint` | `(bodyA, bodyB)` | Rigid lock |
-| `ConeTwistConstraint` | `(bodyA, bodyB, options)` | Ragdoll joints |
-| `Spring` | `(bodyA, bodyB, options)` | Damped spring |
+| Constraint               | Constructor                                      | Use Case           |
+| ------------------------ | ------------------------------------------------ | ------------------ |
+| `PointToPointConstraint` | `(bodyA, pivotA, bodyB, pivotB)`                 | Ball joint         |
+| `DistanceConstraint`     | `(bodyA, bodyB, distance)`                       | Fixed distance rod |
+| `HingeConstraint`        | `(bodyA, bodyB, {pivotA, axisA, pivotB, axisB})` | Door hinge         |
+| `LockConstraint`         | `(bodyA, bodyB)`                                 | Rigid lock         |
+| `ConeTwistConstraint`    | `(bodyA, bodyB, options)`                        | Ragdoll joints     |
+| `Spring`                 | `(bodyA, bodyB, options)`                        | Damped spring      |
 
 ```js
 const hinge = new CANNON.HingeConstraint(bodyA, bodyB, {
@@ -138,14 +138,18 @@ world.addConstraint(hinge);
 ### Events
 
 ```js
-body.addEventListener('collide', (event) => {
+body.addEventListener("collide", (event) => {
   const { contact } = event;
   // contact.ni = contact normal
   // contact.ri = contact point relative to bodyA
   // contact.rj = contact point relative to bodyB
 });
-body.addEventListener('sleep', () => { /* body went to sleep */ });
-body.addEventListener('wakeup', () => { /* body woke up */ });
+body.addEventListener("sleep", () => {
+  /* body went to sleep */
+});
+body.addEventListener("wakeup", () => {
+  /* body woke up */
+});
 ```
 
 ### Stepping
@@ -168,7 +172,7 @@ function animate() {
 ### WASM Initialization
 
 ```js
-import RAPIER from '@dimforge/rapier3d-compat';
+import RAPIER from "@dimforge/rapier3d-compat";
 
 await RAPIER.init(); // MUST await — ALL APIs undefined before this resolves
 
@@ -206,23 +210,21 @@ const kinVelDesc = RAPIER.RigidBodyDesc.kinematicVelocityBased();
 ### Collider Shapes
 
 ```js
-const colliderDesc = RAPIER.ColliderDesc.cuboid(1, 1, 1)
-  .setRestitution(0.5)
-  .setFriction(0.7);
+const colliderDesc = RAPIER.ColliderDesc.cuboid(1, 1, 1).setRestitution(0.5).setFriction(0.7);
 world.createCollider(colliderDesc, rigidBody);
 ```
 
-| Shape | Constructor | Notes |
-|-------|------------|-------|
-| `ColliderDesc.cuboid(hx, hy, hz)` | Box half-extents | Most common |
-| `ColliderDesc.ball(radius)` | Sphere | Cheapest shape |
-| `ColliderDesc.capsule(halfHeight, radius)` | Capsule | Good for characters |
-| `ColliderDesc.cylinder(halfHeight, radius)` | Cylinder | |
-| `ColliderDesc.cone(halfHeight, radius)` | Cone | |
-| `ColliderDesc.convexHull(vertices)` | Convex hull | From Float32Array |
-| `ColliderDesc.trimesh(vertices, indices)` | Triangle mesh | STATIC only |
-| `ColliderDesc.heightfield(nrows, ncols, heights, scale)` | Terrain | |
-| `ColliderDesc.roundCuboid(hx, hy, hz, borderRadius)` | Rounded box | |
+| Shape                                                    | Constructor      | Notes               |
+| -------------------------------------------------------- | ---------------- | ------------------- |
+| `ColliderDesc.cuboid(hx, hy, hz)`                        | Box half-extents | Most common         |
+| `ColliderDesc.ball(radius)`                              | Sphere           | Cheapest shape      |
+| `ColliderDesc.capsule(halfHeight, radius)`               | Capsule          | Good for characters |
+| `ColliderDesc.cylinder(halfHeight, radius)`              | Cylinder         |                     |
+| `ColliderDesc.cone(halfHeight, radius)`                  | Cone             |                     |
+| `ColliderDesc.convexHull(vertices)`                      | Convex hull      | From Float32Array   |
+| `ColliderDesc.trimesh(vertices, indices)`                | Triangle mesh    | STATIC only         |
+| `ColliderDesc.heightfield(nrows, ncols, heights, scale)` | Terrain          |                     |
+| `ColliderDesc.roundCuboid(hx, hy, hz, borderRadius)`     | Rounded box      |                     |
 
 ### Ray Casting
 
@@ -264,8 +266,8 @@ eventQueue.drainContactForceEvents((event) => {
 ```js
 const { vertices, colors } = world.debugRender();
 const geometry = new THREE.BufferGeometry();
-geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 4));
+geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
+geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 4));
 const material = new THREE.LineBasicMaterial({ vertexColors: true });
 const lines = new THREE.LineSegments(geometry, material);
 scene.add(lines);
@@ -290,8 +292,8 @@ function addPhysicsObject(mesh, body) {
 function updatePhysics(delta) {
   world.step(1 / 60, delta, 3);
   for (const { mesh, body } of pairs) {
-    mesh.position.copy(body.position);       // Vec3 → Vector3 (compatible)
-    mesh.quaternion.copy(body.quaternion);    // Quaternion → Quaternion (compatible)
+    mesh.position.copy(body.position); // Vec3 → Vector3 (compatible)
+    mesh.quaternion.copy(body.quaternion); // Quaternion → Quaternion (compatible)
   }
 }
 ```
@@ -311,8 +313,8 @@ function addPhysicsObject(mesh, rigidBody) {
 function updatePhysics() {
   world.step();
   for (const { mesh, rigidBody } of pairs) {
-    const pos = rigidBody.translation();   // returns {x, y, z}
-    const rot = rigidBody.rotation();      // returns {x, y, z, w}
+    const pos = rigidBody.translation(); // returns {x, y, z}
+    const rot = rigidBody.rotation(); // returns {x, y, z, w}
     mesh.position.set(pos.x, pos.y, pos.z);
     mesh.quaternion.set(rot.x, rot.y, rot.z, rot.w);
   }
@@ -328,7 +330,7 @@ NEVER use `.copy()` with Rapier return values — they are plain objects, NOT Th
 ### @react-three/rapier
 
 ```jsx
-import { Physics, RigidBody } from '@react-three/rapier';
+import { Physics, RigidBody } from "@react-three/rapier";
 
 function Scene() {
   return (
@@ -353,7 +355,7 @@ function Scene() {
 ### @react-three/cannon
 
 ```jsx
-import { Physics, useBox, useSphere } from '@react-three/cannon';
+import { Physics, useBox, useSphere } from "@react-three/cannon";
 
 function Floor() {
   const [ref] = useBox(() => ({ mass: 0, args: [20, 1, 20], position: [0, -1, 0] }));
@@ -370,15 +372,15 @@ function Floor() {
 
 ## Performance Comparison
 
-| Feature | cannon-es | Rapier |
-|---------|-----------|--------|
-| Language | JavaScript | Rust compiled to WASM |
-| Real-time bodies | ~1,000 | ~10,000+ |
-| Bundle size | ~100 KB | ~300–600 KB |
-| CCD | Limited | Full support |
-| Deterministic | No | Yes (cross-platform) |
-| Debug rendering | Manual | Built-in `world.debugRender()` |
-| API style | Constructor-based | Builder pattern |
+| Feature          | cannon-es         | Rapier                         |
+| ---------------- | ----------------- | ------------------------------ |
+| Language         | JavaScript        | Rust compiled to WASM          |
+| Real-time bodies | ~1,000            | ~10,000+                       |
+| Bundle size      | ~100 KB           | ~300–600 KB                    |
+| CCD              | Limited           | Full support                   |
+| Deterministic    | No                | Yes (cross-platform)           |
+| Debug rendering  | Manual            | Built-in `world.debugRender()` |
+| API style        | Constructor-based | Builder pattern                |
 
 ---
 

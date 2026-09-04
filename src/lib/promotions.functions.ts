@@ -39,7 +39,11 @@ export const listAllPromotions = createServerFn({ method: "GET" })
 
 const promoSchema = z.object({
   id: z.string().uuid().optional(),
-  code: z.string().min(1).max(40).transform((v) => v.toUpperCase()),
+  code: z
+    .string()
+    .min(1)
+    .max(40)
+    .transform((v) => v.toUpperCase()),
   name: z.string().min(1).max(120),
   discount_type: z.enum(["percentage", "fixed_amount"]),
   discount_value: z.number().int().min(0),
@@ -88,10 +92,7 @@ export const deletePromotion = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
-    const { error } = await context.supabase
-      .from("booking_promotions")
-      .delete()
-      .eq("id", data.id);
+    const { error } = await context.supabase.from("booking_promotions").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });

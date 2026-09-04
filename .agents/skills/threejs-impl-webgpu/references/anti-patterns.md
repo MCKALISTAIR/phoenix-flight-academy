@@ -25,7 +25,7 @@ const renderer = new THREE.WebGPURenderer({ antialias: true });
 await renderer.init();
 
 // CORRECT: ALWAYS check availability and provide fallback
-import { WebGPU } from 'three/webgpu';
+import { WebGPU } from "three/webgpu";
 
 let renderer;
 if (WebGPU.isAvailable()) {
@@ -50,8 +50,8 @@ const material = new THREE.ShaderMaterial({
 });
 
 // CORRECT: Use TSL with NodeMaterial
-import { MeshBasicNodeMaterial } from 'three/webgpu';
-import { vec4, float } from 'three/tsl';
+import { MeshBasicNodeMaterial } from "three/webgpu";
+import { vec4, float } from "three/tsl";
 
 const material = new MeshBasicNodeMaterial();
 material.colorNode = vec4(float(1.0), float(0.0), float(0.0), float(1.0));
@@ -85,15 +85,15 @@ renderer.setAnimationLoop((time) => {
 
 ```javascript
 // WRONG: EffectComposer is WebGL-only
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 const composer = new EffectComposer(renderer); // FAILS with WebGPURenderer
 
 // CORRECT: Use PostProcessing class with TSL nodes
-import { PostProcessing } from 'three/webgpu';
-import { pass, bloom, renderOutput } from 'three/tsl';
+import { PostProcessing } from "three/webgpu";
+import { pass, bloom, renderOutput } from "three/tsl";
 
 const postProcessing = new PostProcessing(renderer);
 const scenePass = pass(scene, camera);
@@ -108,11 +108,11 @@ postProcessing.outputNode = renderOutput(bloom(scenePass));
 
 ```javascript
 // WRONG: Standard three import does not include WebGPU classes
-import * as THREE from 'three';
+import * as THREE from "three";
 const renderer = new THREE.WebGPURenderer(); // undefined
 
 // CORRECT: ALWAYS import from 'three/webgpu' for WebGPU classes
-import * as THREE from 'three/webgpu';
+import * as THREE from "three/webgpu";
 const renderer = new THREE.WebGPURenderer({ antialias: true });
 ```
 
@@ -129,7 +129,7 @@ if (someNode.greaterThan(float(0.5))) {
 }
 
 // CORRECT: ALWAYS use TSL's capital If for shader-level conditionals
-import { If, float, color } from 'three/tsl';
+import { If, float, color } from "three/tsl";
 
 If(someNode.greaterThan(float(0.5)), () => {
   material.colorNode = color(0xff0000);
@@ -147,7 +147,7 @@ If(someNode.greaterThan(float(0.5)), () => {
 ```javascript
 // WRONG: computeAsync returns a Promise — ignoring it causes race conditions
 renderer.computeAsync(computeNode); // fire-and-forget
-renderer.render(scene, camera);     // may render before compute finishes
+renderer.render(scene, camera); // may render before compute finishes
 
 // CORRECT: ALWAYS await compute before rendering dependent results
 await renderer.computeAsync(computeNode);

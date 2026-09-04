@@ -1,4 +1,3 @@
-
 # Plan: Multi-tenancy + Marketing Site
 
 Two phases. Each is shipped end-to-end before the next starts. Phase 1 is a big DB migration that requires your approval before code lands.
@@ -12,6 +11,7 @@ Today every table is global: one bookings table, one fleet, one customer base. T
 ### 1.1 Schema (single migration, you approve it)
 
 New tables:
+
 - **`organizations`** — `name`, `slug` (unique), `icao_code`, `timezone`, `currency`, `subscription_tier` (enum: `trial` / `starter` / `pro`), `trial_ends_at`, `branding` (jsonb: logo_url, primary_color).
 - **`organization_members`** — `organization_id`, `user_id`, `role` (enum: `owner` / `admin` / `staff`), `invited_by`, `joined_at`. Unique on `(organization_id, user_id)`.
 - **`organization_invites`** — `organization_id`, `email`, `role`, `token`, `expires_at`, `accepted_at`.
@@ -108,4 +108,4 @@ No CMS for marketing copy (it's in source — fast iteration, you control it). N
 
 - **Slug for the existing org**: default to `phoenix` unless you want different.
 - **Pricing tiers**: I'll use placeholder numbers (e.g. $99 / $249 / Contact us). Tell me if you have real numbers.
-- **Marketing brand name**: "Phoenix Flight Academy" is the *tenant*. What's the *platform* called? I'll use "Skyline" as a placeholder if you don't have one yet.
+- **Marketing brand name**: "Phoenix Flight Academy" is the _tenant_. What's the _platform_ called? I'll use "Skyline" as a placeholder if you don't have one yet.

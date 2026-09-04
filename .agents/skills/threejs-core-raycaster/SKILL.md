@@ -21,36 +21,36 @@ metadata:
 ### Raycaster Constructor
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const raycaster = new THREE.Raycaster(
-  origin,     // Vector3 — default: (0, 0, 0)
-  direction,  // Vector3 — MUST be normalized, default: (0, 0, -1)
-  near,       // number — minimum distance, default: 0
-  far         // number — maximum distance, default: Infinity
+  origin, // Vector3 — default: (0, 0, 0)
+  direction, // Vector3 — MUST be normalized, default: (0, 0, -1)
+  near, // number — minimum distance, default: 0
+  far, // number — maximum distance, default: Infinity
 );
 ```
 
 ### Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `ray` | `Ray` | -- | Underlying Ray object (origin + direction) |
-| `near` | `number` | `0` | Minimum intersection distance |
-| `far` | `number` | `Infinity` | Maximum intersection distance |
-| `camera` | `Camera` | -- | Required for raycasting against `Sprite` objects |
-| `layers` | `Layers` | layer 0 | Layer mask -- only objects on matching layers are tested |
-| `params` | `object` | see below | Per-type intersection thresholds |
+| Property | Type     | Default    | Description                                              |
+| -------- | -------- | ---------- | -------------------------------------------------------- |
+| `ray`    | `Ray`    | --         | Underlying Ray object (origin + direction)               |
+| `near`   | `number` | `0`        | Minimum intersection distance                            |
+| `far`    | `number` | `Infinity` | Maximum intersection distance                            |
+| `camera` | `Camera` | --         | Required for raycasting against `Sprite` objects         |
+| `layers` | `Layers` | layer 0    | Layer mask -- only objects on matching layers are tested |
+| `params` | `object` | see below  | Per-type intersection thresholds                         |
 
 ### Params Defaults
 
 ```javascript
 raycaster.params = {
   Mesh: {},
-  Line: { threshold: 1 },    // world units distance for line hits
+  Line: { threshold: 1 }, // world units distance for line hits
   LOD: {},
-  Points: { threshold: 1 },  // world units distance for point hits
-  Sprite: {}
+  Points: { threshold: 1 }, // world units distance for point hits
+  Sprite: {},
 };
 ```
 
@@ -120,15 +120,15 @@ Every intersection in the returned array has this structure:
 
 ```typescript
 interface Intersection {
-  distance: number;       // distance from ray origin to hit point
-  point: Vector3;         // hit point in world space
-  face: Face | null;      // hit face ({a, b, c} vertex indices + normal)
-  faceIndex: number;      // index of hit face in the geometry
-  object: Object3D;       // the intersected object reference
-  uv?: Vector2;           // UV coordinates at intersection point
-  uv1?: Vector2;          // second UV set (if available)
-  normal?: Vector3;       // interpolated surface normal at hit point
-  instanceId?: number;    // instance index (only for InstancedMesh)
+  distance: number; // distance from ray origin to hit point
+  point: Vector3; // hit point in world space
+  face: Face | null; // hit face ({a, b, c} vertex indices + normal)
+  faceIndex: number; // index of hit face in the geometry
+  object: Object3D; // the intersected object reference
+  uv?: Vector2; // UV coordinates at intersection point
+  uv1?: Vector2; // second UV set (if available)
+  normal?: Vector3; // interpolated surface normal at hit point
+  instanceId?: number; // instance index (only for InstancedMesh)
 }
 ```
 
@@ -160,7 +160,7 @@ ALWAYS use `getBoundingClientRect()` when the canvas does NOT fill the entire vi
 When raycasting against `InstancedMesh`, the intersection result includes `instanceId` identifying which instance was hit:
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const intersects = raycaster.intersectObject(instancedMesh);
 if (intersects.length > 0) {
@@ -187,8 +187,8 @@ Raycaster respects the `Layers` system. Only objects whose layers overlap with `
 
 ```javascript
 // Assign objects to layers
-selectableMesh.layers.set(1);        // exclusively on layer 1
-decorationMesh.layers.set(2);        // exclusively on layer 2
+selectableMesh.layers.set(1); // exclusively on layer 1
+decorationMesh.layers.set(2); // exclusively on layer 2
 
 // Configure raycaster to only test layer 1
 raycaster.layers.set(1);
@@ -210,9 +210,10 @@ Use layers to create picking groups: interactive objects on layer 1, non-interac
 ## Performance Guidelines
 
 1. **Throttle mousemove raycasting** -- NEVER raycast on every `mousemove` event. Use a flag checked in the render loop:
+
    ```javascript
    let needsRaycast = false;
-   canvas.addEventListener('pointermove', (event) => {
+   canvas.addEventListener("pointermove", (event) => {
      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
      needsRaycast = true;
@@ -234,6 +235,7 @@ Use layers to create picking groups: interactive objects on layer 1, non-interac
 3. **Maintain a flat selectable array** -- instead of raycasting against `scene` with `recursive: true`, keep a separate `selectableObjects[]` array and pass `recursive: false`.
 
 4. **Reuse the intersections array** -- pass `optionalTarget` to avoid garbage collection:
+
    ```javascript
    const intersections = [];
    raycaster.intersectObjects(selectableObjects, false, intersections);

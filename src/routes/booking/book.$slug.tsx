@@ -2,7 +2,17 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Calendar as CalendarIcon, Plane, User as UserIcon, CreditCard, AlertCircle, CheckCircle2, Loader2, Tag } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar as CalendarIcon,
+  Plane,
+  User as UserIcon,
+  CreditCard,
+  AlertCircle,
+  CheckCircle2,
+  Loader2,
+  Tag,
+} from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { getBookingProductBySlug } from "@/lib/booking-products.functions";
 import { getAvailableSlots } from "@/lib/booking-calendar.functions";
@@ -19,7 +29,13 @@ export const Route = createFileRoute("/booking/book/$slug")({
   }),
 });
 
-type Aircraft = { id: string; registration: string; model: string; rate_wet: number | null; status: string };
+type Aircraft = {
+  id: string;
+  registration: string;
+  model: string;
+  rate_wet: number | null;
+  status: string;
+};
 type Instructor = { id: string; name: string; role: string | null };
 
 function fmtTime(iso: string) {
@@ -96,7 +112,10 @@ function BookingFlow() {
   const [promoInput, setPromoInput] = useState("");
   const [promoStatus, setPromoStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
   const [promoMessage, setPromoMessage] = useState("");
-  const [promoDiscount, setPromoDiscount] = useState<{ discountType: "percentage" | "fixed_amount"; discountValue: number } | null>(null);
+  const [promoDiscount, setPromoDiscount] = useState<{
+    discountType: "percentage" | "fixed_amount";
+    discountValue: number;
+  } | null>(null);
 
   // Block Booking state
   const [recurrence, setRecurrence] = useState<"weekly" | "fortnightly" | "none">("none");
@@ -132,7 +151,13 @@ function BookingFlow() {
 
   // Auto-pick first instructor for lesson/experience
   useEffect(() => {
-    if (!instructorId && instructors && instructors.length > 0 && product && product.kind !== "self_hire") {
+    if (
+      !instructorId &&
+      instructors &&
+      instructors.length > 0 &&
+      product &&
+      product.kind !== "self_hire"
+    ) {
       setInstructorId(instructors[0].id);
     }
   }, [instructors, instructorId, product]);
@@ -152,7 +177,7 @@ function BookingFlow() {
         data: {
           productSlug: slug,
           aircraftId: aircraftId ?? undefined,
-          instructorId: product?.kind !== "self_hire" ? instructorId ?? undefined : undefined,
+          instructorId: product?.kind !== "self_hire" ? (instructorId ?? undefined) : undefined,
           from: dateRange.from,
           to: dateRange.to,
         },
@@ -206,7 +231,8 @@ function BookingFlow() {
     const wet = selectedAircraft?.rate_wet ? Number(selectedAircraft.rate_wet) * 100 : 0;
     let base = 0;
     if (product.kind === "experience") base = product.package_price_cents ?? 0;
-    else if (product.kind === "lesson") base = wet * hours + (product.instructor_fee_per_hour_cents ?? 0) * hours;
+    else if (product.kind === "lesson")
+      base = wet * hours + (product.instructor_fee_per_hour_cents ?? 0) * hours;
     else base = wet * hours;
     base = Math.round(base);
 
@@ -223,26 +249,31 @@ function BookingFlow() {
       product.payment_mode === "deposit"
         ? Math.round((total * product.deposit_pct) / 100)
         : product.payment_mode === "full"
-        ? total
-        : 0;
+          ? total
+          : 0;
     return { base, total, deposit, discountCents };
   }, [product, selectedAircraft, promoDiscount]);
 
   if (productLoading) {
-    return <div className="min-h-screen bg-[oklch(0.13_0.03_270)] p-8 text-white/60">Loading…</div>;
+    return (
+      <div className="min-h-screen bg-[oklch(0.12_0.04_250)] p-8 font-mono text-sm text-white/60">
+        Loading flight parameters…
+      </div>
+    );
   }
   if (!product) {
     return (
-      <div className="min-h-screen bg-[oklch(0.13_0.03_270)] p-8 text-white">
+      <div className="min-h-screen bg-[oklch(0.12_0.04_250)] p-8 text-white">
         <p>Product not found.</p>
-        <Link to="/booking" className="text-[oklch(0.75_0.18_270)] underline">Back to booking</Link>
+        <Link to="/booking" className="text-primary underline">
+          Back to booking
+        </Link>
       </div>
     );
   }
 
   // Access gates
-  const needsLogin =
-    (product.kind === "lesson" || product.kind === "self_hire") && !user;
+  const needsLogin = (product.kind === "lesson" || product.kind === "self_hire") && !user;
   const needsSelfHireApproval =
     product.kind === "self_hire" && user && selfHire && !selfHire.approved;
 
@@ -287,28 +318,37 @@ function BookingFlow() {
   }
 
   return (
-    <div className="min-h-screen bg-[oklch(0.13_0.03_270)] text-white">
+    <div className="min-h-screen bg-[oklch(0.12_0.04_250)] text-white">
       <div className="container mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-        <Link to="/booking" className="mb-6 inline-flex items-center gap-2 text-sm text-white/60 hover:text-white">
+        <Link
+          to="/booking"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-white/60 hover:text-white"
+        >
           <ArrowLeft className="h-4 w-4" /> Back to all products
         </Link>
 
         <div className="mb-8">
-          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white/60">
+          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-mono font-bold uppercase tracking-wider text-primary">
             {product.kind === "self_hire" ? "Self-Hire" : product.kind}
           </span>
-          <h1 className="mt-3 text-3xl font-extrabold">{product.name}</h1>
+          <h1 className="mt-3 text-3xl font-extrabold tracking-tight">{product.name}</h1>
           {product.tagline && <p className="mt-1 text-white/60">{product.tagline}</p>}
         </div>
 
         {needsLogin && (
-          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-5 text-sm">
-            <AlertCircle className="mt-0.5 h-5 w-5 text-amber-400" />
+          <div className="mb-6 flex items-start gap-3 rounded-xl border border-warning/30 bg-warning/10 p-5 text-sm">
+            <AlertCircle className="mt-0.5 h-5 w-5 text-warning shrink-0" />
             <div>
-              <p className="font-semibold text-amber-300">Sign-in required</p>
-              <p className="mt-1 text-amber-200/80">
-                {product.kind === "lesson" ? "Lessons are for enrolled students." : "Self-hire requires an approved pilot account."}{" "}
-                <Link to="/login" search={{ redirect: `/booking/book/${slug}` }} className="underline">
+              <p className="font-semibold text-warning">Sign-in required</p>
+              <p className="mt-1 text-white/80">
+                {product.kind === "lesson"
+                  ? "Lessons are for enrolled students."
+                  : "Self-hire requires an approved pilot account."}{" "}
+                <Link
+                  to="/login"
+                  search={{ redirect: `/booking/book/${slug}` }}
+                  className="underline font-semibold text-primary"
+                >
                   Sign in to continue
                 </Link>
                 .
@@ -318,12 +358,13 @@ function BookingFlow() {
         )}
 
         {needsSelfHireApproval && (
-          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-5 text-sm">
-            <AlertCircle className="mt-0.5 h-5 w-5 text-amber-400" />
+          <div className="mb-6 flex items-start gap-3 rounded-xl border border-warning/30 bg-warning/10 p-5 text-sm">
+            <AlertCircle className="mt-0.5 h-5 w-5 text-warning shrink-0" />
             <div>
-              <p className="font-semibold text-amber-300">Self-hire approval required</p>
-              <p className="mt-1 text-amber-200/80">
-                Contact the school to be approved for self-hire. Once approved you'll be able to book aircraft here.
+              <p className="font-semibold text-warning">Self-hire approval required</p>
+              <p className="mt-1 text-white/80">
+                Contact the school to be approved for self-hire. Once approved you'll be able to
+                book aircraft here.
               </p>
             </div>
           </div>
@@ -333,9 +374,9 @@ function BookingFlow() {
           {/* Left column: pickers */}
           <div className="space-y-6 lg:col-span-2">
             {/* Aircraft */}
-            <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-              <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-white/60">
-                <Plane className="h-4 w-4" /> Aircraft
+            <section className="rounded-xl border border-white/10 bg-white/5 p-6">
+              <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <Plane className="h-4 w-4 text-primary" /> Aircraft
               </h2>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 {(aircraft ?? []).map((a) => (
@@ -344,16 +385,22 @@ function BookingFlow() {
                     key={a.id}
                     onClick={() => setAircraftId(a.id)}
                     disabled={a.status !== "serviceable"}
-                    className={`rounded-xl border p-4 text-left transition-all ${
+                    className={`rounded-xl border p-4 text-left transition-all active:scale-[0.99] ${
                       aircraftId === a.id
-                        ? "border-[oklch(0.55_0.22_270)] bg-[oklch(0.55_0.22_270)]/15"
+                        ? "border-primary bg-primary/10 ring-1 ring-primary/30"
                         : "border-white/10 bg-white/5 hover:border-white/20"
                     } ${a.status !== "serviceable" ? "opacity-40" : ""}`}
                   >
-                    <p className="font-bold">{a.registration}</p>
+                    <p className="font-bold tracking-tight">{a.registration}</p>
                     <p className="text-xs text-white/50">{a.model}</p>
-                    {a.rate_wet && <p className="mt-1 text-xs text-white/70">£{Number(a.rate_wet).toFixed(2)}/hr wet</p>}
-                    {a.status !== "serviceable" && <p className="mt-1 text-xs text-red-400 capitalize">{a.status}</p>}
+                    {a.rate_wet && (
+                      <p className="mt-1 text-xs font-mono tabular-nums text-white/80">
+                        £{Number(a.rate_wet).toFixed(2)}/hr wet
+                      </p>
+                    )}
+                    {a.status !== "serviceable" && (
+                      <p className="mt-1 text-xs text-destructive capitalize">{a.status}</p>
+                    )}
                   </button>
                 ))}
               </div>
@@ -361,9 +408,9 @@ function BookingFlow() {
 
             {/* Instructor (not for self-hire) */}
             {product.kind !== "self_hire" && (
-              <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-                <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-white/60">
-                  <UserIcon className="h-4 w-4" /> Instructor
+              <section className="rounded-xl border border-white/10 bg-white/5 p-6">
+                <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <UserIcon className="h-4 w-4 text-primary" /> Instructor
                 </h2>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   {(instructors ?? []).map((i) => (
@@ -371,13 +418,13 @@ function BookingFlow() {
                       type="button"
                       key={i.id}
                       onClick={() => setInstructorId(i.id)}
-                      className={`rounded-xl border p-4 text-left transition-all ${
+                      className={`rounded-xl border p-4 text-left transition-all active:scale-[0.99] ${
                         instructorId === i.id
-                          ? "border-[oklch(0.55_0.22_270)] bg-[oklch(0.55_0.22_270)]/15"
+                          ? "border-primary bg-primary/10 ring-1 ring-primary/30"
                           : "border-white/10 bg-white/5 hover:border-white/20"
                       }`}
                     >
-                      <p className="font-bold">{i.name}</p>
+                      <p className="font-bold tracking-tight">{i.name}</p>
                       {i.role && <p className="text-xs text-white/50">{i.role}</p>}
                     </button>
                   ))}
@@ -386,9 +433,9 @@ function BookingFlow() {
             )}
 
             {/* Date + slot */}
-            <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-              <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-white/60">
-                <CalendarIcon className="h-4 w-4" /> Date & time
+            <section className="rounded-xl border border-white/10 bg-white/5 p-6">
+              <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <CalendarIcon className="h-4 w-4 text-primary" /> Date & Time
               </h2>
 
               <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
@@ -404,17 +451,19 @@ function BookingFlow() {
                         setSelectedDate(d);
                         setSelectedSlot(null);
                       }}
-                      className={`flex min-w-[68px] flex-col items-center rounded-xl border px-3 py-2 transition-all ${
+                      className={`flex min-w-[68px] flex-col items-center rounded-xl border px-3 py-2 transition-all active:scale-[0.98] ${
                         active
-                          ? "border-[oklch(0.55_0.22_270)] bg-[oklch(0.55_0.22_270)]/15"
+                          ? "border-primary bg-primary/15 ring-1 ring-primary/30 text-white"
                           : has
-                          ? "border-white/10 bg-white/5 hover:border-white/20"
-                          : "border-white/5 bg-white/0 text-white/30"
+                            ? "border-white/10 bg-white/5 hover:border-white/20"
+                            : "border-white/5 bg-white/0 text-white/30"
                       }`}
                     >
-                      <span className="text-[10px] uppercase">{info.weekday}</span>
-                      <span className="text-lg font-bold">{info.day}</span>
-                      <span className="text-[10px]">{info.month}</span>
+                      <span className="text-[10px] uppercase font-mono tracking-wider">
+                        {info.weekday}
+                      </span>
+                      <span className="text-lg font-bold font-mono tabular-nums">{info.day}</span>
+                      <span className="text-[10px] uppercase font-mono">{info.month}</span>
                     </button>
                   );
                 })}
@@ -422,9 +471,12 @@ function BookingFlow() {
 
               <div className="mt-4">
                 {slotsLoading ? (
-                  <p className="text-sm text-white/40">Loading times…</p>
+                  <p className="text-sm font-mono text-white/40">Loading available slots…</p>
                 ) : (
-                  <div data-testid="slot-grid" className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+                  <div
+                    data-testid="slot-grid"
+                    className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6"
+                  >
                     {(slotsByDate[selectedDate] ?? []).map((s) => (
                       <button
                         type="button"
@@ -432,19 +484,21 @@ function BookingFlow() {
                         disabled={!s.available}
                         onClick={() => setSelectedSlot(s.start)}
                         title={s.reason}
-                        className={`rounded-lg border px-2 py-2 text-sm font-medium transition-all ${
+                        className={`rounded-lg border px-2 py-2 text-sm font-mono tabular-nums font-medium transition-all active:scale-[0.98] ${
                           selectedSlot === s.start
-                            ? "border-[oklch(0.55_0.22_270)] bg-[oklch(0.55_0.22_270)]/20"
+                            ? "border-primary bg-primary text-primary-foreground font-bold shadow-sm"
                             : s.available
-                            ? "border-white/10 bg-white/5 hover:border-white/20"
-                            : "border-white/5 bg-white/0 text-white/20 line-through"
+                              ? "border-white/10 bg-white/5 hover:border-white/20 text-white"
+                              : "border-white/5 bg-white/0 text-white/20 line-through"
                         }`}
                       >
                         {fmtTime(s.start)}
                       </button>
                     ))}
                     {(slotsByDate[selectedDate] ?? []).length === 0 && (
-                      <p className="col-span-full text-sm text-white/40">No slots on this day.</p>
+                      <p className="col-span-full text-sm text-white/40 font-mono">
+                        No slots available on this date.
+                      </p>
                     )}
                   </div>
                 )}
@@ -453,23 +507,26 @@ function BookingFlow() {
 
             {/* Recurring block bookings section */}
             {product.kind === "lesson" && (
-              <section className="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-4">
-                <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-white/60">
-                  <CalendarIcon className="h-4 w-4" /> Block Booking
+              <section className="rounded-xl border border-white/10 bg-white/5 p-6 space-y-4">
+                <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <CalendarIcon className="h-4 w-4 text-primary" /> Block Booking
                 </h2>
                 <div className="space-y-3">
-                  <p className="text-xs text-white/50 leading-relaxed">
-                    Reserve your preferred instructor and aircraft slot in advance for future lessons. 
-                    You pay only for the first lesson now; future slots will be billed individually.
+                  <p className="text-xs text-white/60 leading-relaxed">
+                    Reserve your preferred instructor and aircraft slot in advance for future
+                    lessons. You pay only for the first lesson now; future slots will be billed
+                    individually.
                   </p>
-                  
+
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
-                      <label className="mb-1 block text-xs text-white/50">Schedule Pattern</label>
+                      <label className="mb-1 block text-xs text-white/60 uppercase tracking-wider font-semibold">
+                        Schedule Pattern
+                      </label>
                       <select
                         value={recurrence}
                         onChange={(e) => setRecurrence(e.target.value as any)}
-                        className="w-full rounded-lg border border-white/10 bg-[oklch(0.13_0.03_270)] px-3 py-2 text-sm text-white"
+                        className="w-full rounded-lg border border-white/10 bg-surface-navy px-3 py-2 text-sm text-white focus:border-primary outline-none"
                       >
                         <option value="none">One-off booking</option>
                         <option value="weekly">Repeat weekly</option>
@@ -479,11 +536,13 @@ function BookingFlow() {
 
                     {recurrence !== "none" && (
                       <div>
-                        <label className="mb-1 block text-xs text-white/50">Number of Lessons</label>
+                        <label className="mb-1 block text-xs text-white/60 uppercase tracking-wider font-semibold">
+                          Number of Lessons
+                        </label>
                         <select
                           value={occurrences}
                           onChange={(e) => setOccurrences(Number(e.target.value))}
-                          className="w-full rounded-lg border border-white/10 bg-[oklch(0.13_0.03_270)] px-3 py-2 text-sm text-white"
+                          className="w-full rounded-lg border border-white/10 bg-surface-navy px-3 py-2 text-sm text-white focus:border-primary outline-none font-mono tabular-nums"
                         >
                           {[2, 3, 4, 5, 6, 8, 10, 12].map((num) => (
                             <option key={num} value={num}>
@@ -497,19 +556,35 @@ function BookingFlow() {
 
                   {recurrence !== "none" && projectedSlots.length > 0 && (
                     <div className="mt-4 rounded-xl border border-white/5 bg-white/2 p-4 space-y-2">
-                      <p className="text-xs font-bold text-white/70">Projected Future Lesson Slots:</p>
+                      <p className="text-xs font-bold text-white/70">
+                        Projected Future Lesson Slots:
+                      </p>
                       <div className="divide-y divide-white/5 text-xs text-white/50 max-h-48 overflow-y-auto pr-1">
                         <div className="py-1.5 flex justify-between">
                           <span>Lesson 1 (Secure & pay now)</span>
                           <span className="font-semibold text-white/80">
-                            {selectedSlot ? new Date(selectedSlot).toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—"}
+                            {selectedSlot
+                              ? new Date(selectedSlot).toLocaleString("en-GB", {
+                                  weekday: "short",
+                                  day: "numeric",
+                                  month: "short",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                              : "—"}
                           </span>
                         </div>
                         {projectedSlots.map((date, idx) => (
                           <div key={idx} className="py-1.5 flex justify-between">
                             <span>Lesson {idx + 2} (Slot reserved)</span>
                             <span className="font-semibold text-white/80">
-                              {date.toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                              {date.toLocaleString("en-GB", {
+                                weekday: "short",
+                                day: "numeric",
+                                month: "short",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
                             </span>
                           </div>
                         ))}
@@ -587,7 +662,9 @@ function BookingFlow() {
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-white/50">When</dt>
-                  <dd className="font-medium">{selectedSlot ? new Date(selectedSlot).toLocaleString("en-GB") : "—"}</dd>
+                  <dd className="font-medium">
+                    {selectedSlot ? new Date(selectedSlot).toLocaleString("en-GB") : "—"}
+                  </dd>
                 </div>
                 <div className="my-3 border-t border-white/10" />
                 {pricePreview && (
@@ -606,18 +683,20 @@ function BookingFlow() {
                         </div>
                       </>
                     )}
-                    <div className="flex justify-between">
-                      <dt className="text-white/50">Total</dt>
-                      <dd className="font-bold">{money(pricePreview.total)}</dd>
+                    <div className="flex justify-between font-mono tabular-nums">
+                      <dt className="text-white/60">Total</dt>
+                      <dd className="font-bold text-white">{money(pricePreview.total)}</dd>
                     </div>
                     {product.payment_mode === "deposit" && (
-                      <div className="flex justify-between text-[oklch(0.75_0.18_270)]">
-                        <dt>Deposit due</dt>
+                      <div className="flex justify-between text-primary font-mono tabular-nums">
+                        <dt>Deposit Due</dt>
                         <dd className="font-bold">{money(pricePreview.deposit)}</dd>
                       </div>
                     )}
                     {product.payment_mode === "invoice" && (
-                      <p className="text-xs text-white/40">Invoice — no card required at booking.</p>
+                      <p className="text-xs text-white/40 font-mono">
+                        Invoice — no card required at booking.
+                      </p>
                     )}
                   </>
                 )}
@@ -625,13 +704,19 @@ function BookingFlow() {
 
               {/* Promo code */}
               <div className="mt-4">
-                <p className="mb-1.5 text-xs font-semibold text-white/40 uppercase tracking-wider">Promo Code</p>
+                <p className="mb-1.5 text-[11px] font-semibold text-white/60 uppercase tracking-wider">
+                  Promo Code
+                </p>
                 <div className="flex gap-2">
                   <input
                     value={promoInput}
-                    onChange={(e) => { setPromoInput(e.target.value.toUpperCase()); setPromoStatus("idle"); setPromoDiscount(null); }}
+                    onChange={(e) => {
+                      setPromoInput(e.target.value.toUpperCase());
+                      setPromoStatus("idle");
+                      setPromoDiscount(null);
+                    }}
                     placeholder="ENTER CODE"
-                    className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-mono text-white placeholder-white/20 focus:border-[oklch(0.65_0.22_270)] outline-none"
+                    className="flex-1 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-mono text-white placeholder-white/20 focus:border-primary outline-none"
                   />
                   <button
                     type="button"
@@ -640,11 +725,20 @@ function BookingFlow() {
                       if (!promoInput || !product) return;
                       setPromoStatus("checking");
                       try {
-                        const res = await applyPromo({ data: { code: promoInput, productKind: product.kind } });
+                        const res = await applyPromo({
+                          data: { code: promoInput, productKind: product.kind },
+                        });
                         if (res.valid) {
                           setPromoStatus("valid");
-                          setPromoMessage(res.discountType === "percentage" ? `${res.discountValue}% off applied!` : `£${(res.discountValue / 100).toFixed(2)} off applied!`);
-                          setPromoDiscount({ discountType: res.discountType, discountValue: res.discountValue });
+                          setPromoMessage(
+                            res.discountType === "percentage"
+                              ? `${res.discountValue}% off applied!`
+                              : `£${(res.discountValue / 100).toFixed(2)} off applied!`,
+                          );
+                          setPromoDiscount({
+                            discountType: res.discountType,
+                            discountValue: res.discountValue,
+                          });
                         } else {
                           setPromoStatus("invalid");
                           setPromoMessage(res.reason ?? "Invalid code.");
@@ -656,25 +750,25 @@ function BookingFlow() {
                         setPromoDiscount(null);
                       }
                     }}
-                    className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-white/60 hover:bg-white/10 disabled:opacity-40 transition-all"
+                    className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-bold text-white/80 hover:bg-white/10 disabled:opacity-40 transition-all active:scale-95"
                   >
                     {promoStatus === "checking" ? "…" : "Apply"}
                   </button>
                 </div>
                 {promoStatus === "valid" && (
-                  <p className="mt-1.5 flex items-center gap-1 text-xs text-emerald-400 font-semibold">
+                  <p className="mt-1.5 flex items-center gap-1 text-xs text-success font-semibold">
                     <CheckCircle2 className="h-3.5 w-3.5" /> {promoMessage}
                   </p>
                 )}
                 {promoStatus === "invalid" && (
-                  <p className="mt-1.5 flex items-center gap-1 text-xs text-red-400">
+                  <p className="mt-1.5 flex items-center gap-1 text-xs text-destructive">
                     <AlertCircle className="h-3.5 w-3.5" /> {promoMessage}
                   </p>
                 )}
               </div>
 
               {error && (
-                <div className="mt-4 flex items-start gap-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-300">
+                <div className="mt-4 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
                   <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
                   <span>{error}</span>
                 </div>
@@ -683,14 +777,16 @@ function BookingFlow() {
               <button
                 type="submit"
                 disabled={submitting || needsLogin || !!needsSelfHireApproval || !selectedSlot}
-                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] py-3 text-sm font-bold text-white shadow-lg shadow-[oklch(0.55_0.22_270)]/20 transition-all hover:bg-[oklch(0.60_0.22_270)] disabled:opacity-50"
+                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 text-sm font-bold text-primary-foreground shadow-sm transition-all active:scale-[0.98] active:translate-y-[0.5px] hover:bg-primary/90 disabled:opacity-50"
               >
                 {submitting ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <CheckCircle2 className="h-4 w-4" />
                 )}
-                {product.payment_mode === "invoice" ? "Request booking" : "Continue"}
+                {product.payment_mode === "invoice"
+                  ? "Request Booking"
+                  : "Continue to Confirmation"}
               </button>
               <p className="mt-3 text-xs text-white/40">
                 {product.requires_approval

@@ -18,10 +18,8 @@ import {
   CheckCircle,
   CheckCircle2,
   AlertTriangle,
-  Sparkles,
   Shield,
   Layers,
-  Sparkle,
   PoundSterling,
 } from "lucide-react";
 import { useState } from "react";
@@ -59,7 +57,8 @@ const INITIAL_ERRORS: ErrorLog[] = [
     message: "PostgreSQL Connection pool exhausted. Timeout occurred waiting for connection.",
     route: "/booking/admin",
     code: "500 Internal Server Error (Supabase)",
-    stack: "at pg.Pool.connect (node_modules/pg/lib/pool.js:142:19)\nat supabase.from.select (src/hooks/useSupabase.ts:32:8)\nat async loadBookings (src/routes/booking/admin.tsx:48:12)",
+    stack:
+      "at pg.Pool.connect (node_modules/pg/lib/pool.js:142:19)\nat supabase.from.select (src/hooks/useSupabase.ts:32:8)\nat async loadBookings (src/routes/booking/admin.tsx:48:12)",
     resolved: false,
   },
   {
@@ -69,7 +68,8 @@ const INITIAL_ERRORS: ErrorLog[] = [
     message: "Failed to preload background image resource. Hangar hero asset response timed out.",
     route: "/fleet",
     code: "404 Resource Not Found",
-    stack: "at HTMLImageElement.onerror (src/routes/fleet.tsx:82:14)\nat renderAircraftCard (src/routes/fleet.tsx:120:5)",
+    stack:
+      "at HTMLImageElement.onerror (src/routes/fleet.tsx:82:14)\nat renderAircraftCard (src/routes/fleet.tsx:120:5)",
     resolved: false,
   },
   {
@@ -79,32 +79,67 @@ const INITIAL_ERRORS: ErrorLog[] = [
     message: "Unauthorized routing attempt blocked. Redirected guest user to booking login.",
     route: "/cms/content",
     code: "403 Forbidden Access",
-    stack: "at checkAuthSession (src/routes/cms.tsx:32:9)\nat beforeLoad (src/routes/cms/content.tsx:12:4)",
+    stack:
+      "at checkAuthSession (src/routes/cms.tsx:32:9)\nat beforeLoad (src/routes/cms/content.tsx:12:4)",
     resolved: true,
   },
   {
     id: "ERR-1205",
     timestamp: "3 hours ago",
     level: "warning",
-    message: "Input validation error. Renter checklist submitted without valid Medical Class 2 declaration.",
+    message:
+      "Input validation error. Renter checklist submitted without valid Medical Class 2 declaration.",
     route: "/booking",
     code: "422 Unprocessable Entity",
-    stack: "at validateRenterForm (src/components/enrollment.tsx:94:12)\nat onSubmit (src/routes/booking.tsx:142:8)",
+    stack:
+      "at validateRenterForm (src/components/enrollment.tsx:94:12)\nat onSubmit (src/routes/booking.tsx:142:8)",
     resolved: true,
   },
 ];
 
 const PAGES_VISITS = [
   { path: "/", label: "Home marketing Page", views: 2420, bounce: "32%", duration: "1m 45s" },
-  { path: "/flying/learn-to-fly", label: "PPL Training Guide", views: 1840, bounce: "24%", duration: "2m 50s" },
-  { path: "/fleet", label: "Fleet & Specs Gallery", views: 1250, bounce: "18%", duration: "3m 15s" },
-  { path: "/flying/self-hire", label: "Self-Hire & Pricing Details", views: 980, bounce: "40%", duration: "1m 20s" },
-  { path: "/booking", label: "Enrollment & Booking Portal", views: 640, bounce: "12%", duration: "4m 10s" },
-  { path: "/about", label: "About Flight School & CFI", views: 420, bounce: "28%", duration: "2m 02s" },
+  {
+    path: "/flying/learn-to-fly",
+    label: "PPL Training Guide",
+    views: 1840,
+    bounce: "24%",
+    duration: "2m 50s",
+  },
+  {
+    path: "/fleet",
+    label: "Fleet & Specs Gallery",
+    views: 1250,
+    bounce: "18%",
+    duration: "3m 15s",
+  },
+  {
+    path: "/flying/self-hire",
+    label: "Self-Hire & Pricing Details",
+    views: 980,
+    bounce: "40%",
+    duration: "1m 20s",
+  },
+  {
+    path: "/booking",
+    label: "Enrollment & Booking Portal",
+    views: 640,
+    bounce: "12%",
+    duration: "4m 10s",
+  },
+  {
+    path: "/about",
+    label: "About Flight School & CFI",
+    views: 420,
+    bounce: "28%",
+    duration: "2m 02s",
+  },
 ];
 
 function AnalyticsDashboard() {
-  const [activeTab, setActiveTab] = useState<"traffic" | "exceptions" | "accessibility" | "payroll">("traffic");
+  const [activeTab, setActiveTab] = useState<
+    "traffic" | "exceptions" | "accessibility" | "payroll"
+  >("traffic");
   const [errors, setErrors] = useState<ErrorLog[]>(INITIAL_ERRORS);
   const [expandedError, setExpandedError] = useState<string | null>(null);
   const [errorFilter, setErrorFilter] = useState<"all" | "critical" | "warning" | "info">("all");
@@ -127,13 +162,16 @@ function AnalyticsDashboard() {
     setAuditProgress(10);
     const intervals = [25, 55, 80, 100];
     intervals.forEach((prog, index) => {
-      setTimeout(() => {
-        setAuditProgress(prog);
-        if (prog === 100) {
-          setIsAuditing(false);
-          setShowAuditResults(true);
-        }
-      }, (index + 1) * 350);
+      setTimeout(
+        () => {
+          setAuditProgress(prog);
+          if (prog === 100) {
+            setIsAuditing(false);
+            setShowAuditResults(true);
+          }
+        },
+        (index + 1) * 350,
+      );
     });
   }
 
@@ -145,7 +183,8 @@ function AnalyticsDashboard() {
         message: "Supabase authentication handshake failure. JWT signature verification failed.",
         route: "/cms/users",
         code: "401 Unauthorized API Call",
-        stack: "at supabase.auth.getSession (node_modules/@supabase/supabase-js:45:21)\nat checkSuperAdminSession (src/routes/cms.tsx:28:11)",
+        stack:
+          "at supabase.auth.getSession (node_modules/@supabase/supabase-js:45:21)\nat checkSuperAdminSession (src/routes/cms.tsx:28:11)",
       },
       {
         id: `ERR-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -153,12 +192,14 @@ function AnalyticsDashboard() {
         message: "Stripe Payment webhook signature verification failed. Payload checksum mismatch.",
         route: "/booking",
         code: "400 Bad Request Webhook",
-        stack: "at stripe.webhooks.constructEvent (node_modules/stripe/lib/webhooks.js:52:12)\nat handler (src/api/stripe-hook.ts:18:9)",
+        stack:
+          "at stripe.webhooks.constructEvent (node_modules/stripe/lib/webhooks.js:52:12)\nat handler (src/api/stripe-hook.ts:18:9)",
       },
       {
         id: `ERR-${Math.floor(1000 + Math.random() * 9000)}`,
         level: "info" as const,
-        message: "Client environment bundle check. ServiceWorker cached 24 resource bundles successfully.",
+        message:
+          "Client environment bundle check. ServiceWorker cached 24 resource bundles successfully.",
         route: "/",
         code: "ServiceWorker Cache Init",
         stack: "at ServiceWorker.register (src/main.tsx:14:4)",
@@ -176,9 +217,7 @@ function AnalyticsDashboard() {
   }
 
   function resolveError(id: string) {
-    setErrors((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, resolved: !e.resolved } : e))
-    );
+    setErrors((prev) => prev.map((e) => (e.id === id ? { ...e, resolved: !e.resolved } : e)));
   }
 
   function clearErrors() {
@@ -191,7 +230,7 @@ function AnalyticsDashboard() {
       (e) =>
         e.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
         e.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        e.route.toLowerCase().includes(searchTerm.toLowerCase())
+        e.route.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
   const activeErrorsCount = errors.filter((e) => !e.resolved).length;
@@ -199,18 +238,18 @@ function AnalyticsDashboard() {
 
   // Instructor Payroll Calculations
   const completedLessons = bookings.filter(
-    (b) =>
-      b.status === "completed" &&
-      b.instructor_id &&
-      b.booking_products?.kind === "lesson",
+    (b) => b.status === "completed" && b.instructor_id && b.booking_products?.kind === "lesson",
   );
 
-  const instructorPayrollMap = new Map<string, {
-    name: string;
-    totalHours: number;
-    totalPayoutCents: number;
-    lessonsCount: number;
-  }>();
+  const instructorPayrollMap = new Map<
+    string,
+    {
+      name: string;
+      totalHours: number;
+      totalPayoutCents: number;
+      lessonsCount: number;
+    }
+  >();
 
   completedLessons.forEach((b) => {
     const instId = b.instructor_id!;
@@ -242,7 +281,8 @@ function AnalyticsDashboard() {
         <div>
           <h2 className="text-xl font-extrabold text-white">System Analytics & Health</h2>
           <p className="mt-1 text-xs text-white/40">
-            Real-time server query tracking, page views conversion monitoring, and client exception logging.
+            Real-time server query tracking, page views conversion monitoring, and client exception
+            logging.
           </p>
         </div>
         <div className="flex gap-2">
@@ -267,7 +307,7 @@ function AnalyticsDashboard() {
             <button
               onClick={runAudit}
               disabled={isAuditing}
-              className="flex items-center gap-2 rounded-xl bg-[oklch(0.55_0.22_270)] px-5 py-2.5 text-xs font-bold text-white shadow-lg transition-all hover:scale-[1.02] disabled:opacity-50"
+              className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-lg transition-all hover:scale-[1.02] disabled:opacity-50"
             >
               <Shield className={`h-4 w-4 ${isAuditing ? "animate-pulse" : ""}`} />
               {isAuditing ? `Auditing DOM (${auditProgress}%)` : "Run WCAG Access Scan"}
@@ -292,7 +332,7 @@ function AnalyticsDashboard() {
           onClick={() => setActiveTab("traffic")}
           className={`flex items-center gap-2 border-b-2 px-6 py-3 text-sm font-bold transition-all ${
             activeTab === "traffic"
-              ? "border-[oklch(0.55_0.22_270)] text-[oklch(0.70_0.18_270)]"
+              ? "border-primary text-primary"
               : "border-transparent text-white/40 hover:text-white/70"
           }`}
         >
@@ -303,7 +343,7 @@ function AnalyticsDashboard() {
           onClick={() => setActiveTab("exceptions")}
           className={`flex items-center gap-2 border-b-2 px-6 py-3 text-sm font-bold transition-all ${
             activeTab === "exceptions"
-              ? "border-[oklch(0.55_0.22_270)] text-[oklch(0.70_0.18_270)]"
+              ? "border-primary text-primary"
               : "border-transparent text-white/40 hover:text-white/70"
           }`}
         >
@@ -319,7 +359,7 @@ function AnalyticsDashboard() {
           onClick={() => setActiveTab("accessibility")}
           className={`flex items-center gap-2 border-b-2 px-6 py-3 text-sm font-bold transition-all ${
             activeTab === "accessibility"
-              ? "border-[oklch(0.55_0.22_270)] text-[oklch(0.70_0.18_270)]"
+              ? "border-primary text-primary"
               : "border-transparent text-white/40 hover:text-white/70"
           }`}
         >
@@ -330,7 +370,7 @@ function AnalyticsDashboard() {
           onClick={() => setActiveTab("payroll")}
           className={`flex items-center gap-2 border-b-2 px-6 py-3 text-sm font-bold transition-all ${
             activeTab === "payroll"
-              ? "border-[oklch(0.55_0.22_270)] text-[oklch(0.70_0.18_270)]"
+              ? "border-primary text-primary"
               : "border-transparent text-white/40 hover:text-white/70"
           }`}
         >
@@ -345,8 +385,10 @@ function AnalyticsDashboard() {
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <div className="flex items-center justify-between text-white/40">
-                <span className="text-xs font-semibold uppercase tracking-wider">Active Sessions</span>
-                <Users className="h-4 w-4 text-[oklch(0.70_0.18_270)]" />
+                <span className="text-xs font-semibold uppercase tracking-wider">
+                  Active Sessions
+                </span>
+                <Users className="h-4 w-4 text-primary" />
               </div>
               <p className="mt-3 text-3xl font-black text-white">42</p>
               <span className="text-[10px] text-green-400 font-bold flex items-center mt-1">
@@ -356,8 +398,10 @@ function AnalyticsDashboard() {
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <div className="flex items-center justify-between text-white/40">
-                <span className="text-xs font-semibold uppercase tracking-wider">Total Pageviews</span>
-                <Eye className="h-4 w-4 text-[oklch(0.70_0.18_270)]" />
+                <span className="text-xs font-semibold uppercase tracking-wider">
+                  Total Pageviews
+                </span>
+                <Eye className="h-4 w-4 text-primary" />
               </div>
               <p className="mt-3 text-3xl font-black text-white">7,550</p>
               <span className="text-[10px] text-green-400 font-bold flex items-center mt-1">
@@ -367,8 +411,10 @@ function AnalyticsDashboard() {
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <div className="flex items-center justify-between text-white/40">
-                <span className="text-xs font-semibold uppercase tracking-wider">Form Submissions</span>
-                <MousePointer className="h-4 w-4 text-[oklch(0.70_0.18_270)]" />
+                <span className="text-xs font-semibold uppercase tracking-wider">
+                  Form Submissions
+                </span>
+                <MousePointer className="h-4 w-4 text-primary" />
               </div>
               <p className="mt-3 text-3xl font-black text-white">24</p>
               <span className="text-[10px] text-green-400 font-bold flex items-center mt-1">
@@ -378,7 +424,9 @@ function AnalyticsDashboard() {
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <div className="flex items-center justify-between text-white/40">
-                <span className="text-xs font-semibold uppercase tracking-wider">API Server Latency</span>
+                <span className="text-xs font-semibold uppercase tracking-wider">
+                  API Server Latency
+                </span>
                 <Activity className="h-4 w-4 text-emerald-400 animate-pulse" />
               </div>
               <p className="mt-3 text-3xl font-black text-emerald-400">48ms</p>
@@ -397,7 +445,10 @@ function AnalyticsDashboard() {
               </div>
               <div className="divide-y divide-white/5">
                 {PAGES_VISITS.map((p, idx) => (
-                  <div key={idx} className="flex items-center justify-between px-6 py-4 transition-colors hover:bg-white/3">
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between px-6 py-4 transition-colors hover:bg-white/3"
+                  >
                     <div>
                       <span className="block text-sm font-semibold text-white">{p.path}</span>
                       <span className="text-xs text-white/30">{p.label}</span>
@@ -405,15 +456,21 @@ function AnalyticsDashboard() {
                     <div className="flex items-center gap-8 text-right">
                       <div>
                         <span className="block text-sm font-bold text-white">{p.views}</span>
-                        <span className="text-[10px] text-white/30 uppercase tracking-widest">Views</span>
+                        <span className="text-[10px] text-white/30 uppercase tracking-widest">
+                          Views
+                        </span>
                       </div>
                       <div>
                         <span className="block text-sm font-bold text-white">{p.bounce}</span>
-                        <span className="text-[10px] text-white/30 uppercase tracking-widest">Bounce</span>
+                        <span className="text-[10px] text-white/30 uppercase tracking-widest">
+                          Bounce
+                        </span>
                       </div>
                       <div className="w-16">
                         <span className="block text-sm font-bold text-white">{p.duration}</span>
-                        <span className="text-[10px] text-white/30 uppercase tracking-widest">Avg. Stay</span>
+                        <span className="text-[10px] text-white/30 uppercase tracking-widest">
+                          Avg. Stay
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -446,7 +503,7 @@ function AnalyticsDashboard() {
                     </div>
                     <div className="h-2 w-full rounded-full bg-white/5 overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-[oklch(0.55_0.22_270)] transition-all duration-1000"
+                        className="h-full rounded-full bg-primary transition-all duration-1000"
                         style={{ width: d.pct }}
                       />
                     </div>
@@ -463,15 +520,21 @@ function AnalyticsDashboard() {
           {/* Metric cards for exception logger */}
           <div className="grid grid-cols-3 gap-4">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <span className="text-xs font-semibold text-white/40 uppercase">Unresolved Errors</span>
+              <span className="text-xs font-semibold text-white/40 uppercase">
+                Unresolved Errors
+              </span>
               <p className="mt-2 text-3xl font-black text-red-400">{activeErrorsCount}</p>
             </div>
             <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-5">
-              <span className="text-xs font-semibold text-red-400/60 uppercase">Critical Exceptions</span>
+              <span className="text-xs font-semibold text-red-400/60 uppercase">
+                Critical Exceptions
+              </span>
               <p className="mt-2 text-3xl font-black text-red-500">{criticalCount}</p>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <span className="text-xs font-semibold text-white/40 uppercase">Error-Free Sessions Rate</span>
+              <span className="text-xs font-semibold text-white/40 uppercase">
+                Error-Free Sessions Rate
+              </span>
               <p className="mt-2 text-3xl font-black text-emerald-400">99.86%</p>
             </div>
           </div>
@@ -494,7 +557,7 @@ function AnalyticsDashboard() {
                   onClick={() => setErrorFilter(f.value as any)}
                   className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
                     errorFilter === f.value
-                      ? "bg-[oklch(0.55_0.22_270)] text-white"
+                      ? "bg-primary text-white"
                       : "bg-white/5 text-white/40 hover:bg-white/10 hover:text-white"
                   }`}
                 >
@@ -510,7 +573,7 @@ function AnalyticsDashboard() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search log trace details..."
-                className="w-full sm:w-64 rounded-xl border border-white/10 bg-white/5 pl-9 pr-4 py-2 text-xs text-white placeholder-white/20 outline-none focus:border-[oklch(0.65_0.22_270)] focus:ring-1 focus:ring-[oklch(0.65_0.22_270)] transition-all"
+                className="w-full sm:w-64 rounded-xl border border-white/10 bg-white/5 pl-9 pr-4 py-2 text-xs text-white placeholder-white/20 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-white/20" />
             </div>
@@ -528,20 +591,23 @@ function AnalyticsDashboard() {
                       err.resolved
                         ? "opacity-60 bg-white/0"
                         : isExpanded
-                        ? "bg-white/5"
-                        : "hover:bg-white/2"
+                          ? "bg-white/5"
+                          : "hover:bg-white/2"
                     }`}
                   >
                     {/* Log main row */}
-                    <div className="flex items-center gap-5 px-6 py-4 cursor-pointer" onClick={() => setExpandedError(isExpanded ? null : err.id)}>
+                    <div
+                      className="flex items-center gap-5 px-6 py-4 cursor-pointer"
+                      onClick={() => setExpandedError(isExpanded ? null : err.id)}
+                    >
                       {/* Priority Tag */}
                       <span
                         className={`inline-flex shrink-0 w-24 items-center justify-center rounded-lg border py-1 text-[10px] font-black uppercase tracking-wider ${
                           err.level === "critical"
                             ? "border-red-500/30 bg-red-500/15 text-red-400"
                             : err.level === "warning"
-                            ? "border-amber-500/30 bg-amber-500/15 text-amber-400"
-                            : "border-sky-500/30 bg-sky-500/15 text-sky-400"
+                              ? "border-amber-500/30 bg-amber-500/15 text-amber-400"
+                              : "border-sky-500/30 bg-sky-500/15 text-sky-400"
                         }`}
                       >
                         {err.level}
@@ -549,7 +615,9 @@ function AnalyticsDashboard() {
 
                       {/* Code status & timestamp */}
                       <div className="w-48 shrink-0">
-                        <span className="block text-xs font-bold text-white font-mono">{err.code}</span>
+                        <span className="block text-xs font-bold text-white font-mono">
+                          {err.code}
+                        </span>
                         <span className="mt-0.5 block text-[10px] text-white/30 flex items-center gap-1">
                           <Clock className="h-3 w-3" />
                           {err.timestamp}
@@ -558,14 +626,19 @@ function AnalyticsDashboard() {
 
                       {/* Error Msg & Route */}
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-white/80 truncate leading-relaxed">{err.message}</p>
+                        <p className="text-xs font-semibold text-white/80 truncate leading-relaxed">
+                          {err.message}
+                        </p>
                         <span className="inline-block mt-1 font-mono text-[9px] bg-white/5 text-white/50 px-1.5 py-0.5 rounded border border-white/5">
                           Route: {err.route}
                         </span>
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center gap-3 shrink-0" onClick={(e) => e.stopPropagation()}>
+                      <div
+                        className="flex items-center gap-3 shrink-0"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         <button
                           onClick={() => resolveError(err.id)}
                           className={`rounded-lg border px-3 py-1.5 text-xs font-bold transition-all ${
@@ -583,7 +656,7 @@ function AnalyticsDashboard() {
                     {isExpanded && (
                       <div className="border-t border-white/5 bg-white/3 px-6 py-5 space-y-4">
                         <div className="flex items-center gap-2 text-xs font-bold text-white">
-                          <Terminal className="h-3.5 w-3.5 text-[oklch(0.70_0.18_270)]" />
+                          <Terminal className="h-3.5 w-3.5 text-primary" />
                           Stack Trace Exception Log Details
                         </div>
                         <pre className="rounded-xl border border-white/5 bg-black/40 p-4 font-mono text-xs text-red-300 overflow-x-auto leading-relaxed shadow-inner">
@@ -591,13 +664,20 @@ function AnalyticsDashboard() {
                         </pre>
                         <div className="flex gap-8 text-[10px] text-white/40">
                           <div>
-                            Exception ID: <span className="font-mono text-white/60 font-bold">{err.id}</span>
+                            Exception ID:{" "}
+                            <span className="font-mono text-white/60 font-bold">{err.id}</span>
                           </div>
                           <div>
-                            Environment: <span className="text-white/60 font-semibold">Production (client bundle-es)</span>
+                            Environment:{" "}
+                            <span className="text-white/60 font-semibold">
+                              Production (client bundle-es)
+                            </span>
                           </div>
                           <div>
-                            User Agent: <span className="text-white/60 font-semibold">Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)</span>
+                            User Agent:{" "}
+                            <span className="text-white/60 font-semibold">
+                              Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -609,7 +689,9 @@ function AnalyticsDashboard() {
               {filteredErrors.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
                   <CheckCircle className="h-10 w-10 text-emerald-500/40 mb-3" />
-                  <p className="text-sm font-semibold text-white/40">No matching log exceptions found</p>
+                  <p className="text-sm font-semibold text-white/40">
+                    No matching log exceptions found
+                  </p>
                 </div>
               )}
             </div>
@@ -623,15 +705,24 @@ function AnalyticsDashboard() {
           <div className="grid gap-6 md:grid-cols-3">
             {/* 1. Score gauge */}
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6 flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-bold uppercase tracking-widest text-white/40">WCAG 2.1 Compliance</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-white/40">
+                WCAG 2.1 Compliance
+              </span>
               <div className="relative mt-4 flex items-center justify-center">
                 <svg className="h-28 w-28 transform -rotate-90">
-                  <circle cx="56" cy="56" r="48" stroke="rgba(255,255,255,0.05)" strokeWidth="8" fill="transparent" />
                   <circle
                     cx="56"
                     cy="56"
                     r="48"
-                    stroke="oklch(0.70_0.18_270)"
+                    stroke="rgba(255,255,255,0.05)"
+                    strokeWidth="8"
+                    fill="transparent"
+                  />
+                  <circle
+                    cx="56"
+                    cy="56"
+                    r="48"
+                    stroke="var(--color-primary)"
                     strokeWidth="8"
                     fill="transparent"
                     strokeDasharray={301.6}
@@ -641,47 +732,61 @@ function AnalyticsDashboard() {
                 </svg>
                 <div className="absolute flex flex-col items-center">
                   <span className="text-3xl font-black text-white">98%</span>
-                  <span className="text-[9px] font-bold text-green-400 tracking-wider">LEVEL AA PASS</span>
+                  <span className="text-[9px] font-bold text-green-400 tracking-wider">
+                    LEVEL AA PASS
+                  </span>
                 </div>
               </div>
               <p className="mt-4 text-[10px] text-white/40 max-w-[200px] leading-relaxed">
-                DOM features appropriate keyboard traps, focus rings, semantics, and alternate image context configurations.
+                DOM features appropriate keyboard traps, focus rings, semantics, and alternate image
+                context configurations.
               </p>
             </div>
 
             {/* 2. OS Media Query Preferences Card */}
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-4">
-              <span className="text-xs font-bold uppercase tracking-widest text-white/40">System Media Overrides</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-white/40">
+                System Media Overrides
+              </span>
               <div className="space-y-3">
                 <div className="flex items-center justify-between rounded-xl bg-white/3 border border-white/5 p-3">
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-emerald-400" />
                     <span className="text-xs text-white">Prefers Reduced Motion</span>
                   </div>
-                  <span className="text-[10px] font-mono bg-white/5 px-2 py-0.5 rounded text-white/40 border border-white/5">Active (CSS Block)</span>
+                  <span className="text-[10px] font-mono bg-white/5 px-2 py-0.5 rounded text-white/40 border border-white/5">
+                    Active (CSS Block)
+                  </span>
                 </div>
                 <div className="flex items-center justify-between rounded-xl bg-white/3 border border-white/5 p-3">
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-emerald-400" />
                     <span className="text-xs text-white">System Theme Sync</span>
                   </div>
-                  <span className="text-[10px] font-mono bg-white/5 px-2 py-0.5 rounded text-white/40 border border-white/5">System/Dark</span>
+                  <span className="text-[10px] font-mono bg-white/5 px-2 py-0.5 rounded text-white/40 border border-white/5">
+                    System/Dark
+                  </span>
                 </div>
                 <div className="flex items-center justify-between rounded-xl bg-white/3 border border-white/5 p-3">
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-emerald-400" />
                     <span className="text-xs text-white">Contrast Thresholds</span>
                   </div>
-                  <span className="text-[10px] font-mono bg-white/5 px-2 py-0.5 rounded text-white/40 border border-white/5">Passed (AA)</span>
+                  <span className="text-[10px] font-mono bg-white/5 px-2 py-0.5 rounded text-white/40 border border-white/5">
+                    Passed (AA)
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* 3. Accessibility Quick Settings Simulator */}
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-4">
-              <span className="text-xs font-bold uppercase tracking-widest text-white/40">Auditor Setting Simulator</span>
+              <span className="text-xs font-bold uppercase tracking-widest text-white/40">
+                Auditor Setting Simulator
+              </span>
               <p className="text-[10px] text-white/40 leading-relaxed">
-                Simulate different accessibility profiles to verify elements adjust fluidly for diverse assistive setups.
+                Simulate different accessibility profiles to verify elements adjust fluidly for
+                diverse assistive setups.
               </p>
               <div className="space-y-2 pt-1">
                 <button
@@ -725,13 +830,14 @@ function AnalyticsDashboard() {
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-3 animate-pulse">
               <div className="flex justify-between text-xs font-semibold text-white/60">
                 <span className="flex items-center gap-1.5">
-                  <Activity className="h-4 w-4 animate-spin text-[oklch(0.70_0.18_270)]" /> Scanning DOM elements structure...
+                  <Activity className="h-4 w-4 animate-spin text-primary" /> Scanning DOM elements
+                  structure...
                 </span>
                 <span>{auditProgress}%</span>
               </div>
               <div className="h-2 w-full rounded-full bg-white/5 overflow-hidden">
                 <div
-                  className="h-full bg-[oklch(0.70_0.18_270)] transition-all duration-300"
+                  className="h-full bg-primary transition-all duration-300"
                   style={{ width: `${auditProgress}%` }}
                 />
               </div>
@@ -742,7 +848,8 @@ function AnalyticsDashboard() {
           {showAuditResults && !isAuditing && (
             <div className="space-y-4 animate-fade-in">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400" /> Accessible DOM Checkpoints List
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" /> Accessible DOM Checkpoints
+                List
               </h3>
               <div className="grid gap-4">
                 {[
@@ -750,35 +857,40 @@ function AnalyticsDashboard() {
                     rule: "Contrast Ratios Validation (Level AA)",
                     desc: "Checks text element colors against background elements to ensure legible ratios.",
                     badge: "Contrast Pass",
-                    details: "Checked 42 text blocks. All elements surpass 4.5:1 ratio threshold. Mean ratio is 9.4:1.",
+                    details:
+                      "Checked 42 text blocks. All elements surpass 4.5:1 ratio threshold. Mean ratio is 9.4:1.",
                     status: "pass",
                   },
                   {
                     rule: "Motion & Animation Overrides (Reduced Motion Support)",
                     desc: "Supports system media queries to suspend animations and smooth layout transitions.",
                     badge: "System-Motion Safe",
-                    details: "Successfully loaded global styles.css rules. All transition durations forced to 0s for OS motion constraints.",
+                    details:
+                      "Successfully loaded global styles.css rules. All transition durations forced to 0s for OS motion constraints.",
                     status: "pass",
                   },
                   {
                     rule: "Descriptive Alternative Contexts (Image Alt Attributes)",
                     desc: "Requires alt texts for non-decorative elements to assist screen readers.",
                     badge: "Alt Context Complete",
-                    details: "Audited 18 marketing, fleet layout, and instructor avatar images. Alt attributes are properly written.",
+                    details:
+                      "Audited 18 marketing, fleet layout, and instructor avatar images. Alt attributes are properly written.",
                     status: "pass",
                   },
                   {
                     rule: "Interactive DOM Focus Indicators & Focus Order",
                     desc: "Keyboard focus outline rings must remain visible and follow an intuitive order.",
                     badge: "Focus Ring Pass",
-                    details: "Input forms, CMS buttons, and footer links feature custom focus outlines. Zero keyboard traps found.",
+                    details:
+                      "Input forms, CMS buttons, and footer links feature custom focus outlines. Zero keyboard traps found.",
                     status: "pass",
                   },
                   {
                     rule: "HTML5 DOM Semantic Structure & Landmarks",
                     desc: "Main page structures must contain standard landmarks (header, nav, main, footer).",
                     badge: "Semantics Pass",
-                    details: "Verified semantic layouts across PPL guides, fleet lists, CMS menus, and privacy legal stubs.",
+                    details:
+                      "Verified semantic layouts across PPL guides, fleet lists, CMS menus, and privacy legal stubs.",
                     status: "pass",
                   },
                 ].map((aud, aIdx) => (
@@ -818,7 +930,8 @@ function AnalyticsDashboard() {
                 Instructor Payroll Payout Summary
               </h3>
               <p className="text-xs text-white/40 mt-1">
-                Calculated automatically based on completed lesson bookings and their configured instructor hourly fee.
+                Calculated automatically based on completed lesson bookings and their configured
+                instructor hourly fee.
               </p>
             </div>
 
@@ -827,7 +940,9 @@ function AnalyticsDashboard() {
             ) : payrollSummaryList.length === 0 ? (
               <div className="text-center py-12">
                 <Users className="mx-auto mb-3 h-10 w-10 text-white/10" />
-                <p className="text-sm text-white/40">No completed lessons found for payroll calculation.</p>
+                <p className="text-sm text-white/40">
+                  No completed lessons found for payroll calculation.
+                </p>
               </div>
             ) : (
               <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden">
@@ -845,7 +960,9 @@ function AnalyticsDashboard() {
                       <tr key={idx} className="hover:bg-white/2 transition-colors">
                         <td className="px-5 py-4 font-bold">{row.name}</td>
                         <td className="px-5 py-4 text-white/60">{row.lessonsCount} lessons</td>
-                        <td className="px-5 py-4 font-mono text-white/80">{row.totalHours.toFixed(1)} hrs</td>
+                        <td className="px-5 py-4 font-mono text-white/80">
+                          {row.totalHours.toFixed(1)} hrs
+                        </td>
                         <td className="px-5 py-4 text-right font-bold text-emerald-400">
                           £{(row.totalPayoutCents / 100).toFixed(2)}
                         </td>

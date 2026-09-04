@@ -9,8 +9,8 @@
 Simulates natural daylight with a sun, sky hemisphere, and HDR environment.
 
 ```javascript
-import * as THREE from 'three';
-import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import * as THREE from "three";
+import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 
 // Renderer with tone mapping for physically correct values
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -31,7 +31,7 @@ scene.add(sun.target); // REQUIRED — target defaults to (0,0,0)
 
 // 3. HDR environment for reflections on PBR materials
 const pmrem = new THREE.PMREMGenerator(renderer);
-new RGBELoader().load('outdoor_field.hdr', (hdrTexture) => {
+new RGBELoader().load("outdoor_field.hdr", (hdrTexture) => {
   const envMap = pmrem.fromEquirectangular(hdrTexture);
   scene.environment = envMap.texture;
   scene.background = envMap.texture;
@@ -42,6 +42,7 @@ new RGBELoader().load('outdoor_field.hdr', (hdrTexture) => {
 ```
 
 **Key points:**
+
 - HemisphereLight provides gradient ambient (blue sky to brown ground)
 - DirectionalLight simulates parallel sunlight rays
 - HDR environment handles PBR reflections automatically
@@ -54,7 +55,7 @@ new RGBELoader().load('outdoor_field.hdr', (hdrTexture) => {
 Multiple light sources simulating a residential room with ceiling light and table lamp.
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -70,7 +71,7 @@ scene.add(ambient);
 const ceiling = new THREE.SpotLight(0xffeedd, 800);
 ceiling.position.set(0, 3.5, 0);
 ceiling.angle = Math.PI / 4;
-ceiling.penumbra = 0.5;       // Soft cone edges
+ceiling.penumbra = 0.5; // Soft cone edges
 ceiling.decay = 2;
 ceiling.distance = 10;
 ceiling.target.position.set(0, 0, 0);
@@ -90,6 +91,7 @@ scene.add(windowLight.target);
 ```
 
 **Key points:**
+
 - Low ambient simulates indirect light bounce
 - SpotLight for focused overhead fixture with soft penumbra
 - PointLight for omnidirectional table lamp with distance falloff
@@ -102,8 +104,8 @@ scene.add(windowLight.target);
 Three-point lighting setup for showcasing 3D models.
 
 ```javascript
-import * as THREE from 'three';
-import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import * as THREE from "three";
+import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -132,7 +134,7 @@ scene.add(rimLight.target);
 
 // 4. Environment map for PBR reflections (studio HDRI)
 const pmrem = new THREE.PMREMGenerator(renderer);
-new RGBELoader().load('studio_small.hdr', (hdrTexture) => {
+new RGBELoader().load("studio_small.hdr", (hdrTexture) => {
   const envMap = pmrem.fromEquirectangular(hdrTexture);
   scene.environment = envMap.texture;
   scene.environmentIntensity = 0.5; // Subtle IBL, let directional lights dominate
@@ -142,6 +144,7 @@ new RGBELoader().load('studio_small.hdr', (hdrTexture) => {
 ```
 
 **Key points:**
+
 - Three-point lighting: key, fill, rim
 - Key light is brightest, fill is 30-50% of key intensity
 - Rim light creates edge highlights for object separation
@@ -155,9 +158,9 @@ new RGBELoader().load('studio_small.hdr', (hdrTexture) => {
 Soft panel lighting for e-commerce or product visualization.
 
 ```javascript
-import * as THREE from 'three';
-import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
-import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js';
+import * as THREE from "three";
+import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
+import { RectAreaLightHelper } from "three/addons/helpers/RectAreaLightHelper.js";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -194,6 +197,7 @@ scene.add(new RectAreaLightHelper(rightPanel));
 ```
 
 **Key points:**
+
 - `RectAreaLightUniformsLib.init()` MUST be called before any RectAreaLight creation
 - RectAreaLights produce soft, diffused illumination like photography softboxes
 - Orient using `.lookAt()` -- rotation properties are NOT intuitive for area lights
@@ -207,8 +211,8 @@ scene.add(new RectAreaLightHelper(rightPanel));
 The simplest high-quality lighting: HDR environment map only, no analytic lights.
 
 ```javascript
-import * as THREE from 'three';
-import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import * as THREE from "three";
+import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -221,13 +225,13 @@ pmrem.compileEquirectangularShader(); // Pre-compile for faster first use
 
 new RGBELoader()
   .setDataType(THREE.HalfFloatType) // Better precision for HDR
-  .load('environment.hdr', (hdrTexture) => {
+  .load("environment.hdr", (hdrTexture) => {
     const envMap = pmrem.fromEquirectangular(hdrTexture);
 
-    scene.environment = envMap.texture;    // Drives all PBR lighting
-    scene.background = envMap.texture;     // Visible backdrop
-    scene.backgroundBlurriness = 0.0;     // Sharp environment
-    scene.environmentIntensity = 1.0;     // Full IBL strength
+    scene.environment = envMap.texture; // Drives all PBR lighting
+    scene.background = envMap.texture; // Visible backdrop
+    scene.backgroundBlurriness = 0.0; // Sharp environment
+    scene.environmentIntensity = 1.0; // Full IBL strength
     scene.environmentRotation.set(0, Math.PI / 4, 0); // Rotate light direction
 
     hdrTexture.dispose();
@@ -241,6 +245,7 @@ new RGBELoader()
 ```
 
 **Key points:**
+
 - Environment map alone provides complete PBR lighting
 - `scene.environmentRotation` rotates light direction without extra lights
 - `scene.environmentIntensity` controls ambient contribution

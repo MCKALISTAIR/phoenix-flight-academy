@@ -51,35 +51,35 @@ new THREE.RawShaderMaterial(parameters?: {
 
 ## ShaderMaterial Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `uniforms` | `Object` | `{}` | Map of `{ name: { value: any } }` |
-| `uniformsGroups` | `THREE.UniformsGroup[]` | `[]` | Uniform buffer objects |
-| `vertexShader` | `string` | default vertex shader | GLSL vertex shader source |
-| `fragmentShader` | `string` | default fragment shader | GLSL fragment shader source |
-| `defines` | `Object` | `{}` | Preprocessor defines |
-| `extensions` | `Object` | `{}` | WebGL extensions to enable |
-| `wireframe` | `boolean` | `false` | Render as wireframe |
-| `wireframeLinewidth` | `number` | `1` | Line width (limited to 1 on most platforms) |
-| `lights` | `boolean` | `false` | If `true`, passes light data as uniforms |
-| `fog` | `boolean` | `false` | If `true`, passes fog data as uniforms |
-| `clipping` | `boolean` | `false` | If `true`, enables clipping planes |
-| `glslVersion` | `string \| null` | `null` | `null` = GLSL1, `THREE.GLSL3` = GLSL 3.0 ES |
-| `defaultAttributeValues` | `Object` | `{ color: [1,1,1], uv: [0,0], uv2: [0,0] }` | Fallback values for missing geometry attributes |
-| `isShaderMaterial` | `boolean` | `true` | Read-only type flag |
+| Property                 | Type                    | Default                                     | Description                                     |
+| ------------------------ | ----------------------- | ------------------------------------------- | ----------------------------------------------- |
+| `uniforms`               | `Object`                | `{}`                                        | Map of `{ name: { value: any } }`               |
+| `uniformsGroups`         | `THREE.UniformsGroup[]` | `[]`                                        | Uniform buffer objects                          |
+| `vertexShader`           | `string`                | default vertex shader                       | GLSL vertex shader source                       |
+| `fragmentShader`         | `string`                | default fragment shader                     | GLSL fragment shader source                     |
+| `defines`                | `Object`                | `{}`                                        | Preprocessor defines                            |
+| `extensions`             | `Object`                | `{}`                                        | WebGL extensions to enable                      |
+| `wireframe`              | `boolean`               | `false`                                     | Render as wireframe                             |
+| `wireframeLinewidth`     | `number`                | `1`                                         | Line width (limited to 1 on most platforms)     |
+| `lights`                 | `boolean`               | `false`                                     | If `true`, passes light data as uniforms        |
+| `fog`                    | `boolean`               | `false`                                     | If `true`, passes fog data as uniforms          |
+| `clipping`               | `boolean`               | `false`                                     | If `true`, enables clipping planes              |
+| `glslVersion`            | `string \| null`        | `null`                                      | `null` = GLSL1, `THREE.GLSL3` = GLSL 3.0 ES     |
+| `defaultAttributeValues` | `Object`                | `{ color: [1,1,1], uv: [0,0], uv2: [0,0] }` | Fallback values for missing geometry attributes |
+| `isShaderMaterial`       | `boolean`               | `true`                                      | Read-only type flag                             |
 
 ---
 
 ## ShaderMaterial Methods (Inherited from Material)
 
-| Method | Signature | Returns | Description |
-|--------|-----------|---------|-------------|
-| `clone` | `(): ShaderMaterial` | new instance | Deep clone the material |
-| `copy` | `(source: ShaderMaterial): this` | `this` | Copy properties from another material |
-| `dispose` | `(): void` | void | Free GPU resources |
-| `toJSON` | `(meta?: object): object` | JSON | Serialize to JSON |
-| `onBeforeCompile` | `(shader: object, renderer: WebGLRenderer): void` | void | Callback before shader compilation |
-| `customProgramCacheKey` | `(): string` | string | Return custom key for shader program caching |
+| Method                  | Signature                                         | Returns      | Description                                  |
+| ----------------------- | ------------------------------------------------- | ------------ | -------------------------------------------- |
+| `clone`                 | `(): ShaderMaterial`                              | new instance | Deep clone the material                      |
+| `copy`                  | `(source: ShaderMaterial): this`                  | `this`       | Copy properties from another material        |
+| `dispose`               | `(): void`                                        | void         | Free GPU resources                           |
+| `toJSON`                | `(meta?: object): object`                         | JSON         | Serialize to JSON                            |
+| `onBeforeCompile`       | `(shader: object, renderer: WebGLRenderer): void` | void         | Callback before shader compilation           |
+| `customProgramCacheKey` | `(): string`                                      | string       | Return custom key for shader program caching |
 
 ---
 
@@ -87,42 +87,42 @@ new THREE.RawShaderMaterial(parameters?: {
 
 ### Transform Matrices
 
-| Uniform | GLSL Type | Description |
-|---------|-----------|-------------|
-| `modelMatrix` | `mat4` | Object-to-world transform |
-| `modelViewMatrix` | `mat4` | Object-to-camera (`viewMatrix * modelMatrix`) |
-| `projectionMatrix` | `mat4` | Camera-to-clip projection |
-| `viewMatrix` | `mat4` | World-to-camera transform |
-| `normalMatrix` | `mat3` | Transpose inverse of `modelViewMatrix` |
+| Uniform            | GLSL Type | Description                                   |
+| ------------------ | --------- | --------------------------------------------- |
+| `modelMatrix`      | `mat4`    | Object-to-world transform                     |
+| `modelViewMatrix`  | `mat4`    | Object-to-camera (`viewMatrix * modelMatrix`) |
+| `projectionMatrix` | `mat4`    | Camera-to-clip projection                     |
+| `viewMatrix`       | `mat4`    | World-to-camera transform                     |
+| `normalMatrix`     | `mat3`    | Transpose inverse of `modelViewMatrix`        |
 
 ### Camera
 
-| Uniform | GLSL Type | Description |
-|---------|-----------|-------------|
-| `cameraPosition` | `vec3` | Camera position in world space |
+| Uniform          | GLSL Type | Description                    |
+| ---------------- | --------- | ------------------------------ |
+| `cameraPosition` | `vec3`    | Camera position in world space |
 
 ### Lighting (when `lights: true`)
 
-| Uniform | GLSL Type | Description |
-|---------|-----------|-------------|
-| `ambientLightColor` | `vec3` | Combined ambient light color |
-| `directionalLights` | struct array | Direction, color for each directional light |
-| `pointLights` | struct array | Position, color, distance, decay for each point light |
-| `spotLights` | struct array | Position, direction, color, distance, decay, angle, penumbra |
-| `hemisphereLights` | struct array | Sky color, ground color, direction |
+| Uniform             | GLSL Type    | Description                                                  |
+| ------------------- | ------------ | ------------------------------------------------------------ |
+| `ambientLightColor` | `vec3`       | Combined ambient light color                                 |
+| `directionalLights` | struct array | Direction, color for each directional light                  |
+| `pointLights`       | struct array | Position, color, distance, decay for each point light        |
+| `spotLights`        | struct array | Position, direction, color, distance, decay, angle, penumbra |
+| `hemisphereLights`  | struct array | Sky color, ground color, direction                           |
 
 ---
 
 ## Built-in Attributes (Injected by ShaderMaterial)
 
-| Attribute | GLSL Type | Source |
-|-----------|-----------|--------|
-| `position` | `vec3` | `geometry.attributes.position` |
-| `normal` | `vec3` | `geometry.attributes.normal` |
-| `uv` | `vec2` | `geometry.attributes.uv` |
-| `uv2` | `vec2` | `geometry.attributes.uv2` |
-| `tangent` | `vec4` | `geometry.attributes.tangent` (if present) |
-| `color` | `vec3` | `geometry.attributes.color` (if present) |
+| Attribute  | GLSL Type | Source                                     |
+| ---------- | --------- | ------------------------------------------ |
+| `position` | `vec3`    | `geometry.attributes.position`             |
+| `normal`   | `vec3`    | `geometry.attributes.normal`               |
+| `uv`       | `vec2`    | `geometry.attributes.uv`                   |
+| `uv2`      | `vec2`    | `geometry.attributes.uv2`                  |
+| `tangent`  | `vec4`    | `geometry.attributes.tangent` (if present) |
+| `color`    | `vec3`    | `geometry.attributes.color` (if present)   |
 
 ---
 
@@ -130,8 +130,8 @@ new THREE.RawShaderMaterial(parameters?: {
 
 ```javascript
 // Access any internal shader chunk by name
-THREE.ShaderChunk['common']          // Returns string with source code
-THREE.ShaderChunk['fog_pars_vertex'] // Returns fog vertex pars source
+THREE.ShaderChunk["common"]; // Returns string with source code
+THREE.ShaderChunk["fog_pars_vertex"]; // Returns fog vertex pars source
 ```
 
 ### Usage in GLSL (ShaderMaterial only)
@@ -169,11 +169,11 @@ material.customProgramCacheKey = (): string => {
 Three.js groups commonly-used uniforms into libraries:
 
 ```javascript
-THREE.UniformsLib.common    // diffuse map, opacity, alphaMap, UV transform
-THREE.UniformsLib.envmap    // environment map uniforms
-THREE.UniformsLib.normalmap // normal map uniforms
-THREE.UniformsLib.fog       // fogColor, fogNear, fogFar, fogDensity
-THREE.UniformsLib.lights    // all light type uniforms
+THREE.UniformsLib.common; // diffuse map, opacity, alphaMap, UV transform
+THREE.UniformsLib.envmap; // environment map uniforms
+THREE.UniformsLib.normalmap; // normal map uniforms
+THREE.UniformsLib.fog; // fogColor, fogNear, fogFar, fogDensity
+THREE.UniformsLib.lights; // all light type uniforms
 ```
 
 ### UniformsUtils

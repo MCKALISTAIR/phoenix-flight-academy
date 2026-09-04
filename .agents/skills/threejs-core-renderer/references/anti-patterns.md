@@ -32,7 +32,7 @@ ALWAYS cap at 2. The visual difference between 2x and 3x is imperceptible, but t
 ### Wrong
 
 ```javascript
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
@@ -45,7 +45,7 @@ Modifying `camera.aspect` (or `fov`, `near`, `far`, `zoom`) does NOT automatical
 ### Correct
 
 ```javascript
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -61,10 +61,10 @@ ALWAYS call `camera.updateProjectionMatrix()` after changing any projection para
 ### Wrong
 
 ```javascript
-import { TextureLoader, SRGBColorSpace } from 'three';
+import { TextureLoader, SRGBColorSpace } from "three";
 
 const loader = new TextureLoader();
-const normalMap = loader.load('normal.png');
+const normalMap = loader.load("normal.png");
 normalMap.colorSpace = SRGBColorSpace; // WRONG for data textures
 ```
 
@@ -75,19 +75,19 @@ Normal maps, roughness maps, metalness maps, AO maps, and displacement maps cont
 ### Correct
 
 ```javascript
-import { TextureLoader, SRGBColorSpace, LinearSRGBColorSpace } from 'three';
+import { TextureLoader, SRGBColorSpace, LinearSRGBColorSpace } from "three";
 
 const loader = new TextureLoader();
 
 // Color textures: SRGBColorSpace
-const diffuseMap = loader.load('diffuse.png');
+const diffuseMap = loader.load("diffuse.png");
 diffuseMap.colorSpace = SRGBColorSpace;
 
 // Data textures: LinearSRGBColorSpace
-const normalMap = loader.load('normal.png');
+const normalMap = loader.load("normal.png");
 normalMap.colorSpace = LinearSRGBColorSpace;
 
-const roughnessMap = loader.load('roughness.png');
+const roughnessMap = loader.load("roughness.png");
 roughnessMap.colorSpace = LinearSRGBColorSpace;
 ```
 
@@ -199,7 +199,7 @@ const renderer = new WebGLRenderer({ antialias: true });
 // When a screenshot IS needed, use a one-time render approach:
 function takeScreenshot() {
   renderer.render(scene, camera);
-  return renderer.domElement.toDataURL('image/png');
+  return renderer.domElement.toDataURL("image/png");
   // Works because toDataURL is called immediately after render,
   // before the buffer can be cleared
 }
@@ -243,8 +243,8 @@ ALWAYS keep the `far / near` ratio under 10,000. For scenes that need a wider ra
 
 ```javascript
 // Rendering two passes (e.g., split-screen or overlay)
-renderer.render(sceneBackground, camera);  // first pass
-renderer.render(sceneOverlay, camera);     // second pass — CLEARS the first!
+renderer.render(sceneBackground, camera); // first pass
+renderer.render(sceneOverlay, camera); // second pass — CLEARS the first!
 ```
 
 ### Why It Fails
@@ -274,7 +274,7 @@ ALWAYS set `autoClear = false` when doing multi-pass rendering. Manage clears ex
 ```javascript
 const renderTarget = new WebGLRenderTarget(1024, 1024);
 
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
   // renderTarget is still 1024x1024 — resolution mismatch
 });
@@ -289,16 +289,13 @@ If the render target is used for full-screen effects (like post-processing), it 
 ```javascript
 const renderTarget = new WebGLRenderTarget(
   window.innerWidth * Math.min(window.devicePixelRatio, 2),
-  window.innerHeight * Math.min(window.devicePixelRatio, 2)
+  window.innerHeight * Math.min(window.devicePixelRatio, 2),
 );
 
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   const pixelRatio = Math.min(window.devicePixelRatio, 2);
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderTarget.setSize(
-    window.innerWidth * pixelRatio,
-    window.innerHeight * pixelRatio
-  );
+  renderTarget.setSize(window.innerWidth * pixelRatio, window.innerHeight * pixelRatio);
 });
 ```
 

@@ -35,7 +35,6 @@ export function Footer() {
     <footer className="bg-[oklch(0.12_0.04_250)] text-white border-t border-white/5">
       <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-4 lg:gap-8">
-          
           {/* Brand & Intro */}
           <div className="space-y-6 md:col-span-1">
             <Link to="/" className="flex items-center gap-3 group">
@@ -49,14 +48,19 @@ export function Footer() {
               <span className="text-xl font-bold tracking-tight text-white">Phoenix Flight</span>
             </Link>
             <p className="text-sm leading-relaxed text-white/60">
-              Start your aviation journey with friendly instructors and unforgettable experiences at Cumbernauld Airport.
+              Start your aviation journey with friendly instructors and unforgettable experiences at
+              Cumbernauld Airport.
             </p>
 
             {/* Airfield status */}
             <div className="flex items-center gap-2">
               <span className={`relative flex h-2.5 w-2.5 ${airfield.open ? "" : ""}`}>
-                <span className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${airfield.open ? "animate-ping bg-emerald-400" : "bg-red-400"}`} />
-                <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${airfield.open ? "bg-emerald-400" : "bg-red-400"}`} />
+                <span
+                  className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${airfield.open ? "animate-ping bg-emerald-400" : "bg-red-400"}`}
+                />
+                <span
+                  className={`relative inline-flex h-2.5 w-2.5 rounded-full ${airfield.open ? "bg-emerald-400" : "bg-red-400"}`}
+                />
               </span>
               <span className="text-xs font-medium text-white/60">{airfield.message}</span>
             </div>
@@ -88,32 +92,50 @@ export function Footer() {
             <h3 className="text-sm font-semibold uppercase tracking-wider text-primary">Explore</h3>
             <ul className="mt-6 space-y-4">
               <li>
-                <Link to="/about" className="text-sm text-white/60 hover:text-white transition-colors">
+                <Link
+                  to="/about"
+                  className="text-sm text-white/60 hover:text-white transition-colors"
+                >
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/fleet" className="text-sm text-white/60 hover:text-white transition-colors">
+                <Link
+                  to="/fleet"
+                  className="text-sm text-white/60 hover:text-white transition-colors"
+                >
                   Our Fleet
                 </Link>
               </li>
               <li>
-                <Link to="/flying/experience" className="text-sm text-white/60 hover:text-white transition-colors">
+                <Link
+                  to="/flying/experience"
+                  className="text-sm text-white/60 hover:text-white transition-colors"
+                >
                   Experience Flights
                 </Link>
               </li>
               <li>
-                <Link to="/flying/learn-to-fly" className="text-sm text-white/60 hover:text-white transition-colors">
+                <Link
+                  to="/flying/learn-to-fly"
+                  className="text-sm text-white/60 hover:text-white transition-colors"
+                >
                   Learn to Fly
                 </Link>
               </li>
               <li>
-                <Link to="/flying/self-hire" className="text-sm text-white/60 hover:text-white transition-colors">
+                <Link
+                  to="/flying/self-hire"
+                  className="text-sm text-white/60 hover:text-white transition-colors"
+                >
                   Self Hire
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-sm text-white/60 hover:text-white transition-colors">
+                <Link
+                  to="/contact"
+                  className="text-sm text-white/60 hover:text-white transition-colors"
+                >
                   Contact
                 </Link>
               </li>
@@ -151,7 +173,9 @@ export function Footer() {
                 >
                   <MapPin className="h-5 w-5 shrink-0 text-primary" />
                   <span>
-                    Cumbernauld Airport<br />G68 0PR
+                    Cumbernauld Airport
+                    <br />
+                    G68 0PR
                   </span>
                 </a>
               </li>
@@ -198,7 +222,10 @@ export function Footer() {
             </a>
           </div>
           <div className="mt-4 flex items-center gap-4 md:mt-0">
-            <Link to="/privacy" className="text-xs text-white/40 hover:text-white transition-colors">
+            <Link
+              to="/privacy"
+              className="text-xs text-white/40 hover:text-white transition-colors"
+            >
               Privacy Policy
             </Link>
             <Link to="/terms" className="text-xs text-white/40 hover:text-white transition-colors">

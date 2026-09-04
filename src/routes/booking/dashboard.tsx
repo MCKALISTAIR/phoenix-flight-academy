@@ -1,10 +1,24 @@
 import { createFileRoute, Link, redirect, isRedirect } from "@tanstack/react-router";
-import { Calendar, CreditCard, History, Plane, User, Compass, Clock, Gauge, AlertTriangle, CalendarPlus, Trash2, XCircle } from "lucide-react";
+import {
+  Calendar,
+  CreditCard,
+  History,
+  Plane,
+  User,
+  Compass,
+  Clock,
+  Gauge,
+  AlertTriangle,
+  CalendarPlus,
+  Trash2,
+  XCircle,
+} from "lucide-react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { requireAuth } from "@/lib/auth-guards";
 import { listMyBookings } from "@/lib/bookings.functions";
+import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/booking/dashboard")({
   beforeLoad: async ({ location }) => {
@@ -31,8 +45,8 @@ const destinations = {
       { name: "Cumbernauld EGPG", alt: 350 },
       { name: "Loch Lomond VRP", alt: 2500 },
       { name: "Crianlarich Pass", alt: 3500 },
-      { name: "Oban Airport EGEO", alt: 25 }
-    ]
+      { name: "Oban Airport EGEO", alt: 25 },
+    ],
   },
   barra: {
     name: "Barra Beach (EGPR)",
@@ -43,8 +57,8 @@ const destinations = {
       { name: "Cumbernauld EGPG", alt: 350 },
       { name: "Tyndrum VRP", alt: 3000 },
       { name: "Mull Sound Pass", alt: 4000 },
-      { name: "Barra Beach EGPR", alt: 5 }
-    ]
+      { name: "Barra Beach EGPR", alt: 5 },
+    ],
   },
   dundee: {
     name: "Dundee (EGDE)",
@@ -55,8 +69,8 @@ const destinations = {
       { name: "Cumbernauld EGPG", alt: 350 },
       { name: "Stirling Castle VRP", alt: 1500 },
       { name: "Perth West Pass", alt: 2500 },
-      { name: "Dundee EGDE", alt: 17 }
-    ]
+      { name: "Dundee EGDE", alt: 17 },
+    ],
   },
   glenforsa: {
     name: "Glenforsa (EGED)",
@@ -67,22 +81,22 @@ const destinations = {
       { name: "Cumbernauld EGPG", alt: 350 },
       { name: "Loch Lomond VRP", alt: 2500 },
       { name: "Sound of Mull Pass", alt: 4000 },
-      { name: "Glenforsa Airfield EGED", alt: 12 }
-    ]
-  }
+      { name: "Glenforsa Airfield EGED", alt: 12 },
+    ],
+  },
 };
 
 const planes = {
   c172: {
     model: "Cessna 172 Skyhawk (G-PHNX)",
     cruiseSpeed: 105, // kts
-    fuelBurnRate: 30 // Litres/hour
+    fuelBurnRate: 30, // Litres/hour
   },
   pa28: {
     model: "Piper PA28 Cherokee (G-BCDF)",
     cruiseSpeed: 115, // kts
-    fuelBurnRate: 34 // Litres/hour
-  }
+    fuelBurnRate: 34, // Litres/hour
+  },
 };
 
 function CustomerDashboard() {
@@ -93,7 +107,7 @@ function CustomerDashboard() {
     day: "24",
     title: "PPL Lesson 4 - Circuit Training",
     time: "14:00 - 15:30",
-    aircraft: "Cessna 172 (G-PHNX)"
+    aircraft: "Cessna 172 (G-PHNX)",
   });
   const [confirmCancel, setConfirmCancel] = useState(false);
 
@@ -105,18 +119,22 @@ function CustomerDashboard() {
 
   const now = new Date().toISOString();
   const upcoming = bookings.filter((b) => b.starts_at > now && b.status !== "cancelled");
-  
+
   const dbNextFlight = upcoming
     .filter((b) => b.status === "confirmed")
     .sort((a, b) => a.starts_at.localeCompare(b.starts_at))[0];
 
-  const dbNextFlightFormatted = dbNextFlight ? {
-    month: new Date(dbNextFlight.starts_at).toLocaleString("en-GB", { month: "short" }),
-    day: new Date(dbNextFlight.starts_at).toLocaleString("en-GB", { day: "numeric" }),
-    title: dbNextFlight.booking_products?.name || "Flight Lesson",
-    time: `${new Date(dbNextFlight.starts_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} - ${new Date(dbNextFlight.ends_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`,
-    aircraft: dbNextFlight.aircraft ? `${dbNextFlight.aircraft.registration} (${dbNextFlight.aircraft.model})` : "No aircraft"
-  } : null;
+  const dbNextFlightFormatted = dbNextFlight
+    ? {
+        month: new Date(dbNextFlight.starts_at).toLocaleString("en-GB", { month: "short" }),
+        day: new Date(dbNextFlight.starts_at).toLocaleString("en-GB", { day: "numeric" }),
+        title: dbNextFlight.booking_products?.name || "Flight Lesson",
+        time: `${new Date(dbNextFlight.starts_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} - ${new Date(dbNextFlight.ends_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}`,
+        aircraft: dbNextFlight.aircraft
+          ? `${dbNextFlight.aircraft.registration} (${dbNextFlight.aircraft.model})`
+          : "No aircraft",
+      }
+    : null;
 
   const currentNextFlight = dbNextFlightFormatted || nextFlight;
   const unpaidBookings = upcoming.filter((b) => b.payment_status === "unpaid");
@@ -141,19 +159,31 @@ function CustomerDashboard() {
           <span className="text-lg font-bold text-foreground">Student Portal</span>
         </div>
         <nav className="space-y-1 p-4">
-          <a href="#" className="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-sm font-medium text-primary">
+          <a
+            href="#"
+            className="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-sm font-medium text-primary"
+          >
             <Plane className="h-5 w-5" />
             Overview
           </a>
-          <a href="#" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground">
+          <a
+            href="#"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
             <Calendar className="h-5 w-5" />
             Book a Flight
           </a>
-          <a href="#" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground">
+          <a
+            href="#"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
             <History className="h-5 w-5" />
             Flight Log
           </a>
-          <a href="#" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground">
+          <a
+            href="#"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
             <User className="h-5 w-5" />
             Profile
           </a>
@@ -165,7 +195,9 @@ function CustomerDashboard() {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Welcome back, Alex</h1>
-            <p className="mt-2 text-muted-foreground">Here is an overview of your training progress and flight planning tools.</p>
+            <p className="mt-2 text-muted-foreground">
+              Here is an overview of your training progress and flight planning tools.
+            </p>
           </div>
         </div>
 
@@ -176,13 +208,15 @@ function CustomerDashboard() {
               <h2 className="font-semibold text-foreground">Next Scheduled Flight</h2>
               {!currentNextFlight && (
                 <button
-                  onClick={() => setNextFlight({
-                    month: "May",
-                    day: "24",
-                    title: "PPL Lesson 4 - Circuit Training",
-                    time: "14:00 - 15:30",
-                    aircraft: "Cessna 172 (G-PHNX)"
-                  })}
+                  onClick={() =>
+                    setNextFlight({
+                      month: "May",
+                      day: "24",
+                      title: "PPL Lesson 4 - Circuit Training",
+                      time: "14:00 - 15:30",
+                      aircraft: "Cessna 172 (G-PHNX)",
+                    })
+                  }
                   className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
                 >
                   <CalendarPlus className="h-3.5 w-3.5" /> Restore Simulated Flight
@@ -195,38 +229,46 @@ function CustomerDashboard() {
                   <div className="flex items-center justify-between rounded-xl border border-border p-4 bg-muted/20">
                     <div className="flex items-center gap-4">
                       <div className="flex h-12 w-12 flex-col items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
-                        <span className="text-[10px] font-bold uppercase">{currentNextFlight.month}</span>
-                        <span className="text-lg font-bold leading-none">{currentNextFlight.day}</span>
+                        <span className="text-[10px] font-bold uppercase">
+                          {currentNextFlight.month}
+                        </span>
+                        <span className="text-lg font-bold leading-none">
+                          {currentNextFlight.day}
+                        </span>
                       </div>
                       <div>
                         <h3 className="font-medium text-foreground">{currentNextFlight.title}</h3>
-                        <p className="text-sm text-muted-foreground">{currentNextFlight.time} • {currentNextFlight.aircraft}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {currentNextFlight.time} • {currentNextFlight.aircraft}
+                        </p>
                       </div>
                     </div>
                     <div className="text-right flex items-center gap-3">
-                      <span className="inline-flex items-center rounded-full bg-green-500/10 px-2.5 py-0.5 text-xs font-semibold text-green-700 dark:text-green-400">
-                        Confirmed
-                      </span>
+                      <Badge variant="operational">Confirmed</Badge>
                     </div>
                   </div>
-                  
+
                   <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-4">
-                    <p className="text-xs text-muted-foreground">Need to make changes? Reschedule or cancel up to 24h prior.</p>
+                    <p className="text-xs text-muted-foreground">
+                      Need to make changes? Reschedule or cancel up to 24h prior.
+                    </p>
                     {confirmCancel ? (
                       <div className="flex items-center gap-2 animate-in fade-in duration-200">
-                        <span className="text-xs font-medium text-red-500">Confirm cancellation?</span>
+                        <span className="text-xs font-medium text-destructive">
+                          Confirm cancellation?
+                        </span>
                         <button
                           onClick={() => {
                             setNextFlight(null);
                             setConfirmCancel(false);
                           }}
-                          className="rounded bg-red-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-red-700 transition-colors"
+                          className="rounded bg-destructive px-2.5 py-1 text-xs font-semibold text-destructive-foreground transition-all active:scale-[0.98] hover:bg-destructive/90"
                         >
                           Yes, Cancel
                         </button>
                         <button
                           onClick={() => setConfirmCancel(false)}
-                          className="rounded border border-border bg-background px-2.5 py-1 text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                          className="rounded border border-border bg-background px-2.5 py-1 text-xs font-semibold text-foreground transition-all active:scale-[0.98] hover:bg-accent"
                         >
                           No
                         </button>
@@ -234,7 +276,7 @@ function CustomerDashboard() {
                     ) : (
                       <button
                         onClick={() => setConfirmCancel(true)}
-                        className="inline-flex items-center gap-1 text-xs font-semibold text-red-600 hover:text-red-500 hover:underline transition-colors"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-destructive transition-colors hover:underline"
                       >
                         <Trash2 className="h-3.5 w-3.5" /> Cancel Lesson
                       </button>
@@ -247,14 +289,17 @@ function CustomerDashboard() {
                   <div className="rounded-full bg-muted p-3 text-muted-foreground mb-3 shrink-0">
                     <XCircle className="h-8 w-8 text-muted-foreground/60" />
                   </div>
-                  <h3 className="text-base font-bold text-foreground">No Upcoming Lessons Scheduled</h3>
+                  <h3 className="text-base font-bold text-foreground">
+                    No Upcoming Lessons Scheduled
+                  </h3>
                   <p className="mt-1 max-w-sm text-xs text-muted-foreground leading-relaxed">
-                    Keep your pilot training active and complete your syllabus hours! Schedule your next instruction lesson or self-hire checkride.
+                    Keep your pilot training active and complete your syllabus hours! Schedule your
+                    next instruction lesson or self-hire checkride.
                   </p>
                   <div className="mt-4 flex gap-3">
                     <button
                       onClick={() => alert("Simulated: Open Booking Schedule Dialog")}
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow hover:bg-primary/95 transition-transform hover:scale-[1.01]"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow transition-all active:scale-[0.98] active:translate-y-[0.5px] hover:bg-primary/90"
                     >
                       <CalendarPlus className="h-3.5 w-3.5" /> Book Flight Lesson
                     </button>
@@ -265,23 +310,32 @@ function CustomerDashboard() {
           </div>
 
           {/* Account Balance */}
-          <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
             <div className="border-b border-border bg-muted/50 px-6 py-4">
               <h2 className="font-semibold text-foreground">Account Balance</h2>
             </div>
             <div className="p-6">
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold text-foreground">
-                  £{unpaidBookings.length > 0 ? (unpaidBookings.reduce((sum, b) => sum + (b.price_total_cents || 0), 0) / 100).toFixed(2) : "0.00"}
+                <span className="font-mono text-3xl font-extrabold tabular-nums text-foreground">
+                  £
+                  {unpaidBookings.length > 0
+                    ? (
+                        unpaidBookings.reduce((sum, b) => sum + (b.price_total_cents || 0), 0) / 100
+                      ).toFixed(2)
+                    : "0.00"}
                 </span>
               </div>
               <p className="mt-1 text-sm text-muted-foreground">
-                {unpaidBookings.length > 0 ? "Outstanding balance for block lessons." : "All flights are paid up to date."}
+                {unpaidBookings.length > 0
+                  ? "Outstanding balance for block lessons."
+                  : "All flights are paid up to date."}
               </p>
-              
+
               {unpaidBookings.length > 0 ? (
                 <div className="mt-6 space-y-3 pt-6 border-t border-border">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Unpaid Lessons</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Unpaid Lessons
+                  </h3>
                   <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                     {unpaidBookings.map((b) => {
                       const dateStr = new Date(b.starts_at).toLocaleDateString("en-GB", {
@@ -291,16 +345,23 @@ function CustomerDashboard() {
                         minute: "2-digit",
                       });
                       return (
-                        <div key={b.id} className="flex items-center justify-between gap-3 text-xs bg-muted/20 p-2.5 rounded-lg border border-border">
+                        <div
+                          key={b.id}
+                          className="flex items-center justify-between gap-3 text-xs bg-muted/20 p-2.5 rounded-lg border border-border"
+                        >
                           <div className="min-w-0 flex-1">
-                            <p className="font-semibold text-foreground truncate">{b.booking_products?.name || "Flight Lesson"}</p>
-                            <p className="text-muted-foreground">{dateStr}</p>
-                            <p className="font-medium text-foreground">£{((b.price_total_cents || 0) / 100).toFixed(2)}</p>
+                            <p className="font-semibold text-foreground truncate">
+                              {b.booking_products?.name || "Flight Lesson"}
+                            </p>
+                            <p className="text-muted-foreground font-mono">{dateStr}</p>
+                            <p className="font-mono font-semibold tabular-nums text-foreground">
+                              £{((b.price_total_cents || 0) / 100).toFixed(2)}
+                            </p>
                           </div>
                           <Link
                             to="/booking/checkout/$id"
                             params={{ id: b.id }}
-                            className="shrink-0 rounded bg-primary px-2.5 py-1.5 font-bold text-primary-foreground hover:bg-primary/90 transition-colors"
+                            className="shrink-0 rounded bg-primary px-2.5 py-1.5 font-bold text-primary-foreground transition-all active:scale-[0.98] active:translate-y-[0.5px] hover:bg-primary/90"
                           >
                             Pay Now
                           </Link>
@@ -310,7 +371,7 @@ function CustomerDashboard() {
                   </div>
                 </div>
               ) : (
-                <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/95 shadow">
+                <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-all active:scale-[0.98] active:translate-y-[0.5px] hover:bg-primary/90">
                   <CreditCard className="h-4 w-4" />
                   Add Funds
                 </button>
@@ -331,9 +392,16 @@ function CustomerDashboard() {
               <div className="grid gap-6 md:grid-cols-3">
                 {/* Inputs side */}
                 <div className="space-y-4 bg-muted/30 p-5 rounded-2xl border border-border">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Dispatch Settings</h3>
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                    Dispatch Settings
+                  </h3>
                   <div>
-                    <label htmlFor="destination" className="block text-xs font-semibold text-muted-foreground mb-1.5">Destination Airport</label>
+                    <label
+                      htmlFor="destination"
+                      className="block text-xs font-semibold text-muted-foreground mb-1.5"
+                    >
+                      Destination Airport
+                    </label>
                     <select
                       id="destination"
                       value={selectedDest}
@@ -347,7 +415,12 @@ function CustomerDashboard() {
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="aircraft" className="block text-xs font-semibold text-muted-foreground mb-1.5">Hangar Aircraft</label>
+                    <label
+                      htmlFor="aircraft"
+                      className="block text-xs font-semibold text-muted-foreground mb-1.5"
+                    >
+                      Hangar Aircraft
+                    </label>
                     <select
                       id="aircraft"
                       value={selectedPlane}
@@ -363,33 +436,51 @@ function CustomerDashboard() {
                 {/* Outputs Panel */}
                 <div className="md:col-span-2 grid grid-cols-3 gap-4">
                   {/* Distance Card */}
-                  <div className="p-4 rounded-2xl border border-border bg-card shadow-sm flex flex-col justify-between">
-                    <span className="block text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Flight Distance</span>
+                  <div className="p-4 rounded-xl border border-border bg-card shadow-sm flex flex-col justify-between">
+                    <span className="block text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
+                      Flight Distance
+                    </span>
                     <div className="mt-2 flex items-baseline gap-1 text-primary">
-                      <span className="text-2xl font-black">{dest.distance}</span>
+                      <span className="font-mono text-2xl font-black tabular-nums">
+                        {dest.distance}
+                      </span>
                       <span className="text-xs font-bold uppercase font-mono">NM</span>
                     </div>
-                    <span className="text-[10px] text-muted-foreground mt-2 block font-mono">True Hdg: {dest.heading.toString().padStart(3, '0')}°</span>
+                    <span className="text-[10px] text-muted-foreground mt-2 block font-mono tabular-nums">
+                      True Hdg: {dest.heading.toString().padStart(3, "0")}°
+                    </span>
                   </div>
 
                   {/* ETE Card */}
-                  <div className="p-4 rounded-2xl border border-border bg-card shadow-sm flex flex-col justify-between">
-                    <span className="block text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Est. Time Enroute</span>
-                    <div className="mt-2 flex items-baseline gap-1 text-emerald-500">
-                      <span className="text-2xl font-black">{flightTimeMins}</span>
+                  <div className="p-4 rounded-xl border border-border bg-card shadow-sm flex flex-col justify-between">
+                    <span className="block text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
+                      Est. Time Enroute
+                    </span>
+                    <div className="mt-2 flex items-baseline gap-1 text-success">
+                      <span className="font-mono text-2xl font-black tabular-nums">
+                        {flightTimeMins}
+                      </span>
                       <span className="text-xs font-bold uppercase font-mono">MINS</span>
                     </div>
-                    <span className="text-[10px] text-muted-foreground mt-2 block font-mono">Speed: {plane.cruiseSpeed} kts</span>
+                    <span className="text-[10px] text-muted-foreground mt-2 block font-mono tabular-nums">
+                      Speed: {plane.cruiseSpeed} kts
+                    </span>
                   </div>
 
                   {/* Fuel Card */}
-                  <div className="p-4 rounded-2xl border border-border bg-card shadow-sm flex flex-col justify-between">
-                    <span className="block text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Required Fuel</span>
-                    <div className="mt-2 flex items-baseline gap-1 text-amber-500">
-                      <span className="text-2xl font-black">{totalRequiredFuel}</span>
+                  <div className="p-4 rounded-xl border border-border bg-card shadow-sm flex flex-col justify-between">
+                    <span className="block text-[10px] uppercase font-bold text-muted-foreground tracking-wider">
+                      Required Fuel
+                    </span>
+                    <div className="mt-2 flex items-baseline gap-1 text-warning">
+                      <span className="font-mono text-2xl font-black tabular-nums">
+                        {totalRequiredFuel}
+                      </span>
                       <span className="text-xs font-bold uppercase font-mono">LTRS</span>
                     </div>
-                    <span className="text-[10px] text-muted-foreground mt-2 block font-mono">Inc 45m Reserve</span>
+                    <span className="text-[10px] text-muted-foreground mt-2 block font-mono">
+                      Inc 45m Reserve
+                    </span>
                   </div>
                 </div>
               </div>
@@ -401,10 +492,10 @@ function CustomerDashboard() {
                   Flight Navigation Log & MEA Checkpoints
                 </h3>
 
-                <div className="overflow-hidden rounded-xl border border-slate-800 shadow-inner">
-                  <table className="w-full text-left font-mono text-xs bg-slate-950 text-slate-200">
+                <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+                  <table className="w-full text-left font-mono text-xs">
                     <thead>
-                      <tr className="border-b border-slate-850 bg-slate-900/60 text-slate-400 text-[10px] tracking-wider uppercase font-bold">
+                      <tr className="border-b border-border bg-muted/40 text-muted-foreground text-[10px] tracking-wider uppercase font-bold">
                         <th className="px-4 py-3">Waypoint / Fix</th>
                         <th className="px-4 py-3">Magnetic Course</th>
                         <th className="px-4 py-3">Safety Alt (MEA)</th>
@@ -412,20 +503,30 @@ function CustomerDashboard() {
                         <th className="px-4 py-3 text-right">Fuel Consumption</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-900">
+                    <tbody className="divide-y divide-border">
                       {dest.waypoints.map((wp, wIdx) => {
-                        const courseVal = wIdx === 0 ? "-" : `${dest.heading.toString().padStart(3, '0')}°`;
-                        const fuelProgress = wIdx === 0 ? 0 : Math.round((wIdx / (dest.waypoints.length - 1)) * fuelBurnLitres);
+                        const courseVal =
+                          wIdx === 0 ? "—" : `${dest.heading.toString().padStart(3, "0")}°`;
+                        const fuelProgress =
+                          wIdx === 0
+                            ? 0
+                            : Math.round((wIdx / (dest.waypoints.length - 1)) * fuelBurnLitres);
                         return (
-                          <tr key={wIdx} className="hover:bg-slate-900/40 transition-colors">
-                            <td className="px-4 py-3 font-semibold text-slate-100 flex items-center gap-2">
+                          <tr key={wIdx} className="hover:bg-muted/20 transition-colors">
+                            <td className="px-4 py-3 font-semibold text-foreground flex items-center gap-2">
                               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                               {wp.name}
                             </td>
-                            <td className="px-4 py-3 text-slate-300">{courseVal}</td>
-                            <td className="px-4 py-3 text-slate-400">{dest.safetyAltitude} ft</td>
-                            <td className="px-4 py-3 text-amber-400 font-bold">{wp.alt} ft</td>
-                            <td className="px-4 py-3 text-right text-emerald-400 font-bold">
+                            <td className="px-4 py-3 text-foreground/80 tabular-nums">
+                              {courseVal}
+                            </td>
+                            <td className="px-4 py-3 text-muted-foreground tabular-nums">
+                              {dest.safetyAltitude} ft
+                            </td>
+                            <td className="px-4 py-3 text-warning font-bold tabular-nums">
+                              {wp.alt} ft
+                            </td>
+                            <td className="px-4 py-3 text-right text-success font-bold tabular-nums">
                               {wIdx === 0 ? "Full Tank" : `-${fuelProgress} L`}
                             </td>
                           </tr>
@@ -438,8 +539,12 @@ function CustomerDashboard() {
                 <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex gap-3 text-xs leading-relaxed text-primary">
                   <Clock className="h-4 w-4 shrink-0 mt-0.5" />
                   <div>
-                    <strong className="block font-bold">VFR Navigation Warning:</strong>
-                    Flight plans generated are for simulation and planning training. Always cross-check METAR weather, regional pressure settings, and airspace restrictions at the Cumbernauld Flight Operations desk before engine start.
+                    <strong className="block font-bold uppercase tracking-wide">
+                      VFR Navigation Advisory:
+                    </strong>
+                    Flight plans generated are for simulated navigation training. Always cross-check
+                    actual METAR weather, regional QNH pressure settings, and active NOTAM
+                    restrictions at the Cumbernauld Flight Operations desk before engine start.
                   </div>
                 </div>
               </div>

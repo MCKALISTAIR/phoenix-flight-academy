@@ -18,9 +18,7 @@ const TEST_USERS = {
 };
 
 export const ensureTestUser = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) =>
-    z.object({ kind: z.enum(["admin", "user"]) }).parse(input),
-  )
+  .inputValidator((input: unknown) => z.object({ kind: z.enum(["admin", "user"]) }).parse(input))
   .handler(async ({ data }) => {
     const cfg = TEST_USERS[data.kind];
 
@@ -29,13 +27,12 @@ export const ensureTestUser = createServerFn({ method: "POST" })
     let user = list.users.find((u) => u.email === cfg.email);
 
     if (!user) {
-      const { data: created, error: createErr } =
-        await supabaseAdmin.auth.admin.createUser({
-          email: cfg.email,
-          password: cfg.password,
-          email_confirm: true,
-          user_metadata: { display_name: cfg.display_name },
-        });
+      const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
+        email: cfg.email,
+        password: cfg.password,
+        email_confirm: true,
+        user_metadata: { display_name: cfg.display_name },
+      });
       if (createErr) throw new Error(createErr.message);
       user = created.user!;
     } else {
@@ -48,10 +45,7 @@ export const ensureTestUser = createServerFn({ method: "POST" })
     if (cfg.role && user) {
       await supabaseAdmin
         .from("user_roles")
-        .upsert(
-          { user_id: user.id, role: cfg.role },
-          { onConflict: "user_id,role" },
-        );
+        .upsert({ user_id: user.id, role: cfg.role }, { onConflict: "user_id,role" });
     }
 
     return { email: cfg.email, password: cfg.password };

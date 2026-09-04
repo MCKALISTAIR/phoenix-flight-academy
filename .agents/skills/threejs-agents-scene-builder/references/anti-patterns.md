@@ -97,6 +97,7 @@
 **Wrong:** Using OrbitControls and TransformControls simultaneously without coordination.
 **Why:** Both controls respond to pointer events. Dragging a TransformControls gizmo also triggers OrbitControls rotation, producing chaotic camera movement.
 **Fix:** ALWAYS disable OrbitControls when TransformControls interaction starts, re-enable on end:
+
 ```
 transformControls.addEventListener('dragging-changed', (event) => {
     orbitControls.enabled = !event.value;

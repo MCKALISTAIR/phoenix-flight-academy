@@ -105,7 +105,9 @@ export const listPilotVerifications = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
     z
-      .object({ status: z.enum(["pending", "approved", "rejected", "withdrawn", "all"]).optional() })
+      .object({
+        status: z.enum(["pending", "approved", "rejected", "withdrawn", "all"]).optional(),
+      })
       .parse(input ?? {}),
   )
   .handler(async ({ data, context }) => {

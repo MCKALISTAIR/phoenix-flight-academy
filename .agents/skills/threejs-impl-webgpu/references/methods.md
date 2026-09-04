@@ -3,16 +3,16 @@
 ## WebGPURenderer
 
 ```javascript
-import * as THREE from 'three/webgpu';
+import * as THREE from "three/webgpu";
 
 const renderer = new THREE.WebGPURenderer({
-  canvas: HTMLCanvasElement,        // optional, target canvas
-  antialias: boolean,               // default: false
-  alpha: boolean,                   // default: false, transparent background
-  depth: boolean,                   // default: true
-  stencil: boolean,                 // default: false
-  powerPreference: string,          // 'high-performance' | 'low-power'
-  forceWebGL: boolean,              // default: false, force WebGL2 backend
+  canvas: HTMLCanvasElement, // optional, target canvas
+  antialias: boolean, // default: false
+  alpha: boolean, // default: false, transparent background
+  depth: boolean, // default: true
+  stencil: boolean, // default: false
+  powerPreference: string, // 'high-performance' | 'low-power'
+  forceWebGL: boolean, // default: false, force WebGL2 backend
 });
 ```
 
@@ -173,16 +173,55 @@ attribute(name, type): AttributeNode  // buffer attribute access
 
 ```javascript
 import {
-  abs, acos, asin, atan, ceil, clamp, cos, cross, degrees,
-  distance, dot, exp, floor, fract, inverseSqrt, length, log,
-  max, min, mix, normalize, pow, radians, reflect, refract,
-  round, saturate, sign, sin, smoothstep, sqrt, step, tan, trunc,
-  faceforward, dFdx, dFdy, fwidth,
-  negate, oneMinus, reciprocal, cbrt, pow2, pow3, pow4
-} from 'three/tsl';
+  abs,
+  acos,
+  asin,
+  atan,
+  ceil,
+  clamp,
+  cos,
+  cross,
+  degrees,
+  distance,
+  dot,
+  exp,
+  floor,
+  fract,
+  inverseSqrt,
+  length,
+  log,
+  max,
+  min,
+  mix,
+  normalize,
+  pow,
+  radians,
+  reflect,
+  refract,
+  round,
+  saturate,
+  sign,
+  sin,
+  smoothstep,
+  sqrt,
+  step,
+  tan,
+  trunc,
+  faceforward,
+  dFdx,
+  dFdy,
+  fwidth,
+  negate,
+  oneMinus,
+  reciprocal,
+  cbrt,
+  pow2,
+  pow3,
+  pow4,
+} from "three/tsl";
 
 // Constants
-import { EPSILON, INFINITY, PI, TWO_PI, HALF_PI } from 'three/tsl';
+import { EPSILON, INFINITY, PI, TWO_PI, HALF_PI } from "three/tsl";
 ```
 
 ### Geometry Nodes
@@ -207,20 +246,30 @@ uv(1): UVNode  // UV channel 1
 
 ```javascript
 import {
-  cameraNear, cameraFar, cameraPosition,
-  cameraProjectionMatrix, cameraProjectionMatrixInverse,
-  cameraViewMatrix, cameraWorldMatrix, cameraNormalMatrix
-} from 'three/tsl';
+  cameraNear,
+  cameraFar,
+  cameraPosition,
+  cameraProjectionMatrix,
+  cameraProjectionMatrixInverse,
+  cameraViewMatrix,
+  cameraWorldMatrix,
+  cameraNormalMatrix,
+} from "three/tsl";
 ```
 
 ### Model Nodes
 
 ```javascript
 import {
-  modelViewMatrix, modelNormalMatrix, modelWorldMatrix,
-  modelPosition, modelScale, modelDirection,
-  modelViewPosition, modelWorldMatrixInverse
-} from 'three/tsl';
+  modelViewMatrix,
+  modelNormalMatrix,
+  modelWorldMatrix,
+  modelPosition,
+  modelScale,
+  modelDirection,
+  modelViewPosition,
+  modelWorldMatrixInverse,
+} from "three/tsl";
 ```
 
 ### Texture Functions
@@ -281,13 +330,13 @@ const myFn = Fn(([param1, param2]) => {
 ### Color Operations
 
 ```javascript
-import { luminance, saturation, vibrance, hue, posterize, grayscale, sepia } from 'three/tsl';
+import { luminance, saturation, vibrance, hue, posterize, grayscale, sepia } from "three/tsl";
 ```
 
 ### Blend Modes
 
 ```javascript
-import { blendBurn, blendDodge, blendOverlay, blendScreen, blendColor } from 'three/tsl';
+import { blendBurn, blendDodge, blendOverlay, blendScreen, blendColor } from "three/tsl";
 ```
 
 ---
@@ -309,22 +358,28 @@ await renderer.computeAsync(computeNode): Promise<void>
 
 ```javascript
 import {
-  atomicAdd, atomicSub, atomicMax, atomicMin,
-  atomicAnd, atomicOr, atomicXor,
-  atomicStore, atomicLoad
-} from 'three/tsl';
+  atomicAdd,
+  atomicSub,
+  atomicMax,
+  atomicMin,
+  atomicAnd,
+  atomicOr,
+  atomicXor,
+  atomicStore,
+  atomicLoad,
+} from "three/tsl";
 ```
 
 ### Barriers
 
 ```javascript
-import { workgroupBarrier, storageBarrier, textureBarrier, barrier } from 'three/tsl';
+import { workgroupBarrier, storageBarrier, textureBarrier, barrier } from "three/tsl";
 ```
 
 ### Built-in IDs
 
 ```javascript
-import { workgroupId, localId, globalId, numWorkgroups, subgroupSize } from 'three/tsl';
+import { workgroupId, localId, globalId, numWorkgroups, subgroupSize } from "three/tsl";
 ```
 
 ---

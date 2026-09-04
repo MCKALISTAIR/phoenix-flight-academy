@@ -7,10 +7,7 @@ import { DEFAULT_ORG_ID } from "@/lib/constants";
 const STAFF_ROLES = ["super_admin", "admin", "instructor"] as const;
 
 async function assertStaff(userId: string) {
-  const { data } = await supabaseAdmin
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", userId);
+  const { data } = await supabaseAdmin.from("user_roles").select("role").eq("user_id", userId);
   const roles = (data ?? []).map((r) => r.role);
   if (!roles.some((r) => (STAFF_ROLES as readonly string[]).includes(r))) {
     throw new Error("Forbidden: staff role required");

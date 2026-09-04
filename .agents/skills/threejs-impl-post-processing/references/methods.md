@@ -8,7 +8,7 @@
 ## EffectComposer
 
 ```js
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 ```
 
 ### Constructor
@@ -19,13 +19,13 @@ new EffectComposer( renderer: WebGLRenderer, renderTarget?: WebGLRenderTarget )
 
 ### Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `.passes` | `Pass[]` | `[]` | Ordered array of post-processing passes |
-| `.readBuffer` | `WebGLRenderTarget` | auto | Internal read buffer |
-| `.writeBuffer` | `WebGLRenderTarget` | auto | Internal write buffer |
-| `.renderToScreen` | `boolean` | `true` | Final pass renders to screen |
-| `.renderer` | `WebGLRenderer` | -- | The renderer instance |
+| Property          | Type                | Default | Description                             |
+| ----------------- | ------------------- | ------- | --------------------------------------- |
+| `.passes`         | `Pass[]`            | `[]`    | Ordered array of post-processing passes |
+| `.readBuffer`     | `WebGLRenderTarget` | auto    | Internal read buffer                    |
+| `.writeBuffer`    | `WebGLRenderTarget` | auto    | Internal write buffer                   |
+| `.renderToScreen` | `boolean`           | `true`  | Final pass renders to screen            |
+| `.renderer`       | `WebGLRenderer`     | --      | The renderer instance                   |
 
 ### Methods
 
@@ -49,12 +49,12 @@ All passes extend the abstract `Pass` class.
 
 ### Properties
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `.enabled` | `boolean` | `true` | Whether this pass executes |
-| `.needsSwap` | `boolean` | `true` | Whether to swap read/write buffers after rendering |
-| `.clear` | `boolean` | `false` | Whether to clear the buffer before rendering |
-| `.renderToScreen` | `boolean` | `false` | Whether this pass renders directly to screen |
+| Property          | Type      | Default | Description                                        |
+| ----------------- | --------- | ------- | -------------------------------------------------- |
+| `.enabled`        | `boolean` | `true`  | Whether this pass executes                         |
+| `.needsSwap`      | `boolean` | `true`  | Whether to swap read/write buffers after rendering |
+| `.clear`          | `boolean` | `false` | Whether to clear the buffer before rendering       |
+| `.renderToScreen` | `boolean` | `false` | Whether this pass renders directly to screen       |
 
 ### Methods
 
@@ -79,23 +79,23 @@ new RenderPass(
 )
 ```
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `.scene` | `Scene` | The scene to render |
-| `.camera` | `Camera` | The camera to render from |
+| Property            | Type               | Description                       |
+| ------------------- | ------------------ | --------------------------------- |
+| `.scene`            | `Scene`            | The scene to render               |
+| `.camera`           | `Camera`           | The camera to render from         |
 | `.overrideMaterial` | `Material \| null` | Override material for all objects |
-| `.clearColor` | `Color \| null` | Clear color override |
-| `.clearAlpha` | `number` | Clear alpha override |
-| `.clearDepth` | `boolean` | Whether to clear depth buffer |
+| `.clearColor`       | `Color \| null`    | Clear color override              |
+| `.clearAlpha`       | `number`           | Clear alpha override              |
+| `.clearDepth`       | `boolean`          | Whether to clear depth buffer     |
 
 ---
 
 ## OutputPass
 
 ```ts
-import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
-new OutputPass()
+new OutputPass();
 ```
 
 Applies the renderer's tone mapping and output color space conversion. ALWAYS the last pass.
@@ -115,12 +115,12 @@ new UnrealBloomPass(
 )
 ```
 
-| Property | Type | Range | Description |
-|----------|------|-------|-------------|
-| `.strength` | `number` | `0` -- `3+` | Bloom intensity |
-| `.radius` | `number` | `0` -- `1` | Bloom spread width |
-| `.threshold` | `number` | `0` -- `1` | Luminance cutoff for bloom |
-| `.resolution` | `Vector2` | -- | Resolution of bloom buffers |
+| Property      | Type      | Range       | Description                 |
+| ------------- | --------- | ----------- | --------------------------- |
+| `.strength`   | `number`  | `0` -- `3+` | Bloom intensity             |
+| `.radius`     | `number`  | `0` -- `1`  | Bloom spread width          |
+| `.threshold`  | `number`  | `0` -- `1`  | Luminance cutoff for bloom  |
+| `.resolution` | `Vector2` | --          | Resolution of bloom buffers |
 
 ---
 
@@ -138,12 +138,12 @@ new SSAOPass(
 )
 ```
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `.kernelRadius` | `number` | `8` | AO spread radius |
-| `.minDistance` | `number` | `0.005` | Minimum distance for AO |
-| `.maxDistance` | `number` | `0.1` | Maximum distance for AO |
-| `.output` | `number` | `SSAOPass.OUTPUT.Default` | Output mode |
+| Property        | Type     | Default                   | Description             |
+| --------------- | -------- | ------------------------- | ----------------------- |
+| `.kernelRadius` | `number` | `8`                       | AO spread radius        |
+| `.minDistance`  | `number` | `0.005`                   | Minimum distance for AO |
+| `.maxDistance`  | `number` | `0.1`                     | Maximum distance for AO |
+| `.output`       | `number` | `SSAOPass.OUTPUT.Default` | Output mode             |
 
 Output modes: `SSAOPass.OUTPUT.Default`, `SSAOPass.OUTPUT.SSAO`, `SSAOPass.OUTPUT.Blur`, `SSAOPass.OUTPUT.Depth`, `SSAOPass.OUTPUT.Normal`.
 
@@ -179,16 +179,16 @@ new OutlinePass(
 )
 ```
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `.selectedObjects` | `Object3D[]` | `[]` | Objects to outline |
-| `.edgeStrength` | `number` | `3` | Edge intensity |
-| `.edgeGlow` | `number` | `0` | Animated glow amount |
-| `.edgeThickness` | `number` | `1` | Outline width |
-| `.visibleEdgeColor` | `Color` | `0xffffff` | Visible edge color |
-| `.hiddenEdgeColor` | `Color` | `0x190a05` | Occluded edge color |
-| `.pulsePeriod` | `number` | `0` | Pulse animation period (0 = off) |
-| `.downSampleRatio` | `number` | `2` | Resolution downsampling |
+| Property            | Type         | Default    | Description                      |
+| ------------------- | ------------ | ---------- | -------------------------------- |
+| `.selectedObjects`  | `Object3D[]` | `[]`       | Objects to outline               |
+| `.edgeStrength`     | `number`     | `3`        | Edge intensity                   |
+| `.edgeGlow`         | `number`     | `0`        | Animated glow amount             |
+| `.edgeThickness`    | `number`     | `1`        | Outline width                    |
+| `.visibleEdgeColor` | `Color`      | `0xffffff` | Visible edge color               |
+| `.hiddenEdgeColor`  | `Color`      | `0x190a05` | Occluded edge color              |
+| `.pulsePeriod`      | `number`     | `0`        | Pulse animation period (0 = off) |
+| `.downSampleRatio`  | `number`     | `2`        | Resolution downsampling          |
 
 ---
 
@@ -207,9 +207,9 @@ Subpixel morphological anti-aliasing. Moderate quality and cost.
 ## FXAAPass
 
 ```ts
-import { FXAAPass } from 'three/addons/postprocessing/FXAAPass.js';
+import { FXAAPass } from "three/addons/postprocessing/FXAAPass.js";
 
-new FXAAPass()
+new FXAAPass();
 ```
 
 Fast approximate anti-aliasing. Lowest quality but cheapest. Access resolution uniform via `pass.material.uniforms[ 'resolution' ]`.
@@ -263,8 +263,8 @@ import { GlitchPass } from 'three/addons/postprocessing/GlitchPass.js';
 new GlitchPass( dtSize?: number )
 ```
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property  | Type      | Description                              |
+| --------- | --------- | ---------------------------------------- |
 | `.goWild` | `boolean` | Continuous glitch mode (default `false`) |
 
 ---
@@ -301,10 +301,10 @@ import { SSAARenderPass } from 'three/addons/postprocessing/SSAARenderPass.js';
 new SSAARenderPass( scene: Scene, camera: Camera, clearColor?: Color, clearAlpha?: number )
 ```
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `.sampleLevel` | `number` | `4` | Number of samples (2^n) |
-| `.unbiased` | `boolean` | `true` | Use unbiased sampling |
+| Property       | Type      | Default | Description             |
+| -------------- | --------- | ------- | ----------------------- |
+| `.sampleLevel` | `number`  | `4`     | Number of samples (2^n) |
+| `.unbiased`    | `boolean` | `true`  | Use unbiased sampling   |
 
 ---
 
@@ -323,10 +323,20 @@ Extends SSAARenderPass with temporal accumulation. Only re-renders when camera m
 ## pmndrs/postprocessing -- Key Classes
 
 ```js
-import { EffectComposer, EffectPass, RenderPass, BloomEffect,
-         SMAAEffect, SSAOEffect, DepthOfFieldEffect, ToneMappingEffect,
-         VignetteEffect, ChromaticAberrationEffect, NoiseEffect,
-         GodRaysEffect } from 'postprocessing';
+import {
+  EffectComposer,
+  EffectPass,
+  RenderPass,
+  BloomEffect,
+  SMAAEffect,
+  SSAOEffect,
+  DepthOfFieldEffect,
+  ToneMappingEffect,
+  VignetteEffect,
+  ChromaticAberrationEffect,
+  NoiseEffect,
+  GodRaysEffect,
+} from "postprocessing";
 ```
 
 ### EffectComposer (pmndrs)

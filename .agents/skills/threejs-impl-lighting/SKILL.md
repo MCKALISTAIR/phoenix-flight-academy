@@ -21,15 +21,15 @@ metadata:
 
 ### Light Types at a Glance
 
-| Light | Shadows | Direction | Cost | Intensity Unit (r160+) |
-|-------|---------|-----------|------|----------------------|
-| `AmbientLight` | NO | None (uniform) | Negligible | Unitless multiplier |
-| `HemisphereLight` | NO | Vertical gradient | Negligible | Unitless multiplier |
-| `DirectionalLight` | YES | Parallel rays | Moderate | Lux |
-| `PointLight` | YES (6-pass!) | Omnidirectional | High | Candela |
-| `SpotLight` | YES | Cone | High | Candela |
-| `RectAreaLight` | NO | Planar emission | Very high | Nits (cd/m2) |
-| `LightProbe` | NO | Spherical harmonics | Low | Unitless multiplier |
+| Light              | Shadows       | Direction           | Cost       | Intensity Unit (r160+) |
+| ------------------ | ------------- | ------------------- | ---------- | ---------------------- |
+| `AmbientLight`     | NO            | None (uniform)      | Negligible | Unitless multiplier    |
+| `HemisphereLight`  | NO            | Vertical gradient   | Negligible | Unitless multiplier    |
+| `DirectionalLight` | YES           | Parallel rays       | Moderate   | Lux                    |
+| `PointLight`       | YES (6-pass!) | Omnidirectional     | High       | Candela                |
+| `SpotLight`        | YES           | Cone                | High       | Candela                |
+| `RectAreaLight`    | NO            | Planar emission     | Very high  | Nits (cd/m2)           |
+| `LightProbe`       | NO            | Spherical harmonics | Low        | Unitless multiplier    |
 
 ### Critical Warnings
 
@@ -64,6 +64,7 @@ Object3D
 ```
 
 The `Light` base class provides:
+
 - `.color` (Color) -- light color, default `0xffffff`
 - `.intensity` (number) -- strength multiplier, default `1`
 - `.isLight` (boolean, readonly) -- ALWAYS `true`
@@ -75,23 +76,24 @@ The `Light` base class provides:
 
 As of r160+, ALL lighting uses physically based units by default. The legacy `renderer.useLegacyLights` property was removed.
 
-| Light Type | Intensity Unit | Description |
-|-----------|---------------|-------------|
-| DirectionalLight | **Lux** (lm/m2) | Sunlight: 50,000-100,000 lux |
-| PointLight | **Candela** (lm/sr) | 100W bulb: ~1700 cd |
-| SpotLight | **Candela** (lm/sr) | Stage spot: ~10,000 cd |
-| RectAreaLight | **Nits** (cd/m2) | LED panel: ~500-5000 nits |
-| AmbientLight | Unitless | Multiplier, no physical unit |
-| HemisphereLight | Unitless | Multiplier, no physical unit |
+| Light Type       | Intensity Unit      | Description                  |
+| ---------------- | ------------------- | ---------------------------- |
+| DirectionalLight | **Lux** (lm/m2)     | Sunlight: 50,000-100,000 lux |
+| PointLight       | **Candela** (lm/sr) | 100W bulb: ~1700 cd          |
+| SpotLight        | **Candela** (lm/sr) | Stage spot: ~10,000 cd       |
+| RectAreaLight    | **Nits** (cd/m2)    | LED panel: ~500-5000 nits    |
+| AmbientLight     | Unitless            | Multiplier, no physical unit |
+| HemisphereLight  | Unitless            | Multiplier, no physical unit |
 
 The `.power` property on PointLight, SpotLight, and RectAreaLight gives luminous power in **lumens**:
+
 - PointLight: `power = intensity * 4 * Math.PI`
 - SpotLight: `power = intensity * Math.PI`
 
 **ALWAYS** pair physically correct intensities with tone mapping:
 
 ```javascript
-import * as THREE from 'three';
+import * as THREE from "three";
 
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
@@ -167,7 +169,7 @@ Properties: `.angle` (max `Math.PI/2`), `.penumbra` (0-1), `.distance`, `.decay`
 Planar emitter for windows, panels, strip lights. Works ONLY with `MeshStandardMaterial` and `MeshPhysicalMaterial`. CANNOT cast shadows.
 
 ```javascript
-import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
+import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
 
 RectAreaLightUniformsLib.init(); // MUST call before creating any RectAreaLight
 
@@ -184,7 +186,7 @@ Properties: `.width`, `.height`, `.power` (lumens).
 Spherical harmonics-based ambient lighting. Useful for AR and baked environment lighting.
 
 ```javascript
-import { LightProbeGenerator } from 'three/addons/lights/LightProbeGenerator.js';
+import { LightProbeGenerator } from "three/addons/lights/LightProbeGenerator.js";
 
 const probe = LightProbeGenerator.fromCubeTexture(cubeTexture);
 scene.add(probe);
@@ -199,51 +201,51 @@ Image-Based Lighting (IBL) provides the most realistic ambient illumination for 
 ### Standard HDR Environment Workflow
 
 ```javascript
-import * as THREE from 'three';
-import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import * as THREE from "three";
+import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 
 const pmremGenerator = new THREE.PMREMGenerator(renderer);
 const rgbeLoader = new RGBELoader();
 
-rgbeLoader.load('environment.hdr', (hdrTexture) => {
+rgbeLoader.load("environment.hdr", (hdrTexture) => {
   const envMap = pmremGenerator.fromEquirectangular(hdrTexture);
 
-  scene.environment = envMap.texture;  // ALL PBR materials auto-use this
-  scene.background = envMap.texture;   // Optional: visible HDR background
+  scene.environment = envMap.texture; // ALL PBR materials auto-use this
+  scene.background = envMap.texture; // Optional: visible HDR background
 
-  hdrTexture.dispose();                // Free source texture
-  pmremGenerator.dispose();            // ALWAYS dispose after use
+  hdrTexture.dispose(); // Free source texture
+  pmremGenerator.dispose(); // ALWAYS dispose after use
 });
 ```
 
 ### scene.environment vs scene.background
 
-| Property | Effect | When to Use |
-|----------|--------|-------------|
-| `scene.environment` | PBR reflections + ambient lighting on all Standard/Physical materials | ALWAYS for realistic PBR |
-| `scene.background` | Visible skybox/backdrop | When you want the HDR visible |
-| Both set to same texture | Full IBL with visible environment | Most common for product shots |
-| `scene.backgroundBlurriness` | Blur the background (0-1) | Depth-of-field effect on backdrop |
-| `scene.environmentIntensity` | Scale IBL contribution | Fine-tune ambient level |
-| `scene.environmentRotation` | Rotate the environment map | Adjust light direction without moving lights |
+| Property                     | Effect                                                                | When to Use                                  |
+| ---------------------------- | --------------------------------------------------------------------- | -------------------------------------------- |
+| `scene.environment`          | PBR reflections + ambient lighting on all Standard/Physical materials | ALWAYS for realistic PBR                     |
+| `scene.background`           | Visible skybox/backdrop                                               | When you want the HDR visible                |
+| Both set to same texture     | Full IBL with visible environment                                     | Most common for product shots                |
+| `scene.backgroundBlurriness` | Blur the background (0-1)                                             | Depth-of-field effect on backdrop            |
+| `scene.environmentIntensity` | Scale IBL contribution                                                | Fine-tune ambient level                      |
+| `scene.environmentRotation`  | Rotate the environment map                                            | Adjust light direction without moving lights |
 
 When `scene.environment` is set, ALL `MeshStandardMaterial` and `MeshPhysicalMaterial` instances AUTOMATICALLY use it for reflections and ambient lighting -- no per-material configuration needed.
 
 ### PMREMGenerator Methods
 
-| Method | Input | Purpose |
-|--------|-------|---------|
-| `fromEquirectangular(texture)` | Equirectangular texture | Convert HDR panorama to PMREM |
-| `fromScene(scene, sigma?)` | Three.js Scene | Generate PMREM from a 3D scene |
-| `fromCubemap(texture)` | CubeTexture | Convert cubemap to PMREM |
-| `dispose()` | -- | Free GPU memory (ALWAYS call) |
+| Method                         | Input                   | Purpose                        |
+| ------------------------------ | ----------------------- | ------------------------------ |
+| `fromEquirectangular(texture)` | Equirectangular texture | Convert HDR panorama to PMREM  |
+| `fromScene(scene, sigma?)`     | Three.js Scene          | Generate PMREM from a 3D scene |
+| `fromCubemap(texture)`         | CubeTexture             | Convert cubemap to PMREM       |
+| `dispose()`                    | --                      | Free GPU memory (ALWAYS call)  |
 
 ### EXR Alternative
 
 ```javascript
-import { EXRLoader } from 'three/addons/loaders/EXRLoader.js';
+import { EXRLoader } from "three/addons/loaders/EXRLoader.js";
 
-new EXRLoader().load('environment.exr', (exrTexture) => {
+new EXRLoader().load("environment.exr", (exrTexture) => {
   const envMap = pmremGenerator.fromEquirectangular(exrTexture);
   scene.environment = envMap.texture;
   exrTexture.dispose();
@@ -255,14 +257,14 @@ new EXRLoader().load('environment.exr', (exrTexture) => {
 
 ## Light Helpers
 
-| Helper | Import | Constructor |
-|--------|--------|-------------|
-| `DirectionalLightHelper` | `three` | `new DirectionalLightHelper(light, size?, color?)` |
-| `SpotLightHelper` | `three` | `new SpotLightHelper(light, color?)` |
-| `PointLightHelper` | `three` | `new PointLightHelper(light, sphereSize?, color?)` |
-| `HemisphereLightHelper` | `three` | `new HemisphereLightHelper(light, size, color?)` |
-| `RectAreaLightHelper` | `three/addons/helpers/RectAreaLightHelper.js` | `new RectAreaLightHelper(light)` |
-| `LightProbeHelper` | `three/addons/helpers/LightProbeHelper.js` | `new LightProbeHelper(probe, size)` |
+| Helper                   | Import                                        | Constructor                                        |
+| ------------------------ | --------------------------------------------- | -------------------------------------------------- |
+| `DirectionalLightHelper` | `three`                                       | `new DirectionalLightHelper(light, size?, color?)` |
+| `SpotLightHelper`        | `three`                                       | `new SpotLightHelper(light, color?)`               |
+| `PointLightHelper`       | `three`                                       | `new PointLightHelper(light, sphereSize?, color?)` |
+| `HemisphereLightHelper`  | `three`                                       | `new HemisphereLightHelper(light, size, color?)`   |
+| `RectAreaLightHelper`    | `three/addons/helpers/RectAreaLightHelper.js` | `new RectAreaLightHelper(light)`                   |
+| `LightProbeHelper`       | `three/addons/helpers/LightProbeHelper.js`    | `new LightProbeHelper(probe, size)`                |
 
 **ALWAYS** call `helper.update()` after changing light properties if the helper does not auto-update.
 
@@ -277,12 +279,12 @@ helper.update();
 
 ## Performance Budget
 
-| Category | Budget |
-|----------|--------|
-| Mobile WebGL | Max 4-5 real-time lights total |
-| Desktop WebGL | Max 8-16 lights depending on scene |
-| Shadow-casting PointLights | Max 1-2 (6 passes each) |
-| RectAreaLights | Max 2-3 (expensive LTC evaluation) |
+| Category                   | Budget                             |
+| -------------------------- | ---------------------------------- |
+| Mobile WebGL               | Max 4-5 real-time lights total     |
+| Desktop WebGL              | Max 8-16 lights depending on scene |
+| Shadow-casting PointLights | Max 1-2 (6 passes each)            |
+| RectAreaLights             | Max 2-3 (expensive LTC evaluation) |
 
 **ALWAYS** prefer baked lighting for static environments over real-time lights.
 

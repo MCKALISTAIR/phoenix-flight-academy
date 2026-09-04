@@ -5,9 +5,9 @@
 Complete product viewer with orbit controls, environment lighting, and contact shadows.
 
 ```jsx
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Environment, ContactShadows, Center } from '@react-three/drei'
-import { Suspense } from 'react'
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, Environment, ContactShadows, Center } from "@react-three/drei";
+import { Suspense } from "react";
 
 function ProductViewer() {
   return (
@@ -34,22 +34,18 @@ function ProductViewer() {
         enablePan={false}
       />
     </Canvas>
-  )
+  );
 }
 
 function Product(props) {
-  const { nodes, materials } = useGLTF('/shoe.glb')
+  const { nodes, materials } = useGLTF("/shoe.glb");
   return (
     <group {...props}>
-      <mesh
-        geometry={nodes.Shoe.geometry}
-        material={materials.Leather}
-        castShadow
-      />
+      <mesh geometry={nodes.Shoe.geometry} material={materials.Leather} castShadow />
     </group>
-  )
+  );
 }
-useGLTF.preload('/shoe.glb')
+useGLTF.preload("/shoe.glb");
 ```
 
 ---
@@ -59,9 +55,9 @@ useGLTF.preload('/shoe.glb')
 A scrolling website with 3D elements that animate based on scroll position.
 
 ```jsx
-import { Canvas, useFrame } from '@react-three/fiber'
-import { ScrollControls, useScroll, Text, Float, Environment } from '@react-three/drei'
-import { useRef } from 'react'
+import { Canvas, useFrame } from "@react-three/fiber";
+import { ScrollControls, useScroll, Text, Float, Environment } from "@react-three/drei";
+import { useRef } from "react";
 
 function ScrollExperience() {
   return (
@@ -71,29 +67,23 @@ function ScrollExperience() {
         <ScrollContent />
       </ScrollControls>
     </Canvas>
-  )
+  );
 }
 
 function ScrollContent() {
-  const scroll = useScroll()
-  const groupRef = useRef()
+  const scroll = useScroll();
+  const groupRef = useRef();
 
   useFrame(() => {
-    const offset = scroll.offset
-    groupRef.current.rotation.y = offset * Math.PI * 2
-    groupRef.current.position.y = -offset * 10
-  })
+    const offset = scroll.offset;
+    groupRef.current.rotation.y = offset * Math.PI * 2;
+    groupRef.current.position.y = -offset * 10;
+  });
 
   return (
     <group ref={groupRef}>
       <Float speed={2} floatIntensity={0.5}>
-        <Text
-          fontSize={0.8}
-          color="white"
-          anchorX="center"
-          anchorY="middle"
-          position={[0, 0, 0]}
-        >
+        <Text fontSize={0.8} color="white" anchorX="center" anchorY="middle" position={[0, 0, 0]}>
           Scroll Down
         </Text>
       </Float>
@@ -108,7 +98,7 @@ function ScrollContent() {
         <meshStandardMaterial color="cyan" metalness={0.9} roughness={0.1} />
       </mesh>
     </group>
-  )
+  );
 }
 ```
 
@@ -119,17 +109,21 @@ function ScrollContent() {
 Realistic glass objects using MeshTransmissionMaterial.
 
 ```jsx
-import { Canvas } from '@react-three/fiber'
+import { Canvas } from "@react-three/fiber";
 import {
-  MeshTransmissionMaterial, Environment, OrbitControls,
-  AccumulativeShadows, RandomizedLight, Center
-} from '@react-three/drei'
-import { Suspense } from 'react'
+  MeshTransmissionMaterial,
+  Environment,
+  OrbitControls,
+  AccumulativeShadows,
+  RandomizedLight,
+  Center,
+} from "@react-three/drei";
+import { Suspense } from "react";
 
 function GlassScene() {
   return (
     <Canvas shadows camera={{ position: [0, 1.5, 4], fov: 45 }}>
-      <color attach="background" args={['#f0f0f0']} />
+      <color attach="background" args={["#f0f0f0"]} />
       <Suspense fallback={null}>
         <Center>
           <GlassSphere />
@@ -137,18 +131,12 @@ function GlassScene() {
         </Center>
         <Environment preset="city" />
       </Suspense>
-      <AccumulativeShadows
-        temporal
-        frames={100}
-        scale={10}
-        position={[0, -1, 0]}
-        opacity={0.8}
-      >
+      <AccumulativeShadows temporal frames={100} scale={10} position={[0, -1, 0]} opacity={0.8}>
         <RandomizedLight amount={8} radius={4} position={[5, 5, -10]} />
       </AccumulativeShadows>
       <OrbitControls makeDefault />
     </Canvas>
-  )
+  );
 }
 
 function GlassSphere(props) {
@@ -168,7 +156,7 @@ function GlassSphere(props) {
         samples={16}
       />
     </mesh>
-  )
+  );
 }
 
 function GlassCube({ position }) {
@@ -187,7 +175,7 @@ function GlassCube({ position }) {
         backside
       />
     </mesh>
-  )
+  );
 }
 ```
 
@@ -198,15 +186,19 @@ function GlassCube({ position }) {
 Efficiently rendering thousands of objects with adaptive performance.
 
 ```jsx
-import { Canvas } from '@react-three/fiber'
+import { Canvas } from "@react-three/fiber";
 import {
-  Instances, Instance, PerformanceMonitor,
-  AdaptiveDpr, Environment, OrbitControls
-} from '@react-three/drei'
-import { useState, useMemo } from 'react'
+  Instances,
+  Instance,
+  PerformanceMonitor,
+  AdaptiveDpr,
+  Environment,
+  OrbitControls,
+} from "@react-three/drei";
+import { useState, useMemo } from "react";
 
 function MassiveScene() {
-  const [dpr, setDpr] = useState(1.5)
+  const [dpr, setDpr] = useState(1.5);
 
   return (
     <Canvas dpr={dpr} camera={{ position: [0, 10, 20], fov: 60 }}>
@@ -221,7 +213,7 @@ function MassiveScene() {
       <Cubes count={5000} />
       <OrbitControls makeDefault />
     </Canvas>
-  )
+  );
 }
 
 function Cubes({ count }) {
@@ -230,8 +222,8 @@ function Cubes({ count }) {
       (Math.random() - 0.5) * 50,
       (Math.random() - 0.5) * 50,
       (Math.random() - 0.5) * 50,
-    ])
-  }, [count])
+    ]);
+  }, [count]);
 
   return (
     <Instances limit={count} range={count}>
@@ -246,7 +238,7 @@ function Cubes({ count }) {
         />
       ))}
     </Instances>
-  )
+  );
 }
 ```
 
@@ -257,11 +249,9 @@ function Cubes({ count }) {
 Loading a GLTF model with interactive HTML annotations positioned in 3D space.
 
 ```jsx
-import { Canvas } from '@react-three/fiber'
-import {
-  useGLTF, Html, OrbitControls, Environment, Billboard, Text
-} from '@react-three/drei'
-import { Suspense, useState } from 'react'
+import { Canvas } from "@react-three/fiber";
+import { useGLTF, Html, OrbitControls, Environment, Billboard, Text } from "@react-three/drei";
+import { Suspense, useState } from "react";
 
 function AnnotatedModel() {
   return (
@@ -272,12 +262,12 @@ function AnnotatedModel() {
       </Suspense>
       <OrbitControls makeDefault />
     </Canvas>
-  )
+  );
 }
 
 function CarModel() {
-  const { nodes, materials } = useGLTF('/car.glb')
-  const [active, setActive] = useState(null)
+  const { nodes, materials } = useGLTF("/car.glb");
+  const [active, setActive] = useState(null);
 
   return (
     <group>
@@ -288,8 +278,8 @@ function CarModel() {
         position={[0, 1.2, 1.5]}
         label="Engine"
         description="V8 Twin-Turbo, 450 HP"
-        isActive={active === 'engine'}
-        onClick={() => setActive(active === 'engine' ? null : 'engine')}
+        isActive={active === "engine"}
+        onClick={() => setActive(active === "engine" ? null : "engine")}
       />
 
       {/* Wheel annotation */}
@@ -297,11 +287,11 @@ function CarModel() {
         position={[1.5, 0.4, 1.8]}
         label="Wheels"
         description="20-inch alloy, Michelin PS4S"
-        isActive={active === 'wheels'}
-        onClick={() => setActive(active === 'wheels' ? null : 'wheels')}
+        isActive={active === "wheels"}
+        onClick={() => setActive(active === "wheels" ? null : "wheels")}
       />
     </group>
-  )
+  );
 }
 
 function Annotation({ position, label, description, isActive, onClick }) {
@@ -311,7 +301,7 @@ function Annotation({ position, label, description, isActive, onClick }) {
       <Billboard>
         <mesh onClick={onClick}>
           <circleGeometry args={[0.1, 32]} />
-          <meshBasicMaterial color={isActive ? '#ff6600' : '#ffffff'} />
+          <meshBasicMaterial color={isActive ? "#ff6600" : "#ffffff"} />
         </mesh>
       </Billboard>
 
@@ -323,22 +313,22 @@ function Annotation({ position, label, description, isActive, onClick }) {
           center
           occlude
           style={{
-            background: 'rgba(0, 0, 0, 0.8)',
-            color: 'white',
-            padding: '12px 16px',
-            borderRadius: '8px',
-            fontSize: '14px',
-            whiteSpace: 'nowrap',
-            pointerEvents: 'none',
+            background: "rgba(0, 0, 0, 0.8)",
+            color: "white",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            fontSize: "14px",
+            whiteSpace: "nowrap",
+            pointerEvents: "none",
           }}
         >
           <strong>{label}</strong>
-          <p style={{ margin: '4px 0 0', opacity: 0.8 }}>{description}</p>
+          <p style={{ margin: "4px 0 0", opacity: 0.8 }}>{description}</p>
         </Html>
       )}
     </group>
-  )
+  );
 }
 
-useGLTF.preload('/car.glb')
+useGLTF.preload("/car.glb");
 ```

@@ -3,9 +3,9 @@
 ## Example 1: Minimal web-ifc Viewer with Three.js
 
 ```javascript
-import * as THREE from 'three';
-import * as WebIFC from 'web-ifc';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import * as THREE from "three";
+import * as WebIFC from "web-ifc";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 // Scene setup
 const scene = new THREE.Scene();
@@ -23,11 +23,11 @@ scene.add(new THREE.DirectionalLight(0xffffff, 0.8));
 
 // Initialize web-ifc
 const ifcApi = new WebIFC.IfcAPI();
-ifcApi.SetWasmPath('./wasm/');  // Directory containing web-ifc.wasm
+ifcApi.SetWasmPath("./wasm/"); // Directory containing web-ifc.wasm
 await ifcApi.Init();
 
 // Load IFC file from fetch
-const response = await fetch('/models/building.ifc');
+const response = await fetch("/models/building.ifc");
 const buffer = await response.arrayBuffer();
 const ifcData = new Uint8Array(buffer);
 const modelID = ifcApi.OpenModel(ifcData);
@@ -60,17 +60,17 @@ function convertToThreeMesh(meshData, pg) {
   const normals = new Float32Array(vertexCount * 3);
 
   for (let i = 0; i < vertexCount; i++) {
-    positions[i * 3]     = vertexData[i * 6];
+    positions[i * 3] = vertexData[i * 6];
     positions[i * 3 + 1] = vertexData[i * 6 + 1];
     positions[i * 3 + 2] = vertexData[i * 6 + 2];
-    normals[i * 3]       = vertexData[i * 6 + 3];
-    normals[i * 3 + 1]   = vertexData[i * 6 + 4];
-    normals[i * 3 + 2]   = vertexData[i * 6 + 5];
+    normals[i * 3] = vertexData[i * 6 + 3];
+    normals[i * 3 + 1] = vertexData[i * 6 + 4];
+    normals[i * 3 + 2] = vertexData[i * 6 + 5];
   }
 
   const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute("normal", new THREE.BufferAttribute(normals, 3));
   geometry.setIndex(new THREE.BufferAttribute(indexData, 1));
 
   const { x: r, y: g, z: b, w: a } = pg.color;
@@ -101,10 +101,10 @@ animate();
 ## Example 2: @thatopen/components Full BIM Viewer
 
 ```javascript
-import * as OBC from '@thatopen/components';
+import * as OBC from "@thatopen/components";
 
 // Container element
-const container = document.getElementById('viewer-container');
+const container = document.getElementById("viewer-container");
 
 // Initialize components
 const components = new OBC.Components();
@@ -125,18 +125,18 @@ components.init();
 const ifcLoader = components.get(OBC.IfcLoader);
 await ifcLoader.setup();
 
-const fileInput = document.getElementById('ifc-input');
-fileInput.addEventListener('change', async (event) => {
+const fileInput = document.getElementById("ifc-input");
+fileInput.addEventListener("change", async (event) => {
   const file = event.target.files[0];
   if (!file) return;
   const data = new Uint8Array(await file.arrayBuffer());
   const model = await ifcLoader.load(data);
   // model is automatically added to the world scene
-  console.log('Loaded model with', model.children.length, 'fragment meshes');
+  console.log("Loaded model with", model.children.length, "fragment meshes");
 });
 
 // Cleanup on page unload
-window.addEventListener('beforeunload', () => {
+window.addEventListener("beforeunload", () => {
   components.dispose();
 });
 ```
@@ -146,8 +146,8 @@ window.addEventListener('beforeunload', () => {
 ## Example 3: IFC Element Picking with Raycasting
 
 ```javascript
-import * as THREE from 'three';
-import * as WebIFC from 'web-ifc';
+import * as THREE from "three";
+import * as WebIFC from "web-ifc";
 
 // Assumes scene, camera, renderer already set up
 const raycaster = new THREE.Raycaster();
@@ -172,7 +172,7 @@ const highlightMaterial = new THREE.MeshPhongMaterial({
 let previousSelection = null;
 let previousMaterial = null;
 
-renderer.domElement.addEventListener('click', (event) => {
+renderer.domElement.addEventListener("click", (event) => {
   // Restore previous selection
   if (previousSelection) {
     previousSelection.material = previousMaterial;
@@ -190,12 +190,12 @@ renderer.domElement.addEventListener('click', (event) => {
     previousMaterial = hit.material;
     hit.material = highlightMaterial;
 
-    console.log('Selected element expressID:', hit.userData.expressID);
+    console.log("Selected element expressID:", hit.userData.expressID);
 
     // Read properties from web-ifc (if model still open)
     const entity = ifcApi.GetLine(modelID, hit.userData.expressID, true);
-    console.log('Entity type:', entity.constructor.name);
-    console.log('Name:', entity.Name?.value);
+    console.log("Entity type:", entity.constructor.name);
+    console.log("Name:", entity.Name?.value);
   }
 });
 ```
@@ -205,7 +205,7 @@ renderer.domElement.addEventListener('click', (event) => {
 ## Example 4: Extracting IFC Spatial Tree
 
 ```javascript
-import * as WebIFC from 'web-ifc';
+import * as WebIFC from "web-ifc";
 
 function buildSpatialTree(ifcApi, modelID) {
   const tree = {};
@@ -236,9 +236,7 @@ function buildSpatialTree(ifcApi, modelID) {
     }
 
     // Contained elements (storey -> walls, slabs, etc.)
-    const containIDs = ifcApi.GetLineIDsWithType(
-      modelID, WebIFC.IFCRELCONTAINEDINSPATIALSTRUCTURE
-    );
+    const containIDs = ifcApi.GetLineIDsWithType(modelID, WebIFC.IFCRELCONTAINEDINSPATIALSTRUCTURE);
     for (const containID of containIDs) {
       const rel = ifcApi.GetLine(modelID, containID, false);
       if (rel.RelatingStructure?.value === parentID) {
@@ -267,8 +265,8 @@ console.log(JSON.stringify(spatialTree, null, 2));
 ## Example 5: Loading IFC by Storey (Memory-Efficient)
 
 ```javascript
-import * as WebIFC from 'web-ifc';
-import * as THREE from 'three';
+import * as WebIFC from "web-ifc";
+import * as THREE from "three";
 
 async function loadByStorey(ifcApi, modelID, scene) {
   const storeyIDs = ifcApi.GetLineIDsWithType(modelID, WebIFC.IFCBUILDINGSTOREY);
@@ -282,9 +280,7 @@ async function loadByStorey(ifcApi, modelID, scene) {
     group.userData.expressID = storeyID;
 
     // Find elements contained in this storey
-    const containIDs = ifcApi.GetLineIDsWithType(
-      modelID, WebIFC.IFCRELCONTAINEDINSPATIALSTRUCTURE
-    );
+    const containIDs = ifcApi.GetLineIDsWithType(modelID, WebIFC.IFCRELCONTAINEDINSPATIALSTRUCTURE);
 
     for (const containID of containIDs) {
       const rel = ifcApi.GetLine(modelID, containID, false);

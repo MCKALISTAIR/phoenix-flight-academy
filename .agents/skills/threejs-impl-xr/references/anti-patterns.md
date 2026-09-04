@@ -8,7 +8,7 @@
 renderer.xr.enabled = true;
 
 function animate() {
-  requestAnimationFrame(animate);  // BREAKS in XR
+  requestAnimationFrame(animate); // BREAKS in XR
   renderer.render(scene, camera);
 }
 animate();
@@ -65,9 +65,9 @@ ALWAYS use a camera rig group. The WebXR API positions the camera relative to it
 ### Wrong
 
 ```javascript
-import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
-import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { SSAOPass } from "three/addons/postprocessing/SSAOPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
@@ -75,7 +75,7 @@ composer.addPass(new SSAOPass(scene, camera));
 composer.addPass(new UnrealBloomPass());
 
 renderer.setAnimationLoop(() => {
-  composer.render();  // Runs ALL passes for EACH eye
+  composer.render(); // Runs ALL passes for EACH eye
 });
 ```
 
@@ -88,7 +88,7 @@ In stereo VR, each post-processing pass runs TWICE (once per eye). SSAO + Bloom 
 ```javascript
 // Minimize or eliminate post-processing in VR
 renderer.setAnimationLoop(() => {
-  renderer.render(scene, camera);  // Direct render, no composer
+  renderer.render(scene, camera); // Direct render, no composer
 });
 
 // If post-processing is essential, use ONLY lightweight passes
@@ -105,7 +105,7 @@ NEVER use SSAO, screen-space reflections, or multi-pass bloom in VR. If visual e
 
 ```javascript
 const controller = renderer.xr.getController(0);
-controller.addEventListener('select', onSelect);
+controller.addEventListener("select", onSelect);
 // Controller exists but is never added to the scene
 ```
 
@@ -117,8 +117,8 @@ controller.addEventListener('select', onSelect);
 
 ```javascript
 const controller = renderer.xr.getController(0);
-controller.addEventListener('select', onSelect);
-scene.add(controller);  // MUST add to scene
+controller.addEventListener("select", onSelect);
+scene.add(controller); // MUST add to scene
 
 // Same for grip and hand spaces
 const grip = renderer.xr.getControllerGrip(0);
@@ -137,7 +137,7 @@ ALWAYS add EVERY controller space you use to the scene (or to a camera rig group
 ### Wrong
 
 ```javascript
-renderer.xr.setReferenceSpaceType('local');
+renderer.xr.setReferenceSpaceType("local");
 // User stands up — floor is at eye level
 ```
 
@@ -148,7 +148,7 @@ renderer.xr.setReferenceSpaceType('local');
 ### Correct
 
 ```javascript
-renderer.xr.setReferenceSpaceType('local-floor');
+renderer.xr.setReferenceSpaceType("local-floor");
 // y=0 is at floor level
 ```
 
@@ -163,7 +163,7 @@ ALWAYS use `'local-floor'` for standing/room-scale VR. Use `'local'` ONLY for se
 ```javascript
 // renderer.xr.enabled is still false (default)
 document.body.appendChild(VRButton.createButton(renderer));
-renderer.xr.enabled = true;  // Too late
+renderer.xr.enabled = true; // Too late
 ```
 
 ### Why It Fails
@@ -173,9 +173,9 @@ renderer.xr.enabled = true;  // Too late
 ### Correct
 
 ```javascript
-renderer.xr.enabled = true;  // FIRST
-renderer.xr.setReferenceSpaceType('local-floor');
-document.body.appendChild(VRButton.createButton(renderer));  // AFTER
+renderer.xr.enabled = true; // FIRST
+renderer.xr.setReferenceSpaceType("local-floor");
+document.body.appendChild(VRButton.createButton(renderer)); // AFTER
 ```
 
 ALWAYS configure `renderer.xr` properties BEFORE creating VRButton or ARButton.
@@ -200,7 +200,7 @@ Without foveated rendering, the GPU renders at full resolution across the entire
 
 ```javascript
 renderer.xr.enabled = true;
-renderer.xr.setFoveation(1.0);  // Maximum foveated rendering
+renderer.xr.setFoveation(1.0); // Maximum foveated rendering
 ```
 
 ALWAYS set foveation to 1.0 unless visual quality in the periphery is critical. This provides the largest performance gain with minimal perceived quality loss.
@@ -271,8 +271,8 @@ When an XR session ends, all session-specific resources (hit test sources, refer
 let hitTestSource = null;
 
 const session = renderer.xr.getSession();
-session.addEventListener('end', () => {
-  hitTestSource = null;  // Clean up session-specific state
+session.addEventListener("end", () => {
+  hitTestSource = null; // Clean up session-specific state
 });
 
 renderer.setAnimationLoop((time, frame) => {

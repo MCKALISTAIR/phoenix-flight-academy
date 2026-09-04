@@ -24,7 +24,7 @@ metadata:
 ### WebGPURenderer Setup
 
 ```javascript
-import * as THREE from 'three/webgpu';
+import * as THREE from "three/webgpu";
 
 const renderer = new THREE.WebGPURenderer({ antialias: true });
 await renderer.init(); // MUST await before first render
@@ -39,17 +39,17 @@ document.body.appendChild(renderer.domElement);
 
 ### Browser Support
 
-| Browser | Version | Status |
-|---------|---------|--------|
-| Chrome | 113+ | Full support |
-| Edge | 113+ | Full support |
-| Safari | 18+ | Supported |
+| Browser | Version      | Status                             |
+| ------- | ------------ | ---------------------------------- |
+| Chrome  | 113+         | Full support                       |
+| Edge    | 113+         | Full support                       |
+| Safari  | 18+          | Supported                          |
 | Firefox | Experimental | Behind flag (`dom.webgpu.enabled`) |
 
 ### Feature Detection and Fallback
 
 ```javascript
-import { WebGPU } from 'three/webgpu';
+import { WebGPU } from "three/webgpu";
 
 if (WebGPU.isAvailable()) {
   const renderer = new THREE.WebGPURenderer({ antialias: true });
@@ -80,17 +80,17 @@ Every classic Three.js material has a node-based equivalent. Classic materials a
 
 ### Material Mapping
 
-| Classic Material | Node Material |
-|-----------------|---------------|
-| `MeshBasicMaterial` | `MeshBasicNodeMaterial` |
+| Classic Material       | Node Material              |
+| ---------------------- | -------------------------- |
+| `MeshBasicMaterial`    | `MeshBasicNodeMaterial`    |
 | `MeshStandardMaterial` | `MeshStandardNodeMaterial` |
 | `MeshPhysicalMaterial` | `MeshPhysicalNodeMaterial` |
-| `MeshPhongMaterial` | `MeshPhongNodeMaterial` |
-| `MeshLambertMaterial` | `MeshLambertNodeMaterial` |
-| `LineBasicMaterial` | `LineBasicNodeMaterial` |
-| `LineDashedMaterial` | `LineDashedNodeMaterial` |
-| `PointsMaterial` | `PointsNodeMaterial` |
-| `SpriteMaterial` | `SpriteNodeMaterial` |
+| `MeshPhongMaterial`    | `MeshPhongNodeMaterial`    |
+| `MeshLambertMaterial`  | `MeshLambertNodeMaterial`  |
+| `LineBasicMaterial`    | `LineBasicNodeMaterial`    |
+| `LineDashedMaterial`   | `LineDashedNodeMaterial`   |
+| `PointsMaterial`       | `PointsNodeMaterial`       |
+| `SpriteMaterial`       | `SpriteNodeMaterial`       |
 
 **ALWAYS** import node materials from `'three/webgpu'`, not from `'three'`.
 
@@ -100,29 +100,29 @@ All properties accept TSL node values. All are optional and override defaults.
 
 **Common inputs (all node materials):**
 
-| Property | TSL Type | Purpose |
-|----------|----------|---------|
-| `.colorNode` | `vec4` | Base color |
-| `.opacityNode` | `float` | Opacity |
-| `.normalNode` | `vec3` | Normal map replacement |
-| `.emissiveNode` | `color` | Emissive output |
-| `.positionNode` | `vec3` | Vertex displacement |
-| `.fragmentNode` | `vec4` | Full fragment shader replacement |
-| `.vertexNode` | `vec4` | Full vertex shader replacement |
-| `.outputNode` | `vec4` | Final output override |
-| `.aoNode` | `float` | Ambient occlusion |
-| `.alphaTestNode` | `float` | Alpha test threshold |
-| `.depthNode` | `float` | Custom depth |
-| `.castShadowNode` | `vec4` | Shadow casting override |
+| Property          | TSL Type | Purpose                          |
+| ----------------- | -------- | -------------------------------- |
+| `.colorNode`      | `vec4`   | Base color                       |
+| `.opacityNode`    | `float`  | Opacity                          |
+| `.normalNode`     | `vec3`   | Normal map replacement           |
+| `.emissiveNode`   | `color`  | Emissive output                  |
+| `.positionNode`   | `vec3`   | Vertex displacement              |
+| `.fragmentNode`   | `vec4`   | Full fragment shader replacement |
+| `.vertexNode`     | `vec4`   | Full vertex shader replacement   |
+| `.outputNode`     | `vec4`   | Final output override            |
+| `.aoNode`         | `float`  | Ambient occlusion                |
+| `.alphaTestNode`  | `float`  | Alpha test threshold             |
+| `.depthNode`      | `float`  | Custom depth                     |
+| `.castShadowNode` | `vec4`   | Shadow casting override          |
 
 **Standard/Physical inputs:**
 
-| Property | TSL Type | Purpose |
-|----------|----------|---------|
-| `.metalnessNode` | `float` | Metalness |
-| `.roughnessNode` | `float` | Roughness |
-| `.envNode` | `color` | Environment map |
-| `.lightsNode` | — | Lighting model override |
+| Property         | TSL Type | Purpose                 |
+| ---------------- | -------- | ----------------------- |
+| `.metalnessNode` | `float`  | Metalness               |
+| `.roughnessNode` | `float`  | Roughness               |
+| `.envNode`       | `color`  | Environment map         |
+| `.lightsNode`    | —        | Lighting model override |
 
 **Physical-only inputs:** `.clearcoatNode`, `.clearcoatRoughnessNode`, `.clearcoatNormalNode`, `.sheenNode`, `.iridescenceNode`, `.iridescenceIORNode`, `.iridescenceThicknessNode`, `.specularIntensityNode`, `.specularColorNode`, `.iorNode`, `.transmissionNode`, `.thicknessNode`, `.attenuationDistanceNode`, `.attenuationColorNode`, `.dispersionNode`, `.anisotropyNode`.
 
@@ -134,24 +134,24 @@ TSL is a JavaScript-based node graph system that compiles to GLSL (WebGL2) and W
 
 ### Type System
 
-| Category | Functions |
-|----------|-----------|
-| Scalars | `float()`, `int()`, `uint()`, `bool()` |
-| Vectors | `vec2()`, `vec3()`, `vec4()`, `ivec2()`, `ivec3()`, `ivec4()`, `uvec2()`, `uvec3()`, `uvec4()` |
-| Matrices | `mat2()`, `mat3()`, `mat4()` |
-| Color | `color()` |
-| Conversion | `.toFloat()`, `.toVec3()`, `.toColor()` |
+| Category   | Functions                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------- |
+| Scalars    | `float()`, `int()`, `uint()`, `bool()`                                                         |
+| Vectors    | `vec2()`, `vec3()`, `vec4()`, `ivec2()`, `ivec3()`, `ivec4()`, `uvec2()`, `uvec3()`, `uvec4()` |
+| Matrices   | `mat2()`, `mat3()`, `mat4()`                                                                   |
+| Color      | `color()`                                                                                      |
+| Conversion | `.toFloat()`, `.toVec3()`, `.toColor()`                                                        |
 
 ### Variables and Uniforms
 
-| Function | Purpose |
-|----------|---------|
-| `uniform(value)` | GPU-side dynamic value |
-| `toVar(node)` | Reusable shader variable |
-| `toConst(node)` | Inline constant |
-| `varying(node)` | Vertex-to-fragment interpolation |
-| `vertexStage(node)` | Force computation in vertex shader |
-| `attribute(name, type)` | Access buffer attributes |
+| Function                | Purpose                            |
+| ----------------------- | ---------------------------------- |
+| `uniform(value)`        | GPU-side dynamic value             |
+| `toVar(node)`           | Reusable shader variable           |
+| `toConst(node)`         | Inline constant                    |
+| `varying(node)`         | Vertex-to-fragment interpolation   |
+| `vertexStage(node)`     | Force computation in vertex shader |
+| `attribute(name, type)` | Access buffer attributes           |
 
 Uniforms support callbacks: `.onRenderUpdate(fn)`, `.onFrameUpdate(fn)`, `.onObjectUpdate(fn)`.
 
@@ -167,14 +167,14 @@ All operators are chainable on TSL nodes:
 
 ### Geometry Nodes
 
-| Category | Nodes |
-|----------|-------|
+| Category | Nodes                                                                                                                   |
+| -------- | ----------------------------------------------------------------------------------------------------------------------- |
 | Position | `positionGeometry`, `positionLocal`, `positionWorld`, `positionView`, `positionWorldDirection`, `positionViewDirection` |
-| Normal | `normalGeometry`, `normalLocal`, `normalView`, `normalWorld` |
-| Tangent | `tangentGeometry`, `tangentLocal`, `tangentView`, `tangentWorld` |
-| UV | `uv(index)` |
-| Screen | `screenUV`, `screenCoordinate`, `screenSize` |
-| Viewport | `viewportUV`, `viewportCoordinate`, `viewportSize` |
+| Normal   | `normalGeometry`, `normalLocal`, `normalView`, `normalWorld`                                                            |
+| Tangent  | `tangentGeometry`, `tangentLocal`, `tangentView`, `tangentWorld`                                                        |
+| UV       | `uv(index)`                                                                                                             |
+| Screen   | `screenUV`, `screenCoordinate`, `screenSize`                                                                            |
+| Viewport | `viewportUV`, `viewportCoordinate`, `viewportSize`                                                                      |
 
 ### Camera and Model Nodes
 
@@ -183,25 +183,25 @@ All operators are chainable on TSL nodes:
 
 ### Animation Nodes
 
-| Node | Purpose |
-|------|---------|
-| `time` | Elapsed seconds since start |
-| `deltaTime` | Frame delta in seconds |
-| `oscSine(timer)` | Sine oscillator (0-1) |
-| `oscSquare(timer)` | Square wave oscillator |
-| `oscTriangle(timer)` | Triangle wave oscillator |
-| `oscSawtooth(timer)` | Sawtooth oscillator |
+| Node                 | Purpose                     |
+| -------------------- | --------------------------- |
+| `time`               | Elapsed seconds since start |
+| `deltaTime`          | Frame delta in seconds      |
+| `oscSine(timer)`     | Sine oscillator (0-1)       |
+| `oscSquare(timer)`   | Square wave oscillator      |
+| `oscTriangle(timer)` | Triangle wave oscillator    |
+| `oscSawtooth(timer)` | Sawtooth oscillator         |
 
 ### Texture Operations
 
-| Function | Purpose |
-|----------|---------|
-| `texture(tex, uv, level)` | Sample with interpolation |
-| `textureLoad(tex, uv, level)` | Sample without interpolation |
-| `textureStore(tex, uv, value)` | Write to storage texture |
-| `textureSize(tex, level)` | Get texture dimensions |
-| `cubeTexture(tex, uvw, level)` | Sample cube map |
-| `triplanarTexture(texX, texY, texZ, scale, position, normal)` | Triplanar mapping |
+| Function                                                      | Purpose                      |
+| ------------------------------------------------------------- | ---------------------------- |
+| `texture(tex, uv, level)`                                     | Sample with interpolation    |
+| `textureLoad(tex, uv, level)`                                 | Sample without interpolation |
+| `textureStore(tex, uv, value)`                                | Write to storage texture     |
+| `textureSize(tex, level)`                                     | Get texture dimensions       |
+| `cubeTexture(tex, uvw, level)`                                | Sample cube map              |
+| `triplanarTexture(texX, texY, texZ, scale, position, normal)` | Triplanar mapping            |
 
 ### Control Flow
 
@@ -210,11 +210,13 @@ All operators are chainable on TSL nodes:
 ```javascript
 If(condition, () => {
   // true branch
-}).ElseIf(otherCondition, () => {
-  // else-if branch
-}).Else(() => {
-  // false branch
-});
+})
+  .ElseIf(otherCondition, () => {
+    // else-if branch
+  })
+  .Else(() => {
+    // false branch
+  });
 ```
 
 - `select(condition, trueVal, falseVal)` — ternary operator
@@ -241,7 +243,7 @@ WebGPU enables general-purpose GPU compute via TSL. Compute shaders are NOT avai
 ### Setup
 
 ```javascript
-import { compute, storage } from 'three/webgpu';
+import { compute, storage } from "three/webgpu";
 
 const computeNode = compute(shaderFn, count, workgroupSize);
 await renderer.computeAsync(computeNode);
@@ -263,8 +265,8 @@ await renderer.computeAsync(computeNode);
 **NEVER** use the WebGL `EffectComposer` with WebGPURenderer. Use the `PostProcessing` class instead.
 
 ```javascript
-import { PostProcessing } from 'three/webgpu';
-import { bloom, renderOutput } from 'three/tsl';
+import { PostProcessing } from "three/webgpu";
+import { bloom, renderOutput } from "three/tsl";
 
 const postProcessing = new PostProcessing(renderer);
 const scenePass = renderOutput(scene, camera);
@@ -287,14 +289,14 @@ postProcessing.outputNode = bloom(scenePass);
 
 ## WebGL to WebGPU Migration
 
-| Step | Action |
-|------|--------|
-| 1 | Replace `import * as THREE from 'three'` with `import * as THREE from 'three/webgpu'` |
-| 2 | Replace `new WebGLRenderer()` with `new WebGPURenderer()` and add `await renderer.init()` |
-| 3 | Replace classic materials with NodeMaterial equivalents (or keep classic — they auto-convert) |
-| 4 | Replace `EffectComposer` with `PostProcessing` class and TSL post-processing nodes |
-| 5 | Replace raw GLSL `ShaderMaterial` with TSL-based `NodeMaterial` |
-| 6 | Replace `requestAnimationFrame` with `renderer.setAnimationLoop()` |
+| Step | Action                                                                                        |
+| ---- | --------------------------------------------------------------------------------------------- |
+| 1    | Replace `import * as THREE from 'three'` with `import * as THREE from 'three/webgpu'`         |
+| 2    | Replace `new WebGLRenderer()` with `new WebGPURenderer()` and add `await renderer.init()`     |
+| 3    | Replace classic materials with NodeMaterial equivalents (or keep classic — they auto-convert) |
+| 4    | Replace `EffectComposer` with `PostProcessing` class and TSL post-processing nodes            |
+| 5    | Replace raw GLSL `ShaderMaterial` with TSL-based `NodeMaterial`                               |
+| 6    | Replace `requestAnimationFrame` with `renderer.setAnimationLoop()`                            |
 
 **ALWAYS** make the entry point `async` when using WebGPURenderer — `renderer.init()` returns a Promise.
 

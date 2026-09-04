@@ -11,10 +11,18 @@ Full initialization with renderer, camera, resize handling, and animation loop.
 
 ```javascript
 import {
-  WebGLRenderer, Scene, PerspectiveCamera, SRGBColorSpace,
-  ACESFilmicToneMapping, PCFSoftShadowMap, BoxGeometry,
-  MeshStandardMaterial, Mesh, DirectionalLight, AmbientLight
-} from 'three';
+  WebGLRenderer,
+  Scene,
+  PerspectiveCamera,
+  SRGBColorSpace,
+  ACESFilmicToneMapping,
+  PCFSoftShadowMap,
+  BoxGeometry,
+  MeshStandardMaterial,
+  Mesh,
+  DirectionalLight,
+  AmbientLight,
+} from "three";
 
 // Renderer
 const renderer = new WebGLRenderer({ antialias: true });
@@ -31,9 +39,7 @@ document.body.appendChild(renderer.domElement);
 const scene = new Scene();
 
 // Camera
-const camera = new PerspectiveCamera(
-  50, window.innerWidth / window.innerHeight, 0.1, 1000
-);
+const camera = new PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(3, 3, 5);
 camera.lookAt(0, 0, 0);
 
@@ -54,7 +60,7 @@ cube.castShadow = true;
 scene.add(cube);
 
 // Resize handler
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -75,11 +81,21 @@ Renders a scene to a texture, then uses that texture on a plane in the main scen
 
 ```javascript
 import {
-  WebGLRenderer, Scene, PerspectiveCamera, WebGLRenderTarget,
-  SRGBColorSpace, ACESFilmicToneMapping, BoxGeometry,
-  MeshStandardMaterial, Mesh, PlaneGeometry, MeshBasicMaterial,
-  AmbientLight, DirectionalLight, LinearFilter
-} from 'three';
+  WebGLRenderer,
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderTarget,
+  SRGBColorSpace,
+  ACESFilmicToneMapping,
+  BoxGeometry,
+  MeshStandardMaterial,
+  Mesh,
+  PlaneGeometry,
+  MeshBasicMaterial,
+  AmbientLight,
+  DirectionalLight,
+  LinearFilter,
+} from "three";
 
 // Main renderer
 const renderer = new WebGLRenderer({ antialias: true });
@@ -99,29 +115,24 @@ const renderTarget = new WebGLRenderTarget(512, 512, {
 const offScene = new Scene();
 const offCamera = new PerspectiveCamera(50, 1, 0.1, 100);
 offCamera.position.set(0, 0, 3);
-const offCube = new Mesh(
-  new BoxGeometry(1, 1, 1),
-  new MeshStandardMaterial({ color: 0xff4444 })
-);
+const offCube = new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial({ color: 0xff4444 }));
 offScene.add(offCube);
 offScene.add(new AmbientLight(0xffffff, 0.5));
 offScene.add(new DirectionalLight(0xffffff, 1.0));
 
 // Main scene (displays the render target texture)
 const mainScene = new Scene();
-const mainCamera = new PerspectiveCamera(
-  50, window.innerWidth / window.innerHeight, 0.1, 100
-);
+const mainCamera = new PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
 mainCamera.position.set(0, 0, 4);
 
 const screen = new Mesh(
   new PlaneGeometry(3, 3),
-  new MeshBasicMaterial({ map: renderTarget.texture })
+  new MeshBasicMaterial({ map: renderTarget.texture }),
 );
 mainScene.add(screen);
 
 // Resize
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   mainCamera.aspect = window.innerWidth / window.innerHeight;
   mainCamera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -149,9 +160,15 @@ Demonstrates an orthographic setup that maintains consistent world-space units.
 
 ```javascript
 import {
-  WebGLRenderer, Scene, OrthographicCamera, SRGBColorSpace,
-  BoxGeometry, MeshNormalMaterial, Mesh, GridHelper
-} from 'three';
+  WebGLRenderer,
+  Scene,
+  OrthographicCamera,
+  SRGBColorSpace,
+  BoxGeometry,
+  MeshNormalMaterial,
+  Mesh,
+  GridHelper,
+} from "three";
 
 const renderer = new WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -165,11 +182,12 @@ const scene = new Scene();
 const frustumSize = 10;
 let aspect = window.innerWidth / window.innerHeight;
 const camera = new OrthographicCamera(
-  -frustumSize * aspect / 2,
-   frustumSize * aspect / 2,
-   frustumSize / 2,
+  (-frustumSize * aspect) / 2,
+  (frustumSize * aspect) / 2,
+  frustumSize / 2,
   -frustumSize / 2,
-  0.1, 1000
+  0.1,
+  1000,
 );
 camera.position.set(5, 5, 5);
 camera.lookAt(0, 0, 0);
@@ -178,10 +196,10 @@ scene.add(new GridHelper(10, 10));
 scene.add(new Mesh(new BoxGeometry(1, 1, 1), new MeshNormalMaterial()));
 
 // Resize: MUST update all six frustum values
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   aspect = window.innerWidth / window.innerHeight;
-  camera.left = -frustumSize * aspect / 2;
-  camera.right = frustumSize * aspect / 2;
+  camera.left = (-frustumSize * aspect) / 2;
+  camera.right = (frustumSize * aspect) / 2;
   camera.top = frustumSize / 2;
   camera.bottom = -frustumSize / 2;
   camera.updateProjectionMatrix();
@@ -201,9 +219,15 @@ Renders the same scene from two different cameras side by side.
 
 ```javascript
 import {
-  WebGLRenderer, Scene, PerspectiveCamera, SRGBColorSpace,
-  ACESFilmicToneMapping, BoxGeometry, MeshNormalMaterial, Mesh
-} from 'three';
+  WebGLRenderer,
+  Scene,
+  PerspectiveCamera,
+  SRGBColorSpace,
+  ACESFilmicToneMapping,
+  BoxGeometry,
+  MeshNormalMaterial,
+  Mesh,
+} from "three";
 
 const renderer = new WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -226,17 +250,17 @@ const cameraRight = new PerspectiveCamera(50, 1, 0.1, 100);
 cameraRight.position.set(0, 5, 0);
 cameraRight.lookAt(0, 0, 0);
 
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
   // Aspect ratio is 0.5 because each viewport is half-width
-  const halfAspect = (window.innerWidth / 2) / window.innerHeight;
+  const halfAspect = window.innerWidth / 2 / window.innerHeight;
   cameraLeft.aspect = halfAspect;
   cameraLeft.updateProjectionMatrix();
   cameraRight.aspect = halfAspect;
   cameraRight.updateProjectionMatrix();
 });
 // Trigger initial aspect setup
-window.dispatchEvent(new Event('resize'));
+window.dispatchEvent(new Event("resize"));
 
 renderer.setAnimationLoop((time) => {
   cube.rotation.y = time * 0.001;
@@ -269,10 +293,18 @@ Pre-compiles shaders to avoid frame drops when the scene first appears.
 
 ```javascript
 import {
-  WebGLRenderer, Scene, PerspectiveCamera, SRGBColorSpace,
-  ACESFilmicToneMapping, PCFSoftShadowMap, BoxGeometry,
-  MeshStandardMaterial, Mesh, DirectionalLight, AmbientLight
-} from 'three';
+  WebGLRenderer,
+  Scene,
+  PerspectiveCamera,
+  SRGBColorSpace,
+  ACESFilmicToneMapping,
+  PCFSoftShadowMap,
+  BoxGeometry,
+  MeshStandardMaterial,
+  Mesh,
+  DirectionalLight,
+  AmbientLight,
+} from "three";
 
 const renderer = new WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -284,9 +316,7 @@ renderer.shadowMap.type = PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
 const scene = new Scene();
-const camera = new PerspectiveCamera(
-  50, window.innerWidth / window.innerHeight, 0.1, 1000
-);
+const camera = new PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(3, 3, 5);
 camera.lookAt(0, 0, 0);
 
@@ -299,15 +329,16 @@ scene.add(dirLight);
 
 const cube = new Mesh(
   new BoxGeometry(1, 1, 1),
-  new MeshStandardMaterial({ color: 0x44aa88, roughness: 0.4, metalness: 0.6 })
+  new MeshStandardMaterial({ color: 0x44aa88, roughness: 0.4, metalness: 0.6 }),
 );
 cube.castShadow = true;
 scene.add(cube);
 
 // Show loading indicator
-const loadingEl = document.createElement('div');
-loadingEl.textContent = 'Compiling shaders...';
-loadingEl.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font:20px sans-serif;';
+const loadingEl = document.createElement("div");
+loadingEl.textContent = "Compiling shaders...";
+loadingEl.style.cssText =
+  "position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font:20px sans-serif;";
 document.body.appendChild(loadingEl);
 
 // Pre-compile shaders asynchronously, then start rendering
@@ -315,7 +346,7 @@ async function init() {
   await renderer.compileAsync(scene, camera);
   loadingEl.remove();
 
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
