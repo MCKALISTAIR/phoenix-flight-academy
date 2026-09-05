@@ -12,7 +12,15 @@ Three things do need attention:
 
 ## Where payments actually stand
 
-Nothing can take real money today. The booking flow is complete end to end (price, deposit vs full, approval rules, confirmation), but the money step is simulated. Lovable has built-in payments — no separate payment account or keys to paste — and Phoenix sells flight experiences and lessons from the UK, so the built-in Stripe option with tax and compliance handled for you is the right fit. That is a separate decision for you and the client, so this plan only tidies up around it and keeps the mock working until you say go.
+Nothing can take real money today. The booking flow is complete end to end (price, deposit vs full, approval rules, confirmation), but the money step is simulated.
+
+**The right provider for Phoenix is built-in Stripe.** Phoenix sells flight experiences and lessons from the UK — a digital/service sale. Stripe is the best fit because:
+- It can handle tax calculation, collection, fraud protection, disputes and transaction-level support for buyers in ~80 countries.
+- It does not need you to create or connect a separate Stripe account.
+- Paddle is not ideal here because human-delivered services with scheduling/approval don't fit its all-inclusive digital-product model.
+- Shopify is overkill because there is no physical inventory or shipping.
+
+When you and the client decide to go live, the switch is: replace the mock checkout screen with a real Stripe checkout session and add a webhook route to confirm payments. The booking contract (`payment_status` / `status` transitions) stays identical.
 
 ## Proposed fixes
 
