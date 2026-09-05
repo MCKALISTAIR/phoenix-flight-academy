@@ -159,8 +159,15 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const location = useLocation();
   const router = useRouter();
-  const isBookingRoute = location.pathname.startsWith("/booking");
+  const isCmsRoute = location.pathname.startsWith("/cms");
   const isLoginRoute = location.pathname === "/login" || location.pathname === "/reset-password";
+  const isDashboardRoute = location.pathname === "/booking/dashboard";
+  const isBookingFlow =
+    location.pathname.startsWith("/booking/book") ||
+    location.pathname.startsWith("/booking/checkout");
+
+  const showNavbar = !isCmsRoute && !isLoginRoute;
+  const showFooter = !isCmsRoute && !isLoginRoute && !isDashboardRoute && !isBookingFlow;
 
   useEffect(() => {
     const {
@@ -203,13 +210,13 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ScrollProgress />
       <div className="flex min-h-screen flex-col font-sans">
-        {!isBookingRoute && !isLoginRoute && <Navbar />}
+        {showNavbar && <Navbar />}
         <main className="flex-1">
           <div key={location.pathname} className="animate-page-entrance">
             <Outlet />
           </div>
         </main>
-        {!isBookingRoute && !isLoginRoute && <Footer />}
+        {showFooter && <Footer />}
       </div>
     </QueryClientProvider>
   );

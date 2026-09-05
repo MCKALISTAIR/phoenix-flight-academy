@@ -69,7 +69,7 @@ function BookingHome() {
             <span className="h-1.5 w-1.5 rounded-full bg-success"></span>
             EGPG DISPATCH
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">Book a Flight</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">Book a flight</h1>
           <p className="mt-3 text-white/70">
             Choose what you'd like to book. Experience flights can be booked by anyone; lessons and
             self-hire require an approved pilot account.

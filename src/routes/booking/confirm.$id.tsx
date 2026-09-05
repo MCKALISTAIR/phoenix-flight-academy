@@ -78,7 +78,7 @@ function ConfirmPage() {
             <CheckCircle2 className="h-9 w-9" />
           </div>
           <h1 className="mt-6 text-2xl md:text-3xl font-extrabold tracking-tight text-white">
-            {data.status === "confirmed" ? "Flight Booking Confirmed" : "Booking Received"}
+            {data.status === "confirmed" ? "Flight Booking Confirmed" : "Booking received"}
           </h1>
           <p className="mt-2 text-sm text-white/70 max-w-md mx-auto leading-relaxed">
             {data.status === "confirmed"

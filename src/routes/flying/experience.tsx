@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ShieldCheck, MapPin, ClipboardCheck, Navigation, ChevronDown } from "lucide-react";
+import { ShieldCheck, ChevronDown } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/flying/experience")({
@@ -104,52 +104,55 @@ function ExperiencePage() {
       </div>
 
       <div className="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
-        {/* Intro Grid */}
-        <div className="grid gap-12 lg:grid-cols-2 items-center mb-24">
-          <div className="space-y-6">
-            <h2 className="text-3xl font-extrabold text-foreground">What to Expect</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              Every experience flight voucher operates as a fully certified initial trial flight
-              lesson. You'll be paired with a professional, friendly instructor who will guide you
-              from the ground up.
+        {/* Flight Day Timeline */}
+        <div className="mb-24">
+          <div className="text-center max-w-xl mx-auto mb-12">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-primary">
+              Flight Day Guide
+            </span>
+            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-foreground">
+              What to Expect on the Day
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+              Every experience flight voucher operates as a genuine instructional flight lesson.
+              Here is how your flight day unfolds:
             </p>
-            <div className="space-y-4">
-              <div className="flex gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <ClipboardCheck className="h-5 w-5" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-foreground">Pre-Flight Briefing</h4>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Learn how aerodynamic flight surfaces control the plane in three dimensions.
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Navigation className="h-5 w-5" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-foreground">Hands-on Control Time</h4>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Once established in straight and level flight, you take the controls to fly
-                    yourself.
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
 
-          <div className="relative aspect-video rounded-xl overflow-hidden shadow-sm border border-border">
-            <img
-              src="https://images.unsplash.com/photo-1555513220-410a69a03bc7?q=80&w=800&auto=format&fit=crop"
-              alt="Takeoff over landscape"
-              className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-            />
-            <div className="absolute bottom-3 left-3 bg-surface-navy/90 backdrop-blur-sm px-3 py-1.5 rounded-md text-xs font-mono font-semibold text-white border border-white/10 flex items-center gap-2">
-              <MapPin className="h-3.5 w-3.5 text-primary" />
-              <span>EGPG Cumbernauld Departure</span>
-            </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                step: "01",
+                title: "Clubhouse Welcome",
+                desc: "Arrive at Cumbernauld Airport, meet your friendly CAA-certified instructor in our clubhouse, and enjoy tea or coffee.",
+              },
+              {
+                step: "02",
+                title: "Pre-Flight Briefing",
+                desc: "Walk out to the aircraft for a pre-flight inspection. Learn how the control yoke, rudder pedals, and throttle work.",
+              },
+              {
+                step: "03",
+                title: "Take the Controls",
+                desc: "Taxi out and depart from Cumbernauld's runway. Once level, your instructor hands you the controls to fly over the Scottish Lochs.",
+              },
+              {
+                step: "04",
+                title: "Logbook & Certificate",
+                desc: "After a smooth touchdown, receive your signed Flight Certificate and logbook credit towards a future pilot's licence.",
+              },
+            ].map((s) => (
+              <div
+                key={s.step}
+                className="rounded-xl border border-border bg-card p-6 shadow-sm flex flex-col justify-between space-y-3"
+              >
+                <div>
+                  <span className="font-mono text-xs font-bold text-primary">{s.step}</span>
+                  <h3 className="mt-1.5 text-base font-bold text-foreground">{s.title}</h3>
+                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{s.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

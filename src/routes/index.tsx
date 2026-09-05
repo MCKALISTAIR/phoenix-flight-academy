@@ -3,12 +3,20 @@ import {
   ArrowRight,
   BookOpen,
   Compass,
+  Plane,
   PlaneTakeoff,
   Star,
   Quote,
   ChevronLeft,
   ChevronRight,
   Radio,
+  CheckCircle2,
+  Clock,
+  ShieldCheck,
+  Award,
+  ChevronDown,
+  ChevronUp,
+  MapPin,
 } from "lucide-react";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -114,6 +122,12 @@ function Index() {
   const fleetRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
 
+  // --- "How would you like to fly?" interactive selector ---
+  const [selectedPathway, setSelectedPathway] = useState<"first_flight" | "ppl" | "self_hire">(
+    "first_flight",
+  );
+  const [showAirfieldSpecs, setShowAirfieldSpecs] = useState(false);
+
   // --- Rotating badge ---
   const [badgeIndex, setBadgeIndex] = useState(0);
 
@@ -210,191 +224,584 @@ function Index() {
   return (
     <div className="flex flex-col overflow-hidden bg-background">
       {/* ═══════ HERO SECTION ═══════ */}
-      <section className="relative flex min-h-[85vh] items-center justify-center overflow-hidden bg-[oklch(0.12_0.04_250)] py-20 lg:py-32">
-        {/* Background image with slow zoom */}
+      <section className="relative flex min-h-[80vh] items-center justify-center overflow-hidden bg-[oklch(0.12_0.04_250)] py-20 lg:py-28">
+        {/* Static aerial background with high-contrast gradient overlay */}
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1583373834259-46cc92173cb7?q=80&w=2000&auto=format&fit=crop"
-            alt="Cessna 172 light aircraft on the apron"
-            className="h-full w-full object-cover opacity-40 scale-105 animate-[pulse_8s_infinite_alternate]"
+            alt="Cessna 172 light aircraft on the Cumbernauld apron"
+            className="h-full w-full object-cover opacity-35"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/75 to-[oklch(0.12_0.04_250)]/40" />
         </div>
 
         <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
-            {/* Aerodrome status ticker */}
-            <div className="animate-stagger-1 inline-flex items-center gap-2 rounded-md bg-surface-navy/90 px-3 py-1.5 text-xs font-mono font-medium text-white/90 border border-white/10 backdrop-blur-sm">
+            {/* Live Cumbernauld aerodrome status ticker */}
+            <div className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1.5 text-xs font-mono font-medium text-white/90 border border-white/15 backdrop-blur-sm">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
               <span className="tracking-wider uppercase font-semibold text-primary">EGPG</span>
               <span className="text-white/30">|</span>
-              <span className="tabular-nums text-white/80">RWY 26</span>
+              <span className="tabular-nums text-white/90">RWY 26 / 08</span>
               <span className="text-white/30">|</span>
-              <span className="tabular-nums text-white/80">120.605 MHz</span>
+              <span className="tabular-nums text-white/90">120.605 MHz</span>
               <span className="text-white/30">|</span>
               <span key={badgeIndex} className="animate-fade-slide whitespace-nowrap text-white/90">
                 {badgeMessages[badgeIndex]}
               </span>
             </div>
 
-            <h1 className="animate-stagger-2 mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl">
-              Learn to fly at <br className="hidden sm:block" />
-              <span className="text-primary font-extrabold">Cumbernauld Airport</span>
+            <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl leading-[1.1]">
+              Flight Training at Cumbernauld Airport. <br />
+              <span className="text-primary font-extrabold">
+                Unforgettable views, real flight skills.
+              </span>
             </h1>
 
-            <p className="animate-stagger-3 mt-6 max-w-2xl text-lg leading-relaxed text-white/85 sm:text-xl">
-              Start your aviation journey with friendly instructors and unforgettable experiences.
-              Explore the breathtaking skies of Scotland from your local flying school.
+            <p className="mt-6 max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg">
+              Based at Cumbernauld Airport (EGPG), perfectly situated between Glasgow and Edinburgh.
+              Fly hands-on over Loch Lomond and the Scottish Highlands with certified, friendly
+              flight instructors.
             </p>
 
-            <div className="animate-stagger-4 mt-10 flex flex-wrap items-center gap-4">
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <a
+                href="#flight-selector"
+                className="inline-flex h-12 items-center justify-center rounded-lg bg-primary px-7 text-sm font-bold text-primary-foreground shadow-sm transition-all active:scale-[0.98] active:translate-y-[0.5px] hover:bg-primary/90"
+              >
+                Choose Your Flight Experience
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </a>
               <Link
                 to="/login"
-                className="inline-flex h-14 items-center justify-center rounded-lg bg-primary px-8 text-base font-bold text-primary-foreground shadow-lg transition-all hover:scale-105 hover:bg-primary/95 hover:shadow-xl focus:outline-none"
+                className="inline-flex h-12 items-center justify-center rounded-lg border border-white/30 bg-white/5 px-6 text-sm font-bold text-white transition-all hover:bg-white/15 active:scale-[0.98]"
               >
                 Access Flight Portal
-              </Link>
-              <Link
-                to="/flying/learn-to-fly"
-                className="inline-flex h-14 items-center justify-center rounded-lg border-2 border-white bg-transparent px-8 text-base font-bold text-white transition-all hover:bg-white hover:text-[oklch(0.12_0.04_250)] focus:outline-none"
-              >
-                Discover Syllabus
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ═══════ FLIGHT OPERATIONS MATRIX ═══════ */}
+      {/* ═══════ "HOW WOULD YOU LIKE TO FLY?" SELECTOR SECTION ═══════ */}
       <section
+        id="flight-selector"
         ref={sectionRef}
-        className="bg-background py-20 sm:py-28 relative border-b border-border"
+        className="bg-background py-16 sm:py-24 relative border-b border-border"
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div
-            className={`mb-14 max-w-2xl transition-all duration-700 ease-out ${
+            className={`max-w-3xl transition-all duration-700 ease-out ${
               sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             }`}
           >
             <div className="inline-flex items-center gap-2 rounded-md bg-muted px-2.5 py-1 text-[11px] font-mono font-semibold uppercase tracking-wider text-primary border border-border">
-              Flight Operations Programs
+              Flight Programs
             </div>
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              Aviation Pathways at Cumbernauld
+              How would you like to fly?
             </h2>
-            <p className="mt-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
-              From your very first logbook entry to statutory PPL certification and cross-country
-              airframe hire across the Scottish Highlands.
+            <p className="mt-2 text-base text-muted-foreground leading-relaxed">
+              Whether you are taking the controls for the first time, training for a private pilot
+              licence, or hiring an aircraft for cross-country touring.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {[
-              {
-                icon: Compass,
-                badge: "LOGBOOK CREDITABLE",
-                title: "Trial Experience Flights",
-                desc: "Hands-on flight experience under direct instructor supervision over Loch Lomond and the Trossachs. Fully logable towards a future license.",
-                rate: "From £125.00",
-                rateLabel: "Includes 30m briefing + flight",
-                specs: [
-                  { k: "Duration", v: "30 / 45 / 60 mins" },
-                  { k: "Airframe", v: "C172 or PA28" },
-                  { k: "Logbook", v: "Exercises 1–3" },
-                ],
-                link: "/flying/experience",
-                cta: "Reserve Experience",
-              },
-              {
-                icon: BookOpen,
-                badge: "STATUTORY 45-HR SYLLABUS",
-                title: "Learn to Fly (PPL / LAPL)",
-                desc: "Comprehensive flight and ground instruction to earn your UK CAA Private Pilot License under experienced, safety-first flight instructors.",
-                rate: "£210.00 / hr",
-                rateLabel: "Dual instruction (wet)",
-                specs: [
-                  { k: "Syllabus", v: "45 Hours (Min)" },
-                  { k: "Solo Req", v: "10 Hours Solo" },
-                  { k: "Ground", v: "9 CAA e-Exams" },
-                ],
-                link: "/flying/learn-to-fly",
-                cta: "Explore Syllabus",
-              },
-              {
-                icon: PlaneTakeoff,
-                badge: "PART-FCL.060 RATED",
-                title: "Airframe Self-Hire",
-                desc: "Current pilots can hire our exceptionally maintained, fully insured fleet for local Scottish currency flights or multi-day cross-country touring.",
-                rate: "£175.00 / hr",
-                rateLabel: "Wet hire (tachometer)",
-                specs: [
-                  { k: "Fleet", v: "C172 & PA28" },
-                  { k: "Avionics", v: "Garmin GNS 430" },
-                  { k: "Touring", v: "Overnight Permitted" },
-                ],
-                link: "/flying/self-hire",
-                cta: "Check Availability",
-              },
-            ].map((program, idx) => (
-              <div
-                key={program.title}
-                className={`flex flex-col justify-between rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-500 hover:border-primary/40 hover:shadow-md ${
-                  sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-                }`}
-                style={{ transitionDelay: `${idx * 120}ms` }}
-              >
-                <div>
-                  <div className="flex items-center justify-between border-b border-border pb-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <program.icon className="h-5 w-5" />
-                    </div>
-                    <span className="rounded-md bg-muted px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase text-muted-foreground border border-border">
-                      {program.badge}
-                    </span>
-                  </div>
+          {/* Segmented Selector Buttons */}
+          <div className="mt-8 flex flex-wrap gap-2 p-1.5 rounded-xl bg-muted/60 border border-border max-w-2xl">
+            <button
+              type="button"
+              onClick={() => setSelectedPathway("first_flight")}
+              className={`flex-1 min-w-[160px] inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-xs font-bold transition-all ${
+                selectedPathway === "first_flight"
+                  ? "bg-card text-foreground shadow-sm border border-border"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Compass className="h-4 w-4 text-primary" />
+              <span>Take Your First Flight</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedPathway("ppl")}
+              className={`flex-1 min-w-[160px] inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-xs font-bold transition-all ${
+                selectedPathway === "ppl"
+                  ? "bg-card text-foreground shadow-sm border border-border"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <BookOpen className="h-4 w-4 text-primary" />
+              <span>Earn Your Pilot&apos;s Licence</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedPathway("self_hire")}
+              className={`flex-1 min-w-[160px] inline-flex items-center justify-center gap-2 px-4 py-3 rounded-lg text-xs font-bold transition-all ${
+                selectedPathway === "self_hire"
+                  ? "bg-card text-foreground shadow-sm border border-border"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <PlaneTakeoff className="h-4 w-4 text-primary" />
+              <span>Hire an Aircraft</span>
+            </button>
+          </div>
 
-                  <h3 className="mt-4 text-xl font-bold text-foreground">{program.title}</h3>
-                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                    {program.desc}
+          {/* Dynamic Content Panel */}
+          <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8 lg:p-10 shadow-sm transition-all duration-300">
+            {selectedPathway === "first_flight" && (
+              <div className="grid gap-10 lg:grid-cols-12 items-start">
+                <div className="lg:col-span-7 space-y-6">
+                  <div className="inline-flex items-center gap-2 rounded-md bg-primary/10 px-2.5 py-1 text-[11px] font-mono font-bold uppercase tracking-wider text-primary">
+                    Trial Flight Experience
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+                    Take the controls over Loch Lomond & the Trossachs
+                  </h3>
+                  <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
+                    Whether fulfilling a lifelong dream or taking the first step toward a
+                    pilot&apos;s licence, your trial flight puts you in the left seat. Under the
+                    calm guidance of a CAA-certified instructor, you&apos;ll taxi out, take off from
+                    Cumbernauld&apos;s tarmac runway, and fly through the Scottish skies. All flight
+                    time counts directly towards an official pilot logbook.
                   </p>
 
-                  {/* Telemetry Strip */}
-                  <div className="mt-5 grid grid-cols-3 gap-2 rounded-lg border border-border bg-muted/20 p-2.5 text-center">
-                    {program.specs.map((s) => (
-                      <div key={s.k}>
-                        <span className="block text-[9.5px] font-semibold uppercase tracking-wider text-muted-foreground">
-                          {s.k}
-                        </span>
-                        <span className="font-mono text-xs font-bold text-foreground tabular-nums">
-                          {s.v}
-                        </span>
+                  <div className="grid gap-3 sm:grid-cols-2 pt-2">
+                    {[
+                      "Hands-on controls from your first flight",
+                      "Pre-flight briefing & flight certificate",
+                      "Logable towards your PPL / LAPL licence",
+                      "Spectacular aerial views of Loch Lomond",
+                    ].map((item) => (
+                      <div
+                        key={item}
+                        className="flex items-center gap-2.5 text-xs sm:text-sm text-foreground"
+                      >
+                        <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                        <span>{item}</span>
                       </div>
                     ))}
                   </div>
 
-                  {/* Pricing line */}
-                  <div className="mt-5 flex items-baseline justify-between border-t border-border pt-4">
-                    <span className="text-[11px] text-muted-foreground">{program.rateLabel}</span>
-                    <span className="font-mono text-base font-extrabold text-foreground tabular-nums">
-                      {program.rate}
-                    </span>
+                  <div className="pt-4 border-t border-border">
+                    <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                      Transparent Pricing (Dual Instruction Wet)
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      {[
+                        { duration: "30 Mins", price: "£125.00", desc: "Local circuit & Campsies" },
+                        { duration: "45 Mins", price: "£175.00", desc: "Loch Lomond south shore" },
+                        {
+                          duration: "60 Mins",
+                          price: "£225.00",
+                          desc: "Full Loch & Trossachs tour",
+                        },
+                      ].map((pkg) => (
+                        <div
+                          key={pkg.duration}
+                          className="rounded-lg border border-border bg-muted/30 p-3 text-center"
+                        >
+                          <div className="text-xs font-semibold text-muted-foreground">
+                            {pkg.duration}
+                          </div>
+                          <div className="font-mono text-base font-extrabold text-foreground tabular-nums mt-0.5">
+                            {pkg.price}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground mt-1">{pkg.desc}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex flex-wrap items-center gap-4">
+                    <Link
+                      to="/flying/experience"
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 text-xs font-bold text-primary-foreground shadow-sm transition-all active:scale-[0.98] hover:bg-primary/90"
+                    >
+                      Book Trial Flight Experience
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
                   </div>
                 </div>
 
-                <div className="pt-6">
-                  <Link
-                    to={program.link}
-                    className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 text-xs font-bold text-primary-foreground shadow-sm transition-all active:scale-[0.98] active:translate-y-[0.5px] hover:bg-primary/90"
-                  >
-                    {program.cta}
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
+                {/* Right Column: Mission Profile & Flight Card */}
+                <div className="lg:col-span-5 rounded-xl border border-border bg-muted/20 p-5 space-y-4">
+                  <div className="flex items-center justify-between border-b border-border pb-3">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-primary" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-foreground">
+                        Mission Profile
+                      </span>
+                    </div>
+                    <span className="font-mono text-[11px] text-muted-foreground">EGPG Route</span>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Departure Airfield</span>
+                      <span className="font-mono font-bold text-foreground">
+                        Cumbernauld (EGPG)
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Runway Surface</span>
+                      <span className="font-mono font-bold text-foreground">820m Hard Asphalt</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Cruising Altitude</span>
+                      <span className="font-mono font-bold text-foreground tabular-nums">
+                        2,500 – 3,500 ft AMSL
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">Aircraft Types</span>
+                      <span className="font-mono font-bold text-foreground">
+                        Cessna 172 / Piper PA28
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border border-border bg-card p-3.5 space-y-2">
+                    <div className="text-[11px] font-semibold text-primary uppercase tracking-wider flex items-center gap-1.5">
+                      <ShieldCheck className="h-3.5 w-3.5" />
+                      What to Expect
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      You will be welcomed in the clubhouse, given an easy pre-flight briefing
+                      covering safety and controls, and accompany your instructor to the aircraft.
+                      You will take the controls once airborne!
+                    </p>
+                  </div>
                 </div>
               </div>
-            ))}
+            )}
+
+            {selectedPathway === "ppl" && (
+              <div className="grid gap-10 lg:grid-cols-12 items-start">
+                <div className="lg:col-span-7 space-y-6">
+                  <div className="inline-flex items-center gap-2 rounded-md bg-primary/10 px-2.5 py-1 text-[11px] font-mono font-bold uppercase tracking-wider text-primary">
+                    PPL(A) & LAPL(A) Course
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+                    From zero hours to your private pilot licence
+                  </h3>
+                  <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
+                    Training for a Private Pilot Licence at Cumbernauld gives you the real-world
+                    skills to fly anywhere in the UK and worldwide. You&apos;ll learn navigation,
+                    air law, meteorology, and emergency procedures from seasoned instructors who fly
+                    both commercial and general aviation.
+                  </p>
+
+                  <div className="grid gap-3 sm:grid-cols-2 pt-2">
+                    {[
+                      "45 Hours minimum flight instruction",
+                      "10 Hours solo flight time required",
+                      "9 CAA Ground Theory examinations",
+                      "Cross-country navigation to UK airfields",
+                    ].map((item) => (
+                      <div
+                        key={item}
+                        className="flex items-center gap-2.5 text-xs sm:text-sm text-foreground"
+                      >
+                        <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="pt-4 border-t border-border">
+                    <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                      Transparent Hourly Rates
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="rounded-lg border border-border bg-muted/30 p-3">
+                        <div className="text-xs font-semibold text-muted-foreground">
+                          Dual Instruction (Wet)
+                        </div>
+                        <div className="font-mono text-base font-extrabold text-foreground tabular-nums mt-0.5">
+                          £210.00 / hr
+                        </div>
+                        <div className="text-[10px] text-muted-foreground mt-1">
+                          Includes instructor, fuel & landing fee
+                        </div>
+                      </div>
+                      <div className="rounded-lg border border-border bg-muted/30 p-3">
+                        <div className="text-xs font-semibold text-muted-foreground">
+                          Solo Flight (Wet)
+                        </div>
+                        <div className="font-mono text-base font-extrabold text-foreground tabular-nums mt-0.5">
+                          £175.00 / hr
+                        </div>
+                        <div className="text-[10px] text-muted-foreground mt-1">
+                          Supervised solo consolidation hours
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex flex-wrap items-center gap-4">
+                    <Link
+                      to="/flying/learn-to-fly"
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 text-xs font-bold text-primary-foreground shadow-sm transition-all active:scale-[0.98] hover:bg-primary/90"
+                    >
+                      Explore Complete PPL Roadmap
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Right Column: 4-Stage Roadmap */}
+                <div className="lg:col-span-5 rounded-xl border border-border bg-muted/20 p-5 space-y-4">
+                  <div className="flex items-center justify-between border-b border-border pb-3">
+                    <div className="flex items-center gap-2">
+                      <Award className="h-4 w-4 text-primary" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-foreground">
+                        Syllabus Milestones
+                      </span>
+                    </div>
+                    <span className="font-mono text-[11px] text-muted-foreground">
+                      4 Key Stages
+                    </span>
+                  </div>
+
+                  <div className="space-y-3">
+                    {[
+                      {
+                        stage: "Stage 1",
+                        title: "Handling & Circuits",
+                        detail:
+                          "Learn effects of controls, climbing, descending, stalls, and circuits until your First Solo flight.",
+                      },
+                      {
+                        stage: "Stage 2",
+                        title: "Cross-Country Navigation",
+                        detail:
+                          "Map reading, dead reckoning, VOR/GPS tracking, and diversion planning.",
+                      },
+                      {
+                        stage: "Stage 3",
+                        title: "Basic Instrument Flight",
+                        detail:
+                          "Controlling the aircraft solely by reference to instruments and radio navigation.",
+                      },
+                      {
+                        stage: "Stage 4",
+                        title: "Qualifying Cross-Country & Test",
+                        detail:
+                          "150nm solo flight landing at two other airfields, followed by the CAA Skills Test.",
+                      },
+                    ].map((step) => (
+                      <div key={step.stage} className="rounded-lg border border-border bg-card p-3">
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono text-[10px] font-bold text-primary uppercase">
+                            {step.stage}
+                          </span>
+                          <span className="text-xs font-bold text-foreground">{step.title}</span>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground mt-1 leading-normal">
+                          {step.detail}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {selectedPathway === "self_hire" && (
+              <div className="grid gap-10 lg:grid-cols-12 items-start">
+                <div className="lg:col-span-7 space-y-6">
+                  <div className="inline-flex items-center gap-2 rounded-md bg-primary/10 px-2.5 py-1 text-[11px] font-mono font-bold uppercase tracking-wider text-primary">
+                    Qualified Pilot Self-Hire
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+                    Impeccably maintained aircraft for qualified aviators
+                  </h3>
+                  <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
+                    Hold a current PPL or LAPL? Phoenix Flight Academy offers wet self-hire on our
+                    Cessna 172 and Piper PA28 fleet. Cumbernauld Airport provides quick departure
+                    clearances to the Scottish Highlands, the Western Isles, and the UK aerodrome
+                    network with zero commercial slot delays.
+                  </p>
+
+                  <div className="grid gap-3 sm:grid-cols-2 pt-2">
+                    {[
+                      "Standard 1-hour club checkout flight",
+                      "Overnight touring permitted by prior agreement",
+                      "Online aircraft scheduling and booking",
+                      "No monthly membership subscriptions",
+                    ].map((item) => (
+                      <div
+                        key={item}
+                        className="flex items-center gap-2.5 text-xs sm:text-sm text-foreground"
+                      >
+                        <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="pt-4 border-t border-border">
+                    <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                      Self-Hire Rates
+                    </div>
+                    <div className="rounded-lg border border-border bg-muted/30 p-3 max-w-sm">
+                      <div className="text-xs font-semibold text-muted-foreground">
+                        Wet Hire Rate (Tachometer Hour)
+                      </div>
+                      <div className="font-mono text-base font-extrabold text-foreground tabular-nums mt-0.5">
+                        £175.00 / hr
+                      </div>
+                      <div className="text-[10px] text-muted-foreground mt-1">
+                        Includes all fuel, oil, and comprehensive hull insurance
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex flex-wrap items-center gap-4">
+                    <Link
+                      to="/flying/self-hire"
+                      className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 text-xs font-bold text-primary-foreground shadow-sm transition-all active:scale-[0.98] hover:bg-primary/90"
+                    >
+                      Book Aerodrome Checkout
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Right Column: Fleet Specs */}
+                <div className="lg:col-span-5 rounded-xl border border-border bg-muted/20 p-5 space-y-4">
+                  <div className="flex items-center justify-between border-b border-border pb-3">
+                    <div className="flex items-center gap-2">
+                      <Plane className="h-4 w-4 text-primary" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-foreground">
+                        Airframe Fleet
+                      </span>
+                    </div>
+                    <span className="font-mono text-[11px] text-muted-foreground">
+                      Garmin Equipped
+                    </span>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="rounded-lg border border-border bg-card p-3 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-foreground">
+                          Cessna 172 Skyhawk
+                        </span>
+                        <span className="font-mono text-[10px] font-bold text-primary uppercase">
+                          High Wing
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">
+                        160 hp Lycoming, 4 seats, 110 kt cruise, dual Garmin comms, exceptional
+                        visibility for cross-country navigation.
+                      </p>
+                    </div>
+
+                    <div className="rounded-lg border border-border bg-card p-3 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-foreground">
+                          Piper PA28 Cherokee
+                        </span>
+                        <span className="font-mono text-[10px] font-bold text-primary uppercase">
+                          Low Wing
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">
+                        160 hp Lycoming, 4 seats, 115 kt cruise, stable touring platform with
+                        comfortable four-seat cabin.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border border-border bg-card p-3.5 space-y-2">
+                    <div className="text-[11px] font-semibold text-primary uppercase tracking-wider flex items-center gap-1.5">
+                      <Radio className="h-3.5 w-3.5" />
+                      Pilot Currency Requirements
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Valid UK CAA PPL/LAPL, current SEP class rating, valid medical (Class 2 or
+                      LAPL), and 3 take-offs/landings within the previous 90 days.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Expandable Cumbernauld Airfield Details Drawer */}
+          <div className="mt-8 border border-border rounded-xl bg-card overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setShowAirfieldSpecs(!showAirfieldSpecs)}
+              className="w-full flex items-center justify-between p-4 text-left hover:bg-muted/40 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <MapPin className="h-4 w-4 text-primary" />
+                <span className="text-xs font-bold text-foreground uppercase tracking-wider">
+                  Cumbernauld Airfield & Flight Operations Data (EGPG)
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span>{showAirfieldSpecs ? "Hide Details" : "View Runway & Airspace Specs"}</span>
+                {showAirfieldSpecs ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </div>
+            </button>
+
+            {showAirfieldSpecs && (
+              <div className="p-5 border-t border-border bg-muted/20 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 text-xs">
+                <div>
+                  <div className="text-[10px] font-semibold uppercase text-muted-foreground">
+                    Runway 26 / 08
+                  </div>
+                  <div className="font-mono font-bold text-foreground mt-0.5">
+                    820m × 23m Asphalt
+                  </div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">
+                    Elevation 356 ft AMSL
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[10px] font-semibold uppercase text-muted-foreground">
+                    Radio Frequency
+                  </div>
+                  <div className="font-mono font-bold text-foreground mt-0.5 tabular-nums">
+                    120.605 MHz
+                  </div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">
+                    Cumbernauld Information (AFISO)
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[10px] font-semibold uppercase text-muted-foreground">
+                    Traffic Circuits
+                  </div>
+                  <div className="font-mono font-bold text-foreground mt-0.5">1,400 ft QNH</div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">
+                    RWY 26 Left Hand / RWY 08 Right Hand
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[10px] font-semibold uppercase text-muted-foreground">
+                    On-Site Facilities
+                  </div>
+                  <div className="font-mono font-bold text-foreground mt-0.5">
+                    AVGAS 100LL & UL91
+                  </div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">
+                    Clubhouse café & free visitor parking
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>

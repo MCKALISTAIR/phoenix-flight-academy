@@ -437,7 +437,29 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
 export const getBookingById = createServerFn({ method: "GET" })
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
-    const { data: row, error } = await supabase
+    let token: string | null = null;
+    const request = getRequest();
+    if (request && request.headers) {
+      const authHeader = request.headers.get("authorization");
+      if (authHeader && authHeader.startsWith("Bearer ")) {
+        token = authHeader.substring(7);
+      }
+    }
+
+    const client = process.env.SUPABASE_SERVICE_ROLE_KEY
+      ? supabaseAdmin
+      : createClient(
+          process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || "",
+          process.env.SUPABASE_PUBLISHABLE_KEY ||
+            import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+            "",
+          {
+            global: token ? { headers: { Authorization: `Bearer ${token}` } } : undefined,
+            auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+          },
+        );
+
+    const { data: row, error } = await client
       .from("bookings")
       .select(
         "*, booking_products(name, kind, payment_mode), aircraft(registration, model), instructors(name)",
