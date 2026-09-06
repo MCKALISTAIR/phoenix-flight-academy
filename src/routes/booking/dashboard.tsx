@@ -91,13 +91,8 @@ const destinations = {
 };
 
 const planes = {
-  c172: {
-    model: "Cessna 172 Skyhawk (G-PHNX)",
-    cruiseSpeed: 105, // kts
-    fuelBurnRate: 30, // Litres/hour
-  },
   pa28: {
-    model: "Piper PA28 Cherokee (G-BCDF)",
+    model: "Piper PA-28-181 Cherokee Archer III (G-BCDF)",
     cruiseSpeed: 115, // kts
     fuelBurnRate: 34, // Litres/hour
   },
@@ -108,7 +103,7 @@ function CustomerDashboard() {
   const pilotName = user?.user_metadata?.display_name || user?.email?.split("@")[0] || "Aviator";
 
   const [selectedDest, setSelectedDest] = useState("oban");
-  const [selectedPlane, setSelectedPlane] = useState("c172");
+  const [selectedPlane, setSelectedPlane] = useState("pa28");
   const [confirmCancel, setConfirmCancel] = useState(false);
 
   // Weather & Runway Crosswind state
@@ -569,8 +564,7 @@ function CustomerDashboard() {
                     onChange={(e) => setSelectedPlane(e.target.value)}
                     className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                   >
-                    <option value="c172">Cessna 172 Skyhawk (G-PHNX)</option>
-                    <option value="pa28">Piper PA28 Cherokee (G-BCDF)</option>
+                    <option value="pa28">Piper PA-28-181 Cherokee Archer III (G-BCDF)</option>
                   </select>
                 </div>
               </div>

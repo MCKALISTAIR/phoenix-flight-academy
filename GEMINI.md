@@ -125,3 +125,22 @@ When executing complex tasks across the agent team:
 2. **Reuse First**: Check `src/components/ui/` for existing primitives (`dialog`, `popover`, `calendar`, `table`, `sheet`, `badge`, `card`) before creating new ones.
 3. **Loop Breaker**: If test execution or design review fails 3 consecutive times, stop subagent execution immediately and present the blocker to the user.
 4. **Workspace Safety**: Subagents writing code must operate in non-conflicting branches (`Workspace: 'share'`).
+
+---
+
+## 5. Domain & Operational Directives
+
+To maintain authentic domain integrity and avoid marketing misrepresentations:
+
+1. **Fleet Reality: Single Piper PA-28 Aircraft**:
+   - The academy operates a single **Piper PA-28** (Cherokee / Archer III) based at Cumbernauld Airport (EGPG).
+   - Under no circumstances may agents describe a "diverse multi-aircraft fleet" or display Cessna 172 photos or specifications as Phoenix aircraft.
+   - Highlight the authentic low-wing advantages: ground effect flare cushion for smooth touchdowns, unrestricted panoramic visibility in banked turns, and reliable Lycoming power.
+
+2. **Flight Training Offering: Inclusive "Learn to Fly"**:
+   - Phoenix offers comprehensive instruction for multiple pilot qualifications (Private Pilot Licence PPL, Light Aircraft Pilot Licence LAPL, and ratings) backed by **30+ years of instructor experience**.
+   - Do not lock the homepage into a single rigid 45-hour / 9-exam syllabus. Deep syllabus specifics live on the dedicated `/flying/learn-to-fly` page.
+
+3. **No Public Aerodrome Ticker**:
+   - Do not place live or rotating aerodrome telemetry tickers (e.g. active runway, live frequencies, or changing METAR) on public marketing pages. Stale operational flight data creates liability.
+   - Official flight dispatch and operational briefings occur through direct instructor channels and authenticated flight dispatch.

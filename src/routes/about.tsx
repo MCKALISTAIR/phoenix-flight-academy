@@ -90,8 +90,8 @@ function AboutPage() {
       <div className="bg-[oklch(0.12_0.04_250)] py-20 text-white sm:py-28 relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1533745848184-3db07256e163?q=80&w=1600&auto=format&fit=crop"
-            alt="Aviation team at Cumbernauld"
+            src="/images/piper-pa28-walkaround.jpg"
+            alt="Phoenix Flight Training instructors and Piper PA-28 at Cumbernauld Airport"
             className="h-full w-full object-cover opacity-20"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/70 to-transparent" />

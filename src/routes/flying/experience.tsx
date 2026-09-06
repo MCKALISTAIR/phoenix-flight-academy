@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     q: "Can I bring passengers?",
-    a: "Yes! One passenger can sit in the rear of the Cessna 172 at no extra cost. They'll enjoy the same stunning views. Additional passengers may be possible depending on weight limits.",
+    a: "Yes! One passenger can sit in the rear of our four-seater Piper PA-28 Archer III at no extra cost. They'll enjoy the same stunning panoramic views. Additional passengers may be possible depending on weight and balance limits.",
   },
   {
     q: "What happens if the weather is bad?",
@@ -47,16 +47,14 @@ function ExperiencePage() {
       title: "30-Minute Trial Lesson",
       price: "£125",
       desc: "Perfect introduction to pilot training. Includes pre-flight brief, 30 minutes in the air, and hands-on control time.",
-      image:
-        "https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=600&auto=format&fit=crop",
+      image: "/images/piper-pa28-cockpit.jpg",
       features: ["Pre-flight cockpit briefing", "Take the controls", "Signed training log entries"],
     },
     {
       title: "60-Minute Scenic Cruiser",
       price: "£215",
       desc: "Spend a full hour flying over Cumbernauld, Glasgow, and the spectacular Scottish Lochs. Plenty of time to build basic handling confidence.",
-      image:
-        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop",
+      image: "/images/piper-pa28-flight.jpg",
       features: [
         "Full 60-minute duration",
         "Scenery photo opportunities",
@@ -67,8 +65,7 @@ function ExperiencePage() {
       title: "Land-Away Highland Tour",
       price: "£395",
       desc: "An ultimate flying adventure. Pilot the aircraft from Cumbernauld, land away at a scenic Scottish airfield for lunch, and fly back.",
-      image:
-        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=600&auto=format&fit=crop",
+      image: "/images/piper-pa28-touring.jpg",
       features: [
         "Dual destination flying",
         "Lunch at local airclub",
@@ -83,9 +80,9 @@ function ExperiencePage() {
       <div className="bg-[oklch(0.12_0.04_250)] py-20 text-white sm:py-28 relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1600&auto=format&fit=crop"
-            alt="Scenic flight landscape"
-            className="h-full w-full object-cover opacity-30"
+            src="/images/piper-pa28-flight.jpg"
+            alt="Piper PA-28 Archer III banking over Loch Lomond"
+            className="h-full w-full object-cover opacity-25"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/60 to-transparent" />
         </div>

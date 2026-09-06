@@ -214,8 +214,8 @@ function LearnToFlyPage() {
       <div className="bg-[oklch(0.12_0.04_250)] py-20 text-white sm:py-28 relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=1600&auto=format&fit=crop"
-            alt="Aircraft wing in high skies"
+            src="/images/piper-pa28-walkaround.jpg"
+            alt="Instructor and student conducting Piper PA-28 pre-flight walkaround at Cumbernauld Airport"
             className="h-full w-full object-cover opacity-20"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/60 to-transparent" />
@@ -520,7 +520,7 @@ function LearnToFlyPage() {
                     <button
                       key={c.id}
                       type="button"
-                      onClick={() => setCadence(c.id as any)}
+                      onClick={() => setCadence(c.id as "1_week" | "2_week" | "intensive")}
                       className={`p-2 rounded-lg border text-center text-xs transition-all ${
                         cadence === c.id
                           ? "border-primary bg-primary/5 text-foreground"

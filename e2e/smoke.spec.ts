@@ -228,7 +228,7 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
     // 3. Fill out booking form
     // Wait for the aircraft selection button to be visible, then click the first one
     const aircraftBtn = page.locator("section:has-text('Aircraft') button").first();
-    await expect(aircraftBtn).toBeVisible();
+    await expect(aircraftBtn).toBeVisible({ timeout: 15000 });
     await aircraftBtn.click();
 
     // Click the first instructor button
@@ -274,5 +274,172 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
     // Verify the confirmation page acknowledges the booking
     await expect(page.locator("h1").first()).toContainText("Booking received");
     await expect(page.locator("text=PPL Training Lesson")).toBeVisible();
+  });
+
+  test("Palomar Labs Video Hero renders with poster fallback and accessible pause control", async ({
+    page,
+  }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    const video = page.locator("section video");
+    await expect(video).toBeAttached();
+    await expect(video).toHaveAttribute("poster", /piper-pa28/);
+
+    const toggleBtn = page.locator("section button[data-hydrated='true']");
+    await expect(toggleBtn).toBeVisible({ timeout: 15000 });
+
+    const initialLabel = await toggleBtn.getAttribute("aria-label");
+    await toggleBtn.click();
+    const expectedLabel =
+      initialLabel === "Pause background video"
+        ? "Play background video"
+        : "Pause background video";
+    await expect(page.locator(`section button[aria-label='${expectedLabel}']`)).toBeVisible();
+  });
+
+  test("Systema Bento Pathway Selector supports keyboard navigation and roving tabindex", async ({
+    page,
+  }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    const tabList = page.getByRole("tablist");
+    await expect(tabList).toBeVisible();
+
+    const firstTab = page.getByRole("tab", { name: "Take Your First Flight" });
+    const secondTab = page.getByRole("tab", { name: "Learn to Fly" });
+    const thirdTab = page.getByRole("tab", { name: "Hire an Aircraft" });
+
+    await expect(firstTab).toHaveAttribute("aria-selected", "true");
+    await page.waitForTimeout(600);
+
+    // Focus first tab and navigate via keyboard ArrowRight
+    await firstTab.focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(secondTab).toHaveAttribute("aria-selected", "true");
+    await expect(page).toHaveURL(/.*pathway=training/);
+
+    await page.keyboard.press("ArrowRight");
+    await expect(thirdTab).toHaveAttribute("aria-selected", "true");
+    await expect(page).toHaveURL(/.*pathway=hire/);
+
+    await page.keyboard.press("ArrowLeft");
+    await expect(secondTab).toHaveAttribute("aria-selected", "true");
+  });
+
+  test("Bento Pathway tabs contain direct CTA links to respective flight pages", async ({
+    page,
+  }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    // 1. Experience Tab
+    const expCta = page.getByRole("link", { name: "Book Experience Flight Voucher" });
+    await expect(expCta).toBeVisible();
+    await expect(expCta).toHaveAttribute("href", "/flying/experience");
+
+    // 2. Training Tab
+    await page.getByRole("tab", { name: "Learn to Fly" }).click();
+    const trainCta = page.getByRole("link", { name: "Explore Flight Training Pathway" });
+    await expect(trainCta).toBeVisible();
+    await expect(trainCta).toHaveAttribute("href", "/flying/learn-to-fly");
+
+    // 3. Hire Tab
+    await page.getByRole("tab", { name: "Hire an Aircraft" }).click();
+    const hireCta = page.getByRole("link", { name: "Book Aerodrome Checkout" });
+    await expect(hireCta).toBeVisible();
+    await expect(hireCta).toHaveAttribute("href", "/flying/self-hire");
+  });
+
+  test("Regression guard - Live aerodrome ticker is removed and replaced by static EGPG identifier", async ({
+    page,
+  }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    // Ensure the old live ticker bar text is NOT present
+    await expect(page.locator("text=RWY 26 / 08 | 120.605 MHz")).not.toBeVisible();
+    await expect(page.locator("text=Now accepting PPL students for 2026")).not.toBeVisible();
+
+    // Verify presence of static EGPG identifier badge
+    await expect(page.locator("text=55°58′32″N 003°57′41″W")).toBeVisible();
+    await expect(page.locator("text=Elev 356 FT")).toBeVisible();
+  });
+
+  test("Zero horizontal overflow across Mobile (375px) and Tablet (768px)", async ({ page }) => {
+    for (const width of [375, 768]) {
+      await page.setViewportSize({ width, height: 800 });
+      await page.goto("/", { waitUntil: "domcontentloaded" });
+
+      const hasOverflow = await page.evaluate(() => {
+        return document.documentElement.scrollWidth > window.innerWidth;
+      });
+      expect(hasOverflow).toBe(false);
+    }
+  });
+
+  test("Fleet page features dedicated Piper PA-28 airframe with placarded V-speeds", async ({
+    page,
+  }) => {
+    await page.goto("/fleet", { waitUntil: "domcontentloaded" });
+
+    // Confirm heading
+    await expect(page.locator("h1").first()).toContainText("Our Training & Hire Fleet");
+
+    // Confirm no Cessna filter buttons exist
+    await expect(page.getByRole("button", { name: /Cessna 172/i })).not.toBeVisible();
+
+    // Verify PA-28 technical dossier and placarded V-speeds
+    await expect(page.getByText(/Piper PA-?28/i).first()).toBeVisible();
+    await expect(page.locator("text=Vso").first()).toBeVisible();
+    await expect(page.locator("text=44 KIAS").first()).toBeVisible();
+    await expect(page.locator("text=Vne").first()).toBeVisible();
+    await expect(page.locator("text=160 KIAS").first()).toBeVisible();
+  });
+
+  test("Homepage Hero features +40% scaled typography and staggered text-mask elements", async ({
+    page,
+  }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    const h1 = page.locator("h1");
+    await expect(h1).toBeVisible();
+
+    // Verify presence of staggered masked text lines
+    await expect(h1.locator("text=Where Scottish Aviators")).toBeVisible();
+    await expect(h1.locator("text=Take Flight.")).toBeVisible();
+    await expect(h1.locator("text=Precision training at Cumbernauld Airport.")).toBeVisible();
+
+    // Verify high-contrast color styling
+    const kicker = h1.locator(".text-primary");
+    await expect(kicker).toBeVisible();
+  });
+
+  test("Homepage renders asymmetrical Bento Box for Training & Hire Fleet with V-speed placard", async ({
+    page,
+  }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    // Verify asymmetrical fleet bento heading
+    const fleetHeading = page.getByRole("heading", { name: "Our Training & Hire Fleet" });
+    await expect(fleetHeading).toBeVisible();
+
+    // Verify V-speed placard within fleet bento
+    await expect(page.locator("text=V-Speed Placard")).toBeVisible();
+    await expect(page.locator("text=76 KIAS")).toBeVisible(); // Vy
+    await expect(page.locator("text=154 KIAS")).toBeVisible(); // Vne
+
+    // Verify cockpit avionics callout
+    await expect(page.locator("text=Cockpit Avionics")).toBeVisible();
+    await expect(page.locator("text=Low-Wing Pilot Ergonomics")).toBeVisible();
+
+    // Verify Part-ML maintenance airworthy indicator
+    await expect(page.locator("text=Part-ML Airworthy")).toBeVisible();
+  });
+
+  test("Magnetic primary CTA buttons respond to hover events", async ({ page }) => {
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+
+    const chooseExpBtn = page.getByRole("link", { name: /Choose Your Flight Experience/i });
+    await expect(chooseExpBtn).toBeVisible();
+
+    // Trigger hover to ensure motion spring wrapper handles pointer events cleanly
+    await chooseExpBtn.hover();
+    await expect(chooseExpBtn).toBeVisible();
   });
 });

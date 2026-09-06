@@ -158,7 +158,7 @@ VALUES
    165, 4820.5, '2026-10-15', 4850.0, 'serviceable', 1),
   ('G-BCDF', 'Piper PA28 Cherokee', 'High-Performance Low-Wing Cruiser',
    'A low-wing alternative providing fantastic cruising visibility and responsive handling. Extremely popular for qualified pilots doing cross-country building across Scotland due to its high load carrying capacity and spacious cabin layout.',
-   'https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=900&auto=format&fit=crop',
+   '/images/piper-pa28-apron.jpg',
    'Lycoming O-360 (180 HP)', '115 kts (132 mph)', '4 (1 Pilot + 3 Pax)', 'Approx. 34L / hour',
    ARRAY['Traditional Steam Gauges Panel','Trig Mode S Transponder','8.33kHz Radio','Spacious Low-Wing Setup','Dual VOR / ILS Nav Indicators'],
    180, 3125.8, '2026-08-20', 3150.0, 'serviceable', 2);

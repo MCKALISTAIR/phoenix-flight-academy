@@ -21,7 +21,7 @@ export const Route = createFileRoute("/flying/self-hire")({
       {
         name: "description",
         content:
-          "Hire our well-maintained Cessna 172 and Piper PA28 aircraft at competitive wet/dry rates. Overnight cross-country trip policies.",
+          "Hire our well-maintained Piper PA-28 Archer III aircraft at competitive wet rates. Overnight cross-country touring policies.",
       },
     ],
   }),
@@ -49,7 +49,7 @@ const checkoutSteps = [
   {
     step: 4,
     title: "Approved & Flying",
-    desc: "Once approved, book aircraft online anytime. You'll have full access to our Cessna 172 and Piper PA28 fleet.",
+    desc: "Once approved, book aircraft online anytime. You'll have full access to our dedicated Piper PA-28 Cherokee Archer III.",
     icon: CircleCheckBig,
   },
 ];
@@ -104,8 +104,8 @@ function SelfHirePage() {
       <div className="bg-[oklch(0.12_0.04_250)] py-20 text-white sm:py-28 relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?q=80&w=1600&auto=format&fit=crop"
-            alt="General aviation aircraft cockpit"
+            src="/images/piper-pa28-apron.jpg"
+            alt="Piper PA-28 Cherokee Archer III on Cumbernauld apron"
             className="h-full w-full object-cover opacity-25"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[oklch(0.12_0.04_250)] via-[oklch(0.12_0.04_250)]/60 to-transparent" />
@@ -118,8 +118,8 @@ function SelfHirePage() {
             Self-Hire Fleet
           </h1>
           <p className="mt-6 max-w-2xl text-lg sm:text-xl text-white/85 leading-relaxed">
-            Rent our exceptionally maintained Cessna 172 and Piper PA28 fleet. Competitive wet
-            rates, modern avionics, and flexible booking policies.
+            Rent our exceptionally maintained Piper PA-28 Cherokee Archer III. Competitive wet
+            rates, robust avionics, and flexible Scottish touring policies.
           </p>
         </div>
       </div>
@@ -198,8 +198,8 @@ function SelfHirePage() {
                 <div>
                   <h3 className="text-lg font-bold text-foreground">Equipped for Safety</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    Both G-PHNX Cessna and our Piper fleet are fully IFR capable with 8.33kHz
-                    radios, Garmin GNS430 GPS navigation units, and Mode S transponders.
+                    Our Piper PA-28 Archer III airframe is fully equipped with 8.33kHz radios, Trig
+                    Mode S transponder, dual altimeters, and precision analog navigation indicators.
                   </p>
                 </div>
                 <Link
@@ -214,13 +214,13 @@ function SelfHirePage() {
 
             <div className="relative aspect-video rounded-xl overflow-hidden shadow-sm border border-border mt-8">
               <img
-                src="https://images.unsplash.com/photo-1555513220-410a69a03bc7?q=80&w=1200&auto=format&fit=crop"
-                alt="Aircraft hangar ramp"
+                src="/images/piper-pa28-touring.jpg"
+                alt="Piper PA-28 Archer III cruising over Scottish mountain glens"
                 className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               />
               <div className="absolute bottom-3 left-3 bg-surface-navy/90 px-3 py-1.5 rounded-md text-xs font-mono text-white border border-white/10 flex items-center gap-2">
                 <MapPin className="h-3.5 w-3.5 text-primary" />
-                <span>EGPG Cumbernauld Flight Line</span>
+                <span>EGPG Scottish Touring Platform</span>
               </div>
             </div>
           </div>
@@ -245,23 +245,12 @@ function SelfHirePage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="text-sm font-semibold text-foreground">
-                      Cessna 172 Skyhawk
+                      Piper PA-28-181 Cherokee Archer III
                     </span>
                     <p className="text-[11px] text-muted-foreground">Wet rate / tachometer hour</p>
                   </div>
                   <span className="font-mono text-base font-bold text-foreground tabular-nums">
-                    £175.00
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-sm font-semibold text-foreground">
-                      Piper PA28 Cherokee
-                    </span>
-                    <p className="text-[11px] text-muted-foreground">Wet rate / tachometer hour</p>
-                  </div>
-                  <span className="font-mono text-base font-bold text-foreground tabular-nums">
-                    £175.00
+                    £185.00
                   </span>
                 </div>
                 <div className="flex items-center justify-between">

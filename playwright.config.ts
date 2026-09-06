@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: "line",
   timeout: 60000, // Increase test timeout to 60s to handle Vite compilation in dev server
   use: {
-    baseURL: "http://localhost:8083",
+    baseURL: "http://localhost:8080",
     trace: "on-first-retry",
   },
   projects: [
@@ -19,8 +19,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev -- --port 8083",
-    port: 8083,
+    command: "npm run dev",
+    port: 8080,
     reuseExistingServer: true,
     timeout: 90000,
   },

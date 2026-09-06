@@ -60,7 +60,18 @@ function BookingFlow() {
 
   const { data: product, isLoading: productLoading } = useQuery({
     queryKey: ["booking-product", slug],
-    queryFn: () => fetchProduct({ data: { slug } }),
+    queryFn: async () => {
+      const { data: row, error } = await supabase
+        .from("booking_products")
+        .select("*")
+        .eq("slug", slug)
+        .eq("published", true)
+        .maybeSingle();
+      if (error || !row) {
+        return fetchProduct({ data: { slug } });
+      }
+      return row;
+    },
   });
 
   // Aircraft + instructors (public reads)
