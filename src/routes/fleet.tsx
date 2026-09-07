@@ -1,19 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  CheckCircle2,
-  Cpu,
-  Gauge,
-  ArrowRight,
-  Activity,
-  ChevronDown,
-  ChevronUp,
-  Eye,
-  Plane,
-} from "lucide-react";
+import { Cpu, Gauge, ArrowRight, Activity, ChevronDown, ChevronUp, Eye, Plane } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/fleet")({
@@ -50,6 +39,10 @@ const PA28_V_SPEEDS: VSpeed[] = [
 function FleetPage() {
   const [expandedSpecs, setExpandedSpecs] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   const { data: fleetRows = [], isLoading } = useQuery({
     queryKey: ["aircraft", "public"],
@@ -96,10 +89,10 @@ function FleetPage() {
     nextAnnual: dbPa28?.next_annual || "2026-10-15",
     rateWet: dbPa28?.rate_wet || 185,
     specs: [
-      { label: "Powerplant", value: dbPa28?.engine || "Lycoming O-360 4-Cylinder (180 HP)" },
-      { label: "Cruising Speed", value: dbPa28?.cruise_speed || "115 KTAS (132 mph)" },
-      { label: "Occupancy", value: `${dbPa28?.max_seats || 4} Seats (1 Pilot + 3 Pax)` },
-      { label: "Fuel Capacity", value: "189 Litres / 50 USG (AVGAS 100LL)" },
+      { label: "Engine", value: "180 HP Lycoming" },
+      { label: "Cruise Speed", value: "115 kts" },
+      { label: "Range", value: "500+ nm" },
+      { label: "Seating", value: "4 Seats" },
     ],
     vSpeeds: PA28_V_SPEEDS,
     avionics: dbPa28?.avionics?.length
@@ -114,36 +107,26 @@ function FleetPage() {
         ],
   };
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  const isServiceable = plane.status === "serviceable";
-
   return (
-    <div className="flex flex-col bg-background pb-24">
+    <div className="flex flex-col bg-[#0B0F17] text-white min-h-screen pb-24">
       {/* Aerodrome Fleet Header */}
-      <div className="bg-surface-navy py-20 text-white sm:py-24 relative overflow-hidden border-b border-white/10">
+      <div className="bg-[#0B0F17] py-20 text-white sm:py-24 relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src="/images/cumbernauld-runway-approach.jpg"
             alt="Cumbernauld Airport Runway 08 threshold and apron approach"
-            className="h-full w-full object-cover opacity-25"
+            className="h-full w-full object-cover opacity-20"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-surface-navy via-surface-navy/70 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F17] via-[#0B0F17]/80 to-transparent" />
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3 py-1.5 text-xs font-mono font-medium text-primary border border-white/15 backdrop-blur-sm mb-4">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
-            </span>
-            EGPG FLEET REGISTRY | Cumbernauld Airport
+          <div className="inline-flex items-center gap-2 rounded-full bg-white/[0.04] px-3.5 py-1.5 text-xs font-mono font-medium text-zinc-300 mb-4">
+            EGPG FLEET REGISTRY • Cumbernauld Airport
           </div>
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+          <h1 className="text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
             Our Training & Hire Fleet
           </h1>
-          <p className="mt-4 max-w-2xl text-lg text-white/80 leading-relaxed">
+          <p className="mt-4 max-w-2xl text-base sm:text-lg text-zinc-400 leading-relaxed">
             Maintained strictly to UK CAA and Part-ML airworthiness standards. Equipped with modern
             8.33 kHz communications, dual flight controls, and high-performance touring endurance.
           </p>
@@ -153,89 +136,84 @@ function FleetPage() {
       {/* Fleet Airframe Dossier */}
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         {/* Airframe Configuration Header */}
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 pb-6">
           <div>
             <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-primary">
               Dedicated Training Airframe
             </span>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-foreground">
+            <h2 className="text-xl sm:text-2xl font-black text-white">
               Aircraft Cockpit & Performance Inspector
             </h2>
           </div>
 
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="font-mono text-xs">
+            <span className="rounded-full bg-white/[0.04] px-3.5 py-1 font-mono text-xs text-zinc-300">
               Single Dedicated Airframe
-            </Badge>
-            <Badge variant="operational" className="text-xs">
-              100% Part-ML Airworthy
-            </Badge>
+            </span>
           </div>
         </div>
 
         {isLoading ? (
-          <div className="h-[600px] w-full animate-pulse rounded-xl border border-border bg-muted/20" />
+          <div className="h-[600px] w-full animate-pulse rounded-3xl bg-white/[0.02]" />
         ) : (
           <div
-            className={`overflow-hidden rounded-xl border border-border bg-card shadow-none transition-all duration-700 ease-out hover:border-primary/30 ${
+            className={`overflow-hidden rounded-3xl bg-white/[0.03] transition-all duration-700 ease-out ${
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
           >
             {/* Top Telemetry Strip */}
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border bg-muted/30 px-6 py-3.5">
+            <div className="flex flex-wrap items-center justify-between gap-4 bg-white/[0.02] px-6 sm:px-8 py-4">
               <div className="flex items-center gap-3">
-                <span className="font-mono text-lg font-black tracking-tight text-foreground">
+                <span className="font-mono text-lg font-black tracking-tight text-white">
                   {plane.registration}
                 </span>
-                <span className="text-xs text-muted-foreground">|</span>
-                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <span className="text-xs text-zinc-600">|</span>
+                <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
                   {plane.model}
                 </span>
-                <span className="rounded-md bg-muted px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase text-muted-foreground border border-border hidden sm:inline-block">
+                <span className="rounded-md bg-white/[0.04] px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase text-zinc-400 hidden sm:inline-block">
                   {plane.wingType}
                 </span>
               </div>
               <div className="flex items-center gap-4">
                 {plane.rateWet && (
-                  <span className="font-mono text-sm font-bold text-foreground tabular-nums">
+                  <span className="font-mono text-sm font-bold text-white tabular-nums">
                     £{Number(plane.rateWet).toFixed(2)}
-                    <span className="text-xs font-normal text-muted-foreground">/hr wet</span>
+                    <span className="text-xs font-normal text-zinc-400">/hr wet</span>
                   </span>
                 )}
-                <Badge variant={isServiceable ? "operational" : "caution"}>
-                  {isServiceable ? "SERVICEABLE" : plane.status.toUpperCase()}
-                </Badge>
+                <span className="rounded-full bg-white/[0.05] px-2.5 py-0.5 font-mono text-[11px] font-semibold text-zinc-300 uppercase">
+                  PA-28-181
+                </span>
               </div>
             </div>
 
             <div className="grid gap-8 p-6 lg:grid-cols-12 lg:p-8">
               {/* Ramp Photo & Airframe Sightlines (5 cols) */}
               <div className="space-y-4 lg:col-span-5">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-lg border border-border bg-muted">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-white/[0.02]">
                   <img
                     src={plane.image}
                     alt={`${plane.registration} ${plane.model}`}
                     className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                   />
-                  <div className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-md bg-surface-navy/90 px-2.5 py-1 text-[11px] font-mono text-white border border-white/10">
+                  <div className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-lg bg-neutral-950/80 px-2.5 py-1 text-[11px] font-mono text-white backdrop-blur-md">
                     <Activity className="h-3 w-3 text-primary" />
                     <span>Ramp Stand: EGPG Main Apron</span>
                   </div>
                 </div>
 
                 {/* Cockpit Sightlines & Handling Ergonomics */}
-                <div className="rounded-lg border border-border bg-muted/20 p-3.5 space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-foreground">
+                <div className="rounded-2xl bg-white/[0.02] p-4 space-y-2">
+                  <div className="flex items-center gap-2 text-xs font-bold text-white">
                     <Eye className="h-3.5 w-3.5 text-primary" />
                     <span>Cockpit Sightlines & Ergonomics</span>
                   </div>
-                  <p className="text-xs leading-relaxed text-muted-foreground">
-                    {plane.handlingHighlight}
-                  </p>
+                  <p className="text-xs leading-relaxed text-zinc-400">{plane.handlingHighlight}</p>
                 </div>
 
                 {plane.desc && (
-                  <p className="text-xs leading-relaxed text-muted-foreground">{plane.desc}</p>
+                  <p className="text-xs leading-relaxed text-zinc-400">{plane.desc}</p>
                 )}
               </div>
 
@@ -243,23 +221,23 @@ function FleetPage() {
               <div className="space-y-6 lg:col-span-7">
                 {/* Performance Telemetry Grid */}
                 <div>
-                  <h3 className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Aircraft Performance Telemetry
+                  <h3 className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+                    Aircraft Specifications
                   </h3>
                   <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-2">
                     {plane.specs.map((spec, sIdx) => (
                       <div
                         key={sIdx}
-                        className="flex items-center gap-3 rounded-lg border border-border bg-card p-3"
+                        className="flex items-center gap-3 rounded-2xl bg-white/[0.02] p-3.5"
                       >
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.05] text-primary">
                           <Gauge className="h-4 w-4" />
                         </div>
                         <div>
-                          <span className="block text-[10.5px] font-medium text-muted-foreground uppercase tracking-wider">
+                          <span className="block text-[10.5px] font-mono text-zinc-400 uppercase tracking-wider">
                             {spec.label}
                           </span>
-                          <span className="font-mono text-xs font-bold text-foreground tabular-nums">
+                          <span className="font-mono text-xs font-bold text-white tabular-nums">
                             {spec.value}
                           </span>
                         </div>
@@ -270,7 +248,7 @@ function FleetPage() {
 
                 {/* Cockpit Avionics */}
                 <div>
-                  <h3 className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <h3 className="flex items-center gap-2 text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-400">
                     <Cpu className="h-3.5 w-3.5 text-primary" />
                     Cockpit Avionics Suite
                   </h3>
@@ -278,9 +256,9 @@ function FleetPage() {
                     {plane.avionics.map((av, avIdx) => (
                       <span
                         key={avIdx}
-                        className="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/40 px-2.5 py-1 text-xs font-medium text-foreground"
+                        className="inline-flex items-center gap-2 rounded-lg bg-white/[0.02] px-3 py-1.5 text-xs font-medium text-zinc-300"
                       >
-                        <CheckCircle2 className="h-3 w-3 text-success shrink-0" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                         {av}
                       </span>
                     ))}
@@ -288,17 +266,17 @@ function FleetPage() {
                 </div>
 
                 {/* Collapsible Pilot Technical Telemetry & POH V-Speeds Drawer */}
-                <div className="border border-border rounded-lg bg-card overflow-hidden shadow-none">
+                <div className="rounded-2xl bg-white/[0.02] overflow-hidden">
                   <button
                     type="button"
                     onClick={() => setExpandedSpecs((prev) => !prev)}
-                    className="w-full flex items-center justify-between p-3 text-left hover:bg-muted/30 transition-colors"
+                    className="w-full flex items-center justify-between p-4 text-left hover:bg-white/[0.02] transition-colors cursor-pointer"
                   >
-                    <span className="text-xs font-bold text-foreground flex items-center gap-2">
+                    <span className="text-xs font-bold text-white flex items-center gap-2">
                       <Plane className="h-3.5 w-3.5 text-primary" />
                       Pilot Technical Telemetry & POH V-Speeds
                     </span>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2 text-xs text-zinc-400">
                       <span>{expandedSpecs ? "Hide Telemetry" : "View Operating Limits"}</span>
                       {expandedSpecs ? (
                         <ChevronUp className="h-4 w-4" />
@@ -309,14 +287,14 @@ function FleetPage() {
                   </button>
 
                   {expandedSpecs && (
-                    <div className="p-4 border-t border-border bg-muted/15 space-y-4">
+                    <div className="p-4 bg-white/[0.01] space-y-4">
                       {/* V-Speeds Placard */}
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-[10.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          <span className="text-[10.5px] font-mono font-bold uppercase tracking-wider text-zinc-400">
                             Operating Limitations (V-Speeds Placard)
                           </span>
-                          <span className="text-[10px] font-mono text-muted-foreground">
+                          <span className="text-[10px] font-mono text-zinc-500">
                             POH CAS / KIAS
                           </span>
                         </div>
@@ -324,13 +302,13 @@ function FleetPage() {
                           {plane.vSpeeds.map((v) => (
                             <div
                               key={v.label}
-                              className="rounded-md border border-border bg-card p-2 text-center shadow-none"
+                              className="rounded-xl bg-white/[0.03] p-2.5 text-center"
                               title={v.desc}
                             >
                               <span className="block font-mono text-[10px] font-bold text-primary uppercase">
                                 {v.label}
                               </span>
-                              <span className="block font-mono text-xs font-extrabold text-foreground tabular-nums">
+                              <span className="block font-mono text-xs font-bold text-white tabular-nums">
                                 {v.speed}
                               </span>
                             </div>
@@ -339,30 +317,30 @@ function FleetPage() {
                       </div>
 
                       {/* Airframe Tech Log Strip */}
-                      <div className="grid grid-cols-3 gap-2 rounded-lg border border-border bg-card p-2.5 text-center shadow-none">
+                      <div className="grid grid-cols-3 gap-2 rounded-xl bg-white/[0.03] p-3 text-center">
                         <div>
-                          <span className="block text-[9.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          <span className="block text-[9.5px] font-mono font-semibold uppercase tracking-wider text-zinc-400">
                             Airframe Tach
                           </span>
-                          <span className="font-mono text-xs font-bold text-foreground tabular-nums">
+                          <span className="font-mono text-xs font-bold text-white tabular-nums">
                             {plane.hours ? `${Number(plane.hours).toFixed(1)} hrs` : "3,125.8 hrs"}
                           </span>
                         </div>
-                        <div className="border-x border-border">
-                          <span className="block text-[9.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        <div>
+                          <span className="block text-[9.5px] font-mono font-semibold uppercase tracking-wider text-zinc-400">
                             Next 50-Hr
                           </span>
-                          <span className="font-mono text-xs font-bold text-foreground tabular-nums">
+                          <span className="font-mono text-xs font-bold text-white tabular-nums">
                             {plane.next50hr
                               ? `${Number(plane.next50hr).toFixed(1)} hrs`
                               : "3,150.0 hrs"}
                           </span>
                         </div>
                         <div>
-                          <span className="block text-[9.5px] font-semibold uppercase tracking-wider text-muted-foreground">
+                          <span className="block text-[9.5px] font-mono font-semibold uppercase tracking-wider text-zinc-400">
                             ARC Renewal
                           </span>
-                          <span className="font-mono text-xs font-bold text-foreground tabular-nums">
+                          <span className="font-mono text-xs font-bold text-white tabular-nums">
                             {plane.nextAnnual
                               ? new Date(plane.nextAnnual).toLocaleDateString("en-GB", {
                                   month: "short",
@@ -377,10 +355,10 @@ function FleetPage() {
                 </div>
 
                 {/* Action Footer */}
-                <div className="flex items-center justify-between border-t border-border pt-4">
-                  <div className="text-xs text-muted-foreground">
+                <div className="flex items-center justify-between pt-4">
+                  <div className="text-xs text-zinc-400">
                     Fuel capacity:{" "}
-                    <span className="font-mono font-semibold text-foreground">189 L (50 USG)</span>
+                    <span className="font-mono font-semibold text-white">189 L (50 USG)</span>
                   </div>
                   <Button asChild size="sm">
                     <Link to="/booking">

@@ -536,7 +536,9 @@ function BookingFlow() {
                       </label>
                       <select
                         value={recurrence}
-                        onChange={(e) => setRecurrence(e.target.value as any)}
+                        onChange={(e) =>
+                          setRecurrence(e.target.value as "weekly" | "fortnightly" | "none")
+                        }
                         className="w-full rounded-lg border border-white/10 bg-surface-navy px-3 py-2 text-sm text-white focus:border-primary outline-none"
                       >
                         <option value="none">One-off booking</option>

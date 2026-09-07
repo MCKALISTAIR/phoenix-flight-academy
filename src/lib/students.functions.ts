@@ -171,7 +171,7 @@ export const getStudent = createServerFn({ method: "GET" })
           .from("flight_log_exercises")
           .select("*")
           .in("flight_log_entry_id", flightIds)
-      : { data: [] as any[] };
+      : { data: [] as never[] };
 
     const { data: documents } = await supabaseAdmin
       .from("student_documents")
@@ -227,7 +227,7 @@ export const listExpiringDocuments = createServerFn({ method: "GET" })
             .from("profiles")
             .select("user_id, display_name")
             .in("user_id", userIds)
-        : { data: [] as any[] };
+        : { data: [] as never[] };
       const nameMap = new Map((profs ?? []).map((p) => [p.user_id, p.display_name]));
       (students ?? []).forEach((s) =>
         studentsById.set(s.id, {

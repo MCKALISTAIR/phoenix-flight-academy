@@ -31,6 +31,13 @@ import {
   deleteTheoryResult,
   PPL_THEORY_SUBJECTS,
 } from "@/lib/flight-log.functions";
+import type { Database } from "@/integrations/supabase/types";
+
+type FlightEntry = Database["public"]["Tables"]["flight_log_entries"]["Row"];
+type FlightExercise = Database["public"]["Tables"]["flight_log_exercises"]["Row"];
+type StudentDocument = Database["public"]["Tables"]["student_documents"]["Row"];
+type StudentEndorsement = Database["public"]["Tables"]["student_endorsements"]["Row"];
+type TheoryResult = Database["public"]["Tables"]["theory_exam_results"]["Row"];
 
 export const Route = createFileRoute("/cms/students/$studentId")({
   beforeLoad: async ({ location }) => {
@@ -267,10 +274,10 @@ function OverviewTab({
   documents,
   endorsements,
 }: {
-  flights: any[];
-  flightExercises: any[];
-  documents: any[];
-  endorsements: any[];
+  flights: FlightEntry[];
+  flightExercises: FlightExercise[];
+  documents: StudentDocument[];
+  endorsements: StudentEndorsement[];
 }) {
   const lastFlight = flights[0];
   const alerts = documents
@@ -383,8 +390,8 @@ function FlightsTab({
   onChange,
 }: {
   studentId: string;
-  flights: any[];
-  flightExercises: any[];
+  flights: FlightEntry[];
+  flightExercises: FlightExercise[];
   onChange: () => void;
 }) {
   const [showForm, setShowForm] = useState(false);
@@ -840,14 +847,19 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 /* ============ SYLLABUS ============ */
-function SyllabusTab({ flights, flightExercises }: { flights: any[]; flightExercises: any[] }) {
+function SyllabusTab({
+  flights,
+  flightExercises,
+}: {
+  flights: FlightEntry[];
+  flightExercises: FlightExercise[];
+}) {
   const syllabusFn = useServerFn(listSyllabus);
   const { data } = useQuery({ queryKey: ["syllabus"], queryFn: () => syllabusFn() });
   const exercises = data?.exercises ?? [];
 
-  const flightById = new Map(flights.map((f) => [f.id, f]));
-
   const progressByExercise = useMemo(() => {
+    const flightById = new Map(flights.map((f) => [f.id, f]));
     const map = new Map<string, { lastDate: string | null; bestGrade: string; count: number }>();
     const gradeRank: Record<string, number> = {
       intro: 1,
@@ -865,7 +877,7 @@ function SyllabusTab({ flights, flightExercises }: { flights: any[]; flightExerc
       map.set(fe.exercise_id, cur);
     });
     return map;
-  }, [flightExercises, flightById]);
+  }, [flightExercises, flights]);
 
   const competentCount = Array.from(progressByExercise.values()).filter(
     (p) => p.bestGrade === "competent",
@@ -951,12 +963,15 @@ function DocumentsTab({
   onChange,
 }: {
   studentId: string;
-  documents: any[];
+  documents: StudentDocument[];
   onChange: () => void;
 }) {
   const upsert = useServerFn(upsertStudentDocument);
   const del = useServerFn(deleteStudentDocument);
-  const upMut = useMutation({ mutationFn: (d: any) => upsert({ data: d }), onSuccess: onChange });
+  const upMut = useMutation({
+    mutationFn: (d: Parameters<typeof upsert>[0]["data"]) => upsert({ data: d }),
+    onSuccess: onChange,
+  });
   const delMut = useMutation({
     mutationFn: (id: string) => del({ data: { id } }),
     onSuccess: onChange,
@@ -1140,13 +1155,13 @@ function EndorsementsTab({
   onChange,
 }: {
   studentId: string;
-  endorsements: any[];
+  endorsements: StudentEndorsement[];
   onChange: () => void;
 }) {
   const create = useServerFn(createEndorsement);
   const del = useServerFn(deleteEndorsement);
   const createMut = useMutation({
-    mutationFn: (d: any) => create({ data: d }),
+    mutationFn: (d: Parameters<typeof create>[0]["data"]) => create({ data: d }),
     onSuccess: onChange,
   });
   const delMut = useMutation({
@@ -1310,12 +1325,15 @@ function TheoryTab({
   onChange,
 }: {
   studentId: string;
-  theory: any[];
+  theory: TheoryResult[];
   onChange: () => void;
 }) {
   const upsert = useServerFn(upsertTheoryResult);
   const del = useServerFn(deleteTheoryResult);
-  const upMut = useMutation({ mutationFn: (d: any) => upsert({ data: d }), onSuccess: onChange });
+  const upMut = useMutation({
+    mutationFn: (d: Parameters<typeof upsert>[0]["data"]) => upsert({ data: d }),
+    onSuccess: onChange,
+  });
   const delMut = useMutation({
     mutationFn: (id: string) => del({ data: { id } }),
     onSuccess: onChange,
@@ -1349,7 +1367,7 @@ function TheoryTab({
                         id: t?.id,
                         student_id: studentId,
                         subject: subj,
-                        result: e.target.value,
+                        result: e.target.value as "pass" | "fail" | "pending",
                         score: t?.score ?? null,
                         taken_on: t?.taken_on ?? null,
                       })

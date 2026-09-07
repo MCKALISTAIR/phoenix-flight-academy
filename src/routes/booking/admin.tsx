@@ -285,7 +285,8 @@ function AdminDashboard() {
                       .booking_products;
                     const ac = (b as { aircraft: { registration: string } | null }).aircraft;
                     const safetyFlag = (b as { safety_flag?: boolean }).safety_flag;
-                    const expiredDocs = (b as any).expired_documents ?? [];
+                    const expiredDocs =
+                      (b as { expired_documents?: string[] }).expired_documents ?? [];
                     const discountCents =
                       (b as { discount_applied_cents?: number }).discount_applied_cents ?? 0;
                     const promoCode = (b as { promo_code?: string }).promo_code;

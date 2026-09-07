@@ -173,8 +173,8 @@ function BookingsAdmin() {
                 const promoCode = (b as { promo_code?: string }).promo_code;
                 const discountCents =
                   (b as { discount_applied_cents?: number }).discount_applied_cents ?? 0;
-                const safetyFlag = (b as any).safety_flag;
-                const expiredDocs = (b as any).expired_documents ?? [];
+                const safetyFlag = (b as { safety_flag?: boolean }).safety_flag;
+                const expiredDocs = (b as { expired_documents?: string[] }).expired_documents ?? [];
                 return (
                   <tr
                     key={b.id}

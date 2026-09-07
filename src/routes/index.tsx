@@ -14,13 +14,12 @@ import {
   Award,
   Radio,
   MapPin,
-  Pause,
-  Play,
   Gauge,
-  Sparkles,
   Wrench,
   Fuel,
   Activity,
+  SlidersHorizontal,
+  Info,
 } from "lucide-react";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
@@ -30,6 +29,14 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MagneticButton } from "@/components/ui/magnetic-button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 type HomeSearch = {
   pathway?: "experience" | "training" | "hire";
@@ -182,7 +189,6 @@ function Index() {
   // --- Video hero playback & accessibility ---
   const videoRef = useRef<HTMLVideoElement>(null);
   const heroSectionRef = useRef<HTMLElement>(null);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(true);
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Parallax scroll for hero background tarmac imagery
@@ -199,7 +205,6 @@ function Index() {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion && videoRef.current) {
       videoRef.current.pause();
-      setIsVideoPlaying(false);
       return;
     }
 
@@ -210,24 +215,11 @@ function Index() {
     }
   }, []);
 
-  const toggleVideoPlay = useCallback(() => {
-    setIsVideoPlaying((playing) => {
-      const nextPlaying = !playing;
-      if (videoRef.current) {
-        if (nextPlaying) {
-          videoRef.current.play().catch(() => {});
-        } else {
-          videoRef.current.pause();
-        }
-      }
-      return nextPlaying;
-    });
-  }, []);
-
   // --- Section visibility observers ---
   const [sectionVisible, setSectionVisible] = useState(false);
   const [fleetVisible, setFleetVisible] = useState(false);
   const [statsVisible, setStatsVisible] = useState(false);
+  const [pohOpen, setPohOpen] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const fleetRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
@@ -351,10 +343,7 @@ function Index() {
         <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl">
             {/* Aerospace Metadata Identifier Pill */}
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-xs font-mono font-medium text-white/90 backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
-              <span className="relative flex h-2 w-2">
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 animate-pulse" />
-              </span>
+            <div className="inline-flex items-center gap-2.5 rounded-full bg-white/[0.06] px-3.5 py-1.5 text-xs font-mono font-medium text-white/90 backdrop-blur-md shadow-[0_8px_24px_rgba(0,0,0,0.4)]">
               <span className="tracking-widest uppercase font-bold text-primary">EGPG</span>
               <span className="text-white/30">/</span>
               <span className="text-white/90 font-semibold">Cumbernauld</span>
@@ -421,41 +410,20 @@ function Index() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="h-14 px-8 text-sm font-bold border-white/20 bg-white/[0.05] text-white hover:bg-white/[0.12] hover:text-white active:scale-[0.98] ring-offset-[oklch(0.08_0.02_260)] backdrop-blur-md"
+                className="h-14 px-8 text-sm font-bold bg-white/[0.05] text-white hover:bg-white/[0.12] hover:text-white active:scale-[0.98] ring-offset-[oklch(0.08_0.02_260)] backdrop-blur-md border-0"
               >
                 <Link to="/login">Access Flight Portal</Link>
               </MagneticButton>
             </motion.div>
           </div>
         </div>
-
-        {/* Accessible video play/pause toggle button */}
-        <button
-          type="button"
-          onClick={toggleVideoPlay}
-          data-hydrated={isHydrated}
-          aria-label={isVideoPlaying ? "Pause background video" : "Play background video"}
-          className="absolute bottom-6 right-6 z-20 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/60 px-3.5 py-2 text-[11px] font-mono font-medium text-white/80 backdrop-blur-md transition-colors hover:bg-black/80 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ring-offset-[oklch(0.08_0.02_260)] cursor-pointer"
-        >
-          {isVideoPlaying ? (
-            <>
-              <Pause className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Pause Video</span>
-            </>
-          ) : (
-            <>
-              <Play className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Play Video</span>
-            </>
-          )}
-        </button>
       </section>
 
       {/* ═══════ ASYMMETRICAL BENTO BOX PATHWAY SELECTOR SECTION ═══════ */}
       <section
         id="flight-selector"
         ref={sectionRef}
-        className="relative bg-[oklch(0.08_0.02_260)] py-20 sm:py-28 border-b border-white/10 overflow-x-clip"
+        className="relative bg-[oklch(0.08_0.02_260)] py-24 sm:py-32 border-b border-white/10 overflow-x-clip"
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div
@@ -464,7 +432,6 @@ function Index() {
             }`}
           >
             <div className="inline-flex items-center gap-2 rounded-full glass-pill px-3.5 py-1.5 text-[11px] font-mono font-bold uppercase tracking-widest text-primary">
-              <Sparkles className="h-3 w-3 text-primary" />
               Flight Pathways
             </div>
             <h2 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-5xl lg:text-5xl leading-tight">
@@ -483,24 +450,24 @@ function Index() {
             className="mt-10 w-full"
           >
             {/* Segmented Tab Triggers */}
-            <TabsList className="h-auto p-1.5 bg-white/[0.04] border border-white/10 rounded-2xl flex flex-wrap gap-2 max-w-2xl backdrop-blur-md">
+            <TabsList className="h-auto p-1.5 bg-white/[0.04] rounded-2xl flex flex-wrap gap-2 max-w-2xl backdrop-blur-md">
               <TabsTrigger
                 value="experience"
-                className="flex-1 min-w-[160px] h-12 px-4 text-xs font-bold gap-2 text-white/70 data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:border data-[state=active]:border-white/20 data-[state=active]:shadow-lg rounded-xl transition-all"
+                className="flex-1 min-w-[160px] h-12 px-4 text-xs font-bold gap-2 text-white/70 data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all"
               >
                 <Compass className="h-4 w-4 text-primary shrink-0" />
                 <span>Take Your First Flight</span>
               </TabsTrigger>
               <TabsTrigger
                 value="training"
-                className="flex-1 min-w-[160px] h-12 px-4 text-xs font-bold gap-2 text-white/70 data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:border data-[state=active]:border-white/20 data-[state=active]:shadow-lg rounded-xl transition-all"
+                className="flex-1 min-w-[160px] h-12 px-4 text-xs font-bold gap-2 text-white/70 data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all"
               >
                 <BookOpen className="h-4 w-4 text-primary shrink-0" />
                 <span>Learn to Fly</span>
               </TabsTrigger>
               <TabsTrigger
                 value="hire"
-                className="flex-1 min-w-[160px] h-12 px-4 text-xs font-bold gap-2 text-white/70 data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:border data-[state=active]:border-white/20 data-[state=active]:shadow-lg rounded-xl transition-all"
+                className="flex-1 min-w-[160px] h-12 px-4 text-xs font-bold gap-2 text-white/70 data-[state=active]:bg-white/10 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl transition-all"
               >
                 <PlaneTakeoff className="h-4 w-4 text-primary shrink-0" />
                 <span>Hire an Aircraft</span>
@@ -520,21 +487,21 @@ function Index() {
                   {/* Left 7 Columns: Core Offering, Rates & Magnetic CTA */}
                   <div className="lg:col-span-7 glass-card rounded-3xl p-6 sm:p-8 lg:p-10 flex flex-col justify-between space-y-6 relative overflow-hidden">
                     <div className="space-y-5">
-                      <div className="flex items-center gap-2.5">
-                        <Badge
-                          variant="outline"
-                          className="text-[11px] font-mono font-bold uppercase tracking-wider text-primary border-primary/30 bg-primary/10"
-                        >
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary">
                           Trial Flight Experience
-                        </Badge>
-                        <Badge variant="operational">Official Logbook Hours</Badge>
+                        </span>
+                        <span className="text-white/30">/</span>
+                        <span className="text-xs font-mono text-zinc-400">
+                          Logbook Hours Included
+                        </span>
                       </div>
 
                       <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
                         Take the controls over Loch Lomond & the Trossachs
                       </h3>
 
-                      <p className="text-sm sm:text-base leading-relaxed text-white/75">
+                      <p className="text-sm sm:text-base leading-relaxed text-zinc-400">
                         Whether fulfilling a lifelong dream or embarking on your pilot journey, your
                         trial lesson puts you in the left seat. Under the expert supervision of a
                         certified flight instructor, you will taxi, take off from Cumbernauld&apos;s
@@ -553,18 +520,18 @@ function Index() {
                             key={item}
                             className="flex items-center gap-2.5 text-xs sm:text-sm text-white/90"
                           >
-                            <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                            <CheckCircle2 className="h-4 w-4 text-zinc-400 shrink-0" />
                             <span>{item}</span>
                           </div>
                         ))}
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-white/10 space-y-4">
-                      <div className="text-[11px] font-mono font-semibold text-white/60 uppercase tracking-wider">
-                        Transparent Flight Voucher Pricing (Dual Instruction Wet)
+                    <div className="pt-6 border-t border-white/5 space-y-4">
+                      <div className="text-[11px] font-mono font-semibold text-zinc-400 uppercase tracking-wider">
+                        Flight Voucher Options (Dual Instruction Wet)
                       </div>
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="flex flex-wrap items-baseline gap-x-10 gap-y-4">
                         {[
                           {
                             duration: "30 Mins",
@@ -582,17 +549,16 @@ function Index() {
                             desc: "Full Loch & Trossachs tour",
                           },
                         ].map((pkg) => (
-                          <div
-                            key={pkg.duration}
-                            className="rounded-xl border border-white/10 bg-white/[0.04] p-3 text-center backdrop-blur-sm"
-                          >
-                            <div className="text-xs font-semibold text-white/70">
-                              {pkg.duration}
+                          <div key={pkg.duration} className="space-y-1">
+                            <div className="flex items-baseline gap-2">
+                              <span className="font-mono text-2xl font-black text-white tabular-nums">
+                                {pkg.price}
+                              </span>
+                              <span className="font-mono text-xs font-semibold text-zinc-400">
+                                / {pkg.duration}
+                              </span>
                             </div>
-                            <div className="font-mono text-base sm:text-lg font-black text-white tabular-nums mt-0.5">
-                              {pkg.price}
-                            </div>
-                            <div className="text-[10px] text-white/50 mt-1">{pkg.desc}</div>
+                            <div className="text-xs text-zinc-400">{pkg.desc}</div>
                           </div>
                         ))}
                       </div>
@@ -614,34 +580,29 @@ function Index() {
                   {/* Right 5 Columns: Asymmetrical Stack (Breakout Airframe + High-Density Telemetry) */}
                   <div className="lg:col-span-5 flex flex-col gap-6">
                     {/* Bento Cell 2: Breakout Airframe Stage */}
-                    <div className="glass-card rounded-3xl p-6 relative overflow-visible flex flex-col justify-between">
-                      <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                    <div className="glass-card rounded-3xl p-6 sm:p-8 relative overflow-visible flex flex-col justify-between">
+                      <div className="flex items-center justify-between pb-3">
                         <div className="flex items-center gap-2">
                           <PlaneTakeoff className="h-4 w-4 text-primary" />
                           <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">
                             Training Airframe
                           </span>
                         </div>
-                        <span className="font-mono text-[11px] text-white/60">G-BCDF / PA-28</span>
+                        <span className="font-mono text-[11px] text-zinc-400">G-BCDF</span>
                       </div>
 
                       {/* Overlapping Breakout Airframe Image */}
                       <div className="relative mt-4 lg:-mr-8 lg:-mt-4 z-10">
-                        <div className="overflow-hidden rounded-2xl border border-white/20 shadow-[0_20px_40px_rgba(0,0,0,0.6)] group">
+                        <div className="overflow-hidden rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.6)] group">
                           <img
                             src="/images/piper-pa28-apron.jpg"
                             alt="Piper PA-28 Cherokee Archer III on the Cumbernauld apron"
-                            className="h-44 sm:h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="h-56 sm:h-64 lg:h-72 w-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
-                          <div className="absolute top-3 right-3">
-                            <span className="glass-pill px-2.5 py-1 text-[10px] font-mono font-bold text-white/95 shadow-sm">
-                              EGPG Apron Stand • PA-28
-                            </span>
-                          </div>
                         </div>
                       </div>
 
-                      <p className="mt-4 text-xs leading-relaxed text-white/70">
+                      <p className="mt-4 text-xs leading-relaxed text-zinc-400">
                         <strong className="text-white">Low-Wing Ground Effect:</strong> The PA-28
                         Cherokee Archer III cushions touchdowns onto Cumbernauld&apos;s 820m asphalt
                         runway, giving students instinctive flare control.
@@ -650,46 +611,43 @@ function Index() {
 
                     {/* Bento Cell 3: High-Density Telemetry & What to Expect */}
                     <div className="glass-card rounded-3xl p-6 space-y-4">
-                      <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                      <div className="flex items-center justify-between pb-3">
                         <div className="flex items-center gap-2">
                           <Clock className="h-4 w-4 text-primary" />
                           <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">
                             Flight Profile Dossier
                           </span>
                         </div>
-                        <span className="font-mono text-[11px] text-emerald-400 font-semibold flex items-center gap-1.5">
-                          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                          VFR Cleared
-                        </span>
+                        <span className="font-mono text-[11px] text-zinc-400">EGPG Circuit</span>
                       </div>
 
                       <div className="space-y-2.5">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-white/60">Departure Runway</span>
+                          <span className="text-zinc-400">Departure Runway</span>
                           <span className="font-mono font-bold text-white">
                             EGPG 820m Hard Asphalt
                           </span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-white/60">Cruising Corridor</span>
+                          <span className="text-zinc-400">Cruising Corridor</span>
                           <span className="font-mono font-bold text-white tabular-nums">
                             2,500 – 3,500 ft AMSL
                           </span>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-white/60">Avionics & Controls</span>
+                          <span className="text-zinc-400">Avionics & Controls</span>
                           <span className="font-mono font-bold text-white">
                             Dual Controls / Garmin
                           </span>
                         </div>
                       </div>
 
-                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3.5 space-y-1.5">
+                      <div className="rounded-xl bg-white/[0.03] p-3.5 space-y-1.5">
                         <div className="text-[11px] font-mono font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
                           <ShieldCheck className="h-3.5 w-3.5" />
                           Briefing & Walkaround
                         </div>
-                        <p className="text-xs text-white/70 leading-relaxed">
+                        <p className="text-xs text-zinc-400 leading-relaxed">
                           Arrive at Cumbernauld Airport clubhouse, meet your instructor for a
                           15-minute briefing, and walk out to the aircraft. You will take the
                           controls immediately once established in the climb!
@@ -710,21 +668,21 @@ function Index() {
                   {/* Left 7 Columns: Training Scope, Rates & CTA */}
                   <div className="lg:col-span-7 glass-card rounded-3xl p-6 sm:p-8 lg:p-10 flex flex-col justify-between space-y-6 relative overflow-hidden">
                     <div className="space-y-5">
-                      <div className="flex items-center gap-2.5">
-                        <Badge
-                          variant="outline"
-                          className="text-[11px] font-mono font-bold uppercase tracking-wider text-primary border-primary/30 bg-primary/10"
-                        >
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary">
                           Flight Training
-                        </Badge>
-                        <Badge variant="operational">DTO Certified Instruction</Badge>
+                        </span>
+                        <span className="text-white/30">/</span>
+                        <span className="text-xs font-mono text-zinc-400">
+                          DTO Certified Instruction
+                        </span>
                       </div>
 
                       <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
                         Learn to fly at Cumbernauld with seasoned instructors
                       </h3>
 
-                      <p className="text-sm sm:text-base leading-relaxed text-white/75">
+                      <p className="text-sm sm:text-base leading-relaxed text-zinc-400">
                         Phoenix Flight Academy provides comprehensive, one-to-one flight instruction
                         tailored to your aviation goals. Whether you are aiming for a full Private
                         Pilot Licence (PPL), a Light Aircraft Pilot Licence (LAPL), or adding night
@@ -743,38 +701,46 @@ function Index() {
                             key={item}
                             className="flex items-center gap-2.5 text-xs sm:text-sm text-white/90"
                           >
-                            <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                            <CheckCircle2 className="h-4 w-4 text-zinc-400 shrink-0" />
                             <span>{item}</span>
                           </div>
                         ))}
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-white/10 space-y-4">
-                      <div className="text-[11px] font-mono font-semibold text-white/60 uppercase tracking-wider">
-                        Transparent Flight Training Rates
+                    <div className="pt-6 border-t border-white/5 space-y-4">
+                      <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-zinc-400">
+                        Flight Training Rates
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-sm">
-                          <div className="text-xs font-semibold text-white/70">
-                            Dual Instruction (Wet)
+                      <div className="flex flex-wrap items-baseline gap-x-12 gap-y-4">
+                        <div className="space-y-1">
+                          <div className="flex items-baseline gap-2">
+                            <span className="font-mono text-2xl font-black text-white tabular-nums">
+                              £210.00
+                            </span>
+                            <span className="font-mono text-xs font-semibold text-zinc-400">
+                              / hr wet
+                            </span>
                           </div>
-                          <div className="font-mono text-xl sm:text-2xl font-black text-white tabular-nums mt-0.5">
-                            £210.00 / hr
+                          <div className="text-xs font-semibold text-zinc-300">
+                            Dual Instruction
                           </div>
-                          <div className="text-[10px] text-white/50 mt-1">
-                            Instructor, fuel & home landing fee included
+                          <div className="text-xs text-zinc-400">
+                            Senior CFI instructor, fuel & home landing fees included
                           </div>
                         </div>
-                        <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-sm">
-                          <div className="text-xs font-semibold text-white/70">
-                            Supervised Solo (Wet)
+                        <div className="space-y-1">
+                          <div className="flex items-baseline gap-2">
+                            <span className="font-mono text-2xl font-black text-white tabular-nums">
+                              £175.00
+                            </span>
+                            <span className="font-mono text-xs font-semibold text-zinc-400">
+                              / hr wet
+                            </span>
                           </div>
-                          <div className="font-mono text-xl sm:text-2xl font-black text-white tabular-nums mt-0.5">
-                            £175.00 / hr
-                          </div>
-                          <div className="text-[10px] text-white/50 mt-1">
-                            Supervised solo consolidation hours
+                          <div className="text-xs font-semibold text-zinc-300">Supervised Solo</div>
+                          <div className="text-xs text-zinc-400">
+                            Consolidation flight hours towards licence issue
                           </div>
                         </div>
                       </div>
@@ -796,36 +762,31 @@ function Index() {
                   {/* Right 5 Columns: Asymmetrical Stack (Breakout Walkaround + Training Mentorship) */}
                   <div className="lg:col-span-5 flex flex-col gap-6">
                     {/* Bento Cell 2: Breakout Preflight Walkaround Image */}
-                    <div className="glass-card rounded-3xl p-6 relative overflow-visible flex flex-col justify-between">
-                      <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                    <div className="glass-card rounded-3xl p-6 sm:p-8 relative overflow-visible flex flex-col justify-between">
+                      <div className="flex items-center justify-between pb-3">
                         <div className="flex items-center gap-2">
                           <Wrench className="h-4 w-4 text-primary" />
                           <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">
                             Aviation Mentorship
                           </span>
                         </div>
-                        <span className="font-mono text-[11px] text-white/60">
+                        <span className="font-mono text-[11px] text-zinc-400">
                           30+ Yrs Experience
                         </span>
                       </div>
 
                       {/* Overlapping Breakout Walkaround Image */}
                       <div className="relative mt-4 lg:-mr-8 lg:-mt-4 z-10">
-                        <div className="overflow-hidden rounded-2xl border border-white/20 shadow-[0_20px_40px_rgba(0,0,0,0.6)] group">
+                        <div className="overflow-hidden rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.6)] group">
                           <img
                             src="/images/piper-pa28-walkaround.jpg"
                             alt="Student and flight instructor conducting pre-flight fuel check on the Piper PA-28"
-                            className="h-44 sm:h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="h-56 sm:h-64 lg:h-72 w-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
-                          <div className="absolute top-3 right-3">
-                            <span className="glass-pill px-2.5 py-1 text-[10px] font-mono font-bold text-white/95 shadow-sm">
-                              Pre-Flight Check • Fuel Dip
-                            </span>
-                          </div>
                         </div>
                       </div>
 
-                      <p className="mt-4 text-xs leading-relaxed text-white/70">
+                      <p className="mt-4 text-xs leading-relaxed text-zinc-400">
                         <strong className="text-white">Single Airframe Consistency:</strong> Train
                         on the same dedicated Piper PA-28 Archer III, eliminating cockpit
                         re-adaptation between lessons.
@@ -834,17 +795,17 @@ function Index() {
 
                     {/* Bento Cell 3: Syllabus Steps */}
                     <div className="glass-card rounded-3xl p-6 space-y-3">
-                      <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                      <div className="flex items-center justify-between pb-3">
                         <div className="flex items-center gap-2">
                           <Award className="h-4 w-4 text-primary" />
                           <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">
                             Instruction Highlights
                           </span>
                         </div>
-                        <span className="font-mono text-[11px] text-white/60">CAA Syllabus</span>
+                        <span className="font-mono text-[11px] text-zinc-400">CAA Syllabus</span>
                       </div>
 
-                      <div className="space-y-2.5">
+                      <div className="divide-y divide-white/5">
                         {[
                           {
                             title: "Flexible Training Cadence",
@@ -861,12 +822,9 @@ function Index() {
                               "Complete theoretical exams directly at our Cumbernauld facility.",
                           },
                         ].map((step, idx) => (
-                          <div
-                            key={idx}
-                            className="rounded-xl border border-white/10 bg-white/[0.03] p-3"
-                          >
+                          <div key={idx} className="py-2.5 first:pt-0 last:pb-0">
                             <div className="text-xs font-bold text-white">{step.title}</div>
-                            <p className="text-[11px] text-white/65 mt-0.5 leading-normal">
+                            <p className="text-[11px] text-zinc-400 mt-0.5 leading-normal">
                               {step.detail}
                             </p>
                           </div>
@@ -887,21 +845,19 @@ function Index() {
                   {/* Left 7 Columns: Self-Hire Offering, Rate & CTA */}
                   <div className="lg:col-span-7 glass-card rounded-3xl p-6 sm:p-8 lg:p-10 flex flex-col justify-between space-y-6 relative overflow-hidden">
                     <div className="space-y-5">
-                      <div className="flex items-center gap-2.5">
-                        <Badge
-                          variant="outline"
-                          className="text-[11px] font-mono font-bold uppercase tracking-wider text-primary border-primary/30 bg-primary/10"
-                        >
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary">
                           Qualified Aviator Hire
-                        </Badge>
-                        <Badge variant="operational">Ready to Dispatch</Badge>
+                        </span>
+                        <span className="text-white/30">/</span>
+                        <span className="text-xs font-mono text-zinc-400">Ready to Dispatch</span>
                       </div>
 
                       <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
                         Piper PA-28 wet self-hire for licensed aviators
                       </h3>
 
-                      <p className="text-sm sm:text-base leading-relaxed text-white/75">
+                      <p className="text-sm sm:text-base leading-relaxed text-zinc-400">
                         Hold a current UK CAA PPL or LAPL? Phoenix Flight Academy offers wet
                         self-hire on our impeccably maintained Piper PA-28 Cherokee / Archer III.
                         Cumbernauld Airport provides rapid departures without commercial slot
@@ -920,26 +876,31 @@ function Index() {
                             key={item}
                             className="flex items-center gap-2.5 text-xs sm:text-sm text-white/90"
                           >
-                            <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                            <CheckCircle2 className="h-4 w-4 text-zinc-400 shrink-0" />
                             <span>{item}</span>
                           </div>
                         ))}
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-white/10 space-y-4">
-                      <div className="text-[11px] font-mono font-semibold text-white/60 uppercase tracking-wider">
-                        Transparent Self-Hire Rates
+                    <div className="pt-6 border-t border-white/5 space-y-4">
+                      <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-zinc-400">
+                        Self-Hire Rates
                       </div>
-                      <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4 max-w-sm backdrop-blur-sm">
-                        <div className="text-xs font-semibold text-white/70">
-                          Wet Hire Rate (Tachometer Hour)
+                      <div className="space-y-1">
+                        <div className="flex items-baseline gap-2">
+                          <span className="font-mono text-2xl font-black text-white tabular-nums">
+                            £175.00
+                          </span>
+                          <span className="font-mono text-xs font-semibold text-zinc-400">
+                            / tach hr wet
+                          </span>
                         </div>
-                        <div className="font-mono text-2xl font-black text-white tabular-nums mt-0.5">
-                          £175.00 / hr
+                        <div className="text-xs font-semibold text-zinc-300">
+                          Piper PA-28 Archer III (G-BCDF)
                         </div>
-                        <div className="text-[10px] text-white/50 mt-1">
-                          Includes all fuel, oil, and comprehensive hull insurance
+                        <div className="text-xs text-zinc-400">
+                          Includes all AVGAS 100LL fuel, oil, and comprehensive hull insurance
                         </div>
                       </div>
 
@@ -960,34 +921,29 @@ function Index() {
                   {/* Right 5 Columns: Asymmetrical Stack (Breakout Touring + Checkout Requirements) */}
                   <div className="lg:col-span-5 flex flex-col gap-6">
                     {/* Bento Cell 2: Breakout Touring Flight Image */}
-                    <div className="glass-card rounded-3xl p-6 relative overflow-visible flex flex-col justify-between">
-                      <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                    <div className="glass-card rounded-3xl p-6 sm:p-8 relative overflow-visible flex flex-col justify-between">
+                      <div className="flex items-center justify-between pb-3">
                         <div className="flex items-center gap-2">
                           <Gauge className="h-4 w-4 text-primary" />
                           <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">
                             Airframe Dossier
                           </span>
                         </div>
-                        <span className="font-mono text-[11px] text-white/60">G-BCDF / 180 HP</span>
+                        <span className="font-mono text-[11px] text-zinc-400">G-BCDF / 180 HP</span>
                       </div>
 
                       {/* Overlapping Breakout Touring Image */}
                       <div className="relative mt-4 lg:-mr-8 lg:-mt-4 z-10">
-                        <div className="overflow-hidden rounded-2xl border border-white/20 shadow-[0_20px_40px_rgba(0,0,0,0.6)] group">
+                        <div className="overflow-hidden rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.6)] group">
                           <img
                             src="/images/piper-pa28-touring.jpg"
                             alt="Piper PA-28 cruising above Scottish mountain peaks"
-                            className="h-44 sm:h-52 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="h-56 sm:h-64 lg:h-72 w-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
-                          <div className="absolute top-3 right-3">
-                            <span className="glass-pill px-2.5 py-1 text-[10px] font-mono font-bold text-white/95 shadow-sm">
-                              Highland Touring • G-BCDF
-                            </span>
-                          </div>
                         </div>
                       </div>
 
-                      <p className="mt-4 text-xs leading-relaxed text-white/70">
+                      <p className="mt-4 text-xs leading-relaxed text-zinc-400">
                         <strong className="text-white">Lycoming O-360 Reliability:</strong> 180 HP
                         powerplant, 115 KTAS cruise speed, 4 seats, dual Garmin comms, and 50-gallon
                         fuel capacity.
@@ -996,17 +952,17 @@ function Index() {
 
                     {/* Bento Cell 3: Checkout Criteria */}
                     <div className="glass-card rounded-3xl p-6 space-y-3">
-                      <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                      <div className="flex items-center justify-between pb-3">
                         <div className="flex items-center gap-2">
                           <Radio className="h-4 w-4 text-primary" />
                           <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">
                             Checkout Requirements
                           </span>
                         </div>
-                        <span className="font-mono text-[11px] text-white/60">Currency Check</span>
+                        <span className="font-mono text-[11px] text-zinc-400">Currency Check</span>
                       </div>
 
-                      <p className="text-xs text-white/75 leading-relaxed">
+                      <p className="text-xs text-zinc-400 leading-relaxed">
                         Valid UK CAA PPL/LAPL, current SEP class rating, valid medical (Class 1, 2,
                         or LAPL), and 3 takeoffs/landings in the last 90 days. Checkout includes
                         local departure and circuit procedures.
@@ -1017,60 +973,16 @@ function Index() {
               </TabsContent>
             </div>
           </Tabs>
-
-          {/* Static Cumbernauld Airfield Specification Strip (Asymmetrical Bento Footer) */}
-          <div className="mt-10 glass-card rounded-2xl p-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 text-xs">
-            <div>
-              <div className="text-[10px] font-mono font-bold uppercase text-primary tracking-wider flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5" />
-                Runway 26 / 08
-              </div>
-              <div className="font-mono font-bold text-white text-sm mt-1">
-                820m × 23m Hard Asphalt
-              </div>
-              <div className="text-[11px] text-white/60 mt-0.5">Elevation 356 ft AMSL</div>
-            </div>
-            <div>
-              <div className="text-[10px] font-mono font-bold uppercase text-primary tracking-wider flex items-center gap-1.5">
-                <Radio className="h-3.5 w-3.5" />
-                Radio Frequency
-              </div>
-              <div className="font-mono font-bold text-white text-sm mt-1 tabular-nums">
-                120.605 MHz
-              </div>
-              <div className="text-[11px] text-white/60 mt-0.5">
-                Cumbernauld Information (AFISO)
-              </div>
-            </div>
-            <div>
-              <div className="text-[10px] font-mono font-bold uppercase text-primary tracking-wider flex items-center gap-1.5">
-                <Compass className="h-3.5 w-3.5" />
-                Traffic Circuits
-              </div>
-              <div className="font-mono font-bold text-white text-sm mt-1 tabular-nums">
-                1,400 ft QNH
-              </div>
-              <div className="text-[11px] text-white/60 mt-0.5">RWY 26 Left / RWY 08 Right</div>
-            </div>
-            <div>
-              <div className="text-[10px] font-mono font-bold uppercase text-primary tracking-wider flex items-center gap-1.5">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                Airfield Facilities
-              </div>
-              <div className="font-mono font-bold text-white text-sm mt-1">AVGAS 100LL & UL91</div>
-              <div className="text-[11px] text-white/60 mt-0.5">Clubhouse café & free parking</div>
-            </div>
-          </div>
         </div>
       </section>
 
       {/* ═══════ STATS COUNTER SECTION (Atmospheric High-Contrast Telemetry) ═══════ */}
       <section
         ref={statsRef}
-        className="bg-[oklch(0.08_0.02_260)] py-20 sm:py-24 border-b border-white/10 relative overflow-hidden"
+        className="bg-[oklch(0.08_0.02_260)] py-24 sm:py-32 border-b border-white/10 relative overflow-hidden"
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-10 sm:gap-y-12 lg:gap-y-0 lg:divide-x lg:divide-white/5">
             {[
               {
                 value: hoursCount,
@@ -1099,17 +1011,17 @@ function Index() {
             ].map((stat, idx) => (
               <div
                 key={stat.label}
-                className={`glass-card rounded-2xl p-6 text-center transition-all duration-700 ease-out ${
+                className={`px-4 sm:px-8 text-center transition-all duration-700 ease-out ${
                   statsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
                 }`}
                 style={{ transitionDelay: `${idx * 100}ms` }}
               >
-                <div className="text-4xl font-black text-white sm:text-5xl lg:text-6xl font-mono tabular-nums tracking-tight">
+                <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-white font-mono tabular-nums tracking-tight">
                   {stat.prefix}
                   {stat.value.toLocaleString()}
                   {stat.suffix}
                 </div>
-                <p className="mt-2 text-[11px] font-mono font-semibold text-white/60 uppercase tracking-widest">
+                <p className="mt-3 text-xs font-mono font-bold uppercase tracking-wider text-zinc-400">
                   {stat.label}
                 </p>
               </div>
@@ -1121,7 +1033,7 @@ function Index() {
       {/* ═══════ ASYMMETRICAL BENTO: OUR TRAINING & HIRE FLEET ═══════ */}
       <section
         ref={fleetRef}
-        className="relative bg-[oklch(0.07_0.02_260)] py-24 sm:py-32 border-b border-white/10 overflow-x-clip stage-lighting-spotlight"
+        className="relative bg-[oklch(0.07_0.02_260)] py-28 sm:py-36 border-b border-white/10 overflow-x-clip stage-lighting-spotlight"
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
@@ -1134,12 +1046,11 @@ function Index() {
               <span className="glass-pill px-3.5 py-1.5 text-xs font-mono font-bold uppercase tracking-widest text-primary">
                 Cumbernauld Hangar
               </span>
-              <Badge variant="operational">Serviceable</Badge>
             </div>
             <h2 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
               Our Training & Hire Fleet
             </h2>
-            <p className="mt-3 text-base sm:text-lg leading-relaxed text-white/75">
+            <p className="mt-3 text-base sm:text-lg leading-relaxed text-zinc-400">
               When you step into the cockpit at Phoenix, you fly our dedicated Piper PA-28 Cherokee
               Archer III — one of the most dependable, forgiving, and proven aircraft in aviation
               history.
@@ -1151,7 +1062,7 @@ function Index() {
             {/* Cell 1 (Span 8 cols): Main Airframe Stage with Breakout Flight Imagery */}
             <div className="lg:col-span-8 glass-card rounded-3xl p-6 sm:p-10 relative overflow-visible flex flex-col justify-between space-y-6">
               <div className="space-y-3">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                <div className="flex items-center justify-between pb-3">
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-xs font-bold text-primary tracking-widest uppercase">
                       Airframe Registry
@@ -1159,17 +1070,13 @@ function Index() {
                     <span className="text-white/40">/</span>
                     <span className="font-mono text-xs font-bold text-white">G-BCDF</span>
                   </div>
-                  <span className="glass-pill px-2.5 py-1 text-[11px] font-mono text-emerald-400 font-bold flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                    Part-ML Airworthy
-                  </span>
                 </div>
 
                 <h3 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
                   Piper PA-28-181 Archer III
                 </h3>
 
-                <p className="text-sm sm:text-base text-white/75 leading-relaxed max-w-2xl">
+                <p className="text-sm sm:text-base text-zinc-400 leading-relaxed max-w-2xl">
                   Dedicated single-airframe training reality. Impeccably maintained under strict UK
                   CAA Part-ML maintenance regulations, featuring dual flight controls, an
                   exceptionally reliable 180 HP Lycoming O-360 powerplant, and responsive low-wing
@@ -1179,90 +1086,174 @@ function Index() {
 
               {/* Overlapping Breakout Airframe Image */}
               <div className="relative mt-4 lg:-mr-10 lg:-mb-6 z-10">
-                <div className="overflow-hidden rounded-2xl border border-white/20 shadow-[0_24px_60px_rgba(0,0,0,0.7)] group">
+                <div className="overflow-hidden rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.7)] group">
                   <img
                     src="/images/piper-pa28-flight.jpg"
                     alt="Piper PA-28 Cherokee Archer III banking over Scottish highlands"
-                    className="h-64 sm:h-80 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="h-72 sm:h-96 lg:h-[420px] w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                    <span className="glass-pill px-3 py-1.5 text-xs font-mono font-bold text-white shadow-lg backdrop-blur-md">
-                      Low-Wing Panoramic View • Loch Lomond
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Cell 2 (Span 4 cols): Placarded V-Speeds Telemetry */}
+            {/* Cell 2 (Span 4 cols): Consolidated 4 Human-Readable Specs & Technical POH Specs Modal */}
             <div className="lg:col-span-4 glass-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-6">
               <div>
-                <div className="flex items-center gap-2 border-b border-white/10 pb-3">
-                  <Activity className="h-4 w-4 text-primary" />
-                  <span className="text-xs font-mono font-bold uppercase tracking-widest text-primary">
-                    V-Speed Placard
-                  </span>
+                <div className="flex items-center justify-between pb-3">
+                  <div className="flex items-center gap-2">
+                    <SlidersHorizontal className="h-4 w-4 text-primary" />
+                    <span className="text-xs font-mono font-bold uppercase tracking-widest text-zinc-400">
+                      Aircraft Specifications
+                    </span>
+                  </div>
                 </div>
-                <div className="mt-4 space-y-3">
+
+                <div className="mt-4 grid grid-cols-2 gap-3">
                   {[
-                    { code: "Vy", label: "Best Rate of Climb", speed: "76 KIAS" },
-                    { code: "Vx", label: "Best Angle of Climb", speed: "64 KIAS" },
-                    { code: "Vso", label: "Stall Speed (Flaps Full)", speed: "45 KIAS" },
-                    { code: "Vs1", label: "Stall Speed (Clean)", speed: "50 KIAS" },
-                    { code: "Va", label: "Manoeuvring Speed", speed: "113 KIAS" },
-                    { code: "Vne", label: "Never Exceed Speed", speed: "154 KIAS" },
-                    { code: "Vc", label: "Cruise (75% Power)", speed: "115 KTAS" },
-                  ].map((v) => (
+                    { label: "Engine", value: "180 HP Lycoming" },
+                    { label: "Cruise Speed", value: "115 kts" },
+                    { label: "Range", value: "500+ nm" },
+                    { label: "Seating", value: "4 Seats" },
+                  ].map((spec) => (
                     <div
-                      key={v.code}
-                      className="flex items-center justify-between border-b border-white/5 pb-2 text-xs"
+                      key={spec.label}
+                      className="rounded-2xl bg-white/[0.03] p-4 flex flex-col justify-between"
                     >
-                      <span className="font-mono font-bold text-primary">{v.code}</span>
-                      <span className="text-white/60 text-[11px]">{v.label}</span>
-                      <span className="font-mono font-bold text-white tabular-nums">{v.speed}</span>
+                      <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                        {spec.label}
+                      </span>
+                      <span className="font-mono text-base font-bold text-white mt-1.5 tabular-nums">
+                        {spec.value}
+                      </span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 space-y-2">
-                <div className="text-[11px] font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  Tachometer Status
-                </div>
-                <p className="text-xs text-white/70 leading-relaxed">
-                  50-hour and 100-hour airworthiness inspections rigorously completed by CAA Part-ML
-                  licensed maintenance engineers.
-                </p>
-              </div>
+              {/* Single Understated Technical POH Specs Modal Trigger */}
+              <Dialog open={pohOpen} onOpenChange={setPohOpen}>
+                <DialogTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={() => setPohOpen(true)}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-white/[0.04] px-4 py-3 text-xs font-mono font-medium text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white cursor-pointer"
+                  >
+                    <span>View Technical POH Specs</span>
+                    <Info className="h-3.5 w-3.5 text-zinc-400" />
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl bg-[#0B0F17] border-0 text-white shadow-2xl p-6 sm:p-8">
+                  <DialogHeader className="text-left space-y-1.5 pb-4">
+                    <div className="text-[11px] font-mono uppercase tracking-widest text-primary font-bold">
+                      Pilot Operating Handbook (POH)
+                    </div>
+                    <DialogTitle className="text-xl sm:text-2xl font-black text-white">
+                      Piper PA-28-181 Archer III (G-BCDF)
+                    </DialogTitle>
+                    <DialogDescription className="text-xs text-zinc-400 leading-relaxed">
+                      Technical operating limits, placarded airspeed matrix, and airframe
+                      engineering telemetry.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <div className="space-y-6">
+                    {/* V-Speeds Matrix Placard */}
+                    <div>
+                      <div className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-400 mb-3">
+                        V-Speed Placard Limitations
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                        {[
+                          { code: "Vy", label: "Best Rate of Climb", speed: "76 KIAS" },
+                          { code: "Vx", label: "Best Angle of Climb", speed: "64 KIAS" },
+                          { code: "Vso", label: "Stall (Full Flaps)", speed: "45 KIAS" },
+                          { code: "Vs1", label: "Stall (Clean)", speed: "50 KIAS" },
+                          { code: "Va", label: "Manoeuvring Speed", speed: "113 KIAS" },
+                          { code: "Vfe", label: "Max Flap Extended", speed: "102 KIAS" },
+                          { code: "Vne", label: "Never Exceed Speed", speed: "154 KIAS" },
+                          { code: "Vc", label: "Cruise (75% Power)", speed: "115 KTAS" },
+                        ].map((v) => (
+                          <div key={v.code} className="rounded-xl bg-white/[0.03] p-3 text-center">
+                            <span className="block font-mono font-bold text-primary text-xs">
+                              {v.code}
+                            </span>
+                            <span className="block font-mono font-black text-white text-sm tabular-nums mt-0.5">
+                              {v.speed}
+                            </span>
+                            <span className="block text-[10px] text-zinc-400 mt-0.5">
+                              {v.label}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Engineering & Fuel Specifications */}
+                    <div className="grid sm:grid-cols-2 gap-3 text-xs">
+                      <div className="rounded-xl bg-white/[0.03] p-4 space-y-1">
+                        <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                          Powerplant & Prop
+                        </div>
+                        <div className="font-bold text-white">Lycoming O-360-A4M (180 HP)</div>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">
+                          Direct-drive 4-cylinder engine with fixed-pitch Sensenich propeller.
+                        </p>
+                      </div>
+                      <div className="rounded-xl bg-white/[0.03] p-4 space-y-1">
+                        <div className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">
+                          Fuel & Endurance
+                        </div>
+                        <div className="font-bold text-white">189 L / 50 USG (48 USG Usable)</div>
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">
+                          AVGAS 100LL fuel burn approx 38 L/hr (~4.5 hrs total endurance).
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 flex justify-end">
+                      <Button
+                        asChild
+                        size="sm"
+                        variant="ghost"
+                        className="text-xs text-zinc-300 hover:text-white"
+                      >
+                        <Link to="/fleet">
+                          Open Full Airframe Tech Dossier{" "}
+                          <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
 
             {/* Cell 3 (Span 5 cols): Cockpit Perspective Breakout */}
             <div className="lg:col-span-5 glass-card rounded-3xl p-6 sm:p-8 relative overflow-visible flex flex-col justify-between space-y-6">
-              <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div className="flex items-center justify-between pb-3">
                 <div className="flex items-center gap-2">
                   <Gauge className="h-4 w-4 text-primary" />
                   <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">
                     Cockpit Avionics
                   </span>
                 </div>
-                <span className="font-mono text-[11px] text-white/60">Dual Controls</span>
+                <span className="font-mono text-[11px] text-zinc-400">Dual Controls</span>
               </div>
 
               {/* Inset Cockpit Perspective Breakout Image */}
               <div className="relative -mt-2 lg:-mt-4 z-10">
-                <div className="overflow-hidden rounded-2xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.65)] group">
+                <div className="overflow-hidden rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.65)] group">
                   <img
                     src="/images/piper-pa28-cockpit.jpg"
                     alt="Piper PA-28 analog cockpit and avionics over Scottish glens"
-                    className="h-48 sm:h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="h-56 sm:h-64 lg:h-72 w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <div className="text-xs font-bold text-white">Low-Wing Pilot Ergonomics</div>
-                <p className="text-xs text-white/70 leading-relaxed">
+                <p className="text-xs text-zinc-400 leading-relaxed">
                   Superior upward and banked visibility in the traffic circuit. Traditional analog
                   six-pack instrumentation builds foundational scan discipline, paired with Garmin
                   avionics.
@@ -1273,36 +1264,40 @@ function Index() {
             {/* Cell 4 (Span 7 cols): Fleet Dispatch & Technical Dossier */}
             <div className="lg:col-span-7 glass-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-6">
               <div className="space-y-4">
-                <div className="flex items-center gap-2 border-b border-white/10 pb-3">
+                <div className="flex items-center gap-2 pb-3">
                   <Fuel className="h-4 w-4 text-primary" />
                   <span className="text-xs font-mono font-bold uppercase tracking-widest text-primary">
                     Flight Operations & Dispatch
                   </span>
                 </div>
 
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                    <div className="text-xs font-semibold text-white/70">Wet Self-Hire Rate</div>
-                    <div className="font-mono text-2xl font-black text-white tabular-nums mt-1">
-                      £175.00 <span className="text-xs font-normal text-white/60">/ tach hr</span>
+                <div className="grid sm:grid-cols-2 gap-6 pt-1">
+                  <div className="space-y-1">
+                    <div className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                      Wet Self-Hire Rate
                     </div>
-                    <div className="text-[11px] text-white/50 mt-1">
+                    <div className="font-mono text-2xl sm:text-3xl font-black text-white tabular-nums">
+                      £175.00 <span className="text-xs font-normal text-zinc-400">/ tach hr</span>
+                    </div>
+                    <div className="text-xs text-zinc-500">
                       AVGAS 100LL fuel & comprehensive insurance included
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                    <div className="text-xs font-semibold text-white/70">Dual Instruction Rate</div>
-                    <div className="font-mono text-2xl font-black text-white tabular-nums mt-1">
-                      £210.00 <span className="text-xs font-normal text-white/60">/ hr</span>
+                  <div className="space-y-1">
+                    <div className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                      Dual Instruction Rate
                     </div>
-                    <div className="text-[11px] text-white/50 mt-1">
+                    <div className="font-mono text-2xl sm:text-3xl font-black text-white tabular-nums">
+                      £210.00 <span className="text-xs font-normal text-zinc-400">/ hr</span>
+                    </div>
+                    <div className="text-xs text-zinc-500">
                       Senior CFI flight instructor & home landing fees
                     </div>
                   </div>
                 </div>
 
-                <p className="text-xs text-white/75 leading-relaxed">
+                <p className="text-xs text-zinc-400 leading-relaxed">
                   Stationed at Cumbernauld Hangar 2 with swift dispatch clearances. Ideal for
                   student cross-country qualifying flights and qualified pilot touring across the
                   Scottish islands.
@@ -1327,7 +1322,7 @@ function Index() {
       </section>
 
       {/* ═══════ TESTIMONIALS SECTION (Moody Stage Atmosphere) ═══════ */}
-      <section className="relative bg-[oklch(0.08_0.02_260)] py-24 sm:py-32 overflow-hidden border-b border-white/10">
+      <section className="relative bg-[oklch(0.08_0.02_260)] py-28 sm:py-36 overflow-hidden border-b border-white/10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-xl mx-auto mb-16">
             <span className="glass-pill px-3.5 py-1.5 text-xs font-mono font-bold uppercase tracking-widest text-primary">
@@ -1367,11 +1362,11 @@ function Index() {
                   <img
                     src={testimonials[activeTestimonial].image}
                     alt={testimonials[activeTestimonial].name}
-                    className="h-12 w-12 rounded-full object-cover border-2 border-white/20 shadow-md"
+                    className="h-12 w-12 rounded-full object-cover shadow-md"
                   />
                   <div>
                     <p className="font-bold text-white">{testimonials[activeTestimonial].name}</p>
-                    <p className="text-sm text-white/60">{testimonials[activeTestimonial].role}</p>
+                    <p className="text-sm text-zinc-400">{testimonials[activeTestimonial].role}</p>
                   </div>
                 </div>
               </div>
@@ -1418,7 +1413,7 @@ function Index() {
       </section>
 
       {/* ═══════ FINAL CTA BANNER (Cinematic Flight Deck Backdrop & Magnetic CTAs) ═══════ */}
-      <section className="relative overflow-hidden bg-[oklch(0.07_0.02_260)] py-24 sm:py-32 stage-lighting">
+      <section className="relative overflow-hidden bg-[oklch(0.07_0.02_260)] py-28 sm:py-36 stage-lighting">
         <div className="absolute inset-0 z-0">
           <img
             src="/images/piper-pa28-cockpit.jpg"
@@ -1432,7 +1427,7 @@ function Index() {
           <h2 className="text-3xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
             Ready to take the controls?
           </h2>
-          <p className="mt-6 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed text-white/75">
+          <p className="mt-6 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed text-zinc-400">
             Whether it's your first flight or your hundredth, Phoenix Flight Training is here to
             help you reach your aviation goals. Book your introductory flight voucher or checkout
             today.
@@ -1449,7 +1444,7 @@ function Index() {
               asChild
               variant="outline"
               size="lg"
-              className="h-14 px-8 text-base font-bold border-2 border-white/40 bg-white/5 text-white hover:bg-white/15 hover:border-white ring-offset-[oklch(0.07_0.02_260)] backdrop-blur-md active:scale-[0.98]"
+              className="h-14 px-8 text-base font-bold border-0 bg-white/5 text-white hover:bg-white/10 ring-offset-[oklch(0.07_0.02_260)] backdrop-blur-md active:scale-[0.98]"
             >
               <Link to="/contact">Get in Touch</Link>
             </MagneticButton>

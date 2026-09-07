@@ -276,24 +276,11 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
     await expect(page.locator("text=PPL Training Lesson")).toBeVisible();
   });
 
-  test("Palomar Labs Video Hero renders with poster fallback and accessible pause control", async ({
-    page,
-  }) => {
+  test("Palomar Labs Video Hero renders with poster fallback", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
     const video = page.locator("section video");
     await expect(video).toBeAttached();
     await expect(video).toHaveAttribute("poster", /piper-pa28/);
-
-    const toggleBtn = page.locator("section button[data-hydrated='true']");
-    await expect(toggleBtn).toBeVisible({ timeout: 15000 });
-
-    const initialLabel = await toggleBtn.getAttribute("aria-label");
-    await toggleBtn.click();
-    const expectedLabel =
-      initialLabel === "Pause background video"
-        ? "Play background video"
-        : "Pause background video";
-    await expect(page.locator(`section button[aria-label='${expectedLabel}']`)).toBeVisible();
   });
 
   test("Systema Bento Pathway Selector supports keyboard navigation and roving tabindex", async ({
@@ -410,7 +397,7 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
     await expect(kicker).toBeVisible();
   });
 
-  test("Homepage renders asymmetrical Bento Box for Training & Hire Fleet with V-speed placard", async ({
+  test("Homepage renders asymmetrical Bento Box for Training & Hire Fleet with consolidated specs and POH modal", async ({
     page,
   }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
@@ -419,17 +406,26 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
     const fleetHeading = page.getByRole("heading", { name: "Our Training & Hire Fleet" });
     await expect(fleetHeading).toBeVisible();
 
-    // Verify V-speed placard within fleet bento
-    await expect(page.locator("text=V-Speed Placard")).toBeVisible();
-    await expect(page.locator("text=76 KIAS")).toBeVisible(); // Vy
-    await expect(page.locator("text=154 KIAS")).toBeVisible(); // Vne
+    // Verify 4 consolidated human-readable specs
+    await expect(page.getByText("180 HP Lycoming", { exact: true })).toBeVisible();
+    await expect(page.getByText("115 kts", { exact: true })).toBeVisible();
+    await expect(page.getByText("500+ nm", { exact: true })).toBeVisible();
+    await expect(page.getByText("4 Seats", { exact: true })).toBeVisible();
 
     // Verify cockpit avionics callout
     await expect(page.locator("text=Cockpit Avionics")).toBeVisible();
     await expect(page.locator("text=Low-Wing Pilot Ergonomics")).toBeVisible();
 
-    // Verify Part-ML maintenance airworthy indicator
-    await expect(page.locator("text=Part-ML Airworthy")).toBeVisible();
+    // Open technical POH specs dialog
+    const modalTrigger = page.getByRole("button", { name: /View Technical POH Specs/i });
+    await expect(modalTrigger).toBeVisible();
+    await page.waitForTimeout(1000);
+    await modalTrigger.click();
+
+    // Verify V-speed placard limitations within dialog
+    await expect(page.locator("text=V-Speed Placard Limitations")).toBeVisible();
+    await expect(page.getByText("76 KIAS", { exact: true })).toBeVisible(); // Vy
+    await expect(page.getByText("154 KIAS", { exact: true })).toBeVisible(); // Vne
   });
 
   test("Magnetic primary CTA buttons respond to hover events", async ({ page }) => {

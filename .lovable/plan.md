@@ -15,6 +15,7 @@ Three things do need attention:
 Nothing can take real money today. The booking flow is complete end to end (price, deposit vs full, approval rules, confirmation), but the money step is simulated.
 
 **The right provider for Phoenix is built-in Stripe.** Phoenix sells flight experiences and lessons from the UK — a digital/service sale. Stripe is the best fit because:
+
 - It can handle tax calculation, collection, fraud protection, disputes and transaction-level support for buyers in ~80 countries.
 - It does not need you to create or connect a separate Stripe account.
 - Paddle is not ideal here because human-delivered services with scheduling/approval don't fit its all-inclusive digital-product model.

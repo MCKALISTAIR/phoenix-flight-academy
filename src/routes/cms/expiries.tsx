@@ -96,13 +96,22 @@ function Stat({ label, value, color }: { label: string; value: number; color: st
   );
 }
 
+interface ExpiryItem {
+  id: string;
+  student?: { id: string; display_name: string | null } | null;
+  document_type: string;
+  document_number?: string | null;
+  expires_on: string | null;
+  days: number;
+}
+
 function Group({
   title,
   items,
   severity,
 }: {
   title: string;
-  items: any[];
+  items: ExpiryItem[];
   severity: "red" | "amber" | "yellow";
 }) {
   if (items.length === 0) return null;

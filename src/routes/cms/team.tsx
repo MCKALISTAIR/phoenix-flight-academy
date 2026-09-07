@@ -38,7 +38,7 @@ function TeamEditor() {
 
   const merged = team.map((i) => ({ ...i, ...(drafts[i.id] ?? {}) }));
 
-  function update(id: string, field: keyof InstructorRow, value: any) {
+  function update<K extends keyof InstructorRow>(id: string, field: K, value: InstructorRow[K]) {
     setDrafts((d) => ({ ...d, [id]: { ...d[id], [field]: value } }));
   }
 
@@ -57,7 +57,7 @@ function TeamEditor() {
       });
       qc.invalidateQueries({ queryKey: ["instructors"] });
     },
-    onError: (e: any) => toast.error(e.message ?? "Save failed"),
+    onError: (e: Error) => toast.error(e.message ?? "Save failed"),
   });
 
   const delMut = useMutation({
@@ -69,7 +69,7 @@ function TeamEditor() {
       toast.success("Removed");
       qc.invalidateQueries({ queryKey: ["instructors"] });
     },
-    onError: (e: any) => toast.error(e.message ?? "Delete failed"),
+    onError: (e: Error) => toast.error(e.message ?? "Delete failed"),
   });
 
   const addMut = useMutation({
@@ -86,7 +86,7 @@ function TeamEditor() {
       toast.success("Instructor added");
       qc.invalidateQueries({ queryKey: ["instructors"] });
     },
-    onError: (e: any) => toast.error(e.message ?? "Insert failed"),
+    onError: (e: Error) => toast.error(e.message ?? "Insert failed"),
   });
 
   return (
@@ -169,7 +169,7 @@ function TeamEditor() {
                     </label>
                     <input
                       type="text"
-                      value={(ins as any)[f] ?? ""}
+                      value={ins[f] ?? ""}
                       onChange={(e) => update(ins.id, f, e.target.value)}
                       className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white outline-none focus:border-primary"
                     />

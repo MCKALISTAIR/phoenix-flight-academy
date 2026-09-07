@@ -48,16 +48,16 @@ function ContentEditor() {
   });
 
   const published = useMemo(() => {
-    const m: Record<string, Record<string, any>> = {};
-    rows.forEach((r: any) => {
-      m[r.section_key] = (r.data as any) ?? {};
+    const m: Record<string, Record<string, unknown>> = {};
+    rows.forEach((r: { section_key: string; data: Record<string, unknown> | null }) => {
+      m[r.section_key] = r.data ?? {};
     });
     return m;
   }, [rows]);
   const storedDrafts = useMemo(() => {
-    const m: Record<string, Record<string, any> | null> = {};
-    rows.forEach((r: any) => {
-      m[r.section_key] = (r.draft_data as any) ?? null;
+    const m: Record<string, Record<string, unknown> | null> = {};
+    rows.forEach((r: { section_key: string; draft_data: Record<string, unknown> | null }) => {
+      m[r.section_key] = r.draft_data ?? null;
     });
     return m;
   }, [rows]);
@@ -68,7 +68,7 @@ function ContentEditor() {
     if (!published[activeSection] && sectionKeys.length) setActiveSection(sectionKeys[0]);
   }, [published, activeSection, sectionKeys]);
 
-  const [localEdits, setLocalEdits] = useState<Record<string, Record<string, any>>>({});
+  const [localEdits, setLocalEdits] = useState<Record<string, Record<string, unknown>>>({});
   useEffect(() => setLocalEdits({}), [rows.length]);
 
   const pub = published[activeSection] ?? {};
@@ -84,7 +84,7 @@ function ContentEditor() {
   const display = viewMode === "published" ? pub : working;
   const readOnly = viewMode === "published";
 
-  function setField(field: string, value: any) {
+  function setField(field: string, value: unknown) {
     setLocalEdits((d) => ({
       ...d,
       [activeSection]: { ...(d[activeSection] ?? draftBase ?? {}), [field]: value },
@@ -117,7 +117,7 @@ function ContentEditor() {
       clearLocal();
       qc.invalidateQueries({ queryKey: ["site_content"] });
     },
-    onError: (e: any) => toast.error(e.message ?? "Save failed"),
+    onError: (e: Error) => toast.error(e.message ?? "Save failed"),
   });
 
   const publishMut = useMutation({
@@ -142,7 +142,7 @@ function ContentEditor() {
       qc.invalidateQueries({ queryKey: ["site_content"] });
       qc.invalidateQueries({ queryKey: ["site_content_revisions"] });
     },
-    onError: (e: any) => toast.error(e.message ?? "Publish failed"),
+    onError: (e: Error) => toast.error(e.message ?? "Publish failed"),
   });
 
   const discardDraftMut = useMutation({
@@ -158,7 +158,7 @@ function ContentEditor() {
       clearLocal();
       qc.invalidateQueries({ queryKey: ["site_content"] });
     },
-    onError: (e: any) => toast.error(e.message ?? "Discard failed"),
+    onError: (e: Error) => toast.error(e.message ?? "Discard failed"),
   });
 
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -379,7 +379,7 @@ function HistoryDrawer({
 }: {
   sectionKey: string;
   sectionLabel: string;
-  currentData: Record<string, any>;
+  currentData: Record<string, unknown>;
   onClose: () => void;
   onRestored: () => void;
 }) {
@@ -398,10 +398,10 @@ function HistoryDrawer({
   });
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const selected = revisions.find((r: any) => r.id === selectedId) ?? revisions[0];
+  const selected = revisions.find((r: { id: string }) => r.id === selectedId) ?? revisions[0];
 
   const restoreMut = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: Record<string, unknown>) => {
       // Restore into the draft buffer rather than publishing directly,
       // so the admin can review before going live.
       const { data: userData } = await supabase.auth.getUser();
@@ -420,7 +420,7 @@ function HistoryDrawer({
       onRestored();
       onClose();
     },
-    onError: (e: any) => toast.error(e.message ?? "Restore failed"),
+    onError: (e: Error) => toast.error(e.message ?? "Restore failed"),
   });
 
   return (
@@ -450,7 +450,7 @@ function HistoryDrawer({
                 No previous versions yet. Publishes from now on will appear here.
               </p>
             )}
-            {revisions.map((r: any) => {
+            {revisions.map((r: { id: string; created_at: string; updated_by?: string | null }) => {
               const active = (selected?.id ?? null) === r.id;
               return (
                 <button
@@ -481,7 +481,7 @@ function HistoryDrawer({
                   <button
                     onClick={() => {
                       if (confirm("Restore this version into the draft buffer?")) {
-                        restoreMut.mutate(selected.data);
+                        restoreMut.mutate(selected.data as Record<string, unknown>);
                       }
                     }}
                     disabled={restoreMut.isPending}
@@ -491,30 +491,34 @@ function HistoryDrawer({
                   </button>
                 </div>
                 <div className="flex-1 overflow-auto p-5 space-y-2">
-                  {Object.entries(selected.data as Record<string, any>).map(([field, value]) => {
-                    const currStr =
-                      typeof currentData[field] === "string"
-                        ? currentData[field]
-                        : JSON.stringify(currentData[field]);
-                    const valStr = typeof value === "string" ? value : JSON.stringify(value);
-                    const changed = currStr !== valStr;
-                    return (
-                      <div
-                        key={field}
-                        className={`rounded-lg border p-3 ${changed ? "border-amber-500/30 bg-amber-500/5" : "border-white/10 bg-white/5"}`}
-                      >
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-white/40">
-                          {field}
+                  {Object.entries(selected.data as Record<string, unknown>).map(
+                    ([field, value]) => {
+                      const currStr =
+                        typeof currentData[field] === "string"
+                          ? currentData[field]
+                          : JSON.stringify(currentData[field]);
+                      const valStr = typeof value === "string" ? value : JSON.stringify(value);
+                      const changed = currStr !== valStr;
+                      return (
+                        <div
+                          key={field}
+                          className={`rounded-lg border p-3 ${changed ? "border-amber-500/30 bg-amber-500/5" : "border-white/10 bg-white/5"}`}
+                        >
+                          <div className="text-[10px] font-bold uppercase tracking-wider text-white/40">
+                            {field}
+                          </div>
+                          <div className="mt-1 text-sm text-white whitespace-pre-wrap break-words">
+                            {valStr}
+                          </div>
+                          {changed && (
+                            <div className="mt-1 text-[10px] text-amber-300/70">
+                              Live: {currStr}
+                            </div>
+                          )}
                         </div>
-                        <div className="mt-1 text-sm text-white whitespace-pre-wrap break-words">
-                          {valStr}
-                        </div>
-                        {changed && (
-                          <div className="mt-1 text-[10px] text-amber-300/70">Live: {currStr}</div>
-                        )}
-                      </div>
-                    );
-                  })}
+                      );
+                    },
+                  )}
                 </div>
               </>
             ) : (

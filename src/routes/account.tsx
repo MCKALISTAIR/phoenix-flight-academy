@@ -234,7 +234,11 @@ function PendingCard({
   onWithdraw,
   busy,
 }: {
-  request: any;
+  request: {
+    submitted_at: string;
+    licence_number: string;
+    issuing_authority: string;
+  };
   onWithdraw: () => void;
   busy: boolean;
 }) {
@@ -271,7 +275,15 @@ function PendingCard({
   );
 }
 
-function LastDecisionCard({ request }: { request: any }) {
+function LastDecisionCard({
+  request,
+}: {
+  request: {
+    status: string;
+    review_notes?: string | null;
+    reviewed_at?: string | null;
+  };
+}) {
   const rejected = request.status === "rejected";
   return (
     <section
@@ -301,7 +313,21 @@ function LastDecisionCard({ request }: { request: any }) {
   );
 }
 
-function PilotVerificationForm({ onSubmit }: { onSubmit: (payload: any) => Promise<any> }) {
+interface VerificationPayload {
+  licence_number: string;
+  issuing_authority: string;
+  licence_expiry: string | null;
+  medical_expiry: string | null;
+  ratings: string | null;
+  document_path: string | null;
+  medical_document_path: string | null;
+}
+
+function PilotVerificationForm({
+  onSubmit,
+}: {
+  onSubmit: (payload: VerificationPayload) => Promise<unknown>;
+}) {
   const qc = useQueryClient();
   const [form, setForm] = useState({
     licence_number: "",
@@ -354,8 +380,8 @@ function PilotVerificationForm({ onSubmit }: { onSubmit: (payload: any) => Promi
       });
       setLicenceFile(null);
       setMedicalFile(null);
-    } catch (err: any) {
-      setError(err.message ?? "Submission failed");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Submission failed");
     } finally {
       setSubmitting(false);
     }

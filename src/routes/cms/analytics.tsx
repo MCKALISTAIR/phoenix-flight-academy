@@ -554,7 +554,7 @@ function AnalyticsDashboard() {
               ].map((f) => (
                 <button
                   key={f.value}
-                  onClick={() => setErrorFilter(f.value as any)}
+                  onClick={() => setErrorFilter(f.value as "all" | "critical" | "warning" | "info")}
                   className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
                     errorFilter === f.value
                       ? "bg-primary text-white"

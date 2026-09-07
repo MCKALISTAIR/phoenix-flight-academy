@@ -57,7 +57,7 @@ function CmsFleetManager() {
 
   const merged = fleet.map((ac) => ({ ...ac, ...(drafts[ac.id] ?? {}) }));
 
-  function update(id: string, field: keyof AircraftRow, value: any) {
+  function update<K extends keyof AircraftRow>(id: string, field: K, value: AircraftRow[K]) {
     setDrafts((d) => ({ ...d, [id]: { ...d[id], [field]: value } }));
   }
 
@@ -76,7 +76,7 @@ function CmsFleetManager() {
       });
       qc.invalidateQueries({ queryKey: ["aircraft"] });
     },
-    onError: (e: any) => toast.error(e.message ?? "Save failed"),
+    onError: (e: Error) => toast.error(e.message ?? "Save failed"),
   });
 
   const delMut = useMutation({
@@ -88,7 +88,7 @@ function CmsFleetManager() {
       toast.success("Aircraft removed");
       qc.invalidateQueries({ queryKey: ["aircraft"] });
     },
-    onError: (e: any) => toast.error(e.message ?? "Delete failed"),
+    onError: (e: Error) => toast.error(e.message ?? "Delete failed"),
   });
 
   const addMut = useMutation({
@@ -108,7 +108,7 @@ function CmsFleetManager() {
       toast.success("Aircraft added");
       qc.invalidateQueries({ queryKey: ["aircraft"] });
     },
-    onError: (e: any) => toast.error(e.message ?? "Insert failed"),
+    onError: (e: Error) => toast.error(e.message ?? "Insert failed"),
   });
 
   return (
