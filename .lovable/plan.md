@@ -1,42 +1,36 @@
-# Cleanup after the marketing removal + payments decision
+# Turn on real payments with built-in Stripe
 
-## What I found
+## Where we stand
 
-**Recent changes look clean.** The marketing pages are fully removed, the app builds, and the Phoenix site, booking flow, account/tier flow and CMS are all intact. No leftover marketing routes or links.
+- Checkout is 100% mock: `/booking/checkout/$id` shows test-mode paid/failed buttons that call `completeMockPayment`. No real money can move.
+- The booking contract is already live-payment-ready: deposit vs full amounts, `payment_status` (unpaid → deposit_paid/paid), and `status` (pending/confirmed with approval rules) all transition correctly. Nothing on the booking side changes.
 
-Three things do need attention:
+## Recommendation: Lovable's built-in Stripe
 
-1. **Two leftover payment files fail their type check.** `create-checkout` and `stripe-webhook` (the older-style backend files under `supabase/functions/`) both fail to compile. They are also the wrong shape for this project — this app's backend logic lives with the app, not in those separate files — and nothing can actually call them because no Stripe key has ever been added.
-2. **The payment path is half-mock, half-real.** Checkout first tries the broken Stripe path, silently fails, then falls back to the mock "mark as paid" screen. That works for demos but hides real errors and is confusing.
-3. **Small content leftover.** The CMS Analytics page still shows sample rows mentioning "marketing" pages that no longer exist.
+Phoenix sells flight experiences and lessons from the UK — a service sale. Built-in Stripe fits best (no separate Stripe account to create or connect, no keys to manage):
 
-## Where payments actually stand
+- A **test environment** is created immediately so we can test with fake cards, no real money.
+- Accepting **live** payments requires claiming the account (business details) later.
+- **Tax handling default**: tax calculation and collection only (`automatic_tax`, +0.5% per transaction) — Stripe calculates and collects VAT at checkout; the school handles registration, filing and remittance. Flight training is a scheduled human-delivered service, so full compliance handling (merchant-of-record) isn't eligible.
+- Base card fees ~2.9% + 30p (domestic UK); nothing else changes per transaction.
 
-Nothing can take real money today. The booking flow is complete end to end (price, deposit vs full, approval rules, confirmation), but the money step is simulated.
+## Build steps
 
-**The right provider for Phoenix is built-in Stripe.** Phoenix sells flight experiences and lessons from the UK — a digital/service sale. Stripe is the best fit because:
+1. **Enable built-in Stripe payments** on this project (form approval from you).
+2. **Create products in Stripe** — one per bookable type (experience flights, lessons, self-hire) with the appropriate tax code on each.
+3. **Replace the mock checkout screen**:
+   - New `createServerFn` checkout initiator in `src/lib/` that creates a real Stripe checkout session for the booking's amount due (deposit or full), in GBP, and redirects to Stripe's hosted checkout.
+   - New webhook route at `src/routes/api/public/stripe-webhook.ts` that verifies the Stripe signature and applies the exact same status transitions the mock uses today (`deposit_paid`/`paid`, `pending`/`confirmed`, `approved_at`).
+   - `/booking/checkout/$id` becomes a redirect into Stripe; `/booking/confirm/$id` reads the session result.
+4. **Keep mock payments available in CMS** — the `/cms/mock-payments` dev screen stays for admin testing, but the customer-facing mock buttons on checkout go away.
+5. **End-to-end test** with Stripe test cards: deposit booking, full booking, approval-required booking, and a failed payment.
 
-- It can handle tax calculation, collection, fraud protection, disputes and transaction-level support for buyers in ~80 countries.
-- It does not need you to create or connect a separate Stripe account.
-- Paddle is not ideal here because human-delivered services with scheduling/approval don't fit its all-inclusive digital-product model.
-- Shopify is overkill because there is no physical inventory or shipping.
+## Not in this plan
 
-When you and the client decide to go live, the switch is: replace the mock checkout screen with a real Stripe checkout session and add a webhook route to confirm payments. The booking contract (`payment_status` / `status` transitions) stays identical.
-
-## Proposed fixes
-
-1. Delete the two broken leftover payment files and the small helper that calls them, so the type check passes and there is one clear payment path.
-2. Keep the mock checkout as the single payment route for now, and make failures visible instead of silently falling back.
-3. Clean the placeholder "marketing" rows out of the CMS Analytics page.
-4. Give `/account` and a couple of other pages a proper description for search and link previews (a few pages only have a title).
-
-## Not in this plan (say the word and I'll do it)
-
-- Turning on real payments with Lovable's built-in Stripe, then replacing the mock screen with a real checkout and payment confirmation.
-- Per-school routing so a second flight school can use the platform (the org data model is already in place, the routing is not).
+- Claiming the live Stripe account / taking real money (needs the client's business details).
+- Refund/cancellation payments UI (can follow once live).
 
 ## Technical notes
 
-- Remove `supabase/functions/create-checkout/`, `supabase/functions/stripe-webhook/`, and `src/lib/stripe-payments.functions.ts`; drop `initiateStripeCheckout` from `src/routes/booking/checkout.$id.tsx` and `verifyStripeSession` from `src/routes/booking/confirm.$id.tsx`, leaving `mock-payments.functions.ts` as the only provider.
-- When payments are enabled later, the replacement is a `createServerFn` checkout initiator plus a webhook route under `src/routes/api/public/`; the booking contract (`payment_status` / `status` transitions) stays identical.
-- Analytics page cleanup is limited to the hardcoded sample data in `src/routes/cms/analytics.tsx`.
+- Remove `completeMockPayment` usage from `src/routes/booking/checkout.$id.tsx`; keep `src/lib/mock-payments.functions.ts` for the CMS dev screen.
+- Webhook must read the raw body and verify `stripe-signature` before any writes; uses `supabaseAdmin` like the mock handler does today.
