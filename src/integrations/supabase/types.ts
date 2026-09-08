@@ -1525,6 +1525,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cancel_stale_unpaid_bookings: {
+        Args: { p_hours?: number }
+        Returns: number
+      }
       has_org_role: {
         Args: {
           _org_id: string
