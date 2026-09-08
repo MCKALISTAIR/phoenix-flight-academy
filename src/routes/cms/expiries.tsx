@@ -102,7 +102,7 @@ interface ExpiryItem {
   document_type: string;
   document_number?: string | null;
   expires_on: string | null;
-  days: number;
+  days: number | null;
 }
 
 function Group({

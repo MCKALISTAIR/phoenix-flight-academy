@@ -49,15 +49,15 @@ function ContentEditor() {
 
   const published = useMemo(() => {
     const m: Record<string, Record<string, unknown>> = {};
-    rows.forEach((r: { section_key: string; data: Record<string, unknown> | null }) => {
-      m[r.section_key] = r.data ?? {};
+    rows.forEach((r) => {
+      m[r.section_key] = (r.data ?? {}) as Record<string, unknown>;
     });
     return m;
   }, [rows]);
   const storedDrafts = useMemo(() => {
     const m: Record<string, Record<string, unknown> | null> = {};
-    rows.forEach((r: { section_key: string; draft_data: Record<string, unknown> | null }) => {
-      m[r.section_key] = r.draft_data ?? null;
+    rows.forEach((r) => {
+      m[r.section_key] = (r.draft_data ?? null) as Record<string, unknown> | null;
     });
     return m;
   }, [rows]);
@@ -105,7 +105,7 @@ function ContentEditor() {
       const { error } = await supabase
         .from("site_content")
         .update({
-          draft_data: payload,
+          draft_data: payload as Json,
           draft_updated_at: new Date().toISOString(),
           draft_updated_by: userData.user?.id ?? null,
         })
@@ -127,7 +127,7 @@ function ContentEditor() {
       const { error } = await supabase
         .from("site_content")
         .update({
-          data: payload,
+          data: payload as Json,
           draft_data: null,
           draft_updated_at: null,
           draft_updated_by: null,
@@ -408,7 +408,7 @@ function HistoryDrawer({
       const { error } = await supabase
         .from("site_content")
         .update({
-          draft_data: data,
+          draft_data: data as Json,
           draft_updated_at: new Date().toISOString(),
           draft_updated_by: userData.user?.id ?? null,
         })
