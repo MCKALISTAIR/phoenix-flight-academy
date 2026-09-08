@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect } from "react";
 import {
   CheckCircle2,
   Calendar,
@@ -12,39 +11,43 @@ import {
   ShieldCheck,
   Clock,
   Check,
+  Loader2,
 } from "lucide-react";
 import { getBookingById } from "@/lib/bookings.functions";
-import { verifyStripeSession } from "@/lib/stripe-payments.functions";
 
 export const Route = createFileRoute("/booking/confirm/$id")({
   component: ConfirmPage,
-  head: () => ({ meta: [{ title: "Booking Confirmation | Phoenix Flight Training" }] }),
+  validateSearch: (search: Record<string, unknown>): { session_id?: string } => ({
+    // session_id comes from the payment provider's server-side substitution
+    // of {CHECKOUT_SESSION_ID} in the return URL.
+    session_id: typeof search.session_id === "string" ? search.session_id : undefined,
+  }),
+  head: () => ({
+    meta: [
+      { title: "Booking Confirmation | Phoenix Flight Training" },
+      {
+        name: "description",
+        content: "Your Phoenix Flight Training booking confirmation and payment status.",
+      },
+    ],
+  }),
 });
 
 function ConfirmPage() {
   const { id } = Route.useParams();
-  const qc = useQueryClient();
+  const { session_id: sessionId } = Route.useSearch();
   const fetchBooking = useServerFn(getBookingById);
-  const verifySession = useServerFn(verifyStripeSession);
-
-  // Read session_id from query params if returning from Stripe Hosted Checkout
-  const sessionId =
-    typeof window !== "undefined"
-      ? new URLSearchParams(window.location.search).get("session_id")
-      : null;
-
-  // If returning with a Stripe session_id, trigger reconciliation
-  useEffect(() => {
-    if (sessionId) {
-      verifySession({ data: { bookingId: id, sessionId } })
-        .then(() => qc.invalidateQueries({ queryKey: ["booking", id] }))
-        .catch((err) => console.warn("Session reconciliation notice:", err));
-    }
-  }, [id, sessionId, verifySession, qc]);
 
   const { data, isLoading } = useQuery({
     queryKey: ["booking", id],
     queryFn: () => fetchBooking({ data: { id } }),
+    // Returning from payment: the webhook can lag a moment behind the
+    // redirect, so poll until the paid state lands.
+    refetchInterval: (query) => {
+      if (!sessionId) return false;
+      const status = query.state.data?.payment_status;
+      return status === "paid" || status === "deposit_paid" ? false : 2000;
+    },
   });
 
   if (isLoading) {
@@ -69,29 +72,40 @@ function ConfirmPage() {
   const aircraft = (data as { aircraft: { registration: string; model: string } | null }).aircraft;
   const instructor = (data as { instructors: { name: string } | null }).instructors;
   const isPaidOrDeposit = data.payment_status === "paid" || data.payment_status === "deposit_paid";
+  const awaitingPayment = !!sessionId && !isPaidOrDeposit;
 
   return (
     <div className="min-h-screen bg-[oklch(0.12_0.04_250)] text-white">
       <div className="container mx-auto max-w-2xl px-4 py-16 sm:px-6">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center shadow-xl">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-inner">
-            <CheckCircle2 className="h-9 w-9" />
+            {awaitingPayment ? (
+              <Loader2 className="h-9 w-9 animate-spin" />
+            ) : (
+              <CheckCircle2 className="h-9 w-9" />
+            )}
           </div>
           <h1 className="mt-6 text-2xl md:text-3xl font-extrabold tracking-tight text-white">
-            {data.status === "confirmed" ? "Flight Booking Confirmed" : "Booking received"}
+            {awaitingPayment
+              ? "Confirming your payment…"
+              : data.status === "confirmed"
+                ? "Flight Booking Confirmed"
+                : "Booking received"}
           </h1>
           <p className="mt-2 text-sm text-white/70 max-w-md mx-auto leading-relaxed">
-            {data.status === "confirmed"
-              ? "Your aircraft slot and reservation are locked into our dispatch calendar. We look forward to seeing you at Cumbernauld (EGPG)."
-              : "Our ops dispatch team is reviewing your flight details. We will confirm your slot shortly."}
+            {awaitingPayment
+              ? "Your payment went through — we're just confirming it on our side. This takes a few seconds."
+              : data.status === "confirmed"
+                ? "Your aircraft slot and reservation are locked into our dispatch calendar. We look forward to seeing you at Cumbernauld (EGPG)."
+                : "Our ops dispatch team is reviewing your flight details. We will confirm your slot shortly."}
           </p>
 
           {isPaidOrDeposit && (
             <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3.5 py-1 text-xs font-mono font-semibold text-emerald-400 border border-emerald-500/30">
               <Check className="h-3.5 w-3.5" />
               {data.payment_status === "paid"
-                ? "Payment Verified via Stripe"
-                : "Deposit Verified via Stripe — Remainder Due at Dispatch"}
+                ? "Payment confirmed"
+                : "Deposit confirmed — remainder due at dispatch"}
             </div>
           )}
         </div>
