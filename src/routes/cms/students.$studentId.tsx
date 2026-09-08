@@ -969,7 +969,7 @@ function DocumentsTab({
   const upsert = useServerFn(upsertStudentDocument);
   const del = useServerFn(deleteStudentDocument);
   const upMut = useMutation({
-    mutationFn: (d: Parameters<typeof upsert>[0]["data"]) => upsert({ data: d }),
+    mutationFn: (d: Parameters<typeof upsertStudentDocument>[0]["data"]) => upsert({ data: d }),
     onSuccess: onChange,
   });
   const delMut = useMutation({
@@ -1161,7 +1161,7 @@ function EndorsementsTab({
   const create = useServerFn(createEndorsement);
   const del = useServerFn(deleteEndorsement);
   const createMut = useMutation({
-    mutationFn: (d: Parameters<typeof create>[0]["data"]) => create({ data: d }),
+    mutationFn: (d: Parameters<typeof createEndorsement>[0]["data"]) => create({ data: d }),
     onSuccess: onChange,
   });
   const delMut = useMutation({
@@ -1331,7 +1331,7 @@ function TheoryTab({
   const upsert = useServerFn(upsertTheoryResult);
   const del = useServerFn(deleteTheoryResult);
   const upMut = useMutation({
-    mutationFn: (d: Parameters<typeof upsert>[0]["data"]) => upsert({ data: d }),
+    mutationFn: (d: Parameters<typeof upsertTheoryResult>[0]["data"]) => upsert({ data: d }),
     onSuccess: onChange,
   });
   const delMut = useMutation({
