@@ -39,6 +39,35 @@ type StudentDocument = Database["public"]["Tables"]["student_documents"]["Row"];
 type StudentEndorsement = Database["public"]["Tables"]["student_endorsements"]["Row"];
 type TheoryResult = Database["public"]["Tables"]["theory_exam_results"]["Row"];
 
+// Input shapes for the server functions (their validators take `unknown`,
+// so the callable's parameter type can't be inferred via Parameters<>).
+type DocumentInput = {
+  id?: string;
+  student_id: string;
+  document_type: StudentDocument["document_type"];
+  document_number?: string | null;
+  issued_on?: string | null;
+  expires_on?: string | null;
+  issuing_authority?: string | null;
+  notes?: string | null;
+};
+type EndorsementInput = {
+  student_id: string;
+  endorsement_type: StudentEndorsement["endorsement_type"];
+  title: string;
+  details?: string | null;
+  valid_until?: string | null;
+};
+type TheoryInput = {
+  id?: string;
+  student_id: string;
+  subject: string;
+  result?: TheoryResult["result"];
+  score?: number | null;
+  taken_on?: string | null;
+  notes?: string | null;
+};
+
 export const Route = createFileRoute("/cms/students/$studentId")({
   beforeLoad: async ({ location }) => {
     try {
@@ -969,7 +998,7 @@ function DocumentsTab({
   const upsert = useServerFn(upsertStudentDocument);
   const del = useServerFn(deleteStudentDocument);
   const upMut = useMutation({
-    mutationFn: (d: Parameters<typeof upsertStudentDocument>[0]["data"]) => upsert({ data: d }),
+    mutationFn: (d: DocumentInput) => upsert({ data: d }),
     onSuccess: onChange,
   });
   const delMut = useMutation({
@@ -1161,7 +1190,7 @@ function EndorsementsTab({
   const create = useServerFn(createEndorsement);
   const del = useServerFn(deleteEndorsement);
   const createMut = useMutation({
-    mutationFn: (d: Parameters<typeof createEndorsement>[0]["data"]) => create({ data: d }),
+    mutationFn: (d: EndorsementInput) => create({ data: d }),
     onSuccess: onChange,
   });
   const delMut = useMutation({
@@ -1331,7 +1360,7 @@ function TheoryTab({
   const upsert = useServerFn(upsertTheoryResult);
   const del = useServerFn(deleteTheoryResult);
   const upMut = useMutation({
-    mutationFn: (d: Parameters<typeof upsertTheoryResult>[0]["data"]) => upsert({ data: d }),
+    mutationFn: (d: TheoryInput) => upsert({ data: d }),
     onSuccess: onChange,
   });
   const delMut = useMutation({
