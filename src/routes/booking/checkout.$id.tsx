@@ -4,8 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useState } from "react";
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
 import { CreditCard, AlertCircle, ArrowLeft, ShieldCheck } from "lucide-react";
-import { getCheckoutSession } from "@/lib/mock-payments.functions";
-import { createBookingCheckout } from "@/lib/payments.functions";
+import { getPublicCheckoutSession, createBookingCheckout } from "@/lib/payments.functions";
 import { getStripe, getStripeEnvironment } from "@/lib/stripe";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 

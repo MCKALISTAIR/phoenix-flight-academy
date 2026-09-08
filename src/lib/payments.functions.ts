@@ -12,6 +12,54 @@ type CheckoutResult = { clientSecret: string } | { error: string };
 const SERVICES_TAX_CODE = "txcd_20030000";
 
 /**
+ * Public checkout session read. Guests have no RLS read on bookings, so this
+ * runs server-side — the booking id (an unguessable uuid from the checkout
+ * link) is the bearer of access, same trust model as the confirmation page.
+ */
+export const getPublicCheckoutSession = createServerFn({ method: "GET" })
+  .inputValidator((input) => z.object({ bookingId: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: row, error } = await supabaseAdmin
+      .from("bookings")
+      .select(
+        "id, price_total_cents, deposit_due_cents, amount_paid_cents, payment_status, status, customer_email, customer_name, starts_at, booking_products(name, payment_mode, requires_approval)",
+      )
+      .eq("id", data.bookingId)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!row) throw new Error("Booking not found");
+
+    const product = (
+      row as {
+        booking_products: {
+          name: string;
+          payment_mode: "full" | "deposit" | "invoice";
+          requires_approval: boolean;
+        } | null;
+      }
+    ).booking_products;
+    const amountDueCents =
+      product?.payment_mode === "deposit"
+        ? (row.deposit_due_cents ?? 0)
+        : (row.price_total_cents ?? 0);
+    return {
+      bookingId: row.id,
+      productName: product?.name ?? "Booking",
+      paymentMode: product?.payment_mode ?? "full",
+      requiresApproval: product?.requires_approval ?? false,
+      amountDueCents,
+      priceTotalCents: row.price_total_cents,
+      amountPaidCents: row.amount_paid_cents ?? 0,
+      paymentStatus: row.payment_status,
+      status: row.status,
+      customerEmail: row.customer_email,
+      customerName: row.customer_name,
+      startsAt: row.starts_at,
+    };
+  });
+
+/**
  * REAL CHECKOUT INITIATOR
  * -----------------------
  * Creates an embedded checkout session for the amount due on a booking
