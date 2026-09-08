@@ -102,7 +102,7 @@ interface ExpiryItem {
   document_type: string;
   document_number?: string | null;
   expires_on: string | null;
-  days: number;
+  days: number | null;
 }
 
 function Group({
@@ -148,7 +148,7 @@ function Group({
               <td className="px-3 py-2 font-mono">{d.document_number ?? "—"}</td>
               <td className="px-3 py-2">{d.expires_on}</td>
               <td className={`px-3 py-2 text-right font-bold ${dotColor}`}>
-                {d.days < 0 ? `${-d.days}d ago` : `${d.days}d`}
+                {d.days === null ? "—" : d.days < 0 ? `${-d.days}d ago` : `${d.days}d`}
               </td>
               <td className="px-3 py-2">
                 {d.student && (

@@ -51,6 +51,7 @@ import { Route as CmsStudentsStudentIdRouteImport } from './routes/cms/students.
 import { Route as BookingConfirmIdRouteImport } from './routes/booking/confirm.$id'
 import { Route as BookingCheckoutIdRouteImport } from './routes/booking/checkout.$id'
 import { Route as BookingBookSlugRouteImport } from './routes/booking/book.$slug'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const UnauthorizedRoute = UnauthorizedRouteImport.update({
   id: '/unauthorized',
@@ -262,6 +263,12 @@ const BookingBookSlugRoute = BookingBookSlugRouteImport.update({
   path: '/book/$slug',
   getParentRoute: () => BookingRoute,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -306,6 +313,7 @@ export interface FileRoutesByFullPath {
   '/booking/checkout/$id': typeof BookingCheckoutIdRoute
   '/booking/confirm/$id': typeof BookingConfirmIdRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -348,6 +356,7 @@ export interface FileRoutesByTo {
   '/booking/checkout/$id': typeof BookingCheckoutIdRoute
   '/booking/confirm/$id': typeof BookingConfirmIdRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -393,6 +402,7 @@ export interface FileRoutesById {
   '/booking/checkout/$id': typeof BookingCheckoutIdRoute
   '/booking/confirm/$id': typeof BookingConfirmIdRoute
   '/cms/students/$studentId': typeof CmsStudentsStudentIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -439,6 +449,7 @@ export interface FileRouteTypes {
     | '/booking/checkout/$id'
     | '/booking/confirm/$id'
     | '/cms/students/$studentId'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -481,6 +492,7 @@ export interface FileRouteTypes {
     | '/booking/checkout/$id'
     | '/booking/confirm/$id'
     | '/cms/students/$studentId'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
@@ -525,6 +537,7 @@ export interface FileRouteTypes {
     | '/booking/checkout/$id'
     | '/booking/confirm/$id'
     | '/cms/students/$studentId'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -544,6 +557,7 @@ export interface RootRouteChildren {
   FlyingExperienceRoute: typeof FlyingExperienceRoute
   FlyingLearnToFlyRoute: typeof FlyingLearnToFlyRoute
   FlyingSelfHireRoute: typeof FlyingSelfHireRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -842,6 +856,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookingBookSlugRouteImport
       parentRoute: typeof BookingRoute
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -941,6 +962,7 @@ const rootRouteChildren: RootRouteChildren = {
   FlyingExperienceRoute: FlyingExperienceRoute,
   FlyingLearnToFlyRoute: FlyingLearnToFlyRoute,
   FlyingSelfHireRoute: FlyingSelfHireRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
