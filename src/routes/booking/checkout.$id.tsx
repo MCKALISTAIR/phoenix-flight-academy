@@ -27,7 +27,7 @@ function money(cents: number) {
 
 function CheckoutPage() {
   const { id } = Route.useParams();
-  const fetchSession = useServerFn(getCheckoutSession);
+  const fetchSession = useServerFn(getPublicCheckoutSession);
   const startCheckout = useServerFn(createBookingCheckout);
 
   const { data: session, isLoading } = useQuery({
