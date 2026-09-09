@@ -38,6 +38,7 @@ import { Route as CmsMockPaymentsRouteImport } from './routes/cms/mock-payments'
 import { Route as CmsFlyingStatusRouteImport } from './routes/cms/flying-status'
 import { Route as CmsFleetRouteImport } from './routes/cms/fleet'
 import { Route as CmsExpiriesRouteImport } from './routes/cms/expiries'
+import { Route as CmsEmailsRouteImport } from './routes/cms/emails'
 import { Route as CmsContentRouteImport } from './routes/cms/content'
 import { Route as CmsClosedDatesRouteImport } from './routes/cms/closed-dates'
 import { Route as CmsCalendarSettingsRouteImport } from './routes/cms/calendar-settings'
@@ -198,6 +199,11 @@ const CmsExpiriesRoute = CmsExpiriesRouteImport.update({
   path: '/expiries',
   getParentRoute: () => CmsRoute,
 } as any)
+const CmsEmailsRoute = CmsEmailsRouteImport.update({
+  id: '/emails',
+  path: '/emails',
+  getParentRoute: () => CmsRoute,
+} as any)
 const CmsContentRoute = CmsContentRouteImport.update({
   id: '/content',
   path: '/content',
@@ -293,6 +299,7 @@ export interface FileRoutesByFullPath {
   '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
   '/cms/closed-dates': typeof CmsClosedDatesRoute
   '/cms/content': typeof CmsContentRoute
+  '/cms/emails': typeof CmsEmailsRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
   '/cms/flying-status': typeof CmsFlyingStatusRoute
@@ -336,6 +343,7 @@ export interface FileRoutesByTo {
   '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
   '/cms/closed-dates': typeof CmsClosedDatesRoute
   '/cms/content': typeof CmsContentRoute
+  '/cms/emails': typeof CmsEmailsRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
   '/cms/flying-status': typeof CmsFlyingStatusRoute
@@ -382,6 +390,7 @@ export interface FileRoutesById {
   '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
   '/cms/closed-dates': typeof CmsClosedDatesRoute
   '/cms/content': typeof CmsContentRoute
+  '/cms/emails': typeof CmsEmailsRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
   '/cms/flying-status': typeof CmsFlyingStatusRoute
@@ -429,6 +438,7 @@ export interface FileRouteTypes {
     | '/cms/calendar-settings'
     | '/cms/closed-dates'
     | '/cms/content'
+    | '/cms/emails'
     | '/cms/expiries'
     | '/cms/fleet'
     | '/cms/flying-status'
@@ -472,6 +482,7 @@ export interface FileRouteTypes {
     | '/cms/calendar-settings'
     | '/cms/closed-dates'
     | '/cms/content'
+    | '/cms/emails'
     | '/cms/expiries'
     | '/cms/fleet'
     | '/cms/flying-status'
@@ -517,6 +528,7 @@ export interface FileRouteTypes {
     | '/cms/calendar-settings'
     | '/cms/closed-dates'
     | '/cms/content'
+    | '/cms/emails'
     | '/cms/expiries'
     | '/cms/fleet'
     | '/cms/flying-status'
@@ -765,6 +777,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsExpiriesRouteImport
       parentRoute: typeof CmsRoute
     }
+    '/cms/emails': {
+      id: '/cms/emails'
+      path: '/emails'
+      fullPath: '/cms/emails'
+      preLoaderRoute: typeof CmsEmailsRouteImport
+      parentRoute: typeof CmsRoute
+    }
     '/cms/content': {
       id: '/cms/content'
       path: '/content'
@@ -907,6 +926,7 @@ interface CmsRouteChildren {
   CmsCalendarSettingsRoute: typeof CmsCalendarSettingsRoute
   CmsClosedDatesRoute: typeof CmsClosedDatesRoute
   CmsContentRoute: typeof CmsContentRoute
+  CmsEmailsRoute: typeof CmsEmailsRoute
   CmsExpiriesRoute: typeof CmsExpiriesRoute
   CmsFleetRoute: typeof CmsFleetRoute
   CmsFlyingStatusRoute: typeof CmsFlyingStatusRoute
@@ -929,6 +949,7 @@ const CmsRouteChildren: CmsRouteChildren = {
   CmsCalendarSettingsRoute: CmsCalendarSettingsRoute,
   CmsClosedDatesRoute: CmsClosedDatesRoute,
   CmsContentRoute: CmsContentRoute,
+  CmsEmailsRoute: CmsEmailsRoute,
   CmsExpiriesRoute: CmsExpiriesRoute,
   CmsFleetRoute: CmsFleetRoute,
   CmsFlyingStatusRoute: CmsFlyingStatusRoute,
