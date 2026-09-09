@@ -111,5 +111,9 @@ export const completeMockPayment = createServerFn({ method: "POST" })
     };
     const { error } = await supabaseAdmin.from("bookings").update(patch).eq("id", data.bookingId);
     if (error) throw new Error(error.message);
+
+    const { notifyBookingPaid } = await import("@/lib/email/booking-emails.server");
+    await notifyBookingPaid(data.bookingId);
+
     return { ok: true, status, paymentStatus };
   });
