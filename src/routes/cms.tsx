@@ -30,6 +30,7 @@ import {
   Tag,
   BadgeCheck,
   Search,
+  Mail,
 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -130,6 +131,7 @@ function CmsLayout() {
         },
         { to: "/cms/promotions", icon: Tag, label: "Promotions", superOnly: true },
         { to: "/cms/mock-payments", icon: CreditCard, label: "Mock Payments", superOnly: false },
+        { to: "/cms/emails", icon: Mail, label: "Emails", superOnly: false },
       ],
     },
     {

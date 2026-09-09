@@ -616,6 +616,42 @@ export type Database = {
           },
         ]
       }
+      email_settings: {
+        Row: {
+          created_at: string
+          customer_receipt_enabled: boolean
+          id: string
+          organization_id: string
+          reply_to_email: string | null
+          sender_display_name: string
+          team_notification_email: string | null
+          team_notification_enabled: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          customer_receipt_enabled?: boolean
+          id?: string
+          organization_id?: string
+          reply_to_email?: string | null
+          sender_display_name?: string
+          team_notification_email?: string | null
+          team_notification_enabled?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          customer_receipt_enabled?: boolean
+          id?: string
+          organization_id?: string
+          reply_to_email?: string | null
+          sender_display_name?: string
+          team_notification_email?: string | null
+          team_notification_enabled?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       flight_log_entries: {
         Row: {
           aircraft_id: string | null

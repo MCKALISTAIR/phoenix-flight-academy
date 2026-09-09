@@ -66,6 +66,9 @@ async function fulfillBooking(session: Record<string, any>) {
 
   if (updateErr) throw new Error(updateErr.message);
   console.log(`Booking ${bookingId} fulfilled: status=${status}, payment_status=${paymentStatus}`);
+
+  const { notifyBookingPaid } = await import("@/lib/email/booking-emails.server");
+  await notifyBookingPaid(bookingId);
 }
 
 export const Route = createFileRoute("/api/public/payments/webhook")({

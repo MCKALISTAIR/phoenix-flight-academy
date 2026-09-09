@@ -5,3 +5,6 @@
 - [x] Auto-cancel unpaid bookings after 24h (hourly scheduled job, live)
 - [ ] Customer confirmation + team notification emails on payment — blocked: user must complete email domain setup dialog, then scaffold transactional email
 - [ ] Wire email sending into the payment webhook once email infra exists
+- [x] Email templates (customer receipt, team notification) + /cms/emails settings screen + test send
+- [x] Emails wired into Stripe webhook fulfilment and CMS mock payment
+- [ ] Connect a Phoenix sender domain (owner action) — emails skip silently until then
