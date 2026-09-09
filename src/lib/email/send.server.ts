@@ -69,8 +69,9 @@ export async function sendAppEmail(args: SendArgs): Promise<{ sent: boolean; rea
   const element = React.createElement(entry.component, data);
   const html = await render(element);
   const text = await render(element, { plainText: true });
+  const entrySubject = entry.subject as string | ((d: Record<string, unknown>) => string);
   const subject =
-    args.subject ?? (typeof entry.subject === "function" ? entry.subject(data) : entry.subject);
+    args.subject ?? (typeof entrySubject === "function" ? entrySubject(data) : entrySubject);
 
   try {
     await sendLovableEmail(
