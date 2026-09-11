@@ -130,7 +130,6 @@ function CmsLayout() {
           superOnly: true,
         },
         { to: "/cms/promotions", icon: Tag, label: "Promotions", superOnly: true },
-        { to: "/cms/mock-payments", icon: CreditCard, label: "Mock Payments", superOnly: false },
         { to: "/cms/emails", icon: Mail, label: "Emails", superOnly: false },
       ],
     },
@@ -140,7 +139,7 @@ function CmsLayout() {
         { to: "/cms/content", icon: FileText, label: "Content Editor", superOnly: true },
         { to: "/cms/team", icon: Users, label: "Team & Instructors", superOnly: true },
         { to: "/cms/users", icon: UserPlus, label: "User Management", superOnly: true },
-        { to: "/cms/analytics", icon: Activity, label: "System Analytics", superOnly: true },
+        
       ],
     },
   ];
