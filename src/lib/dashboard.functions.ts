@@ -19,6 +19,7 @@ export interface DashboardSnapshot {
   aircraftServiceable: number;
   activeStudents: number;
   revenue30dCents: number;
+  newEnquiriesCount: number;
 }
 
 export const getDashboardSnapshot = createServerFn({ method: "GET" })
@@ -31,7 +32,7 @@ export const getDashboardSnapshot = createServerFn({ method: "GET" })
     const dayEnd = new Date(dayStart.getTime() + 86400_000);
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400_000);
 
-    const [today, upcoming, pendingApproval, unpaid, verifications, aircraft, students, recentPaid] =
+    const [today, upcoming, pendingApproval, unpaid, verifications, aircraft, students, recentPaid, enquiries] =
       await Promise.all([
         supabase
           .from("bookings")
@@ -69,6 +70,10 @@ export const getDashboardSnapshot = createServerFn({ method: "GET" })
           .select("amount_paid_cents")
           .neq("status", "cancelled")
           .gte("created_at", thirtyDaysAgo.toISOString()),
+        supabase
+          .from("contact_submissions")
+          .select("id", { count: "exact", head: true })
+          .or("status.eq.new,status.is.null"),
       ]);
 
     const unpaidRows = unpaid.data ?? [];
@@ -99,5 +104,6 @@ export const getDashboardSnapshot = createServerFn({ method: "GET" })
       aircraftServiceable: aircraftRows.filter((a) => a.status === "serviceable").length,
       activeStudents: students.count ?? 0,
       revenue30dCents: (recentPaid.data ?? []).reduce((s, b) => s + (b.amount_paid_cents ?? 0), 0),
+      newEnquiriesCount: enquiries.count ?? 0,
     };
   });

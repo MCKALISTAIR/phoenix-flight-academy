@@ -160,6 +160,16 @@ export function Navbar() {
                     </span>
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link
+                    to="/booking/lookup"
+                    className="flex items-center gap-2 rounded-lg p-2.5 hover:bg-accent cursor-pointer transition-colors text-xs font-semibold text-foreground"
+                  >
+                    <Calendar className="h-4 w-4 text-primary shrink-0" />
+                    <span>Manage Booking / Voucher</span>
+                  </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 

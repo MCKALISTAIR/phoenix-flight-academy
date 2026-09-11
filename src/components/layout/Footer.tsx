@@ -139,6 +139,14 @@ export function Footer() {
                   Contact
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/booking/lookup"
+                  className="text-sm text-primary font-medium hover:text-white transition-colors"
+                >
+                  Manage Booking &amp; Voucher
+                </Link>
+              </li>
             </ul>
           </div>
 

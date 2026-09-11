@@ -84,3 +84,61 @@ export async function notifyBookingPaid(bookingId: string) {
     console.error("[email] booking notification failed:", e);
   }
 }
+
+/**
+ * Sends a pre-flight reminder and briefing to the customer.
+ */
+export async function sendBookingReminderEmail(bookingId: string): Promise<{ sent: boolean; reason?: string }> {
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: booking, error } = await supabaseAdmin
+      .from("bookings")
+      .select(
+        "id, customer_name, customer_email, starts_at, aircraft_id, instructor_id, booking_products(name), instructors(name)",
+      )
+      .eq("id", bookingId)
+      .maybeSingle();
+
+    if (error || !booking) {
+      return { sent: false, reason: "Booking not found" };
+    }
+
+    if (!booking.customer_email) {
+      return { sent: false, reason: "Customer has no email address" };
+    }
+
+    const product = (booking as { booking_products: { name: string } | null }).booking_products;
+    const instructor = (booking as { instructors: { name: string } | null }).instructors;
+
+    let aircraft = "Piper PA-28 Archer III (G-EGPG)";
+    if (booking.aircraft_id) {
+      const { data: ac } = await supabaseAdmin
+        .from("aircraft")
+        .select("registration, model")
+        .eq("id", booking.aircraft_id)
+        .maybeSingle();
+      if (ac) {
+        aircraft = `${ac.model} (${ac.registration})`;
+      }
+    }
+
+    return await sendAppEmail({
+      templateName: "booking-reminder",
+      to: booking.customer_email,
+      idempotencyKey: `booking-reminder-${booking.id}`,
+      templateData: {
+        customerName: booking.customer_name ?? "Aviator",
+        productName: product?.name ?? "Flight Session",
+        startsAt: whenLondon(booking.starts_at),
+        aircraft,
+        instructorName: instructor?.name ?? "Flight Instructor",
+        reference: booking.id.slice(0, 8).toUpperCase(),
+      },
+      label: "booking-reminder",
+    });
+  } catch (err) {
+    console.error("[email] Failed to send booking reminder:", err);
+    return { sent: false, reason: err instanceof Error ? err.message : "Internal error" };
+  }
+}
+

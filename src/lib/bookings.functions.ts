@@ -543,3 +543,149 @@ export const getBookingById = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     return row;
   });
+
+export const recordManualPayment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        bookingId: z.string().uuid(),
+        amountCents: z.number().int().positive(),
+        paymentMethod: z.enum(["card_terminal", "cash", "bacs_transfer", "voucher", "other"]),
+        reference: z.string().max(100).optional().nullable(),
+        notes: z.string().max(500).optional().nullable(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: booking, error: fetchErr } = await context.supabase
+      .from("bookings")
+      .select("id, amount_paid_cents, price_total_cents, notes, payment_status")
+      .eq("id", data.bookingId)
+      .single();
+
+    if (fetchErr || !booking) {
+      throw new Error(fetchErr?.message ?? "Booking not found");
+    }
+
+    const currentPaid = booking.amount_paid_cents ?? 0;
+    const newPaid = currentPaid + data.amountCents;
+    const isFullyPaid = newPaid >= booking.price_total_cents;
+    const newStatus = isFullyPaid ? "paid" : "deposit_paid";
+
+    const methodLabels: Record<string, string> = {
+      card_terminal: "Card Terminal (Desk)",
+      cash: "Cash (Desk)",
+      bacs_transfer: "BACS Bank Transfer",
+      voucher: "Voucher / Account Credit",
+      other: "Manual Payment",
+    };
+    const methodStr = methodLabels[data.paymentMethod] ?? data.paymentMethod;
+    const refStr = data.reference ? ` [Ref: ${data.reference}]` : "";
+    const noteExtra = data.notes ? ` — ${data.notes}` : "";
+    const nowIso = new Date().toISOString();
+    const auditEntry = `[${nowIso}] Received £${(data.amountCents / 100).toFixed(2)} via ${methodStr}${refStr}${noteExtra}`;
+    const updatedNotes = booking.notes ? `${booking.notes}\n${auditEntry}` : auditEntry;
+
+    const { error: updateErr } = await context.supabase
+      .from("bookings")
+      .update({
+        amount_paid_cents: newPaid,
+        payment_status: newStatus,
+        notes: updatedNotes,
+        updated_at: nowIso,
+      })
+      .eq("id", data.bookingId);
+
+    if (updateErr) throw new Error(updateErr.message);
+
+    return {
+      ok: true,
+      amountPaidCents: newPaid,
+      balanceRemainingCents: Math.max(0, booking.price_total_cents - newPaid),
+      isFullyPaid,
+    };
+  });
+
+export const recordRefund = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        bookingId: z.string().uuid(),
+        refundAmountCents: z.number().int().positive().optional().nullable(),
+        reason: z.string().min(2).max(300),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: booking, error: fetchErr } = await context.supabase
+      .from("bookings")
+      .select("id, amount_paid_cents, notes")
+      .eq("id", data.bookingId)
+      .single();
+
+    if (fetchErr || !booking) throw new Error(fetchErr?.message ?? "Booking not found");
+
+    const refundAmount = data.refundAmountCents ?? booking.amount_paid_cents ?? 0;
+    const nowIso = new Date().toISOString();
+    const auditEntry = `[${nowIso}] Recorded refund of £${(refundAmount / 100).toFixed(2)}. Reason: ${data.reason}`;
+    const updatedNotes = booking.notes ? `${booking.notes}\n${auditEntry}` : auditEntry;
+
+    const { error: updateErr } = await context.supabase
+      .from("bookings")
+      .update({
+        payment_status: "refunded",
+        notes: updatedNotes,
+        updated_at: nowIso,
+      })
+      .eq("id", data.bookingId);
+
+    if (updateErr) throw new Error(updateErr.message);
+    return { ok: true };
+  });
+
+export const lookupBookingForGuest = createServerFn({ method: "POST" })
+  .inputValidator((input) =>
+    z
+      .object({
+        bookingId: z.string().uuid("Please enter a valid Booking Reference ID"),
+        email: z.string().trim().email("Please enter a valid email address"),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data }) => {
+    const client = process.env.SUPABASE_SERVICE_ROLE_KEY
+      ? supabaseAdmin
+      : createClient(
+          process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || "",
+          process.env.SUPABASE_PUBLISHABLE_KEY ||
+            import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+            "",
+          { auth: { persistSession: false, autoRefreshToken: false } },
+        );
+
+    const { data: booking, error } = await client
+      .from("bookings")
+      .select(
+        "id, starts_at, ends_at, status, payment_status, price_total_cents, amount_paid_cents, deposit_due_cents, customer_name, customer_email, customer_phone, notes, booking_products(name, kind, duration_minutes, payment_mode), aircraft(registration, model), instructors(name)",
+      )
+      .eq("id", data.bookingId)
+      .ilike("customer_email", data.email.trim())
+      .maybeSingle();
+
+    if (error) throw new Error(error.message);
+    if (!booking) {
+      throw new Error("No booking found matching that reference ID and email address. Please check your confirmation details.");
+    }
+    return booking;
+  });
+
+export const triggerBookingReminder = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ bookingId: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    const { sendBookingReminderEmail } = await import("@/lib/email/booking-emails.server");
+    return await sendBookingReminderEmail(data.bookingId);
+  });
+

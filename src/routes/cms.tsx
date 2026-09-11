@@ -29,6 +29,7 @@ import {
   BadgeCheck,
   Search,
   Mail,
+  Inbox,
 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -87,6 +88,7 @@ function CmsLayout() {
           superOnly: false,
         },
         { to: "/cms/bookings", icon: ClipboardList, label: "Bookings", superOnly: false },
+        { to: "/cms/enquiries", icon: Inbox, label: "Enquiries & Leads", superOnly: false },
         { to: "/cms/flying-status", icon: CloudSun, label: "Airfield Status", superOnly: false },
         { to: "/cms/resource-blocks", icon: Ban, label: "Resource Blocks", superOnly: false },
         { to: "/cms/closed-dates", icon: CalendarX, label: "Closed Dates", superOnly: false },

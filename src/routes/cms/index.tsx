@@ -9,6 +9,7 @@ import {
   PoundSterling,
   CalendarClock,
   AlertCircle,
+  Inbox,
 } from "lucide-react";
 import { requireAdmin } from "@/lib/auth-guards";
 import { getDashboardSnapshot } from "@/lib/dashboard.functions";
@@ -52,6 +53,12 @@ function CmsDashboard() {
       value: data ? String(data.awaitingApproval) : "—",
       icon: CalendarClock,
       to: "/cms/bookings",
+    },
+    {
+      label: "New enquiries",
+      value: data ? String(data.newEnquiriesCount) : "—",
+      icon: Inbox,
+      to: "/cms/enquiries",
     },
     {
       label: "Outstanding balances",

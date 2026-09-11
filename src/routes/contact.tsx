@@ -11,7 +11,8 @@ import {
   Loader2,
 } from "lucide-react";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { submitContactEnquiry } from "@/lib/enquiries.functions";
 
 type ContactSearch = {
   subject?: string;
@@ -39,6 +40,7 @@ export const Route = createFileRoute("/contact")({
 function ContactPage() {
   const search = Route.useSearch();
   const initialSubject = search.subject || "general";
+  const submitEnquiry = useServerFn(submitContactEnquiry);
 
   const [subject, setSubject] = useState(initialSubject);
   const [name, setName] = useState("");
@@ -99,18 +101,14 @@ function ContactPage() {
 
     try {
       const subjectLabel = getSubjectLabel();
-      const formattedMessage = `[Subject: ${subjectLabel}]\n\n${message.trim()}`;
-      const { error: insertError } = await supabase.from("contact_submissions").insert({
-        name: name.trim(),
-        email: email.trim(),
-        company: subjectLabel,
-        message: formattedMessage,
-        source: "contact_page",
+      await submitEnquiry({
+        data: {
+          name: name.trim(),
+          email: email.trim(),
+          subject: subjectLabel,
+          message: message.trim(),
+        },
       });
-
-      if (insertError) {
-        throw new Error(insertError.message);
-      }
       setSubmitted(true);
     } catch (err) {
       setServerError(

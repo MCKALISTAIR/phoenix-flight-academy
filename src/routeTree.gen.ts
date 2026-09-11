@@ -38,6 +38,7 @@ import { Route as CmsMockPaymentsRouteImport } from './routes/cms/mock-payments'
 import { Route as CmsFlyingStatusRouteImport } from './routes/cms/flying-status'
 import { Route as CmsFleetRouteImport } from './routes/cms/fleet'
 import { Route as CmsExpiriesRouteImport } from './routes/cms/expiries'
+import { Route as CmsEnquiriesRouteImport } from './routes/cms/enquiries'
 import { Route as CmsEmailsRouteImport } from './routes/cms/emails'
 import { Route as CmsContentRouteImport } from './routes/cms/content'
 import { Route as CmsClosedDatesRouteImport } from './routes/cms/closed-dates'
@@ -45,6 +46,7 @@ import { Route as CmsCalendarSettingsRouteImport } from './routes/cms/calendar-s
 import { Route as CmsBookingsRouteImport } from './routes/cms/bookings'
 import { Route as CmsBookingProductsRouteImport } from './routes/cms/booking-products'
 import { Route as CmsSplatRouteImport } from './routes/cms/$'
+import { Route as BookingLookupRouteImport } from './routes/booking/lookup'
 import { Route as BookingDashboardRouteImport } from './routes/booking/dashboard'
 import { Route as BookingAdminRouteImport } from './routes/booking/admin'
 import { Route as CmsStudentsStudentIdRouteImport } from './routes/cms/students.$studentId'
@@ -198,6 +200,11 @@ const CmsExpiriesRoute = CmsExpiriesRouteImport.update({
   path: '/expiries',
   getParentRoute: () => CmsRoute,
 } as any)
+const CmsEnquiriesRoute = CmsEnquiriesRouteImport.update({
+  id: '/enquiries',
+  path: '/enquiries',
+  getParentRoute: () => CmsRoute,
+} as any)
 const CmsEmailsRoute = CmsEmailsRouteImport.update({
   id: '/emails',
   path: '/emails',
@@ -232,6 +239,11 @@ const CmsSplatRoute = CmsSplatRouteImport.update({
   id: '/$',
   path: '/$',
   getParentRoute: () => CmsRoute,
+} as any)
+const BookingLookupRoute = BookingLookupRouteImport.update({
+  id: '/lookup',
+  path: '/lookup',
+  getParentRoute: () => BookingRoute,
 } as any)
 const BookingDashboardRoute = BookingDashboardRouteImport.update({
   id: '/dashboard',
@@ -286,6 +298,7 @@ export interface FileRoutesByFullPath {
   '/unauthorized': typeof UnauthorizedRoute
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
+  '/booking/lookup': typeof BookingLookupRoute
   '/cms/$': typeof CmsSplatRoute
   '/cms/booking-products': typeof CmsBookingProductsRoute
   '/cms/bookings': typeof CmsBookingsRoute
@@ -293,6 +306,7 @@ export interface FileRoutesByFullPath {
   '/cms/closed-dates': typeof CmsClosedDatesRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/emails': typeof CmsEmailsRoute
+  '/cms/enquiries': typeof CmsEnquiriesRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
   '/cms/flying-status': typeof CmsFlyingStatusRoute
@@ -329,6 +343,7 @@ export interface FileRoutesByTo {
   '/unauthorized': typeof UnauthorizedRoute
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
+  '/booking/lookup': typeof BookingLookupRoute
   '/cms/$': typeof CmsSplatRoute
   '/cms/booking-products': typeof CmsBookingProductsRoute
   '/cms/bookings': typeof CmsBookingsRoute
@@ -336,6 +351,7 @@ export interface FileRoutesByTo {
   '/cms/closed-dates': typeof CmsClosedDatesRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/emails': typeof CmsEmailsRoute
+  '/cms/enquiries': typeof CmsEnquiriesRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
   '/cms/flying-status': typeof CmsFlyingStatusRoute
@@ -375,6 +391,7 @@ export interface FileRoutesById {
   '/unauthorized': typeof UnauthorizedRoute
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
+  '/booking/lookup': typeof BookingLookupRoute
   '/cms/$': typeof CmsSplatRoute
   '/cms/booking-products': typeof CmsBookingProductsRoute
   '/cms/bookings': typeof CmsBookingsRoute
@@ -382,6 +399,7 @@ export interface FileRoutesById {
   '/cms/closed-dates': typeof CmsClosedDatesRoute
   '/cms/content': typeof CmsContentRoute
   '/cms/emails': typeof CmsEmailsRoute
+  '/cms/enquiries': typeof CmsEnquiriesRoute
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
   '/cms/flying-status': typeof CmsFlyingStatusRoute
@@ -422,6 +440,7 @@ export interface FileRouteTypes {
     | '/unauthorized'
     | '/booking/admin'
     | '/booking/dashboard'
+    | '/booking/lookup'
     | '/cms/$'
     | '/cms/booking-products'
     | '/cms/bookings'
@@ -429,6 +448,7 @@ export interface FileRouteTypes {
     | '/cms/closed-dates'
     | '/cms/content'
     | '/cms/emails'
+    | '/cms/enquiries'
     | '/cms/expiries'
     | '/cms/fleet'
     | '/cms/flying-status'
@@ -465,6 +485,7 @@ export interface FileRouteTypes {
     | '/unauthorized'
     | '/booking/admin'
     | '/booking/dashboard'
+    | '/booking/lookup'
     | '/cms/$'
     | '/cms/booking-products'
     | '/cms/bookings'
@@ -472,6 +493,7 @@ export interface FileRouteTypes {
     | '/cms/closed-dates'
     | '/cms/content'
     | '/cms/emails'
+    | '/cms/enquiries'
     | '/cms/expiries'
     | '/cms/fleet'
     | '/cms/flying-status'
@@ -510,6 +532,7 @@ export interface FileRouteTypes {
     | '/unauthorized'
     | '/booking/admin'
     | '/booking/dashboard'
+    | '/booking/lookup'
     | '/cms/$'
     | '/cms/booking-products'
     | '/cms/bookings'
@@ -517,6 +540,7 @@ export interface FileRouteTypes {
     | '/cms/closed-dates'
     | '/cms/content'
     | '/cms/emails'
+    | '/cms/enquiries'
     | '/cms/expiries'
     | '/cms/fleet'
     | '/cms/flying-status'
@@ -765,6 +789,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsExpiriesRouteImport
       parentRoute: typeof CmsRoute
     }
+    '/cms/enquiries': {
+      id: '/cms/enquiries'
+      path: '/enquiries'
+      fullPath: '/cms/enquiries'
+      preLoaderRoute: typeof CmsEnquiriesRouteImport
+      parentRoute: typeof CmsRoute
+    }
     '/cms/emails': {
       id: '/cms/emails'
       path: '/emails'
@@ -813,6 +844,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/cms/$'
       preLoaderRoute: typeof CmsSplatRouteImport
       parentRoute: typeof CmsRoute
+    }
+    '/booking/lookup': {
+      id: '/booking/lookup'
+      path: '/lookup'
+      fullPath: '/booking/lookup'
+      preLoaderRoute: typeof BookingLookupRouteImport
+      parentRoute: typeof BookingRoute
     }
     '/booking/dashboard': {
       id: '/booking/dashboard'
@@ -869,6 +907,7 @@ declare module '@tanstack/react-router' {
 interface BookingRouteChildren {
   BookingAdminRoute: typeof BookingAdminRoute
   BookingDashboardRoute: typeof BookingDashboardRoute
+  BookingLookupRoute: typeof BookingLookupRoute
   BookingIndexRoute: typeof BookingIndexRoute
   BookingBookSlugRoute: typeof BookingBookSlugRoute
   BookingCheckoutIdRoute: typeof BookingCheckoutIdRoute
@@ -878,6 +917,7 @@ interface BookingRouteChildren {
 const BookingRouteChildren: BookingRouteChildren = {
   BookingAdminRoute: BookingAdminRoute,
   BookingDashboardRoute: BookingDashboardRoute,
+  BookingLookupRoute: BookingLookupRoute,
   BookingIndexRoute: BookingIndexRoute,
   BookingBookSlugRoute: BookingBookSlugRoute,
   BookingCheckoutIdRoute: BookingCheckoutIdRoute,
@@ -907,6 +947,7 @@ interface CmsRouteChildren {
   CmsClosedDatesRoute: typeof CmsClosedDatesRoute
   CmsContentRoute: typeof CmsContentRoute
   CmsEmailsRoute: typeof CmsEmailsRoute
+  CmsEnquiriesRoute: typeof CmsEnquiriesRoute
   CmsExpiriesRoute: typeof CmsExpiriesRoute
   CmsFleetRoute: typeof CmsFleetRoute
   CmsFlyingStatusRoute: typeof CmsFlyingStatusRoute
@@ -929,6 +970,7 @@ const CmsRouteChildren: CmsRouteChildren = {
   CmsClosedDatesRoute: CmsClosedDatesRoute,
   CmsContentRoute: CmsContentRoute,
   CmsEmailsRoute: CmsEmailsRoute,
+  CmsEnquiriesRoute: CmsEnquiriesRoute,
   CmsExpiriesRoute: CmsExpiriesRoute,
   CmsFleetRoute: CmsFleetRoute,
   CmsFlyingStatusRoute: CmsFlyingStatusRoute,
