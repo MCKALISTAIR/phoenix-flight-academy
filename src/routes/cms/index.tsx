@@ -1,18 +1,17 @@
 import { createFileRoute, Link, redirect, isRedirect } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import {
-  FileText,
-  Users,
-  CheckCircle2,
-  Clock,
-  AlertCircle,
-  TrendingUp,
-  UserPlus,
-  ShieldAlert,
   Plane,
-  Wrench,
-  Activity,
+  Users,
+  ClipboardList,
+  BadgeCheck,
+  PoundSterling,
+  CalendarClock,
+  AlertCircle,
 } from "lucide-react";
 import { requireAdmin } from "@/lib/auth-guards";
+import { getDashboardSnapshot } from "@/lib/dashboard.functions";
 
 export const Route = createFileRoute("/cms/")({
   beforeLoad: async ({ location }) => {
@@ -26,215 +25,143 @@ export const Route = createFileRoute("/cms/")({
   component: CmsDashboard,
 });
 
+function money(cents: number) {
+  return `£${(cents / 100).toFixed(2)}`;
+}
+
+function time(iso: string) {
+  return new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+}
+
 function CmsDashboard() {
-  const sections = [
-    {
-      label: "Home Page",
-      fields: 4,
-      lastEdited: "Never",
-      status: "default" as const,
-    },
-    {
-      label: "About / School",
-      fields: 3,
-      lastEdited: "Never",
-      status: "default" as const,
-    },
-    {
-      label: "Fleet Specs",
-      fields: 12,
-      lastEdited: "Never",
-      status: "default" as const,
-    },
-    {
-      label: "Pricing",
-      fields: 6,
-      lastEdited: "Never",
-      status: "default" as const,
-    },
-    {
-      label: "Experience Packages",
-      fields: 9,
-      lastEdited: "Never",
-      status: "default" as const,
-    },
-    {
-      label: "Contact Details",
-      fields: 3,
-      lastEdited: "Never",
-      status: "default" as const,
-    },
-  ];
+  const fetchSnapshot = useServerFn(getDashboardSnapshot);
+  const { data, isLoading } = useQuery({
+    queryKey: ["cms-dashboard"],
+    queryFn: () => fetchSnapshot(),
+  });
 
   const stats = [
-    { label: "Editable Sections", value: "6", icon: FileText, color: "text-primary" },
-    { label: "Instructor Profiles", value: "3", icon: Users, color: "text-primary" },
-    { label: "Registered Fleet", value: "3", icon: Plane, color: "text-primary" },
-    { label: "Active Portal Users", value: "6", icon: UserPlus, color: "text-primary" },
+    {
+      label: "Upcoming bookings",
+      value: data ? String(data.upcomingCount) : "—",
+      icon: ClipboardList,
+      to: "/cms/bookings",
+    },
+    {
+      label: "Awaiting approval",
+      value: data ? String(data.awaitingApproval) : "—",
+      icon: CalendarClock,
+      to: "/cms/bookings",
+    },
+    {
+      label: "Outstanding balances",
+      value: data ? money(data.outstandingCents) : "—",
+      icon: PoundSterling,
+      to: "/cms/bookings",
+    },
+    {
+      label: "Pilot verifications",
+      value: data ? String(data.pendingVerifications) : "—",
+      icon: BadgeCheck,
+      to: "/cms/pilot-verifications",
+    },
+    {
+      label: "Aircraft serviceable",
+      value: data ? `${data.aircraftServiceable}/${data.aircraftTotal}` : "—",
+      icon: Plane,
+      to: "/cms/fleet",
+    },
+    {
+      label: "Active students",
+      value: data ? String(data.activeStudents) : "—",
+      icon: Users,
+      to: "/cms/students",
+    },
   ];
 
   return (
-    <div className="p-8 space-y-10">
-      {/* Header */}
+    <div className="p-8 space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-white">CMS Overview</h1>
+        <h1 className="text-2xl font-extrabold text-white">Today at Phoenix</h1>
         <p className="mt-1 text-sm text-white/50">
-          Manage all publicly-visible content, control user access roles, and monitor flight school
-          aircraft status.
+          Live figures from the booking system — flights today, money outstanding and anything
+          waiting on you.
         </p>
       </div>
 
-      {/* Stats Row */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {stats.map((stat, idx) => {
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+        {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div
-              key={idx}
-              className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm"
+            <Link
+              key={stat.label}
+              to={stat.to}
+              className="rounded-2xl border border-white/10 bg-white/5 p-5 transition-all hover:border-primary/40 hover:bg-white/10"
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold uppercase tracking-wider text-white/40">
                   {stat.label}
                 </span>
-                <Icon className={`h-4 w-4 ${stat.color}`} />
+                <Icon className="h-4 w-4 text-primary" />
               </div>
-              <p className={`mt-3 text-3xl font-black ${stat.color}`}>{stat.value}</p>
-            </div>
+              <p className="mt-3 text-3xl font-black tabular-nums text-primary">{stat.value}</p>
+            </Link>
           );
         })}
       </div>
 
-      {/* Access Control Quick Card & Content Blocks Grid */}
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* Left 2/3 for content sections */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-bold text-white">Content Sections</h2>
-            <Link to="/cms/content" className="text-xs font-semibold text-primary hover:underline">
-              Edit all →
-            </Link>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {sections.map((section, idx) => (
-              <div
-                key={idx}
-                className="group flex flex-col justify-between rounded-2xl border border-white/10 bg-white/5 p-5 transition-all hover:border-primary/40 hover:bg-white/8 backdrop-blur-sm"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <span className="text-sm font-bold text-white">{section.label}</span>
-                    <p className="mt-1 text-xs text-white/40">{section.fields} editable fields</p>
-                  </div>
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full border border-white/10 bg-white/5">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-white/20" />
-                  </div>
-                </div>
-                <div className="mt-5 flex items-center justify-between">
-                  <span className="text-xs text-white/30">Last edited: {section.lastEdited}</span>
-                  <Link
-                    to="/cms/content"
-                    className="rounded-lg border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary opacity-0 transition-all group-hover:opacity-100 hover:bg-primary/20"
-                  >
-                    Edit
-                  </Link>
+      <div className="space-y-4">
+        <h2 className="text-base font-bold text-white">Flights today</h2>
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+          {isLoading && <p className="p-5 text-sm text-white/50">Loading…</p>}
+          {!isLoading && (data?.flightsToday.length ?? 0) === 0 && (
+            <p className="p-5 text-sm text-white/50">Nothing on the board for today.</p>
+          )}
+          {(data?.flightsToday ?? []).map((f) => (
+            <div
+              key={f.id}
+              className="flex flex-wrap items-center justify-between gap-3 border-b border-white/5 px-5 py-3 last:border-0"
+            >
+              <div className="flex items-center gap-4">
+                <span className="font-mono text-sm tabular-nums text-primary">
+                  {time(f.startsAt)}
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-white">{f.customerName}</p>
+                  <p className="text-xs text-white/40">{f.productName}</p>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Right 1/3 for quick user access & fleet tools */}
-        <div className="space-y-6">
-          <div className="space-y-4">
-            <h2 className="text-base font-bold text-white">System Controls</h2>
-            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-6 space-y-6 backdrop-blur-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/20 text-primary">
-                <ShieldAlert className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-white">User Access & Roles</h3>
-                <p className="mt-1 text-xs text-white/40 leading-relaxed">
-                  Configure access control for flight school staff, senior instructors, students,
-                  and self-hire pilots. Issue invitation keys to new team members.
-                </p>
-              </div>
-              <div className="space-y-2 pt-2">
-                <Link
-                  to="/cms/users"
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-xs font-bold text-white shadow-lg shadow-[var(--color-primary)]/20 transition-all hover:scale-[1.02] hover:bg-primary"
+              <div className="flex items-center gap-2 text-[11px] font-mono uppercase">
+                <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-white/60">
+                  {f.status}
+                </span>
+                <span
+                  className={`rounded-full px-2 py-0.5 ${
+                    f.paymentStatus === "unpaid"
+                      ? "bg-destructive/10 text-destructive"
+                      : "bg-emerald-500/10 text-emerald-400"
+                  }`}
                 >
-                  <UserPlus className="h-3.5 w-3.5" />
-                  Manage User Access
-                </Link>
+                  {f.paymentStatus.replace("_", " ")}
+                </span>
               </div>
             </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-6 space-y-6 backdrop-blur-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/20 text-primary">
-                <Plane className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-white">Fleet & Maintenance</h3>
-                <p className="mt-1 text-xs text-white/40 leading-relaxed">
-                  Track Hobbs/Tacho hours, toggle flight serviceability, ground aircraft (AOG) due
-                  to inspection thresholds, and adjust solo wet hire hourly rates.
-                </p>
-              </div>
-              <div className="space-y-2 pt-2">
-                <Link
-                  to="/cms/fleet"
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-xs font-bold text-white transition-all hover:bg-white/10"
-                >
-                  <Wrench className="h-3.5 w-3.5 text-white/40" />
-                  Open Hangar Logs
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-6 space-y-6 backdrop-blur-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/20 text-primary">
-                <Activity className="h-6 w-6 animate-pulse" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-white">System Health & Traffic</h3>
-                <p className="mt-1 text-xs text-white/40 leading-relaxed">
-                  Monitor live active pageviews, route conversion percentages, and real-time backend
-                  PostgreSQL or client API bundle load exceptions.
-                </p>
-              </div>
-              <div className="space-y-2 pt-2">
-                <Link
-                  to="/cms/analytics"
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-xs font-bold text-white transition-all hover:bg-white/10"
-                >
-                  <TrendingUp className="h-3.5 w-3.5 text-white/40" />
-                  View Live Health Analytics
-                </Link>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Notice */}
-      <div className="flex items-start gap-3 rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-5">
-        <AlertCircle className="h-5 w-5 shrink-0 text-yellow-400 mt-0.5" />
-        <div>
-          <p className="text-sm font-semibold text-yellow-300">Supabase Integration Pending</p>
-          <p className="mt-1 text-xs text-yellow-400/70">
-            Content changes, role configurations, and aircraft status adjustments are currently
-            stored in local component state. Once Supabase is wired in, saving here will write
-            directly to the{" "}
-            <code className="font-mono bg-yellow-500/10 px-1 rounded">cms_content</code> and
-            user/aircraft schemas.
-          </p>
+      {data && data.revenue30dCents === 0 && (
+        <div className="flex items-start gap-3 rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-5">
+          <AlertCircle className="h-5 w-5 shrink-0 text-yellow-400 mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold text-yellow-300">No payments taken yet</p>
+            <p className="mt-1 text-xs text-yellow-400/70">
+              Card payments are running in test mode, and booking emails stay switched off until a
+              Phoenix sending address is connected.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

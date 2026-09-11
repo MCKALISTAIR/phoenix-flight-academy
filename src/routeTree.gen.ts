@@ -44,7 +44,6 @@ import { Route as CmsClosedDatesRouteImport } from './routes/cms/closed-dates'
 import { Route as CmsCalendarSettingsRouteImport } from './routes/cms/calendar-settings'
 import { Route as CmsBookingsRouteImport } from './routes/cms/bookings'
 import { Route as CmsBookingProductsRouteImport } from './routes/cms/booking-products'
-import { Route as CmsAnalyticsRouteImport } from './routes/cms/analytics'
 import { Route as CmsSplatRouteImport } from './routes/cms/$'
 import { Route as BookingDashboardRouteImport } from './routes/booking/dashboard'
 import { Route as BookingAdminRouteImport } from './routes/booking/admin'
@@ -229,11 +228,6 @@ const CmsBookingProductsRoute = CmsBookingProductsRouteImport.update({
   path: '/booking-products',
   getParentRoute: () => CmsRoute,
 } as any)
-const CmsAnalyticsRoute = CmsAnalyticsRouteImport.update({
-  id: '/analytics',
-  path: '/analytics',
-  getParentRoute: () => CmsRoute,
-} as any)
 const CmsSplatRoute = CmsSplatRouteImport.update({
   id: '/$',
   path: '/$',
@@ -293,7 +287,6 @@ export interface FileRoutesByFullPath {
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
   '/cms/$': typeof CmsSplatRoute
-  '/cms/analytics': typeof CmsAnalyticsRoute
   '/cms/booking-products': typeof CmsBookingProductsRoute
   '/cms/bookings': typeof CmsBookingsRoute
   '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
@@ -337,7 +330,6 @@ export interface FileRoutesByTo {
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
   '/cms/$': typeof CmsSplatRoute
-  '/cms/analytics': typeof CmsAnalyticsRoute
   '/cms/booking-products': typeof CmsBookingProductsRoute
   '/cms/bookings': typeof CmsBookingsRoute
   '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
@@ -384,7 +376,6 @@ export interface FileRoutesById {
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
   '/cms/$': typeof CmsSplatRoute
-  '/cms/analytics': typeof CmsAnalyticsRoute
   '/cms/booking-products': typeof CmsBookingProductsRoute
   '/cms/bookings': typeof CmsBookingsRoute
   '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
@@ -432,7 +423,6 @@ export interface FileRouteTypes {
     | '/booking/admin'
     | '/booking/dashboard'
     | '/cms/$'
-    | '/cms/analytics'
     | '/cms/booking-products'
     | '/cms/bookings'
     | '/cms/calendar-settings'
@@ -476,7 +466,6 @@ export interface FileRouteTypes {
     | '/booking/admin'
     | '/booking/dashboard'
     | '/cms/$'
-    | '/cms/analytics'
     | '/cms/booking-products'
     | '/cms/bookings'
     | '/cms/calendar-settings'
@@ -522,7 +511,6 @@ export interface FileRouteTypes {
     | '/booking/admin'
     | '/booking/dashboard'
     | '/cms/$'
-    | '/cms/analytics'
     | '/cms/booking-products'
     | '/cms/bookings'
     | '/cms/calendar-settings'
@@ -819,13 +807,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsBookingProductsRouteImport
       parentRoute: typeof CmsRoute
     }
-    '/cms/analytics': {
-      id: '/cms/analytics'
-      path: '/analytics'
-      fullPath: '/cms/analytics'
-      preLoaderRoute: typeof CmsAnalyticsRouteImport
-      parentRoute: typeof CmsRoute
-    }
     '/cms/$': {
       id: '/cms/$'
       path: '/$'
@@ -920,7 +901,6 @@ const CmsStudentsRouteWithChildren = CmsStudentsRoute._addFileChildren(
 
 interface CmsRouteChildren {
   CmsSplatRoute: typeof CmsSplatRoute
-  CmsAnalyticsRoute: typeof CmsAnalyticsRoute
   CmsBookingProductsRoute: typeof CmsBookingProductsRoute
   CmsBookingsRoute: typeof CmsBookingsRoute
   CmsCalendarSettingsRoute: typeof CmsCalendarSettingsRoute
@@ -943,7 +923,6 @@ interface CmsRouteChildren {
 
 const CmsRouteChildren: CmsRouteChildren = {
   CmsSplatRoute: CmsSplatRoute,
-  CmsAnalyticsRoute: CmsAnalyticsRoute,
   CmsBookingProductsRoute: CmsBookingProductsRoute,
   CmsBookingsRoute: CmsBookingsRoute,
   CmsCalendarSettingsRoute: CmsCalendarSettingsRoute,
