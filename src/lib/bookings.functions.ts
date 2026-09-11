@@ -155,11 +155,85 @@ export const createBooking = createServerFn({ method: "POST" })
     const recurrenceType = data.recurrence ?? "none";
     const occurrencesCount = data.occurrences ?? 1;
 
+    // Availability rules are enforced here as well as in the slot picker, so a
+    // stale page or a direct API call can't book a closed day, a grounded
+    // aircraft, or a slot outside the school's opening hours.
+    const [settingsRes, closedRes, blocksRes] = await Promise.all([
+      client.from("booking_calendar_settings").select("*").limit(1).maybeSingle(),
+      client.from("booking_closed_dates").select("starts_on, ends_on"),
+      client
+        .from("booking_resource_blocks")
+        .select("aircraft_id, instructor_id, starts_at, ends_at"),
+    ]);
+    const settings = settingsRes.data;
+    const closedRanges = (closedRes.data ?? []).map((c) => ({
+      start: new Date(`${c.starts_on}T00:00:00Z`),
+      end: new Date(`${c.ends_on}T23:59:59Z`),
+    }));
+    const resourceBlocks = blocksRes.data ?? [];
+    const overlaps = (aStart: Date, aEnd: Date, bStart: Date, bEnd: Date) =>
+      aStart < bEnd && bStart < aEnd;
+
+    const now = new Date();
+    const minBookableAt = new Date(now.getTime() + product.min_notice_hours * 3600_000);
+    const maxBookableAt = new Date(now.getTime() + product.max_advance_days * 86400_000);
+
     // Conflict check (server-authoritative) across all slots in the series
     for (let i = 0; i < occurrencesCount; i++) {
       const offsetDays = i * (recurrenceType === "weekly" ? 7 : 14);
       const starts = new Date(startsDate.getTime() + offsetDays * 24 * 60 * 60 * 1000);
       const ends = new Date(starts.getTime() + product.duration_minutes * 60_000);
+      const slotLabel = `${starts.toLocaleDateString("en-GB")} at ${starts.toLocaleTimeString(
+        "en-GB",
+        { hour: "2-digit", minute: "2-digit" },
+      )}`;
+
+      if (starts < minBookableAt) {
+        throw new Error(
+          `That slot is too soon — bookings need at least ${product.min_notice_hours} hours' notice.`,
+        );
+      }
+      if (starts > maxBookableAt) {
+        throw new Error(
+          `That slot is too far ahead — bookings open ${product.max_advance_days} days in advance.`,
+        );
+      }
+      if (closedRanges.some((r) => overlaps(starts, ends, r.start, r.end))) {
+        throw new Error(`The airfield is closed on ${starts.toLocaleDateString("en-GB")}.`);
+      }
+      if (settings) {
+        const dayIdx = (starts.getUTCDay() + 6) % 7; // Mon=0..Sun=6
+        if (settings.weekday_mask[dayIdx] !== "Y") {
+          throw new Error(`The airfield does not operate on ${starts.toLocaleDateString("en-GB")}.`);
+        }
+        const [openH, openM] = settings.open_time.split(":").map(Number);
+        const [closeH, closeM] = settings.close_time.split(":").map(Number);
+        const startMins = starts.getUTCHours() * 60 + starts.getUTCMinutes();
+        if (startMins < openH * 60 + openM || startMins + product.duration_minutes > closeH * 60 + closeM) {
+          throw new Error(`${slotLabel} is outside the airfield's operating hours.`);
+        }
+      }
+      if (
+        data.aircraftId &&
+        resourceBlocks.some(
+          (b) =>
+            b.aircraft_id === data.aircraftId &&
+            overlaps(starts, ends, new Date(b.starts_at), new Date(b.ends_at)),
+        )
+      ) {
+        throw new Error(`That aircraft is unavailable on ${slotLabel}.`);
+      }
+      if (
+        data.instructorId &&
+        resourceBlocks.some(
+          (b) =>
+            b.instructor_id === data.instructorId &&
+            overlaps(starts, ends, new Date(b.starts_at), new Date(b.ends_at)),
+        )
+      ) {
+        throw new Error(`That instructor is unavailable on ${slotLabel}.`);
+      }
+
 
       if (data.aircraftId) {
         const c = await client
