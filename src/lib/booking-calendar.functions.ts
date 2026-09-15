@@ -283,7 +283,6 @@ export const getAvailableSlots = createServerFn({ method: "GET" })
           }
         }
       }
-      cursor.setUTCDate(cursor.getUTCDate() + 1);
     }
     return out;
   });
