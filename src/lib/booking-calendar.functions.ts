@@ -207,16 +207,16 @@ export const getAvailableSlots = createServerFn({ method: "GET" })
     }
 
     const out: AvailableSlot[] = [];
-    const cursor = new Date(fromDate);
-    while (cursor <= toDate) {
-      const dayIdx = (cursor.getUTCDay() + 6) % 7; // Mon=0..Sun=6
+    const tz = settings.timezone || DEFAULT_TIMEZONE;
+    for (const day of eachDate(data.from, data.to)) {
+      // Weekday of the local calendar date (Mon=0..Sun=6)
+      const dayIdx = getZonedParts(zonedTimeToUtc(day.y, day.m, day.d, 12, 0, tz), tz).weekdayIdx;
       const open = settings.weekday_mask[dayIdx] === "Y";
       if (open) {
         let h = openH;
         let m = openM;
         while (h * 60 + m + duration <= closeH * 60 + closeM) {
-          const startsAt = new Date(cursor);
-          startsAt.setUTCHours(h, m, 0, 0);
+          const startsAt = zonedTimeToUtc(day.y, day.m, day.d, h, m, tz);
           const endsAt = new Date(startsAt.getTime() + duration * 60_000);
           const endWithBuffer = new Date(endsAt.getTime() + buffer * 60_000);
 
