@@ -202,13 +202,14 @@ export const createBooking = createServerFn({ method: "POST" })
         throw new Error(`The airfield is closed on ${starts.toLocaleDateString("en-GB")}.`);
       }
       if (settings) {
-        const dayIdx = (starts.getUTCDay() + 6) % 7; // Mon=0..Sun=6
-        if (settings.weekday_mask[dayIdx] !== "Y") {
+        const tz = settings.timezone || DEFAULT_TIMEZONE;
+        const local = localMinutesAndWeekday(starts, tz);
+        if (settings.weekday_mask[local.weekdayIdx] !== "Y") {
           throw new Error(`The airfield does not operate on ${starts.toLocaleDateString("en-GB")}.`);
         }
         const [openH, openM] = settings.open_time.split(":").map(Number);
         const [closeH, closeM] = settings.close_time.split(":").map(Number);
-        const startMins = starts.getUTCHours() * 60 + starts.getUTCMinutes();
+        const startMins = local.minutes;
         if (startMins < openH * 60 + openM || startMins + product.duration_minutes > closeH * 60 + closeM) {
           throw new Error(`${slotLabel} is outside the airfield's operating hours.`);
         }
