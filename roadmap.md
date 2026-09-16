@@ -29,3 +29,14 @@
 - [x] Commercial pitch deck & operational transition proposal prepared (`phoenix_commercial_pitch_and_handover.md`)
 - [x] Flight school operational checklist & onboarding walk-through verified
 - [x] Production build and TypeScript validation clean
+
+## Go-live database hardening (done)
+- [x] Enquiries: status / notes / updated_at columns + staff view & update policies
+- [x] Profiles: customers see only their own profile; staff see all
+- [x] Site content: draft columns no longer readable by anonymous visitors
+- [x] `booking_payments` ledger (payments + refunds, method, who, reference) wired into online checkout, manual payments and refunds
+- [x] Unique indexes on Stripe session / payment intent IDs (no double fulfilment)
+- [x] Self-hire approvals can be re-granted after revocation (history kept)
+- [x] Only super admins can create organisations
+- [x] Missing foreign-key indexes added
+- [x] Test data cleared (45 cancelled bookings, e2e test accounts)
