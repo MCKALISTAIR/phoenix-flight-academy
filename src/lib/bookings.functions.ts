@@ -601,6 +601,28 @@ export const recordManualPayment = createServerFn({ method: "POST" })
 
     if (updateErr) throw new Error(updateErr.message);
 
+    const ledgerMethod = (
+      {
+        card_terminal: "card_terminal",
+        cash: "cash",
+        bacs_transfer: "bacs",
+        voucher: "voucher",
+        other: "other",
+      } as const
+    )[data.paymentMethod];
+
+    const { error: ledgerErr } = await context.supabase.from("booking_payments").insert({
+      booking_id: data.bookingId,
+      direction: "payment",
+      method: ledgerMethod,
+      amount_cents: data.amountCents,
+      reference: data.reference ?? null,
+      notes: data.notes ?? null,
+      recorded_by: context.userId,
+      received_at: nowIso,
+    });
+    if (ledgerErr) throw new Error(ledgerErr.message);
+
     return {
       ok: true,
       amountPaidCents: newPaid,
@@ -644,6 +666,20 @@ export const recordRefund = createServerFn({ method: "POST" })
       .eq("id", data.bookingId);
 
     if (updateErr) throw new Error(updateErr.message);
+
+    if (refundAmount > 0) {
+      const { error: ledgerErr } = await context.supabase.from("booking_payments").insert({
+        booking_id: data.bookingId,
+        direction: "refund",
+        method: "other",
+        amount_cents: refundAmount,
+        notes: data.reason,
+        recorded_by: context.userId,
+        received_at: nowIso,
+      });
+      if (ledgerErr) throw new Error(ledgerErr.message);
+    }
+
     return { ok: true };
   });
 
