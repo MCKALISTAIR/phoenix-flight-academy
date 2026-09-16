@@ -229,6 +229,66 @@ export type Database = {
           },
         ]
       }
+      booking_payments: {
+        Row: {
+          amount_cents: number
+          booking_id: string
+          created_at: string
+          direction: Database["public"]["Enums"]["payment_direction"]
+          id: string
+          method: Database["public"]["Enums"]["payment_method_kind"]
+          notes: string | null
+          organization_id: string
+          received_at: string
+          recorded_by: string | null
+          reference: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          booking_id: string
+          created_at?: string
+          direction?: Database["public"]["Enums"]["payment_direction"]
+          id?: string
+          method: Database["public"]["Enums"]["payment_method_kind"]
+          notes?: string | null
+          organization_id?: string
+          received_at?: string
+          recorded_by?: string | null
+          reference?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          booking_id?: string
+          created_at?: string
+          direction?: Database["public"]["Enums"]["payment_direction"]
+          id?: string
+          method?: Database["public"]["Enums"]["payment_method_kind"]
+          notes?: string | null
+          organization_id?: string
+          received_at?: string
+          recorded_by?: string | null
+          reference?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_payments_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_payments_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       booking_products: {
         Row: {
           cancellation_hours: number
@@ -553,7 +613,10 @@ export type Database = {
           id: string
           message: string
           name: string
+          notes: string | null
           source: string | null
+          status: string
+          updated_at: string
         }
         Insert: {
           company?: string | null
@@ -562,7 +625,10 @@ export type Database = {
           id?: string
           message: string
           name: string
+          notes?: string | null
           source?: string | null
+          status?: string
+          updated_at?: string
         }
         Update: {
           company?: string | null
@@ -571,7 +637,10 @@ export type Database = {
           id?: string
           message?: string
           name?: string
+          notes?: string | null
           source?: string | null
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1662,6 +1731,14 @@ export type Database = {
       license_sought: "PPL" | "LAPL" | "NPPL" | "CPL" | "IR" | "Other"
       org_role: "owner" | "admin" | "staff"
       org_subscription_tier: "trial" | "starter" | "pro" | "enterprise"
+      payment_direction: "payment" | "refund"
+      payment_method_kind:
+        | "card_online"
+        | "card_terminal"
+        | "cash"
+        | "bacs"
+        | "voucher"
+        | "other"
       pilot_verification_status:
         | "pending"
         | "approved"
@@ -1861,6 +1938,15 @@ export const Constants = {
       license_sought: ["PPL", "LAPL", "NPPL", "CPL", "IR", "Other"],
       org_role: ["owner", "admin", "staff"],
       org_subscription_tier: ["trial", "starter", "pro", "enterprise"],
+      payment_direction: ["payment", "refund"],
+      payment_method_kind: [
+        "card_online",
+        "card_terminal",
+        "cash",
+        "bacs",
+        "voucher",
+        "other",
+      ],
       pilot_verification_status: [
         "pending",
         "approved",
