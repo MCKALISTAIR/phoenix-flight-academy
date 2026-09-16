@@ -67,6 +67,22 @@ async function fulfillBooking(session: Record<string, any>) {
   if (updateErr) throw new Error(updateErr.message);
   console.log(`Booking ${bookingId} fulfilled: status=${status}, payment_status=${paymentStatus}`);
 
+  // Payments ledger entry (reconciliation / audit trail)
+  const amountCents =
+    session.amount_total ??
+    (mode === "deposit" ? (booking.deposit_due_cents ?? 0) : booking.price_total_cents);
+  if (amountCents > 0) {
+    const { error: ledgerErr } = await supabaseAdmin.from("booking_payments").insert({
+      booking_id: bookingId,
+      direction: "payment",
+      method: "card_online",
+      amount_cents: amountCents,
+      reference: paymentIntentId ?? session.id,
+      notes: mode === "deposit" ? "Online deposit" : "Online payment in full",
+    });
+    if (ledgerErr) console.error("Failed to write payments ledger entry:", ledgerErr.message);
+  }
+
   const { notifyBookingPaid } = await import("@/lib/email/booking-emails.server");
   await notifyBookingPaid(bookingId);
 }
