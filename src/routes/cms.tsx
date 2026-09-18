@@ -88,6 +88,7 @@ function CmsLayout() {
           superOnly: false,
         },
         { to: "/cms/bookings", icon: ClipboardList, label: "Bookings", superOnly: false },
+        { to: "/admin/bookings", icon: CirclePoundSterling, label: "Payments & Balances", superOnly: false },
         { to: "/cms/enquiries", icon: Inbox, label: "Enquiries & Leads", superOnly: false },
         { to: "/cms/flying-status", icon: CloudSun, label: "Airfield Status", superOnly: false },
         { to: "/cms/resource-blocks", icon: Ban, label: "Resource Blocks", superOnly: false },
