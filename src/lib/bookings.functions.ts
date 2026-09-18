@@ -6,7 +6,11 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { getRequest } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
 import { DEFAULT_ORG_ID } from "@/lib/constants";
-import { DEFAULT_TIMEZONE, localMinutesAndWeekday } from "@/lib/timezone";
+import {
+  DEFAULT_TIMEZONE,
+  localMinutesAndWeekday,
+  addDaysKeepingLocalTime,
+} from "@/lib/timezone";
 
 function computePrice(
   product: {
@@ -167,6 +171,7 @@ export const createBooking = createServerFn({ method: "POST" })
         .select("aircraft_id, instructor_id, starts_at, ends_at"),
     ]);
     const settings = settingsRes.data;
+    const schoolTz = settings?.timezone || DEFAULT_TIMEZONE;
     const closedRanges = (closedRes.data ?? []).map((c) => ({
       start: new Date(`${c.starts_on}T00:00:00Z`),
       end: new Date(`${c.ends_on}T23:59:59Z`),
@@ -182,7 +187,7 @@ export const createBooking = createServerFn({ method: "POST" })
     // Conflict check (server-authoritative) across all slots in the series
     for (let i = 0; i < occurrencesCount; i++) {
       const offsetDays = i * (recurrenceType === "weekly" ? 7 : 14);
-      const starts = new Date(startsDate.getTime() + offsetDays * 24 * 60 * 60 * 1000);
+      const starts = addDaysKeepingLocalTime(startsDate, offsetDays, schoolTz);
       const ends = new Date(starts.getTime() + product.duration_minutes * 60_000);
       const slotLabel = `${starts.toLocaleDateString("en-GB")} at ${starts.toLocaleTimeString(
         "en-GB",
@@ -203,8 +208,7 @@ export const createBooking = createServerFn({ method: "POST" })
         throw new Error(`The airfield is closed on ${starts.toLocaleDateString("en-GB")}.`);
       }
       if (settings) {
-        const tz = settings.timezone || DEFAULT_TIMEZONE;
-        const local = localMinutesAndWeekday(starts, tz);
+        const local = localMinutesAndWeekday(starts, schoolTz);
         if (settings.weekday_mask[local.weekdayIdx] !== "Y") {
           throw new Error(`The airfield does not operate on ${starts.toLocaleDateString("en-GB")}.`);
         }
@@ -355,7 +359,7 @@ export const createBooking = createServerFn({ method: "POST" })
       const restPayloads = [];
       for (let i = 1; i < occurrencesCount; i++) {
         const offsetDays = i * (recurrenceType === "weekly" ? 7 : 14);
-        const starts = new Date(startsDate.getTime() + offsetDays * 24 * 60 * 60 * 1000);
+        const starts = addDaysKeepingLocalTime(startsDate, offsetDays, schoolTz);
         const ends = new Date(starts.getTime() + product.duration_minutes * 60_000);
 
         restPayloads.push({
