@@ -11,6 +11,7 @@ import {
 
 import appCss from "../styles.css?url";
 import { supabase } from "@/integrations/supabase/client";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -159,7 +160,8 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const location = useLocation();
   const router = useRouter();
-  const isCmsRoute = location.pathname.startsWith("/cms");
+  const isCmsRoute =
+    location.pathname.startsWith("/cms") || location.pathname.startsWith("/admin");
   const isLoginRoute = location.pathname === "/login" || location.pathname === "/reset-password";
   const isDashboardRoute = location.pathname === "/booking/dashboard";
   const isBookingFlow =
@@ -218,6 +220,7 @@ function RootComponent() {
         </main>
         {showFooter && <Footer />}
       </div>
+      <Toaster />
     </QueryClientProvider>
   );
 }
