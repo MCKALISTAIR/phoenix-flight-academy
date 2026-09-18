@@ -24,6 +24,7 @@ import {
   CloudSun,
   CalendarX,
   Ban,
+  CirclePoundSterling,
   Shield,
   Tag,
   BadgeCheck,
