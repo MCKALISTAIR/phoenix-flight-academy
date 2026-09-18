@@ -6,7 +6,11 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { getRequest } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
 import { DEFAULT_ORG_ID } from "@/lib/constants";
-import { DEFAULT_TIMEZONE, localMinutesAndWeekday } from "@/lib/timezone";
+import {
+  DEFAULT_TIMEZONE,
+  localMinutesAndWeekday,
+  addDaysKeepingLocalTime,
+} from "@/lib/timezone";
 
 function computePrice(
   product: {
