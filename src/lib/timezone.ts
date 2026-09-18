@@ -76,6 +76,30 @@ export function localMinutesAndWeekday(date: Date, timeZone = DEFAULT_TIMEZONE) 
   return { minutes: p.hour * 60 + p.minute, weekdayIdx: p.weekdayIdx, parts: p };
 }
 
+/**
+ * Adds whole days to an instant while keeping the same wall-clock time in
+ * `timeZone`, so repeating bookings don't drift across a clock change.
+ */
+export function addDaysKeepingLocalTime(
+  date: Date,
+  days: number,
+  timeZone = DEFAULT_TIMEZONE,
+): Date {
+  const p = getZonedParts(date, timeZone);
+  // Shift the calendar date in plain UTC arithmetic, then rebuild the instant
+  // from the (unchanged) local wall-clock time.
+  const shifted = new Date(Date.UTC(p.year, p.month - 1, p.day, 12, 0, 0, 0));
+  shifted.setUTCDate(shifted.getUTCDate() + days);
+  return zonedTimeToUtc(
+    shifted.getUTCFullYear(),
+    shifted.getUTCMonth() + 1,
+    shifted.getUTCDate(),
+    p.hour,
+    p.minute,
+    timeZone,
+  );
+}
+
 /** Enumerate calendar dates (YYYY-MM-DD) inclusively between two date strings. */
 export function eachDate(from: string, to: string): { y: number; m: number; d: number }[] {
   const out: { y: number; m: number; d: number }[] = [];
