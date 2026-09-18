@@ -49,6 +49,7 @@ import { Route as CmsSplatRouteImport } from './routes/cms/$'
 import { Route as BookingLookupRouteImport } from './routes/booking/lookup'
 import { Route as BookingDashboardRouteImport } from './routes/booking/dashboard'
 import { Route as BookingAdminRouteImport } from './routes/booking/admin'
+import { Route as AdminBookingsRouteImport } from './routes/admin/bookings'
 import { Route as CmsStudentsStudentIdRouteImport } from './routes/cms/students.$studentId'
 import { Route as BookingConfirmIdRouteImport } from './routes/booking/confirm.$id'
 import { Route as BookingCheckoutIdRouteImport } from './routes/booking/checkout.$id'
@@ -255,6 +256,11 @@ const BookingAdminRoute = BookingAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => BookingRoute,
 } as any)
+const AdminBookingsRoute = AdminBookingsRouteImport.update({
+  id: '/admin/bookings',
+  path: '/admin/bookings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CmsStudentsStudentIdRoute = CmsStudentsStudentIdRouteImport.update({
   id: '/$studentId',
   path: '/$studentId',
@@ -296,6 +302,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/admin/bookings': typeof AdminBookingsRoute
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
   '/booking/lookup': typeof BookingLookupRoute
@@ -341,6 +348,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/admin/bookings': typeof AdminBookingsRoute
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
   '/booking/lookup': typeof BookingLookupRoute
@@ -389,6 +397,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/unauthorized': typeof UnauthorizedRoute
+  '/admin/bookings': typeof AdminBookingsRoute
   '/booking/admin': typeof BookingAdminRoute
   '/booking/dashboard': typeof BookingDashboardRoute
   '/booking/lookup': typeof BookingLookupRoute
@@ -438,6 +447,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/unauthorized'
+    | '/admin/bookings'
     | '/booking/admin'
     | '/booking/dashboard'
     | '/booking/lookup'
@@ -483,6 +493,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/unauthorized'
+    | '/admin/bookings'
     | '/booking/admin'
     | '/booking/dashboard'
     | '/booking/lookup'
@@ -530,6 +541,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/terms'
     | '/unauthorized'
+    | '/admin/bookings'
     | '/booking/admin'
     | '/booking/dashboard'
     | '/booking/lookup'
@@ -578,6 +590,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
   UnauthorizedRoute: typeof UnauthorizedRoute
+  AdminBookingsRoute: typeof AdminBookingsRoute
   FlyingExperienceRoute: typeof FlyingExperienceRoute
   FlyingLearnToFlyRoute: typeof FlyingLearnToFlyRoute
   FlyingSelfHireRoute: typeof FlyingSelfHireRoute
@@ -866,6 +879,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookingAdminRouteImport
       parentRoute: typeof BookingRoute
     }
+    '/admin/bookings': {
+      id: '/admin/bookings'
+      path: '/admin/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AdminBookingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cms/students/$studentId': {
       id: '/cms/students/$studentId'
       path: '/$studentId'
@@ -1001,6 +1021,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
   UnauthorizedRoute: UnauthorizedRoute,
+  AdminBookingsRoute: AdminBookingsRoute,
   FlyingExperienceRoute: FlyingExperienceRoute,
   FlyingLearnToFlyRoute: FlyingLearnToFlyRoute,
   FlyingSelfHireRoute: FlyingSelfHireRoute,
