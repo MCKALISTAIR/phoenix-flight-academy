@@ -251,23 +251,33 @@ export const getAvailableSlots = createServerFn({ method: "GET" })
                 reason = "Aircraft booked";
               }
             }
-            if (available && data.instructorId) {
-              const conflict =
-                bookings.some(
+            if (available && requiresInstructor) {
+              const startMinutes = h * 60 + m;
+              const endMinutes = startMinutes + duration;
+              const instructorFree = (id: string) =>
+                instructorWindowCovers(windows, id, dayIdx, startMinutes, endMinutes) &&
+                !blocks.some(
                   (b) =>
-                    b.instructor_id === data.instructorId &&
-                    overlaps(startsAt, endWithBuffer, new Date(b.starts_at), new Date(b.ends_at)),
-                ) ||
-                blocks.some(
-                  (b) =>
-                    b.instructor_id === data.instructorId &&
+                    b.instructor_id === id &&
                     overlaps(startsAt, endsAt, new Date(b.starts_at), new Date(b.ends_at)),
+                ) &&
+                !bookings.some(
+                  (b) =>
+                    b.instructor_id === id &&
+                    overlaps(startsAt, endWithBuffer, new Date(b.starts_at), new Date(b.ends_at)),
                 );
-              if (conflict) {
+
+              if (data.instructorId) {
+                if (!instructorFree(data.instructorId)) {
+                  available = false;
+                  reason = "Instructor unavailable";
+                }
+              } else if (!instructorIds.some((id) => instructorFree(id))) {
                 available = false;
-                reason = "Instructor unavailable";
+                reason = "No instructor available";
               }
             }
+
           }
 
           out.push({
