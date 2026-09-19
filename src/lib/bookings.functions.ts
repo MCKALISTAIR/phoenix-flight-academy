@@ -159,13 +159,21 @@ export const createBooking = createServerFn({ method: "POST" })
     // Availability rules are enforced here as well as in the slot picker, so a
     // stale page or a direct API call can't book a closed day, a grounded
     // aircraft, or a slot outside the school's opening hours.
-    const [settingsRes, closedRes, blocksRes] = await Promise.all([
+    const [settingsRes, closedRes, blocksRes, instrRes, availRes] = await Promise.all([
       client.from("booking_calendar_settings").select("*").limit(1).maybeSingle(),
       client.from("booking_closed_dates").select("starts_on, ends_on"),
       client
         .from("booking_resource_blocks")
         .select("aircraft_id, instructor_id, starts_at, ends_at"),
+      client.from("instructors").select("id").eq("published", true),
+      client
+        .from("instructor_availability")
+        .select("instructor_id, weekday, start_time, end_time"),
     ]);
+    const requiresInstructor = product.kind !== "self_hire";
+    const publishedInstructorIds = (instrRes.data ?? []).map((i: { id: string }) => i.id);
+    const availabilityWindows = (availRes.data ?? []) as AvailabilityWindow[];
+
     const settings = settingsRes.data;
     const schoolTz = settings?.timezone || DEFAULT_TIMEZONE;
     const closedRanges = (closedRes.data ?? []).map((c) => ({
