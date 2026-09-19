@@ -20,6 +20,7 @@ import {
   CalendarDays,
   PackageOpen,
   ClipboardList,
+  ClipboardCheck,
   KeyRound,
   CloudSun,
   CalendarX,
