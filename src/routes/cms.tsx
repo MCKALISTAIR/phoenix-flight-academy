@@ -88,6 +88,7 @@ function CmsLayout() {
           exact: true,
           superOnly: false,
         },
+        { to: "/cms/day-sheet", icon: ClipboardCheck, label: "Day Sheet", superOnly: false },
         { to: "/cms/bookings", icon: ClipboardList, label: "Bookings", superOnly: false },
         {
           to: "/admin/bookings",
