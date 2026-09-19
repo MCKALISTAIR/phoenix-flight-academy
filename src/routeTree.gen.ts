@@ -40,6 +40,7 @@ import { Route as CmsFleetRouteImport } from './routes/cms/fleet'
 import { Route as CmsExpiriesRouteImport } from './routes/cms/expiries'
 import { Route as CmsEnquiriesRouteImport } from './routes/cms/enquiries'
 import { Route as CmsEmailsRouteImport } from './routes/cms/emails'
+import { Route as CmsDaySheetRouteImport } from './routes/cms/day-sheet'
 import { Route as CmsContentRouteImport } from './routes/cms/content'
 import { Route as CmsClosedDatesRouteImport } from './routes/cms/closed-dates'
 import { Route as CmsCalendarSettingsRouteImport } from './routes/cms/calendar-settings'
@@ -211,6 +212,11 @@ const CmsEmailsRoute = CmsEmailsRouteImport.update({
   path: '/emails',
   getParentRoute: () => CmsRoute,
 } as any)
+const CmsDaySheetRoute = CmsDaySheetRouteImport.update({
+  id: '/day-sheet',
+  path: '/day-sheet',
+  getParentRoute: () => CmsRoute,
+} as any)
 const CmsContentRoute = CmsContentRouteImport.update({
   id: '/content',
   path: '/content',
@@ -312,6 +318,7 @@ export interface FileRoutesByFullPath {
   '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
   '/cms/closed-dates': typeof CmsClosedDatesRoute
   '/cms/content': typeof CmsContentRoute
+  '/cms/day-sheet': typeof CmsDaySheetRoute
   '/cms/emails': typeof CmsEmailsRoute
   '/cms/enquiries': typeof CmsEnquiriesRoute
   '/cms/expiries': typeof CmsExpiriesRoute
@@ -358,6 +365,7 @@ export interface FileRoutesByTo {
   '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
   '/cms/closed-dates': typeof CmsClosedDatesRoute
   '/cms/content': typeof CmsContentRoute
+  '/cms/day-sheet': typeof CmsDaySheetRoute
   '/cms/emails': typeof CmsEmailsRoute
   '/cms/enquiries': typeof CmsEnquiriesRoute
   '/cms/expiries': typeof CmsExpiriesRoute
@@ -407,6 +415,7 @@ export interface FileRoutesById {
   '/cms/calendar-settings': typeof CmsCalendarSettingsRoute
   '/cms/closed-dates': typeof CmsClosedDatesRoute
   '/cms/content': typeof CmsContentRoute
+  '/cms/day-sheet': typeof CmsDaySheetRoute
   '/cms/emails': typeof CmsEmailsRoute
   '/cms/enquiries': typeof CmsEnquiriesRoute
   '/cms/expiries': typeof CmsExpiriesRoute
@@ -457,6 +466,7 @@ export interface FileRouteTypes {
     | '/cms/calendar-settings'
     | '/cms/closed-dates'
     | '/cms/content'
+    | '/cms/day-sheet'
     | '/cms/emails'
     | '/cms/enquiries'
     | '/cms/expiries'
@@ -503,6 +513,7 @@ export interface FileRouteTypes {
     | '/cms/calendar-settings'
     | '/cms/closed-dates'
     | '/cms/content'
+    | '/cms/day-sheet'
     | '/cms/emails'
     | '/cms/enquiries'
     | '/cms/expiries'
@@ -551,6 +562,7 @@ export interface FileRouteTypes {
     | '/cms/calendar-settings'
     | '/cms/closed-dates'
     | '/cms/content'
+    | '/cms/day-sheet'
     | '/cms/emails'
     | '/cms/enquiries'
     | '/cms/expiries'
@@ -816,6 +828,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsEmailsRouteImport
       parentRoute: typeof CmsRoute
     }
+    '/cms/day-sheet': {
+      id: '/cms/day-sheet'
+      path: '/day-sheet'
+      fullPath: '/cms/day-sheet'
+      preLoaderRoute: typeof CmsDaySheetRouteImport
+      parentRoute: typeof CmsRoute
+    }
     '/cms/content': {
       id: '/cms/content'
       path: '/content'
@@ -966,6 +985,7 @@ interface CmsRouteChildren {
   CmsCalendarSettingsRoute: typeof CmsCalendarSettingsRoute
   CmsClosedDatesRoute: typeof CmsClosedDatesRoute
   CmsContentRoute: typeof CmsContentRoute
+  CmsDaySheetRoute: typeof CmsDaySheetRoute
   CmsEmailsRoute: typeof CmsEmailsRoute
   CmsEnquiriesRoute: typeof CmsEnquiriesRoute
   CmsExpiriesRoute: typeof CmsExpiriesRoute
@@ -989,6 +1009,7 @@ const CmsRouteChildren: CmsRouteChildren = {
   CmsCalendarSettingsRoute: CmsCalendarSettingsRoute,
   CmsClosedDatesRoute: CmsClosedDatesRoute,
   CmsContentRoute: CmsContentRoute,
+  CmsDaySheetRoute: CmsDaySheetRoute,
   CmsEmailsRoute: CmsEmailsRoute,
   CmsEnquiriesRoute: CmsEnquiriesRoute,
   CmsExpiriesRoute: CmsExpiriesRoute,
