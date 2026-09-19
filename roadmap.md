@@ -40,3 +40,5 @@
 - [x] Only super admins can create organisations
 - [x] Missing foreign-key indexes added
 - [x] Test data cleared (45 cancelled bookings, e2e test accounts)
+
+- [x] /admin/bookings payments & balances page with Resolve flow (verified end-to-end)
