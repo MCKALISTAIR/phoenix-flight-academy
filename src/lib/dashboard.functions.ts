@@ -104,7 +104,7 @@ export const getDashboardSnapshot = createServerFn({ method: "GET" })
     ] = await Promise.all([
       supabase
         .from("bookings")
-        .select("id, starts_at, customer_name, status, payment_status, booking_products(name)")
+        .select(FLIGHT_SELECT)
         .gte("starts_at", dayStart.toISOString())
         .lt("starts_at", dayEnd.toISOString())
         .in("status", ["pending", "confirmed"])
