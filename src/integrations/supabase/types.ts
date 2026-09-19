@@ -935,6 +935,60 @@ export type Database = {
           },
         ]
       }
+      instructor_availability: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          end_time: string
+          id: string
+          instructor_id: string
+          note: string | null
+          organization_id: string
+          start_time: string
+          updated_at: string
+          weekday: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          end_time: string
+          id?: string
+          instructor_id: string
+          note?: string | null
+          organization_id: string
+          start_time: string
+          updated_at?: string
+          weekday: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          end_time?: string
+          id?: string
+          instructor_id?: string
+          note?: string | null
+          organization_id?: string
+          start_time?: string
+          updated_at?: string
+          weekday?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "instructor_availability_instructor_id_fkey"
+            columns: ["instructor_id"]
+            isOneToOne: false
+            referencedRelation: "instructors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "instructor_availability_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       instructors: {
         Row: {
           bio: string | null
@@ -948,6 +1002,7 @@ export type Database = {
           published: boolean
           role: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           bio?: string | null
@@ -961,6 +1016,7 @@ export type Database = {
           published?: boolean
           role?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           bio?: string | null
@@ -974,6 +1030,7 @@ export type Database = {
           published?: boolean
           role?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -1648,6 +1705,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_instructor_user: { Args: { _instructor_id: string }; Returns: boolean }
       is_org_admin: { Args: { _org_id: string }; Returns: boolean }
       is_org_member: { Args: { _org_id: string }; Returns: boolean }
       set_self_as_student: {
