@@ -160,18 +160,8 @@ function BookingFlow() {
     }
   }, [aircraft, aircraftId]);
 
-  // Auto-pick first instructor for lesson/experience
-  useEffect(() => {
-    if (
-      !instructorId &&
-      instructors &&
-      instructors.length > 0 &&
-      product &&
-      product.kind !== "self_hire"
-    ) {
-      setInstructorId(instructors[0].id);
-    }
-  }, [instructors, instructorId, product]);
+  // Instructor choice is optional — "No preference" (null) is the default and
+  // shows every slot where at least one instructor has published hours.
 
   // Build 14-day window for available slots
   const dateRange = useMemo(() => {
@@ -423,7 +413,23 @@ function BookingFlow() {
                 <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   <UserIcon className="h-4 w-4 text-primary" /> Instructor
                 </h2>
+                <p className="mt-1 text-xs text-white/40">
+                  Optional — leave it on “No preference” and we&apos;ll assign an available
+                  instructor.
+                </p>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={() => setInstructorId(null)}
+                    className={`rounded-xl border p-4 text-left transition-all active:scale-[0.99] ${
+                      instructorId === null
+                        ? "border-primary bg-primary/10 ring-1 ring-primary/30"
+                        : "border-white/10 bg-white/5 hover:border-white/20"
+                    }`}
+                  >
+                    <p className="font-bold tracking-tight">No preference</p>
+                    <p className="text-xs text-white/50">Any available instructor</p>
+                  </button>
                   {(instructors ?? []).map((i) => (
                     <button
                       type="button"
