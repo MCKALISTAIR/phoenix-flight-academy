@@ -30,8 +30,9 @@ export async function notifyBookingPaid(bookingId: string) {
       .maybeSingle();
     if (!booking) return;
 
-    const product = (booking as { booking_products: { name: string; requires_approval: boolean } | null })
-      .booking_products;
+    const product = (
+      booking as { booking_products: { name: string; requires_approval: boolean } | null }
+    ).booking_products;
     const settings = await getEmailSettings();
 
     let aircraft: string | undefined;
@@ -88,7 +89,9 @@ export async function notifyBookingPaid(bookingId: string) {
 /**
  * Sends a pre-flight reminder and briefing to the customer.
  */
-export async function sendBookingReminderEmail(bookingId: string): Promise<{ sent: boolean; reason?: string }> {
+export async function sendBookingReminderEmail(
+  bookingId: string,
+): Promise<{ sent: boolean; reason?: string }> {
   try {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: booking, error } = await supabaseAdmin
@@ -141,4 +144,3 @@ export async function sendBookingReminderEmail(bookingId: string): Promise<{ sen
     return { sent: false, reason: err instanceof Error ? err.message : "Internal error" };
   }
 }
-

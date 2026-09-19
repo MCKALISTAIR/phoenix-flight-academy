@@ -115,6 +115,7 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
     { name: "CMS Root", path: "/cms" },
     { name: "CMS Bookings", path: "/cms/bookings" },
     { name: "CMS Users", path: "/cms/users" },
+    { name: "Admin Bookings", path: "/admin/bookings" },
   ];
 
   for (const { name, path } of protectedPages) {
@@ -138,11 +139,14 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
     await expect(page.locator("text=Live Airfield Weather")).toBeVisible();
     await expect(page.locator("text=Cumbernauld EGPG")).toBeVisible();
 
-    // Toggle METAR decode button
+    // Toggle METAR decode button with hydration resilience
     const decodeBtn = page.getByRole("button", { name: "Decode Weather" });
     await expect(decodeBtn).toBeVisible();
-    await decodeBtn.click();
-    await expect(page.getByRole("button", { name: "Show METAR" })).toBeVisible();
+    await expect(async () => {
+      if (await page.getByRole("button", { name: "Show METAR" }).isVisible()) return;
+      await decodeBtn.click();
+      await expect(page.getByRole("button", { name: "Show METAR" })).toBeVisible({ timeout: 1000 });
+    }).toPass({ timeout: 10000 });
   });
 
   test("Login Portal responds to tab=register search parameter", async ({ page }) => {
@@ -178,15 +182,16 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
       { label: "Students & Logbook", urlPath: "/cms/students" },
       { label: "Expiries", urlPath: "/cms/expiries" },
       { label: "Bookings", urlPath: "/cms/bookings" },
+      { label: "Payments & Balances", urlPath: "/admin/bookings" },
+      { label: "Enquiries & Leads", urlPath: "/cms/enquiries" },
       { label: "Booking Products", urlPath: "/cms/booking-products" },
       { label: "Calendar Settings", urlPath: "/cms/calendar-settings" },
       { label: "Closed Dates", urlPath: "/cms/closed-dates" },
       { label: "Resource Blocks", urlPath: "/cms/resource-blocks" },
       { label: "Airfield Status", urlPath: "/cms/flying-status" },
       { label: "Self-Hire Approvals", urlPath: "/cms/self-hire-approvals" },
-      { label: "Mock Payments", urlPath: "/cms/mock-payments" },
+      { label: "Emails", urlPath: "/cms/emails" },
       { label: "User Management", urlPath: "/cms/users" },
-      { label: "System Analytics", urlPath: "/cms/analytics" },
     ];
 
     for (const { label, urlPath } of cmsSubPages) {

@@ -9,7 +9,12 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "playwright test",
+    "test:headed": "playwright test --project=chromium --headed",
+    "test:chrome": "playwright test --project=chrome --headed",
+    "test:chrome:watch": "SLOWMO=500 playwright test --project=chrome --headed",
+    "test:ui": "playwright test --ui"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",

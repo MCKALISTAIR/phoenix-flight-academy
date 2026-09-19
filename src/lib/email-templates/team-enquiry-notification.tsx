@@ -1,5 +1,14 @@
 import React from "react";
-import { Body, Container, Head, Heading, Html, Preview, Section, Text } from "@react-email/components";
+import {
+  Body,
+  Container,
+  Head,
+  Heading,
+  Html,
+  Preview,
+  Section,
+  Text,
+} from "@react-email/components";
 import type { TemplateEntry } from "./registry";
 
 export interface TeamEnquiryNotificationProps {
@@ -25,7 +34,9 @@ const Email = ({
       <Container style={container}>
         <Text style={brand}>{schoolName} • Cumbernauld Operations</Text>
         <Heading style={heading}>New Customer Enquiry</Heading>
-        <Text style={subhead}>A new inquiry was received via the Phoenix website contact desk.</Text>
+        <Text style={subhead}>
+          A new inquiry was received via the Phoenix website contact desk.
+        </Text>
 
         <Section style={panel}>
           <Text style={row}>
@@ -64,7 +75,8 @@ export const template = {
     name: "Alex Cameron",
     email: "alex.cameron@example.co.uk",
     subject: "PPL Flight Training",
-    message: "Hi, I'm looking to start my PPL at Cumbernauld this summer. Can I arrange an intro flight and chat with an instructor?",
+    message:
+      "Hi, I'm looking to start my PPL at Cumbernauld this summer. Can I arrange an intro flight and chat with an instructor?",
   },
 } satisfies TemplateEntry;
 
@@ -98,8 +110,20 @@ const messageBox = {
   padding: "14px 18px",
   margin: "16px 0",
 };
-const messageLabel = { color: "#b4530a", fontSize: "12px", fontWeight: 700, margin: "0 0 6px", textTransform: "uppercase" as const };
-const messageBody = { color: "#101a2c", fontSize: "14px", lineHeight: "1.5", margin: 0, whiteSpace: "pre-wrap" as const };
+const messageLabel = {
+  color: "#b4530a",
+  fontSize: "12px",
+  fontWeight: 700,
+  margin: "0 0 6px",
+  textTransform: "uppercase" as const,
+};
+const messageBody = {
+  color: "#101a2c",
+  fontSize: "14px",
+  lineHeight: "1.5",
+  margin: 0,
+  whiteSpace: "pre-wrap" as const,
+};
 const footerNote = { color: "#8b949e", fontSize: "12px", marginTop: "24px" };
 
 export default Email;

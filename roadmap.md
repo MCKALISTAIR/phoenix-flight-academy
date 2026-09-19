@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Done
+
 - [x] Real Stripe checkout (embedded, test mode) verified
 - [x] Register site products with payment provider (trial flight, self-hire deposit; lessons = invoice)
 - [x] Auto-cancel unpaid bookings after 24h — now excludes invoice-only products
@@ -13,6 +14,7 @@
 - [x] Fake System Analytics screen removed; Mock Payments hidden from the menu (route still reachable for dev)
 
 ## Blocked
+
 - [ ] Connect a Phoenix sender domain (owner action) — receipts and team alerts skip silently until then
 
 - [x] Enquiries inbox for the contact form (`/cms/enquiries`) + team email alerts
@@ -22,15 +24,18 @@
 - [x] Customer self-service guest booking lookup (`/booking/lookup`) with pre-flight briefing
 
 ## Blocked
+
 - [ ] Connect a Phoenix sender domain (owner action) — receipts and team alerts skip silently until then
 - [ ] Switch Stripe from test mode to live keys (owner action)
 
 ## Ready for Phoenix Handover & Sales Presentation
+
 - [x] Commercial pitch deck & operational transition proposal prepared (`phoenix_commercial_pitch_and_handover.md`)
 - [x] Flight school operational checklist & onboarding walk-through verified
 - [x] Production build and TypeScript validation clean
 
 ## Go-live database hardening (done)
+
 - [x] Enquiries: status / notes / updated_at columns + staff view & update policies
 - [x] Profiles: customers see only their own profile; staff see all
 - [x] Site content: draft columns no longer readable by anonymous visitors

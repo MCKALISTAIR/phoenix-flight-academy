@@ -1,5 +1,15 @@
 import React from "react";
-import { Body, Container, Head, Heading, Html, Preview, Section, Text, Button } from "@react-email/components";
+import {
+  Body,
+  Container,
+  Head,
+  Heading,
+  Html,
+  Preview,
+  Section,
+  Text,
+  Button,
+} from "@react-email/components";
 import type { TemplateEntry } from "./registry";
 
 export interface BookingReminderProps {
@@ -30,7 +40,8 @@ const Email = ({
         <Heading style={heading}>Pre-Flight Briefing &amp; Reminder</Heading>
         <Text style={greeting}>Hello {customerName},</Text>
         <Text style={intro}>
-          This is a reminder for your upcoming flight session with Phoenix Flight Training at Cumbernauld Airport (EGPG).
+          This is a reminder for your upcoming flight session with Phoenix Flight Training at
+          Cumbernauld Airport (EGPG).
         </Text>
 
         <Section style={panel}>
@@ -63,31 +74,45 @@ const Email = ({
         <Section style={alertBox}>
           <Text style={alertTitle}>⚠️ Pre-Flight Arrival &amp; Check-in</Text>
           <Text style={alertText}>
-            <strong>Arrive 30 minutes early:</strong> Please arrive at Cumbernauld Airport terminal at least 30 minutes prior to off-blocks for your student briefing, aerodrome sign-in, and pre-flight walkaround.
+            <strong>Arrive 30 minutes early:</strong> Please arrive at Cumbernauld Airport terminal
+            at least 30 minutes prior to off-blocks for your student briefing, aerodrome sign-in,
+            and pre-flight walkaround.
           </Text>
         </Section>
 
         <Section style={checklist}>
           <Text style={checklistHeader}>What to bring with you:</Text>
           <Text style={checkItem}>• Valid Photo ID (Passport or UK Driving Licence)</Text>
-          <Text style={checkItem}>• Polarised or UV sunglasses (essential for cockpit lookout)</Text>
-          <Text style={checkItem}>• Comfortable clothing and flat, thin-soled shoes (for rudder pedals)</Text>
-          <Text style={checkItem}>• Pilot logbook, medical certificate &amp; checklist (if enrolled student)</Text>
+          <Text style={checkItem}>
+            • Polarised or UV sunglasses (essential for cockpit lookout)
+          </Text>
+          <Text style={checkItem}>
+            • Comfortable clothing and flat, thin-soled shoes (for rudder pedals)
+          </Text>
+          <Text style={checkItem}>
+            • Pilot logbook, medical certificate &amp; checklist (if enrolled student)
+          </Text>
         </Section>
 
         <Section style={terminalGuide}>
           <Text style={terminalTitle}>Location &amp; Weather Notice</Text>
           <Text style={terminalText}>
-            Phoenix Flight Training operates from the main terminal facilities at <strong>Cumbernauld Airport (EGPG), G68 0PR</strong>. Free customer parking is available adjacent to the terminal entrance.
+            Phoenix Flight Training operates from the main terminal facilities at{" "}
+            <strong>Cumbernauld Airport (EGPG), G68 0PR</strong>. Free customer parking is available
+            adjacent to the terminal entrance.
           </Text>
           <Text style={terminalText}>
-            Aviation operations are strictly dependent on weather minimums (cloud base &amp; visibility). If conditions look marginal, please call our operations desk on <strong>07769 690041</strong> before travelling.
+            Aviation operations are strictly dependent on weather minimums (cloud base &amp;
+            visibility). If conditions look marginal, please call our operations desk on{" "}
+            <strong>07769 690041</strong> before travelling.
           </Text>
         </Section>
 
         <Text style={signoff}>
-          Safe flying,<br />
-          <strong>The Operations Team at Phoenix Flight Training</strong><br />
+          Safe flying,
+          <br />
+          <strong>The Operations Team at Phoenix Flight Training</strong>
+          <br />
           Cumbernauld Airport (EGPG)
         </Text>
       </Container>

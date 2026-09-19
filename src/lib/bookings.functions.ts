@@ -6,11 +6,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { getRequest } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
 import { DEFAULT_ORG_ID } from "@/lib/constants";
-import {
-  DEFAULT_TIMEZONE,
-  localMinutesAndWeekday,
-  addDaysKeepingLocalTime,
-} from "@/lib/timezone";
+import { DEFAULT_TIMEZONE, localMinutesAndWeekday, addDaysKeepingLocalTime } from "@/lib/timezone";
 
 function computePrice(
   product: {
@@ -210,12 +206,17 @@ export const createBooking = createServerFn({ method: "POST" })
       if (settings) {
         const local = localMinutesAndWeekday(starts, schoolTz);
         if (settings.weekday_mask[local.weekdayIdx] !== "Y") {
-          throw new Error(`The airfield does not operate on ${starts.toLocaleDateString("en-GB")}.`);
+          throw new Error(
+            `The airfield does not operate on ${starts.toLocaleDateString("en-GB")}.`,
+          );
         }
         const [openH, openM] = settings.open_time.split(":").map(Number);
         const [closeH, closeM] = settings.close_time.split(":").map(Number);
         const startMins = local.minutes;
-        if (startMins < openH * 60 + openM || startMins + product.duration_minutes > closeH * 60 + closeM) {
+        if (
+          startMins < openH * 60 + openM ||
+          startMins + product.duration_minutes > closeH * 60 + closeM
+        ) {
           throw new Error(`${slotLabel} is outside the airfield's operating hours.`);
         }
       }
@@ -239,7 +240,6 @@ export const createBooking = createServerFn({ method: "POST" })
       ) {
         throw new Error(`That instructor is unavailable on ${slotLabel}.`);
       }
-
 
       if (data.aircraftId) {
         const c = await client
@@ -718,7 +718,9 @@ export const lookupBookingForGuest = createServerFn({ method: "POST" })
 
     if (error) throw new Error(error.message);
     if (!booking) {
-      throw new Error("No booking found matching that reference ID and email address. Please check your confirmation details.");
+      throw new Error(
+        "No booking found matching that reference ID and email address. Please check your confirmation details.",
+      );
     }
     return booking;
   });
@@ -730,4 +732,3 @@ export const triggerBookingReminder = createServerFn({ method: "POST" })
     const { sendBookingReminderEmail } = await import("@/lib/email/booking-emails.server");
     return await sendBookingReminderEmail(data.bookingId);
   });
-

@@ -29,12 +29,14 @@ I went through the live data, the booking rules, the admin screens and the payme
 ## What to add
 
 **For customers**
+
 - Booking confirmation and receipt email (blocked only on connecting a sending address), plus a reminder the day before.
 - Self-service change/cancel within the cancellation window, instead of phoning up.
 - A way for guests (no account) to look up their booking — right now the confirmation link is the only copy they get.
 - Clarity on the self-hire balance: the remaining 80% is collected in person, but nothing on screen or in email says so.
 
 **For the school**
+
 - A real "today" console: flights today, unpaid balances, pending approvals, expiring medicals/licences.
 - An enquiries inbox for the contact form, with an alert email.
 - Ability to take payment or record a cash/bank payment against a booking, and issue refunds on cancellation.

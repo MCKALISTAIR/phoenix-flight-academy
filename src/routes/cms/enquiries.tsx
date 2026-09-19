@@ -35,7 +35,8 @@ export const Route = createFileRoute("/cms/enquiries")({
       { title: "Enquiries & Lead Management | CMS Console" },
       {
         name: "description",
-        content: "Track, reply to, and convert prospective students and voucher customer enquiries.",
+        content:
+          "Track, reply to, and convert prospective students and voucher customer enquiries.",
       },
     ],
   }),
@@ -86,7 +87,10 @@ function EnquiriesAdminPage() {
     return matchesStatus && matchesSearch;
   });
 
-  function handleStatusChange(id: string, newStatus: "new" | "contacted" | "converted" | "archived") {
+  function handleStatusChange(
+    id: string,
+    newStatus: "new" | "contacted" | "converted" | "archived",
+  ) {
     updateMut.mutate({ data: { id, status: newStatus } });
   }
 
@@ -118,7 +122,8 @@ function EnquiriesAdminPage() {
             )}
           </div>
           <p className="mt-1 text-sm text-white/50">
-            Messages and flight training enquiries submitted from the public contact desk at Cumbernauld.
+            Messages and flight training enquiries submitted from the public contact desk at
+            Cumbernauld.
           </p>
         </div>
       </div>
@@ -262,7 +267,11 @@ function EnquiriesAdminPage() {
                         className="rounded-lg border border-white/10 bg-white/5 p-1.5 text-white/60 hover:bg-white/10 hover:text-white"
                         title={isExpanded ? "Collapse" : "Expand message"}
                       >
-                        {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                        {isExpanded ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -369,8 +378,10 @@ function EnquiriesAdminPage() {
 
 function SubjectBadge({ subject }: { subject: string }) {
   const isPpl = subject.toLowerCase().includes("ppl");
-  const isVoucher = subject.toLowerCase().includes("voucher") || subject.toLowerCase().includes("experience");
-  const isSelfHire = subject.toLowerCase().includes("hire") || subject.toLowerCase().includes("rental");
+  const isVoucher =
+    subject.toLowerCase().includes("voucher") || subject.toLowerCase().includes("experience");
+  const isSelfHire =
+    subject.toLowerCase().includes("hire") || subject.toLowerCase().includes("rental");
 
   let badgeColor = "bg-white/10 text-white/80 border-white/10";
   if (isPpl) badgeColor = "bg-primary/15 text-primary border-primary/30";

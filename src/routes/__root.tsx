@@ -160,8 +160,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const location = useLocation();
   const router = useRouter();
-  const isCmsRoute =
-    location.pathname.startsWith("/cms") || location.pathname.startsWith("/admin");
+  const isCmsRoute = location.pathname.startsWith("/cms") || location.pathname.startsWith("/admin");
   const isLoginRoute = location.pathname === "/login" || location.pathname === "/reset-password";
   const isDashboardRoute = location.pathname === "/booking/dashboard";
   const isBookingFlow =

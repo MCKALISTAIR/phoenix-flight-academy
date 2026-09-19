@@ -1,10 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import {
-  type StripeEnv,
-  createStripeClient,
-  getStripeErrorMessage,
-} from "@/lib/stripe.server";
+import { type StripeEnv, createStripeClient, getStripeErrorMessage } from "@/lib/stripe.server";
 
 type CheckoutResult = { clientSecret: string } | { error: string };
 
@@ -95,9 +91,8 @@ export const createBookingCheckout = createServerFn({ method: "POST" })
       if (error) throw new Error(error.message);
       if (!row) throw new Error("Booking not found");
 
-      const product = (
-        row as { booking_products: { name: string; payment_mode: string } | null }
-      ).booking_products;
+      const product = (row as { booking_products: { name: string; payment_mode: string } | null })
+        .booking_products;
       const mode = product?.payment_mode ?? "full";
 
       if (mode === "invoice") {

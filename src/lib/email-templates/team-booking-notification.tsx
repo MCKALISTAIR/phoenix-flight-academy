@@ -1,5 +1,14 @@
 import React from "react";
-import { Body, Container, Head, Heading, Html, Preview, Section, Text } from "@react-email/components";
+import {
+  Body,
+  Container,
+  Head,
+  Heading,
+  Html,
+  Preview,
+  Section,
+  Text,
+} from "@react-email/components";
 import type { TemplateEntry } from "./registry";
 
 export interface TeamBookingNotificationProps {

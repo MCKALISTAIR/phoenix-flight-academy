@@ -94,7 +94,8 @@ function BookingLookupPage() {
             Manage Your Flight Booking
           </h1>
           <p className="mt-4 text-base sm:text-lg text-white/70 max-w-xl mx-auto leading-relaxed">
-            Look up your trial flight or training lesson details, arrival directions for Cumbernauld Airport, and pre-flight briefing.
+            Look up your trial flight or training lesson details, arrival directions for Cumbernauld
+            Airport, and pre-flight briefing.
           </p>
         </div>
       </div>
@@ -173,7 +174,8 @@ function BookingLookupPage() {
                   {product?.name || "Flight Training Session"}
                 </h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Booked for: <strong className="text-foreground">{booking.customer_name}</strong> • Ref:{" "}
+                  Booked for: <strong className="text-foreground">{booking.customer_name}</strong> •
+                  Ref:{" "}
                   <span className="font-mono text-xs">{booking.id.slice(0, 8).toUpperCase()}</span>
                 </p>
               </div>
@@ -236,9 +238,7 @@ function BookingLookupPage() {
                   <ShieldCheck className="h-4 w-4 text-primary" />
                   <span>Payment Status</span>
                 </div>
-                <p className="text-lg font-bold text-foreground">
-                  £{(paid / 100).toFixed(2)} Paid
-                </p>
+                <p className="text-lg font-bold text-foreground">£{(paid / 100).toFixed(2)} Paid</p>
                 {balance > 0 ? (
                   <p className="text-xs font-semibold text-amber-500">
                     Remaining £{(balance / 100).toFixed(2)} due at desk
@@ -256,7 +256,10 @@ function BookingLookupPage() {
                 Pre-Flight Arrival: Arrive 30 Minutes Before Off-Blocks
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Please ensure you arrive at the <strong>Cumbernauld Airport Terminal Building</strong> at least 30 minutes prior to your flight time. This allows for security check-in, aerodrome passenger logging, and your pre-flight safety &amp; route briefing with your instructor.
+                Please ensure you arrive at the{" "}
+                <strong>Cumbernauld Airport Terminal Building</strong> at least 30 minutes prior to
+                your flight time. This allows for security check-in, aerodrome passenger logging,
+                and your pre-flight safety &amp; route briefing with your instructor.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div className="space-y-1">
@@ -270,8 +273,10 @@ function BookingLookupPage() {
                 <div className="space-y-1">
                   <strong className="text-foreground block">Aerodrome Location:</strong>
                   <p className="text-muted-foreground">
-                    Phoenix Flight Training<br />
-                    Main Terminal, Cumbernauld Airport<br />
+                    Phoenix Flight Training
+                    <br />
+                    Main Terminal, Cumbernauld Airport
+                    <br />
                     G68 0PR (Free Parking Outside)
                   </p>
                 </div>
@@ -282,7 +287,8 @@ function BookingLookupPage() {
             <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-xs text-muted-foreground">
                 <strong className="text-foreground block">Weather &amp; Reschedule Policy:</strong>
-                Flights are weather-dependent. If cloud base or winds are outside safety limits, flights are rescheduled at zero cost. Cancellations require 48 hours notice.
+                Flights are weather-dependent. If cloud base or winds are outside safety limits,
+                flights are rescheduled at zero cost. Cancellations require 48 hours notice.
               </div>
 
               <div className="flex items-center gap-3 shrink-0">

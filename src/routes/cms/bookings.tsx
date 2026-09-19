@@ -88,7 +88,9 @@ function BookingsAdmin() {
   // Modal States
   const [paymentBooking, setPaymentBooking] = useState<any | null>(null);
   const [payAmountPounds, setPayAmountPounds] = useState("");
-  const [payMethod, setPayMethod] = useState<"card_terminal" | "cash" | "bacs_transfer" | "voucher">("card_terminal");
+  const [payMethod, setPayMethod] = useState<
+    "card_terminal" | "cash" | "bacs_transfer" | "voucher"
+  >("card_terminal");
   const [payRef, setPayRef] = useState("");
   const [paySubmitting, setPaySubmitting] = useState(false);
   const [payMessage, setPayMessage] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
@@ -147,7 +149,10 @@ function BookingsAdmin() {
         setPayMessage(null);
       }, 1000);
     } catch (err) {
-      setPayMessage({ kind: "err", text: err instanceof Error ? err.message : "Failed to record payment" });
+      setPayMessage({
+        kind: "err",
+        text: err instanceof Error ? err.message : "Failed to record payment",
+      });
     } finally {
       setPaySubmitting(false);
     }
@@ -159,7 +164,11 @@ function BookingsAdmin() {
       const res = await sendReminder({ data: { bookingId } });
       setReminderStatus((prev) => ({
         ...prev,
-        [bookingId]: res.sent ? "Sent ✓" : res.reason === "not_configured" ? "Email pending domain" : "Failed",
+        [bookingId]: res.sent
+          ? "Sent ✓"
+          : res.reason === "not_configured"
+            ? "Email pending domain"
+            : "Failed",
       }));
     } catch (e) {
       setReminderStatus((prev) => ({ ...prev, [bookingId]: "Error" }));
@@ -173,18 +182,26 @@ function BookingsAdmin() {
     setLogMessage(null);
     // Attempt to match customer to an enrolled student
     const matchedStudent = studentsList.find(
-      (s) => s.user_id === b.user_id || s.display_name?.toLowerCase() === b.customer_name?.toLowerCase(),
+      (s) =>
+        s.user_id === b.user_id || s.display_name?.toLowerCase() === b.customer_name?.toLowerCase(),
     );
     setLogStudentId(matchedStudent?.id || studentsList[0]?.id || "");
     const instructorName = b.instructors?.name || "Capt. Alistair McKay";
     setLogPicName(instructorName);
-    setLogRemarks(b.booking_products?.name ? `Completed ${b.booking_products.name}` : "Flight training exercise");
+    setLogRemarks(
+      b.booking_products?.name
+        ? `Completed ${b.booking_products.name}`
+        : "Flight training exercise",
+    );
   }
 
   async function handleSaveLogEntry(e: React.FormEvent) {
     e.preventDefault();
     if (!logModalBooking || !logStudentId) {
-      setLogMessage({ kind: "err", text: "Please select an enrolled student to log this flight to." });
+      setLogMessage({
+        kind: "err",
+        text: "Please select an enrolled student to log this flight to.",
+      });
       return;
     }
 
@@ -194,7 +211,10 @@ function BookingsAdmin() {
       const offBlocks = new Date(logModalBooking.starts_at);
       const onBlocks = new Date(logModalBooking.ends_at);
       const flightDate = logModalBooking.starts_at.slice(0, 10);
-      const durationMin = Math.max(15, Math.round((onBlocks.getTime() - offBlocks.getTime()) / 60000));
+      const durationMin = Math.max(
+        15,
+        Math.round((onBlocks.getTime() - offBlocks.getTime()) / 60000),
+      );
 
       await saveFlightLog({
         data: {
@@ -226,7 +246,10 @@ function BookingsAdmin() {
         setLogMessage(null);
       }, 1200);
     } catch (err) {
-      setLogMessage({ kind: "err", text: err instanceof Error ? err.message : "Failed to log flight" });
+      setLogMessage({
+        kind: "err",
+        text: err instanceof Error ? err.message : "Failed to log flight",
+      });
     } finally {
       setLogSubmitting(false);
     }
@@ -235,7 +258,9 @@ function BookingsAdmin() {
   return (
     <div className="p-8 space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold text-white tracking-tight">Bookings &amp; Operations Management</h1>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">
+          Bookings &amp; Operations Management
+        </h1>
         <p className="mt-1 text-sm text-white/50">
           Approve, cancel, take desk payments, send flight briefings, and log completed lessons.
         </p>
@@ -245,29 +270,47 @@ function BookingsAdmin() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <div className="flex items-center justify-between text-white/40">
-            <span className="text-xs font-semibold uppercase tracking-wider">Total Booked Value</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">
+              Total Booked Value
+            </span>
             <TrendingUp className="h-4 w-4 text-primary" />
           </div>
-          <p className="mt-3 text-2xl font-black text-white">£{(totalBookedValue / 100).toFixed(2)}</p>
-          <span className="text-[10px] text-white/30 font-medium">Excluding cancelled bookings</span>
+          <p className="mt-3 text-2xl font-black text-white">
+            £{(totalBookedValue / 100).toFixed(2)}
+          </p>
+          <span className="text-[10px] text-white/30 font-medium">
+            Excluding cancelled bookings
+          </span>
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <div className="flex items-center justify-between text-white/40">
-            <span className="text-xs font-semibold uppercase tracking-wider">Collected Revenue</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">
+              Collected Revenue
+            </span>
             <Coins className="h-4 w-4 text-emerald-400" />
           </div>
-          <p className="mt-3 text-2xl font-black text-emerald-400">£{(collectedRevenue / 100).toFixed(2)}</p>
-          <span className="text-[10px] text-white/30 font-medium">Card, cash, BACS &amp; deposit payments</span>
+          <p className="mt-3 text-2xl font-black text-emerald-400">
+            £{(collectedRevenue / 100).toFixed(2)}
+          </p>
+          <span className="text-[10px] text-white/30 font-medium">
+            Card, cash, BACS &amp; deposit payments
+          </span>
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <div className="flex items-center justify-between text-white/40">
-            <span className="text-xs font-semibold uppercase tracking-wider">Outstanding Balances</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">
+              Outstanding Balances
+            </span>
             <CreditCard className="h-4 w-4 text-amber-400" />
           </div>
-          <p className="mt-3 text-2xl font-black text-amber-400">£{(outstandingInvoiceValue / 100).toFixed(2)}</p>
-          <span className="text-[10px] text-white/30 font-medium">Due to be settled in person or invoiced</span>
+          <p className="mt-3 text-2xl font-black text-amber-400">
+            £{(outstandingInvoiceValue / 100).toFixed(2)}
+          </p>
+          <span className="text-[10px] text-white/30 font-medium">
+            Due to be settled in person or invoiced
+          </span>
         </div>
       </div>
 
@@ -310,10 +353,12 @@ function BookingsAdmin() {
               </thead>
               <tbody>
                 {filteredData.map((b) => {
-                  const prod = (b as { booking_products: { name: string } | null }).booking_products;
+                  const prod = (b as { booking_products: { name: string } | null })
+                    .booking_products;
                   const ac = (b as { aircraft: { registration: string } | null }).aircraft;
                   const safetyFlag = (b as { safety_flag?: boolean }).safety_flag;
-                  const expiredDocs = (b as { expired_documents?: string[] }).expired_documents ?? [];
+                  const expiredDocs =
+                    (b as { expired_documents?: string[] }).expired_documents ?? [];
                   const total = b.price_total_cents;
                   const paid = b.amount_paid_cents || 0;
                   const balance = Math.max(0, total - paid);
@@ -327,10 +372,15 @@ function BookingsAdmin() {
                     >
                       <td className="px-4 py-3 text-white/70 whitespace-nowrap">
                         <div className="font-mono text-xs font-semibold text-primary">
-                          {new Date(b.starts_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+                          {new Date(b.starts_at).toLocaleTimeString("en-GB", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
                         </div>
                         <div className="text-[11px] text-white/40">
-                          {new Date(b.starts_at).toLocaleDateString("en-GB", { dateStyle: "short" })}
+                          {new Date(b.starts_at).toLocaleDateString("en-GB", {
+                            dateStyle: "short",
+                          })}
                         </div>
                       </td>
 
@@ -365,7 +415,9 @@ function BookingsAdmin() {
 
                       <td className="px-4 py-3 text-white/80">
                         <p className="font-semibold text-xs">{prod?.name ?? "—"}</p>
-                        <span className="text-[10px] font-mono text-white/30">ID: {b.id.slice(0, 8)}</span>
+                        <span className="text-[10px] font-mono text-white/30">
+                          ID: {b.id.slice(0, 8)}
+                        </span>
                       </td>
 
                       <td className="px-4 py-3 text-white/70 whitespace-nowrap">
@@ -418,7 +470,9 @@ function BookingsAdmin() {
                           {/* Approve */}
                           {b.status === "pending" && (
                             <button
-                              onClick={() => mut.mutate({ data: { id: b.id, status: "confirmed" } })}
+                              onClick={() =>
+                                mut.mutate({ data: { id: b.id, status: "confirmed" } })
+                              }
                               className="rounded-lg bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/25"
                             >
                               Approve
@@ -459,7 +513,9 @@ function BookingsAdmin() {
                           {/* Mark Done */}
                           {b.status === "confirmed" && (
                             <button
-                              onClick={() => mut.mutate({ data: { id: b.id, status: "completed" } })}
+                              onClick={() =>
+                                mut.mutate({ data: { id: b.id, status: "completed" } })
+                              }
                               className="rounded-lg bg-blue-500/15 border border-blue-500/30 px-2.5 py-1 text-xs font-semibold text-blue-400 hover:bg-blue-500/25"
                             >
                               Mark Done
@@ -546,7 +602,8 @@ function BookingsAdmin() {
                 <div className="flex justify-between border-t border-white/10 pt-1.5 font-bold">
                   <span className="text-amber-400">Remaining Balance:</span>
                   <span className="text-amber-400">
-                    £{(
+                    £
+                    {(
                       Math.max(
                         0,
                         paymentBooking.price_total_cents - (paymentBooking.amount_paid_cents || 0),
@@ -651,7 +708,9 @@ function BookingsAdmin() {
                   <BookOpen className="h-5 w-5 text-purple-400" />
                   Log Flight to UK CAA Logbook
                 </h3>
-                <p className="text-xs text-white/50">Auto-populates from completed flight booking</p>
+                <p className="text-xs text-white/50">
+                  Auto-populates from completed flight booking
+                </p>
               </div>
               <button
                 onClick={() => setLogModalBooking(null)}
@@ -689,7 +748,9 @@ function BookingsAdmin() {
               {/* Aircraft & Aerodrome Pre-fill */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs">
-                  <span className="text-white/40 block text-[10px] uppercase font-mono">Aircraft</span>
+                  <span className="text-white/40 block text-[10px] uppercase font-mono">
+                    Aircraft
+                  </span>
                   <span className="font-bold text-white text-sm">
                     {logModalBooking.aircraft?.registration || "G-EGPG"}
                   </span>
@@ -770,7 +831,10 @@ function BookingsAdmin() {
 function StatusPill({ status }: { status: string }) {
   const map: Record<string, { cls: string; Icon: typeof Clock }> = {
     pending: { cls: "text-amber-400 bg-amber-500/15 border-amber-500/30", Icon: Clock },
-    confirmed: { cls: "text-emerald-400 bg-emerald-500/15 border-emerald-500/30", Icon: CheckCircle2 },
+    confirmed: {
+      cls: "text-emerald-400 bg-emerald-500/15 border-emerald-500/30",
+      Icon: CheckCircle2,
+    },
     cancelled: { cls: "text-red-400 bg-red-500/15 border-red-500/30", Icon: XCircle },
     completed: { cls: "text-blue-400 bg-blue-500/15 border-blue-500/30", Icon: CheckCircle2 },
     no_show: { cls: "text-white/50 bg-white/10 border-white/20", Icon: AlertCircle },

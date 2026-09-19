@@ -176,7 +176,11 @@ function EmailSettingsPage() {
           disabled={saving}
           className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-60"
         >
-          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
+          {saving ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <CheckCircle2 className="h-4 w-4" />
+          )}
           Save settings
         </button>
       </div>

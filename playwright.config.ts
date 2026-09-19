@@ -15,7 +15,22 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        launchOptions: {
+          slowMo: process.env.SLOWMO ? parseInt(process.env.SLOWMO, 10) : undefined,
+        },
+      },
+    },
+    {
+      name: "chrome",
+      use: {
+        ...devices["Desktop Chrome"],
+        channel: "chrome",
+        launchOptions: {
+          slowMo: process.env.SLOWMO ? parseInt(process.env.SLOWMO, 10) : undefined,
+        },
+      },
     },
   ],
   webServer: {

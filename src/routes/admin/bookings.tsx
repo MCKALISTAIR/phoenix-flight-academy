@@ -1,13 +1,7 @@
 import { createFileRoute, useNavigate, isRedirect, redirect } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  ClipboardList,
-  Search,
-  RefreshCw,
-  BadgeCheck,
-  CirclePoundSterling,
-  X,
-} from "lucide-react";
+import { ClipboardList, Search, RefreshCw, BadgeCheck, CirclePoundSterling, X } from "lucide-react";
 import { toast } from "sonner";
 import { requireAdmin } from "@/lib/auth-guards";
 import {
@@ -117,18 +111,18 @@ function AdminBookingsPage() {
   const [search, setSearch] = useState("");
   const [resolving, setResolving] = useState<BookingRow | null>(null);
 
+  const fetchAll = useServerFn(listAllBookings);
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await listAllBookings({ data: {} });
-      setRows(data as BookingRow[]);
+      const data = await fetchAll({ data: {} });
+      setRows((data ?? []) as BookingRow[]);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not load bookings");
-      navigate({ to: "/login" });
     } finally {
       setLoading(false);
     }
-  }, [navigate]);
+  }, [fetchAll]);
 
   useEffect(() => {
     void load();
@@ -182,9 +176,7 @@ function AdminBookingsPage() {
 
         <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="rounded-lg border border-white/10 bg-white/5 p-4">
-            <p className="text-[10px] font-mono uppercase tracking-wider text-white/40">
-              Bookings
-            </p>
+            <p className="text-[10px] font-mono uppercase tracking-wider text-white/40">Bookings</p>
             <p className="mt-1 text-2xl font-bold">{totals.count}</p>
           </div>
           <div className="rounded-lg border border-white/10 bg-white/5 p-4">
@@ -265,8 +257,7 @@ function AdminBookingsPage() {
                 filtered.map((row) => {
                   const balance = Math.max(0, row.price_total_cents - row.amount_paid_cents);
                   const needsResolve =
-                    row.status !== "cancelled" &&
-                    (balance > 0 || row.status === "pending");
+                    row.status !== "cancelled" && (balance > 0 || row.status === "pending");
                   return (
                     <tr
                       key={row.id}
@@ -277,26 +268,20 @@ function AdminBookingsPage() {
                         <p className="text-[11px] text-white/40">{row.customer_email}</p>
                       </td>
                       <td className="px-4 py-3">
-                        <p className="text-white/80">
-                          {row.booking_products?.name ?? "Booking"}
-                        </p>
+                        <p className="text-white/80">{row.booking_products?.name ?? "Booking"}</p>
                         <p className="text-[11px] text-white/40">
                           {row.aircraft?.registration ?? "—"}
                           {row.instructors?.name ? ` • ${row.instructors.name}` : ""}
                         </p>
                       </td>
-                      <td className="px-4 py-3 text-white/70">
-                        {formatDateTime(row.starts_at)}
-                      </td>
+                      <td className="px-4 py-3 text-white/70">{formatDateTime(row.starts_at)}</td>
                       <td className="px-4 py-3 text-right font-medium">
                         {formatMoney(row.price_total_cents)}
                       </td>
                       <td className="px-4 py-3 text-right text-white/70">
                         {formatMoney(row.amount_paid_cents)}
                         {balance > 0 && row.status !== "cancelled" && (
-                          <p className="text-[10px] text-amber-300">
-                            {formatMoney(balance)} due
-                          </p>
+                          <p className="text-[10px] text-amber-300">{formatMoney(balance)} due</p>
                         )}
                       </td>
                       <td className="px-4 py-3">
@@ -360,8 +345,7 @@ function ResolveDialog({
 }) {
   const balance = Math.max(0, booking.price_total_cents - booking.amount_paid_cents);
   const [amountPounds, setAmountPounds] = useState((balance / 100).toFixed(2));
-  const [method, setMethod] =
-    useState<(typeof PAYMENT_METHODS)[number]["value"]>("card_terminal");
+  const [method, setMethod] = useState<(typeof PAYMENT_METHODS)[number]["value"]>("card_terminal");
   const [reference, setReference] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -374,7 +358,12 @@ function ResolveDialog({
     setBusy(true);
     try {
       const result = await recordManualPayment({
-        data: { bookingId: booking.id, amountCents: cents, paymentMethod: method, reference: reference || null },
+        data: {
+          bookingId: booking.id,
+          amountCents: cents,
+          paymentMethod: method,
+          reference: reference || null,
+        },
       });
       toast.success(
         result.isFullyPaid
