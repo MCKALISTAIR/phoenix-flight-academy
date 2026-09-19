@@ -285,7 +285,44 @@ export const createBooking = createServerFn({ method: "POST" })
           );
         }
       }
+
+      // Instructors are only bookable inside the weekly hours they publish.
+      if (requiresInstructor) {
+        const local = localMinutesAndWeekday(starts, schoolTz);
+        const startMinutes = local.minutes;
+        const endMinutes = startMinutes + product.duration_minutes;
+        const instructorFree = (id: string) =>
+          instructorWindowCovers(availabilityWindows, id, local.weekdayIdx, startMinutes, endMinutes) &&
+          !resourceBlocks.some(
+            (b) =>
+              b.instructor_id === id &&
+              overlaps(starts, ends, new Date(b.starts_at), new Date(b.ends_at)),
+          );
+
+        if (data.instructorId) {
+          if (!instructorFree(data.instructorId)) {
+            throw new Error(`That instructor is not available on ${slotLabel}.`);
+          }
+        } else {
+          const candidates = publishedInstructorIds.filter((id) => instructorFree(id));
+          if (!candidates.length) {
+            throw new Error(`No instructor is available on ${slotLabel}.`);
+          }
+          const busy = await client
+            .from("bookings")
+            .select("instructor_id")
+            .in("instructor_id", candidates)
+            .in("status", ["pending", "confirmed"])
+            .lt("starts_at", ends.toISOString())
+            .gt("ends_at", starts.toISOString());
+          const busyIds = new Set((busy.data ?? []).map((b: { instructor_id: string | null }) => b.instructor_id));
+          if (!candidates.some((id) => !busyIds.has(id))) {
+            throw new Error(`No instructor is available on ${slotLabel}.`);
+          }
+        }
+      }
     }
+
 
     // Validate promo code if supplied
     let appliedDiscount: {
