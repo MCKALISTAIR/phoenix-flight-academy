@@ -1,15 +1,27 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { DEFAULT_TIMEZONE, getZonedParts, zonedTimeToUtc } from "@/lib/timezone";
+
+export interface DaySheetFlight {
+  id: string;
+  startsAt: string;
+  endsAt: string;
+  customerName: string;
+  customerPhone: string | null;
+  customerEmail: string;
+  productName: string;
+  aircraftRegistration: string | null;
+  aircraftModel: string | null;
+  instructorName: string | null;
+  status: string;
+  paymentStatus: string;
+  balanceDueCents: number;
+  notes: string | null;
+}
 
 export interface DashboardSnapshot {
-  flightsToday: {
-    id: string;
-    startsAt: string;
-    customerName: string;
-    productName: string;
-    status: string;
-    paymentStatus: string;
-  }[];
+  flightsToday: DaySheetFlight[];
   upcomingCount: number;
   awaitingApproval: number;
   unpaidCount: number;
