@@ -118,7 +118,15 @@ function CmsDashboard() {
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-base font-bold text-white">Flights today</h2>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-base font-bold text-white">Flights today</h2>
+          <Link
+            to="/cms/day-sheet"
+            className="text-xs font-semibold text-primary hover:underline"
+          >
+            Open day sheet →
+          </Link>
+        </div>
         <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
           {isLoading && <p className="p-5 text-sm text-white/50">Loading…</p>}
           {!isLoading && (data?.flightsToday.length ?? 0) === 0 && (
