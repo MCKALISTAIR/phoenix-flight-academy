@@ -7,6 +7,11 @@ import { getRequest } from "@tanstack/react-start/server";
 import { createClient } from "@supabase/supabase-js";
 import { DEFAULT_ORG_ID } from "@/lib/constants";
 import { DEFAULT_TIMEZONE, localMinutesAndWeekday, addDaysKeepingLocalTime } from "@/lib/timezone";
+import {
+  instructorWindowCovers,
+  type AvailabilityWindow,
+} from "@/lib/instructor-availability";
+
 
 function computePrice(
   product: {
@@ -159,13 +164,21 @@ export const createBooking = createServerFn({ method: "POST" })
     // Availability rules are enforced here as well as in the slot picker, so a
     // stale page or a direct API call can't book a closed day, a grounded
     // aircraft, or a slot outside the school's opening hours.
-    const [settingsRes, closedRes, blocksRes] = await Promise.all([
+    const [settingsRes, closedRes, blocksRes, instrRes, availRes] = await Promise.all([
       client.from("booking_calendar_settings").select("*").limit(1).maybeSingle(),
       client.from("booking_closed_dates").select("starts_on, ends_on"),
       client
         .from("booking_resource_blocks")
         .select("aircraft_id, instructor_id, starts_at, ends_at"),
+      client.from("instructors").select("id").eq("published", true),
+      client
+        .from("instructor_availability")
+        .select("instructor_id, weekday, start_time, end_time"),
     ]);
+    const requiresInstructor = product.kind !== "self_hire";
+    const publishedInstructorIds = (instrRes.data ?? []).map((i: { id: string }) => i.id);
+    const availabilityWindows = (availRes.data ?? []) as AvailabilityWindow[];
+
     const settings = settingsRes.data;
     const schoolTz = settings?.timezone || DEFAULT_TIMEZONE;
     const closedRanges = (closedRes.data ?? []).map((c) => ({
@@ -277,7 +290,44 @@ export const createBooking = createServerFn({ method: "POST" })
           );
         }
       }
+
+      // Instructors are only bookable inside the weekly hours they publish.
+      if (requiresInstructor) {
+        const local = localMinutesAndWeekday(starts, schoolTz);
+        const startMinutes = local.minutes;
+        const endMinutes = startMinutes + product.duration_minutes;
+        const instructorFree = (id: string) =>
+          instructorWindowCovers(availabilityWindows, id, local.weekdayIdx, startMinutes, endMinutes) &&
+          !resourceBlocks.some(
+            (b) =>
+              b.instructor_id === id &&
+              overlaps(starts, ends, new Date(b.starts_at), new Date(b.ends_at)),
+          );
+
+        if (data.instructorId) {
+          if (!instructorFree(data.instructorId)) {
+            throw new Error(`That instructor is not available on ${slotLabel}.`);
+          }
+        } else {
+          const candidates = publishedInstructorIds.filter((id) => instructorFree(id));
+          if (!candidates.length) {
+            throw new Error(`No instructor is available on ${slotLabel}.`);
+          }
+          const busy = await client
+            .from("bookings")
+            .select("instructor_id")
+            .in("instructor_id", candidates)
+            .in("status", ["pending", "confirmed"])
+            .lt("starts_at", ends.toISOString())
+            .gt("ends_at", starts.toISOString());
+          const busyIds = new Set((busy.data ?? []).map((b: { instructor_id: string | null }) => b.instructor_id));
+          if (!candidates.some((id) => !busyIds.has(id))) {
+            throw new Error(`No instructor is available on ${slotLabel}.`);
+          }
+        }
+      }
     }
+
 
     // Validate promo code if supplied
     let appliedDiscount: {

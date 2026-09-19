@@ -4,6 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { DEFAULT_ORG_ID } from "@/lib/constants";
 import { DEFAULT_TIMEZONE, eachDate, getZonedParts, zonedTimeToUtc } from "@/lib/timezone";
+import {
+  instructorWindowCovers,
+  type AvailabilityWindow,
+} from "@/lib/instructor-availability";
+
 
 export const getCalendarSettings = createServerFn({ method: "GET" }).handler(async () => {
   const { data, error } = await supabase
@@ -203,6 +208,27 @@ export const getAvailableSlots = createServerFn({ method: "GET" })
     const bookings = bookingsRes.data ?? [];
     const blocks = blocksRes.data ?? [];
 
+    // Instructor-led products are only bookable inside the hours instructors
+    // publish for themselves. No published hours = not bookable.
+    const requiresInstructor = product.kind !== "self_hire";
+    let windows: AvailabilityWindow[] = [];
+    let instructorIds: string[] = [];
+    if (requiresInstructor) {
+      const [instrRes, availRes] = await Promise.all([
+        supabase.from("instructors").select("id").eq("published", true),
+        supabase
+          .from("instructor_availability")
+          .select("instructor_id, weekday, start_time, end_time"),
+      ]);
+      if (instrRes.error) throw new Error(instrRes.error.message);
+      if (availRes.error) throw new Error(availRes.error.message);
+      instructorIds = (instrRes.data ?? []).map((i) => i.id);
+      windows = (availRes.data ?? []).filter((w) =>
+        data.instructorId ? w.instructor_id === data.instructorId : instructorIds.includes(w.instructor_id),
+      );
+    }
+
+
     function overlaps(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date) {
       return aStart < bEnd && bStart < aEnd;
     }
@@ -251,23 +277,33 @@ export const getAvailableSlots = createServerFn({ method: "GET" })
                 reason = "Aircraft booked";
               }
             }
-            if (available && data.instructorId) {
-              const conflict =
-                bookings.some(
+            if (available && requiresInstructor) {
+              const startMinutes = h * 60 + m;
+              const endMinutes = startMinutes + duration;
+              const instructorFree = (id: string) =>
+                instructorWindowCovers(windows, id, dayIdx, startMinutes, endMinutes) &&
+                !blocks.some(
                   (b) =>
-                    b.instructor_id === data.instructorId &&
-                    overlaps(startsAt, endWithBuffer, new Date(b.starts_at), new Date(b.ends_at)),
-                ) ||
-                blocks.some(
-                  (b) =>
-                    b.instructor_id === data.instructorId &&
+                    b.instructor_id === id &&
                     overlaps(startsAt, endsAt, new Date(b.starts_at), new Date(b.ends_at)),
+                ) &&
+                !bookings.some(
+                  (b) =>
+                    b.instructor_id === id &&
+                    overlaps(startsAt, endWithBuffer, new Date(b.starts_at), new Date(b.ends_at)),
                 );
-              if (conflict) {
+
+              if (data.instructorId) {
+                if (!instructorFree(data.instructorId)) {
+                  available = false;
+                  reason = "Instructor unavailable";
+                }
+              } else if (!instructorIds.some((id) => instructorFree(id))) {
                 available = false;
-                reason = "Instructor unavailable";
+                reason = "No instructor available";
               }
             }
+
           }
 
           out.push({
