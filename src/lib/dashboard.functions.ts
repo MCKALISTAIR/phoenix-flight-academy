@@ -149,15 +149,7 @@ export const getDashboardSnapshot = createServerFn({ method: "GET" })
     const aircraftRows = aircraft.data ?? [];
 
     return {
-      flightsToday: (today.data ?? []).map((b) => ({
-        id: b.id,
-        startsAt: b.starts_at,
-        customerName: b.customer_name,
-        productName:
-          (b as { booking_products: { name: string } | null }).booking_products?.name ?? "Booking",
-        status: b.status,
-        paymentStatus: b.payment_status,
-      })),
+      flightsToday: ((today.data ?? []) as unknown as FlightRow[]).map(mapFlight),
       upcomingCount: upcoming.count ?? 0,
       awaitingApproval: pendingApproval.count ?? 0,
       unpaidCount: unpaidRows.filter((b) => (b.amount_paid_cents ?? 0) < (b.price_total_cents ?? 0))
