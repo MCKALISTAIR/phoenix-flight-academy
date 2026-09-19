@@ -144,6 +144,11 @@ function CmsDashboard() {
                 <div>
                   <p className="text-sm font-semibold text-white">{f.customerName}</p>
                   <p className="text-xs text-white/40">{f.productName}</p>
+                  <p className="text-xs text-white/40">
+                    {f.aircraftRegistration ?? "Aircraft TBC"}
+                    {" · "}
+                    {f.instructorName ?? "No instructor"}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2 text-[11px] font-mono uppercase">
