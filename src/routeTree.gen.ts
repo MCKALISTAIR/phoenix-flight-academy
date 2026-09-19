@@ -24,6 +24,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CmsIndexRouteImport } from './routes/cms/index'
 import { Route as BookingIndexRouteImport } from './routes/booking/index'
+import { Route as InstructorScheduleRouteImport } from './routes/instructor/schedule'
 import { Route as FlyingSelfHireRouteImport } from './routes/flying/self-hire'
 import { Route as FlyingLearnToFlyRouteImport } from './routes/flying/learn-to-fly'
 import { Route as FlyingExperienceRouteImport } from './routes/flying/experience'
@@ -132,6 +133,11 @@ const BookingIndexRoute = BookingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => BookingRoute,
+} as any)
+const InstructorScheduleRoute = InstructorScheduleRouteImport.update({
+  id: '/instructor/schedule',
+  path: '/instructor/schedule',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const FlyingSelfHireRoute = FlyingSelfHireRouteImport.update({
   id: '/flying/self-hire',
@@ -342,6 +348,7 @@ export interface FileRoutesByFullPath {
   '/flying/experience': typeof FlyingExperienceRoute
   '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
   '/flying/self-hire': typeof FlyingSelfHireRoute
+  '/instructor/schedule': typeof InstructorScheduleRoute
   '/booking/': typeof BookingIndexRoute
   '/cms/': typeof CmsIndexRoute
   '/booking/book/$slug': typeof BookingBookSlugRoute
@@ -390,6 +397,7 @@ export interface FileRoutesByTo {
   '/flying/experience': typeof FlyingExperienceRoute
   '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
   '/flying/self-hire': typeof FlyingSelfHireRoute
+  '/instructor/schedule': typeof InstructorScheduleRoute
   '/booking': typeof BookingIndexRoute
   '/cms': typeof CmsIndexRoute
   '/booking/book/$slug': typeof BookingBookSlugRoute
@@ -441,6 +449,7 @@ export interface FileRoutesById {
   '/flying/experience': typeof FlyingExperienceRoute
   '/flying/learn-to-fly': typeof FlyingLearnToFlyRoute
   '/flying/self-hire': typeof FlyingSelfHireRoute
+  '/instructor/schedule': typeof InstructorScheduleRoute
   '/booking/': typeof BookingIndexRoute
   '/cms/': typeof CmsIndexRoute
   '/booking/book/$slug': typeof BookingBookSlugRoute
@@ -493,6 +502,7 @@ export interface FileRouteTypes {
     | '/flying/experience'
     | '/flying/learn-to-fly'
     | '/flying/self-hire'
+    | '/instructor/schedule'
     | '/booking/'
     | '/cms/'
     | '/booking/book/$slug'
@@ -541,6 +551,7 @@ export interface FileRouteTypes {
     | '/flying/experience'
     | '/flying/learn-to-fly'
     | '/flying/self-hire'
+    | '/instructor/schedule'
     | '/booking'
     | '/cms'
     | '/booking/book/$slug'
@@ -591,6 +602,7 @@ export interface FileRouteTypes {
     | '/flying/experience'
     | '/flying/learn-to-fly'
     | '/flying/self-hire'
+    | '/instructor/schedule'
     | '/booking/'
     | '/cms/'
     | '/booking/book/$slug'
@@ -618,6 +630,7 @@ export interface RootRouteChildren {
   FlyingExperienceRoute: typeof FlyingExperienceRoute
   FlyingLearnToFlyRoute: typeof FlyingLearnToFlyRoute
   FlyingSelfHireRoute: typeof FlyingSelfHireRoute
+  InstructorScheduleRoute: typeof InstructorScheduleRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -727,6 +740,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/booking/'
       preLoaderRoute: typeof BookingIndexRouteImport
       parentRoute: typeof BookingRoute
+    }
+    '/instructor/schedule': {
+      id: '/instructor/schedule'
+      path: '/instructor/schedule'
+      fullPath: '/instructor/schedule'
+      preLoaderRoute: typeof InstructorScheduleRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/flying/self-hire': {
       id: '/flying/self-hire'
@@ -1067,6 +1087,7 @@ const rootRouteChildren: RootRouteChildren = {
   FlyingExperienceRoute: FlyingExperienceRoute,
   FlyingLearnToFlyRoute: FlyingLearnToFlyRoute,
   FlyingSelfHireRoute: FlyingSelfHireRoute,
+  InstructorScheduleRoute: InstructorScheduleRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
