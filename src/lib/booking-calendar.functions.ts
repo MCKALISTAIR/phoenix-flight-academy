@@ -203,6 +203,27 @@ export const getAvailableSlots = createServerFn({ method: "GET" })
     const bookings = bookingsRes.data ?? [];
     const blocks = blocksRes.data ?? [];
 
+    // Instructor-led products are only bookable inside the hours instructors
+    // publish for themselves. No published hours = not bookable.
+    const requiresInstructor = product.kind !== "self_hire";
+    let windows: AvailabilityWindow[] = [];
+    let instructorIds: string[] = [];
+    if (requiresInstructor) {
+      const [instrRes, availRes] = await Promise.all([
+        supabase.from("instructors").select("id").eq("published", true),
+        supabase
+          .from("instructor_availability")
+          .select("instructor_id, weekday, start_time, end_time"),
+      ]);
+      if (instrRes.error) throw new Error(instrRes.error.message);
+      if (availRes.error) throw new Error(availRes.error.message);
+      instructorIds = (instrRes.data ?? []).map((i) => i.id);
+      windows = (availRes.data ?? []).filter((w) =>
+        data.instructorId ? w.instructor_id === data.instructorId : instructorIds.includes(w.instructor_id),
+      );
+    }
+
+
     function overlaps(aStart: Date, aEnd: Date, bStart: Date, bEnd: Date) {
       return aStart < bEnd && bStart < aEnd;
     }
