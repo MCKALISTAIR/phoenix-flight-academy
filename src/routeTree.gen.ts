@@ -35,6 +35,7 @@ import { Route as CmsResourceBlocksRouteImport } from './routes/cms/resource-blo
 import { Route as CmsPromotionsRouteImport } from './routes/cms/promotions'
 import { Route as CmsPilotVerificationsRouteImport } from './routes/cms/pilot-verifications'
 import { Route as CmsMockPaymentsRouteImport } from './routes/cms/mock-payments'
+import { Route as CmsInstructorHoursRouteImport } from './routes/cms/instructor-hours'
 import { Route as CmsFlyingStatusRouteImport } from './routes/cms/flying-status'
 import { Route as CmsFleetRouteImport } from './routes/cms/fleet'
 import { Route as CmsExpiriesRouteImport } from './routes/cms/expiries'
@@ -187,6 +188,11 @@ const CmsMockPaymentsRoute = CmsMockPaymentsRouteImport.update({
   path: '/mock-payments',
   getParentRoute: () => CmsRoute,
 } as any)
+const CmsInstructorHoursRoute = CmsInstructorHoursRouteImport.update({
+  id: '/instructor-hours',
+  path: '/instructor-hours',
+  getParentRoute: () => CmsRoute,
+} as any)
 const CmsFlyingStatusRoute = CmsFlyingStatusRouteImport.update({
   id: '/flying-status',
   path: '/flying-status',
@@ -324,6 +330,7 @@ export interface FileRoutesByFullPath {
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
   '/cms/flying-status': typeof CmsFlyingStatusRoute
+  '/cms/instructor-hours': typeof CmsInstructorHoursRoute
   '/cms/mock-payments': typeof CmsMockPaymentsRoute
   '/cms/pilot-verifications': typeof CmsPilotVerificationsRoute
   '/cms/promotions': typeof CmsPromotionsRoute
@@ -371,6 +378,7 @@ export interface FileRoutesByTo {
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
   '/cms/flying-status': typeof CmsFlyingStatusRoute
+  '/cms/instructor-hours': typeof CmsInstructorHoursRoute
   '/cms/mock-payments': typeof CmsMockPaymentsRoute
   '/cms/pilot-verifications': typeof CmsPilotVerificationsRoute
   '/cms/promotions': typeof CmsPromotionsRoute
@@ -421,6 +429,7 @@ export interface FileRoutesById {
   '/cms/expiries': typeof CmsExpiriesRoute
   '/cms/fleet': typeof CmsFleetRoute
   '/cms/flying-status': typeof CmsFlyingStatusRoute
+  '/cms/instructor-hours': typeof CmsInstructorHoursRoute
   '/cms/mock-payments': typeof CmsMockPaymentsRoute
   '/cms/pilot-verifications': typeof CmsPilotVerificationsRoute
   '/cms/promotions': typeof CmsPromotionsRoute
@@ -472,6 +481,7 @@ export interface FileRouteTypes {
     | '/cms/expiries'
     | '/cms/fleet'
     | '/cms/flying-status'
+    | '/cms/instructor-hours'
     | '/cms/mock-payments'
     | '/cms/pilot-verifications'
     | '/cms/promotions'
@@ -519,6 +529,7 @@ export interface FileRouteTypes {
     | '/cms/expiries'
     | '/cms/fleet'
     | '/cms/flying-status'
+    | '/cms/instructor-hours'
     | '/cms/mock-payments'
     | '/cms/pilot-verifications'
     | '/cms/promotions'
@@ -568,6 +579,7 @@ export interface FileRouteTypes {
     | '/cms/expiries'
     | '/cms/fleet'
     | '/cms/flying-status'
+    | '/cms/instructor-hours'
     | '/cms/mock-payments'
     | '/cms/pilot-verifications'
     | '/cms/promotions'
@@ -793,6 +805,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CmsMockPaymentsRouteImport
       parentRoute: typeof CmsRoute
     }
+    '/cms/instructor-hours': {
+      id: '/cms/instructor-hours'
+      path: '/instructor-hours'
+      fullPath: '/cms/instructor-hours'
+      preLoaderRoute: typeof CmsInstructorHoursRouteImport
+      parentRoute: typeof CmsRoute
+    }
     '/cms/flying-status': {
       id: '/cms/flying-status'
       path: '/flying-status'
@@ -991,6 +1010,7 @@ interface CmsRouteChildren {
   CmsExpiriesRoute: typeof CmsExpiriesRoute
   CmsFleetRoute: typeof CmsFleetRoute
   CmsFlyingStatusRoute: typeof CmsFlyingStatusRoute
+  CmsInstructorHoursRoute: typeof CmsInstructorHoursRoute
   CmsMockPaymentsRoute: typeof CmsMockPaymentsRoute
   CmsPilotVerificationsRoute: typeof CmsPilotVerificationsRoute
   CmsPromotionsRoute: typeof CmsPromotionsRoute
@@ -1015,6 +1035,7 @@ const CmsRouteChildren: CmsRouteChildren = {
   CmsExpiriesRoute: CmsExpiriesRoute,
   CmsFleetRoute: CmsFleetRoute,
   CmsFlyingStatusRoute: CmsFlyingStatusRoute,
+  CmsInstructorHoursRoute: CmsInstructorHoursRoute,
   CmsMockPaymentsRoute: CmsMockPaymentsRoute,
   CmsPilotVerificationsRoute: CmsPilotVerificationsRoute,
   CmsPromotionsRoute: CmsPromotionsRoute,
