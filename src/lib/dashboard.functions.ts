@@ -163,3 +163,63 @@ export const getDashboardSnapshot = createServerFn({ method: "GET" })
       newEnquiriesCount: enquiries.count ?? 0,
     };
   });
+
+export interface DaySheet {
+  date: string;
+  timezone: string;
+  airfieldOpen: boolean;
+  airfieldMessage: string | null;
+  flights: DaySheetFlight[];
+}
+
+/** Printable front-desk schedule for one calendar day (school timezone). */
+export const getDaySheet = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) =>
+    z
+      .object({ date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional() })
+      .parse(data ?? {}),
+  )
+  .handler(async ({ data, context }): Promise<DaySheet> => {
+    const supabase = context.supabase;
+    const settings = await supabase
+      .from("booking_calendar_settings")
+      .select("timezone")
+      .maybeSingle();
+    const timeZone = settings.data?.timezone || DEFAULT_TIMEZONE;
+
+    let dayStart: Date;
+    let dayEnd: Date;
+    let dateKey: string;
+    if (data.date) {
+      const [y, m, d] = data.date.split("-").map(Number);
+      dayStart = zonedTimeToUtc(y, m, d, 0, 0, timeZone);
+      dayEnd = zonedTimeToUtc(y, m, d + 1, 0, 0, timeZone);
+      dateKey = data.date;
+    } else {
+      const w = localDayWindow(new Date(), timeZone);
+      dayStart = w.start;
+      dayEnd = w.end;
+      const p = getZonedParts(dayStart, timeZone);
+      dateKey = `${p.year}-${String(p.month).padStart(2, "0")}-${String(p.day).padStart(2, "0")}`;
+    }
+
+    const [flights, status] = await Promise.all([
+      supabase
+        .from("bookings")
+        .select(FLIGHT_SELECT)
+        .gte("starts_at", dayStart.toISOString())
+        .lt("starts_at", dayEnd.toISOString())
+        .in("status", ["pending", "confirmed", "completed", "no_show"])
+        .order("starts_at", { ascending: true }),
+      supabase.from("flying_status").select("is_open, message").maybeSingle(),
+    ]);
+
+    return {
+      date: dateKey,
+      timezone: timeZone,
+      airfieldOpen: status.data?.is_open ?? true,
+      airfieldMessage: status.data?.message ?? null,
+      flights: ((flights.data ?? []) as unknown as FlightRow[]).map(mapFlight),
+    };
+  });
