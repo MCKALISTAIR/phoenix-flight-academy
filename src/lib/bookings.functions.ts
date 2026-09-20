@@ -390,7 +390,7 @@ export const createBooking = createServerFn({ method: "POST" })
     const insertPayload = {
       product_id: product.id,
       aircraft_id: data.aircraftId ?? null,
-      instructor_id: data.instructorId ?? null,
+      instructor_id: data.instructorId ?? assignedInstructorIds[0] ?? null,
       user_id: userId,
       customer_email: data.customerEmail,
       customer_name: data.customerName,
