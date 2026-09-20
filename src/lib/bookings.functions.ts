@@ -422,6 +422,7 @@ export const createBooking = createServerFn({ method: "POST" })
 
         restPayloads.push({
           ...insertPayload,
+          instructor_id: data.instructorId ?? assignedInstructorIds[i] ?? null,
           starts_at: starts.toISOString(),
           ends_at: ends.toISOString(),
           payment_status: "unpaid" as const,
