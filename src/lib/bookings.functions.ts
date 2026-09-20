@@ -292,7 +292,9 @@ export const createBooking = createServerFn({ method: "POST" })
       }
 
       // Instructors are only bookable inside the weekly hours they publish.
-      if (requiresInstructor) {
+      if (!requiresInstructor) {
+        assignedInstructorIds.push(null);
+      } else if (requiresInstructor) {
         const local = localMinutesAndWeekday(starts, schoolTz);
         const startMinutes = local.minutes;
         const endMinutes = startMinutes + product.duration_minutes;
