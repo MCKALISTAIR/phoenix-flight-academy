@@ -194,6 +194,7 @@ export const createBooking = createServerFn({ method: "POST" })
     const maxBookableAt = new Date(now.getTime() + product.max_advance_days * 86400_000);
 
     // Conflict check (server-authoritative) across all slots in the series
+    const assignedInstructorIds: (string | null)[] = [];
     for (let i = 0; i < occurrencesCount; i++) {
       const offsetDays = i * (recurrenceType === "weekly" ? 7 : 14);
       const starts = addDaysKeepingLocalTime(startsDate, offsetDays, schoolTz);
