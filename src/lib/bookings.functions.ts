@@ -194,6 +194,7 @@ export const createBooking = createServerFn({ method: "POST" })
     const maxBookableAt = new Date(now.getTime() + product.max_advance_days * 86400_000);
 
     // Conflict check (server-authoritative) across all slots in the series
+    const assignedInstructorIds: (string | null)[] = [];
     for (let i = 0; i < occurrencesCount; i++) {
       const offsetDays = i * (recurrenceType === "weekly" ? 7 : 14);
       const starts = addDaysKeepingLocalTime(startsDate, offsetDays, schoolTz);
@@ -292,7 +293,9 @@ export const createBooking = createServerFn({ method: "POST" })
       }
 
       // Instructors are only bookable inside the weekly hours they publish.
-      if (requiresInstructor) {
+      if (!requiresInstructor) {
+        assignedInstructorIds.push(null);
+      } else if (requiresInstructor) {
         const local = localMinutesAndWeekday(starts, schoolTz);
         const startMinutes = local.minutes;
         const endMinutes = startMinutes + product.duration_minutes;
@@ -308,6 +311,7 @@ export const createBooking = createServerFn({ method: "POST" })
           if (!instructorFree(data.instructorId)) {
             throw new Error(`That instructor is not available on ${slotLabel}.`);
           }
+          assignedInstructorIds.push(data.instructorId);
         } else {
           const candidates = publishedInstructorIds.filter((id) => instructorFree(id));
           if (!candidates.length) {
@@ -321,9 +325,13 @@ export const createBooking = createServerFn({ method: "POST" })
             .lt("starts_at", ends.toISOString())
             .gt("ends_at", starts.toISOString());
           const busyIds = new Set((busy.data ?? []).map((b: { instructor_id: string | null }) => b.instructor_id));
-          if (!candidates.some((id) => !busyIds.has(id))) {
+          // Assign a specific free instructor so the slot stops looking available
+          // to the next customer and staff can see who is flying.
+          const chosen = candidates.find((id) => !busyIds.has(id));
+          if (!chosen) {
             throw new Error(`No instructor is available on ${slotLabel}.`);
           }
+          assignedInstructorIds.push(chosen);
         }
       }
     }
@@ -382,7 +390,7 @@ export const createBooking = createServerFn({ method: "POST" })
     const insertPayload = {
       product_id: product.id,
       aircraft_id: data.aircraftId ?? null,
-      instructor_id: data.instructorId ?? null,
+      instructor_id: data.instructorId ?? assignedInstructorIds[0] ?? null,
       user_id: userId,
       customer_email: data.customerEmail,
       customer_name: data.customerName,
@@ -414,6 +422,7 @@ export const createBooking = createServerFn({ method: "POST" })
 
         restPayloads.push({
           ...insertPayload,
+          instructor_id: data.instructorId ?? assignedInstructorIds[i] ?? null,
           starts_at: starts.toISOString(),
           ends_at: ends.toISOString(),
           payment_status: "unpaid" as const,
