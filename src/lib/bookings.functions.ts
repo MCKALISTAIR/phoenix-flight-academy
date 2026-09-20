@@ -310,6 +310,7 @@ export const createBooking = createServerFn({ method: "POST" })
           if (!instructorFree(data.instructorId)) {
             throw new Error(`That instructor is not available on ${slotLabel}.`);
           }
+          assignedInstructorIds.push(data.instructorId);
         } else {
           const candidates = publishedInstructorIds.filter((id) => instructorFree(id));
           if (!candidates.length) {
@@ -323,9 +324,13 @@ export const createBooking = createServerFn({ method: "POST" })
             .lt("starts_at", ends.toISOString())
             .gt("ends_at", starts.toISOString());
           const busyIds = new Set((busy.data ?? []).map((b: { instructor_id: string | null }) => b.instructor_id));
-          if (!candidates.some((id) => !busyIds.has(id))) {
+          // Assign a specific free instructor so the slot stops looking available
+          // to the next customer and staff can see who is flying.
+          const chosen = candidates.find((id) => !busyIds.has(id));
+          if (!chosen) {
             throw new Error(`No instructor is available on ${slotLabel}.`);
           }
+          assignedInstructorIds.push(chosen);
         }
       }
     }
