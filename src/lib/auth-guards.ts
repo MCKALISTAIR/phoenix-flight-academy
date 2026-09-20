@@ -18,14 +18,6 @@ export async function requireRole(
 ): Promise<{ user: { id: string; email?: string }; roles: AppRole[] }> {
   const user = await requireAuth(href);
 
-  if (typeof window !== "undefined" && window.localStorage.getItem("pfa_dev_role")) {
-    const devRole = window.localStorage.getItem("pfa_dev_role") as AppRole;
-    const roles: AppRole[] = devRole === "admin" ? ["admin", "super_admin"] : [devRole];
-    if (roles.some((r) => allowed.includes(r))) {
-      return { user, roles };
-    }
-  }
-
   const { data: rolesData, error: rolesError } = await supabase
     .from("user_roles")
     .select("role")
