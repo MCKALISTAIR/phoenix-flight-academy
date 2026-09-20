@@ -492,6 +492,7 @@ export type Database = {
           amount_paid_cents: number
           approved_at: string | null
           approved_by: string | null
+          booking_block_id: string | null
           cancellation_reason: string | null
           cancelled_at: string | null
           created_at: string
@@ -521,6 +522,7 @@ export type Database = {
           amount_paid_cents?: number
           approved_at?: string | null
           approved_by?: string | null
+          booking_block_id?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
           created_at?: string
@@ -550,6 +552,7 @@ export type Database = {
           amount_paid_cents?: number
           approved_at?: string | null
           approved_by?: string | null
+          booking_block_id?: string | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
           created_at?: string
@@ -659,7 +662,7 @@ export type Database = {
           created_at?: string
           id?: string
           notes?: string | null
-          organization_id: string
+          organization_id?: string
           qualified_at?: string | null
           tier?: Database["public"]["Enums"]["customer_tier"] | null
           updated_at?: string
@@ -1296,7 +1299,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           notes?: string | null
-          organization_id: string
+          organization_id?: string
           revoked_at?: string | null
           updated_at?: string
           user_id: string
