@@ -81,21 +81,17 @@ export function LoginForm({ onForgotPassword, redirectUrl }: LoginFormProps) {
     setBusy(true);
     setError("");
     try {
+      if (typeof window !== "undefined") {
+        // Clear any legacy fake-session flags left by older builds.
+        window.localStorage.removeItem("pfa_dev_role");
+        window.localStorage.removeItem("pfa_dev_email");
+      }
       const creds = TEST_ACCOUNTS[kind];
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: creds.email,
         password: creds.password,
       });
-      if (signInError) {
-        if (typeof window !== "undefined") {
-          window.localStorage.setItem("pfa_dev_role", kind);
-          window.localStorage.setItem("pfa_dev_email", creds.email);
-          const dest = redirectUrl ?? (kind === "admin" ? "/cms" : "/booking/dashboard");
-          navigate({ to: dest });
-          return;
-        }
-        throw signInError;
-      }
+      if (signInError) throw signInError;
       const dest = redirectUrl ?? (kind === "admin" ? "/cms" : "/booking/dashboard");
       navigate({ to: dest });
     } catch (err) {
