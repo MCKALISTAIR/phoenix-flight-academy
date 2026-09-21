@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { Lock, Mail, Loader2, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
-
-const TEST_ACCOUNTS = {
-  admin: { email: "e2e-admin@test.lovable.dev", password: "TestPass!2026", label: "Admin" },
-  user: { email: "e2e-user@test.lovable.dev", password: "TestPass!2026", label: "User" },
-} as const;
+import { ensureTestUser, TEST_USERS } from "@/lib/test-auth.functions";
 
 /** Demo Quick Sign-In is local/preview only — never on production builds. */
 const showDemoLogin = import.meta.env.DEV || import.meta.env.VITE_ENABLE_DEMO_LOGIN === "true";
@@ -19,6 +16,7 @@ interface LoginFormProps {
 
 export function LoginForm({ onForgotPassword, redirectUrl }: LoginFormProps) {
   const navigate = useNavigate();
+  const ensureUser = useServerFn(ensureTestUser);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -91,7 +89,14 @@ export function LoginForm({ onForgotPassword, redirectUrl }: LoginFormProps) {
     setBusy(true);
     setError("");
     try {
-      const creds = TEST_ACCOUNTS[kind];
+      // Prefer ensure+sign-in when the server has a service role (Lovable Cloud).
+      // Fall back to direct sign-in against already-seeded accounts.
+      let creds = { email: TEST_USERS[kind].email, password: TEST_USERS[kind].password };
+      try {
+        creds = await ensureUser({ data: { kind } });
+      } catch {
+        // Service role may be unavailable in bare local envs — seeded accounts still work.
+      }
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: creds.email,
         password: creds.password,
@@ -150,7 +155,7 @@ export function LoginForm({ onForgotPassword, redirectUrl }: LoginFormProps) {
         </div>
       )}
 
-      <form onSubmit={handleLogin} className="space-y-4">
+      <form onSubmit={handleLogin} method="post" action="#" className="space-y-4">
         <div>
           <label
             htmlFor="loginEmail"
@@ -193,7 +198,6 @@ export function LoginForm({ onForgotPassword, redirectUrl }: LoginFormProps) {
             <input
               type="password"
               id="loginPass"
-              name="password"
               autoComplete="current-password"
               required
               value={password}
@@ -238,9 +242,11 @@ export function LoginForm({ onForgotPassword, redirectUrl }: LoginFormProps) {
                 disabled={busy}
                 className="rounded-md border border-border bg-card px-2.5 py-1.5 text-left text-xs font-medium text-foreground transition-all hover:border-primary/40 disabled:opacity-50"
               >
-                <div className="font-semibold text-foreground">{TEST_ACCOUNTS[k].label}</div>
+                <div className="font-semibold text-foreground">
+                  {k === "admin" ? "Admin" : "User"}
+                </div>
                 <div className="text-[10px] font-mono text-muted-foreground truncate">
-                  {TEST_ACCOUNTS[k].email}
+                  {TEST_USERS[k].email}
                 </div>
               </button>
             ))}
