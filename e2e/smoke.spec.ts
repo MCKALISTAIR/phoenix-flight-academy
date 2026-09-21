@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
+import { E2E_ACCOUNTS, signInAsAdmin, signInAsUser } from "./helpers/auth";
 
 const supabaseUrl = process.env.SUPABASE_URL || "https://bulrhflllebnjlacxdji.supabase.co";
 const supabaseAnonKey =
@@ -9,8 +10,8 @@ const supabaseAnonKey =
 async function cleanUpBookings() {
   const client = createClient(supabaseUrl, supabaseAnonKey);
   const { data } = await client.auth.signInWithPassword({
-    email: "e2e-admin@test.lovable.dev",
-    password: "TestPass!2026",
+    email: E2E_ACCOUNTS.admin.email,
+    password: E2E_ACCOUNTS.admin.password,
   });
   if (!data?.session) return;
   const authClient = createClient(supabaseUrl, supabaseAnonKey, {
@@ -160,16 +161,7 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
     // Increase timeout to 90 seconds for sequentially visiting 15 CMS editor pages
     test.setTimeout(90000);
 
-    await page.goto("/login", { waitUntil: "domcontentloaded" });
-
-    // Click on Admin Test sign-in button
-    const adminBtn = page.getByRole("button", { name: "Admin e2e-admin@test.lovable.dev" });
-    await expect(adminBtn).toBeVisible();
-    await adminBtn.click();
-
-    // Should navigate to /cms overview page
-    await page.waitForURL("**/cms");
-    await expect(page).toHaveURL(/.*\/cms/);
+    await signInAsAdmin(page);
 
     // Verify sidebar shows CMS Editor
     await expect(page.locator("aside")).toContainText("CMS Editor");
@@ -202,16 +194,7 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
   });
 
   test("Test User login flow redirects to Booking Dashboard", async ({ page }) => {
-    await page.goto("/login", { waitUntil: "domcontentloaded" });
-
-    // Click on User Test sign-in button
-    const userBtn = page.getByRole("button", { name: "User e2e-user@test.lovable.dev" });
-    await expect(userBtn).toBeVisible();
-    await userBtn.click();
-
-    // Should navigate to /booking/dashboard page
-    await page.waitForURL("**/booking/dashboard");
-    await expect(page).toHaveURL(/.*\/booking\/dashboard/);
+    await signInAsUser(page);
 
     // Verify dashboard content is present (Welcome back, Alex)
     await expect(page.locator("h1").first()).toContainText("Welcome back");
@@ -219,12 +202,8 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
 
   test("Test student block booking flow and checkout redirect", async ({ page }) => {
     test.setTimeout(90000);
-    // 1. Log in as student
-    await page.goto("/login", { waitUntil: "domcontentloaded" });
-    const userBtn = page.getByRole("button", { name: "User e2e-user@test.lovable.dev" });
-    await expect(userBtn).toBeVisible();
-    await userBtn.click();
-    await page.waitForURL("**/booking/dashboard");
+    // 1. Log in as student via normal email/password form
+    await signInAsUser(page);
 
     // 2. Go to book a flight lesson page
     await page.goto("/booking/book/ppl-lesson", { waitUntil: "domcontentloaded" });
@@ -264,7 +243,7 @@ test.describe("Phoenix Flight Academy Smoke Tests", () => {
 
     // Fill out customer details
     await page.locator("label:has-text('Full name') + input").fill("Alex Student");
-    await page.locator("label:has-text('Email') + input").fill("e2e-user@test.lovable.dev");
+    await page.locator("label:has-text('Email') + input").fill(E2E_ACCOUNTS.user.email);
 
     // Submit booking
     const submitBtn = page.getByRole("button", { name: "Request booking" });

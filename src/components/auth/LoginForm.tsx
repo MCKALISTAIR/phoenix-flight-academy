@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Lock, Mail, Loader2, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,9 @@ const TEST_ACCOUNTS = {
   admin: { email: "e2e-admin@test.lovable.dev", password: "TestPass!2026", label: "Admin" },
   user: { email: "e2e-user@test.lovable.dev", password: "TestPass!2026", label: "User" },
 } as const;
+
+/** Demo Quick Sign-In is local/preview only — never on production builds. */
+const showDemoLogin = import.meta.env.DEV || import.meta.env.VITE_ENABLE_DEMO_LOGIN === "true";
 
 interface LoginFormProps {
   onForgotPassword: () => void;
@@ -20,6 +23,12 @@ export function LoginForm({ onForgotPassword, redirectUrl }: LoginFormProps) {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    // Clear legacy fake-session flags from older builds that used pfa_dev_role.
+    window.localStorage.removeItem("pfa_dev_role");
+    window.localStorage.removeItem("pfa_dev_email");
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,14 +87,10 @@ export function LoginForm({ onForgotPassword, redirectUrl }: LoginFormProps) {
   };
 
   const handleTestLogin = async (kind: "admin" | "user") => {
+    if (!showDemoLogin) return;
     setBusy(true);
     setError("");
     try {
-      if (typeof window !== "undefined") {
-        // Clear any legacy fake-session flags left by older builds.
-        window.localStorage.removeItem("pfa_dev_role");
-        window.localStorage.removeItem("pfa_dev_email");
-      }
       const creds = TEST_ACCOUNTS[kind];
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: creds.email,
@@ -218,28 +223,30 @@ export function LoginForm({ onForgotPassword, redirectUrl }: LoginFormProps) {
         </button>
       </form>
 
-      {/* Demo / Quick Test Accounts (Discreet & Monospace) */}
-      <div className="rounded-lg border border-border/70 bg-muted/20 p-3">
-        <span className="block text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground mb-2">
-          Demo & Verification Sign-In
-        </span>
-        <div className="grid grid-cols-2 gap-2">
-          {(["user", "admin"] as const).map((k) => (
-            <button
-              key={k}
-              type="button"
-              onClick={() => handleTestLogin(k)}
-              disabled={busy}
-              className="rounded-md border border-border bg-card px-2.5 py-1.5 text-left text-xs font-medium text-foreground transition-all hover:border-primary/40 disabled:opacity-50"
-            >
-              <div className="font-semibold text-foreground">{TEST_ACCOUNTS[k].label}</div>
-              <div className="text-[10px] font-mono text-muted-foreground truncate">
-                {TEST_ACCOUNTS[k].email}
-              </div>
-            </button>
-          ))}
+      {/* Dev / preview only — real Supabase users, never shown in production builds */}
+      {showDemoLogin && (
+        <div className="rounded-lg border border-border/70 bg-muted/20 p-3">
+          <span className="block text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground mb-2">
+            Demo & Verification Sign-In
+          </span>
+          <div className="grid grid-cols-2 gap-2">
+            {(["user", "admin"] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => handleTestLogin(k)}
+                disabled={busy}
+                className="rounded-md border border-border bg-card px-2.5 py-1.5 text-left text-xs font-medium text-foreground transition-all hover:border-primary/40 disabled:opacity-50"
+              >
+                <div className="font-semibold text-foreground">{TEST_ACCOUNTS[k].label}</div>
+                <div className="text-[10px] font-mono text-muted-foreground truncate">
+                  {TEST_ACCOUNTS[k].email}
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

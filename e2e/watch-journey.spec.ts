@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import path from "path";
 import fs from "fs";
+import { signInAsAdmin } from "./helpers/auth";
 
 const SCREENSHOT_DIR = "/Users/alistair.mckay/.gemini/antigravity/brain/330f65e4-35d6-4a0b-8d1a-f34fda81a8ba/screenshots";
 
@@ -148,14 +149,7 @@ test.describe("Phoenix Flight Academy - Visual Chrome Journey", () => {
 
   test("Journey 5: Staff Login & All Bookings / Payments Console (/admin/bookings)", async ({ page }) => {
     console.log("[WATCH] Logging in as Admin...");
-    await page.goto("/login", { waitUntil: "domcontentloaded" });
-    await page.waitForTimeout(1000);
-
-    const adminBtn = page.getByRole("button", { name: /Admin/i }).filter({ hasText: /Admin/i }).first();
-    await expect(adminBtn).toBeVisible();
-    await adminBtn.click();
-
-    await page.waitForURL("**/cms**", { timeout: 15000 });
+    await signInAsAdmin(page);
     await page.waitForTimeout(1500);
     await saveShot(page, "12_cms_dashboard");
 
