@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
+import { E2E_ACCOUNTS, signInUI as sharedSignInUI } from "./helpers/auth";
 
 const supabaseUrl = process.env.SUPABASE_URL || "https://bulrhflllebnjlacxdji.supabase.co";
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
@@ -26,13 +27,7 @@ async function signInUI(page: Page, email: string, password: string) {
   await page.context().clearCookies();
   await page.goto("/login", { waitUntil: "domcontentloaded" });
   await page.evaluate(() => window.localStorage.clear());
-  await page.goto("/login", { waitUntil: "domcontentloaded" });
-  await page.locator("#loginEmail").fill(email);
-  await page.locator("#loginPass").fill(password);
-  await page
-    .getByRole("button", { name: /sign in to portal|sign in/i })
-    .first()
-    .click();
+  await sharedSignInUI(page, email, password);
 }
 
 test.describe("Pilot verification end-to-end", () => {
@@ -106,7 +101,7 @@ test.describe("Pilot verification end-to-end", () => {
     await expect(page.locator(`text=${LICENCE}`)).toBeVisible();
 
     // ---- 2. Admin signs in and approves the request ----
-    await signInUI(page, "e2e-admin@test.lovable.dev", "TestPass!2026");
+    await signInUI(page, E2E_ACCOUNTS.admin.email, E2E_ACCOUNTS.admin.password);
     await page.waitForURL("**/cms", { timeout: 20_000 });
 
     await page.goto("/cms/pilot-verifications", { waitUntil: "domcontentloaded" });

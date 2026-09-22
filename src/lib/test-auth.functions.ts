@@ -2,7 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-const TEST_USERS = {
+/**
+ * Seeded accounts for local/preview demo login and Playwright.
+ * Never create or expose these in production builds.
+ */
+export const TEST_USERS = {
   admin: {
     email: "admin@test.local",
     password: "TestAdmin123!",
@@ -15,11 +19,21 @@ const TEST_USERS = {
     display_name: "Test User",
     role: null,
   },
-};
+} as const;
+
+export type TestUserKind = keyof typeof TEST_USERS;
+
+function assertDemoAuthAllowed() {
+  const allow = process.env.NODE_ENV !== "production" || process.env.ALLOW_TEST_AUTH === "true";
+  if (!allow) {
+    throw new Error("Demo test accounts are disabled in production.");
+  }
+}
 
 export const ensureTestUser = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ kind: z.enum(["admin", "user"]) }).parse(input))
   .handler(async ({ data }) => {
+    assertDemoAuthAllowed();
     const cfg = TEST_USERS[data.kind];
 
     const { data: list, error: listErr } = await supabaseAdmin.auth.admin.listUsers();

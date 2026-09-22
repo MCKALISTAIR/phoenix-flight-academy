@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { signInAsAdmin } from "./helpers/auth";
 
 test("Audit all CMS and Staff console pages for runtime crashes", async ({ page }) => {
   const consoleErrors: string[] = [];
@@ -19,15 +20,7 @@ test("Audit all CMS and Staff console pages for runtime crashes", async ({ page 
     }
   });
 
-  // Login as Admin
-  await page.goto("/login", { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(1000);
-
-  const adminBtn = page.getByRole("button", { name: /Admin/i }).first();
-  await expect(adminBtn).toBeVisible();
-  await adminBtn.click();
-  await page.waitForURL("**/cms**", { timeout: 15000 });
-
+  await signInAsAdmin(page);
   const routesToAudit = [
     { name: "Overview", path: "/cms" },
     { name: "Bookings", path: "/cms/bookings" },
