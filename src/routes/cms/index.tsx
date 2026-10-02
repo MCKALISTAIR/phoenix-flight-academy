@@ -228,20 +228,19 @@ function CmsDashboard() {
                   {time(f.startsAt)}
                 </span>
                 <div>
-<<<<<<< HEAD
-                  <p className="text-sm font-semibold text-white">{f.customerName}</p>
-                  <p className="text-xs text-white/40">{f.productName}</p>
-                  <p className="text-xs text-white/40">
-                    {f.aircraftRegistration ?? "Aircraft TBC"}
-                    {" · "}
-                    {f.instructorName ?? "No instructor"}
-=======
                   <p className="text-sm font-bold text-white">{f.customerName}</p>
                   <p className="text-xs text-white/40 flex items-center gap-2">
                     <span>{f.productName}</span>
                     <span>·</span>
-                    <span className="font-mono text-white/60">G-EGPG</span>
->>>>>>> 30b2646 (feat(ops): implement anti-ai flight desk ops, tech log, and resilient booking flows)
+                    <span className="font-mono text-white/60">
+                      {f.aircraftRegistration ?? "G-EGPG"}
+                    </span>
+                    {f.instructorName && (
+                      <>
+                        <span>·</span>
+                        <span>{f.instructorName}</span>
+                      </>
+                    )}
                   </p>
                 </div>
               </div>
