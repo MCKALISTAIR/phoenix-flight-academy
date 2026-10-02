@@ -172,7 +172,17 @@
   h4,
   h5,
   h6 {
-    font-family: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+    font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+    letter-spacing: -0.025em;
+  }
+
+  code,
+  kbd,
+  samp,
+  pre,
+  .font-mono {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-feature-settings: "tnum" 1, "zero" 1;
   }
 }
 
@@ -297,46 +307,36 @@
   animation: fadeSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ═══════ Moody Cinematic Aesthetic & Glassmorphism Utilities ═══════ */
-.glass-card {
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  background-color: rgba(255, 255, 255, 0.03);
-  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
+/* ═══════ Aviation Ergonomics & Precision Instrumentation Utilities ═══════ */
+.cockpit-card {
+  background-color: var(--color-surface-navy);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
 }
 
-.glass-card-interactive {
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  background-color: rgba(255, 255, 255, 0.03);
-  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+.cockpit-card-interactive {
+  background-color: var(--color-surface-navy);
+  border: 1px solid var(--color-border);
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.glass-card-interactive:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 24px 60px -10px rgba(0, 0, 0, 0.7);
+.cockpit-card-interactive:hover {
+  border-color: oklch(0.65 0.2 40 / 0.5);
+  transform: translateY(-1px);
 }
 
-.glass-pill {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  background-color: rgba(255, 255, 255, 0.05);
+.telemetry-cell {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
-/* Atmospheric Stage Lighting (The 1975 Live Aesthetic) */
-.stage-lighting {
-  background:
-    radial-gradient(ellipse 70% 50% at 50% -10%, oklch(0.65 0.2 40 / 0.22), transparent 70%),
-    radial-gradient(ellipse 40% 30% at 50% 20%, oklch(0.75 0.18 75 / 0.1), transparent 60%);
+.tactile-button {
+  transition: transform 0.1s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
 
-.stage-lighting-spotlight {
-  background: radial-gradient(
-    ellipse 80% 60% at 50% 0%,
-    oklch(0.65 0.2 40 / 0.18),
-    transparent 75%
-  );
+.tactile-button:active {
+  transform: scale(0.98);
 }
 
 @media (prefers-reduced-motion: reduce) {

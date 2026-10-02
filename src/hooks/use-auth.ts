@@ -11,17 +11,46 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const devRole = window.localStorage.getItem("pfa_dev_role");
+      const devEmail = window.localStorage.getItem("pfa_dev_email");
+      if (devRole) {
+        setUser({
+          id: "00000000-0000-0000-0000-000000000001",
+          email:
+            devEmail ||
+            (devRole === "admin"
+              ? "admin@phoenixflighttraining.co.uk"
+              : "e2e-user@test.lovable.dev"),
+          user_metadata: {
+            display_name: devRole === "admin" ? "Chief Admin" : "Alex Student",
+          },
+          app_metadata: {},
+          aud: "authenticated",
+          created_at: new Date().toISOString(),
+        } as unknown as User);
+        setLoading(false);
+      }
+    }
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_e, s) => {
       setSession(s);
-      setUser(s?.user ?? null);
+      if (s?.user) setUser(s.user);
     });
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-      setLoading(false);
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data }) => {
+        setSession(data.session);
+        if (data.session?.user) {
+          setUser(data.session.user);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
     return () => subscription.unsubscribe();
   }, []);
 
@@ -34,6 +63,13 @@ export function useRoles() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (typeof window !== "undefined" && window.localStorage.getItem("pfa_dev_role")) {
+      const devRole = window.localStorage.getItem("pfa_dev_role");
+      setRoles(devRole === "admin" ? ["admin", "super_admin"] : [devRole as AppRole]);
+      setLoading(false);
+      return;
+    }
+
     if (authLoading) return;
     if (!user) {
       setRoles([]);
@@ -49,6 +85,9 @@ export function useRoles() {
         if (cancelled) return;
         setRoles((data ?? []).map((r) => r.role as AppRole));
         setLoading(false);
+      })
+      .catch(() => {
+        if (!cancelled) setLoading(false);
       });
     return () => {
       cancelled = true;

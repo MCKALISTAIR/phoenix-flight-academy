@@ -70,8 +70,8 @@ function FleetPage() {
 
   const plane = {
     id: dbPa28?.id || "piper-pa28",
-    registration: dbPa28?.registration || "G-BCDF",
-    model: dbPa28?.model || "Piper PA-28-181 Cherokee Archer III",
+    registration: dbPa28?.registration || "G-EGPG",
+    model: dbPa28?.model || "Piper PA-28-181 Archer III",
     wingType: "Low-Wing Configuration",
     handlingHighlight:
       "The low-wing design provides unrestricted overhead sky visibility when banking into turns over the Scottish Highlands. In ground effect during flare, the natural air cushion makes smooth, predictable touchdown landings intuitive on Cumbernauld's 820m runway.",
@@ -153,9 +153,6 @@ function FleetPage() {
           </div>
         </div>
 
-        {isLoading ? (
-          <div className="h-[600px] w-full animate-pulse rounded-3xl bg-white/[0.02]" />
-        ) : (
           <div
             className={`overflow-hidden rounded-3xl bg-white/[0.03] transition-all duration-700 ease-out ${
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
@@ -369,8 +366,7 @@ function FleetPage() {
               </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
-    </div>
   );
 }

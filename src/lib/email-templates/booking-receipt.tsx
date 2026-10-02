@@ -84,7 +84,7 @@ export const template = {
     customerName: "Jane",
     productName: "30-Minute Trial Flight",
     startsAt: "Saturday 14 June 2026, 10:00",
-    aircraft: "G-PHNX",
+    aircraft: "G-EGPG",
     amountPaid: "£149.00",
     reference: "PHX-2041",
   },

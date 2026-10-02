@@ -588,7 +588,7 @@ function Index() {
                             Training Airframe
                           </span>
                         </div>
-                        <span className="font-mono text-[11px] text-zinc-400">G-BCDF</span>
+                        <span className="font-mono text-[11px] text-zinc-400">G-EGPG</span>
                       </div>
 
                       {/* Overlapping Breakout Airframe Image */}
@@ -897,7 +897,7 @@ function Index() {
                           </span>
                         </div>
                         <div className="text-xs font-semibold text-zinc-300">
-                          Piper PA-28 Archer III (G-BCDF)
+                          Piper PA-28 Archer III (G-EGPG)
                         </div>
                         <div className="text-xs text-zinc-400">
                           Includes all AVGAS 100LL fuel, oil, and comprehensive hull insurance
@@ -929,7 +929,7 @@ function Index() {
                             Airframe Dossier
                           </span>
                         </div>
-                        <span className="font-mono text-[11px] text-zinc-400">G-BCDF / 180 HP</span>
+                        <span className="font-mono text-[11px] text-zinc-400">G-EGPG / 180 HP</span>
                       </div>
 
                       {/* Overlapping Breakout Touring Image */}
@@ -1068,7 +1068,7 @@ function Index() {
                       Airframe Registry
                     </span>
                     <span className="text-white/40">/</span>
-                    <span className="font-mono text-xs font-bold text-white">G-BCDF</span>
+                    <span className="font-mono text-xs font-bold text-white">G-EGPG</span>
                   </div>
                 </div>
 
@@ -1148,7 +1148,7 @@ function Index() {
                       Pilot Operating Handbook (POH)
                     </div>
                     <DialogTitle className="text-xl sm:text-2xl font-black text-white">
-                      Piper PA-28-181 Archer III (G-BCDF)
+                      Piper PA-28-181 Archer III (G-EGPG)
                     </DialogTitle>
                     <DialogDescription className="text-xs text-zinc-400 leading-relaxed">
                       Technical operating limits, placarded airspeed matrix, and airframe

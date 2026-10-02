@@ -16,6 +16,9 @@ import {
   X,
   Loader2,
   Plane,
+  Search,
+  Calendar,
+  Filter,
 } from "lucide-react";
 import { requireAdmin } from "@/lib/auth-guards";
 import {
@@ -39,8 +42,15 @@ export const Route = createFileRoute("/cms/bookings")({
   component: BookingsAdmin,
 });
 
-const STATUSES = ["all", "pending", "confirmed", "cancelled", "completed", "no_show"] as const;
-type StatusFilter = (typeof STATUSES)[number];
+export type StatusFilter =
+  | "all"
+  | "today"
+  | "unpaid"
+  | "pending"
+  | "confirmed"
+  | "completed"
+  | "cancelled"
+  | "no_show";
 
 function formatDocType(type: string): string {
   const mapping: Record<string, string> = {
@@ -58,6 +68,7 @@ function formatDocType(type: string): string {
 
 function BookingsAdmin() {
   const [filter, setFilter] = useState<StatusFilter>("pending");
+  const [searchQuery, setSearchQuery] = useState("");
   const qc = useQueryClient();
   const fetchAll = useServerFn(listAllBookings);
   const updateStatus = useServerFn(updateBookingStatus);
@@ -118,8 +129,37 @@ function BookingsAdmin() {
     .filter((b) => b.status !== "cancelled")
     .reduce((sum, b) => sum + Math.max(0, b.price_total_cents - (b.amount_paid_cents || 0)), 0);
 
-  const filteredData =
-    filter === "all" ? allBookings : allBookings.filter((b) => b.status === filter);
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const todayCount = allBookings.filter((b) => b.starts_at.startsWith(todayStr)).length;
+  const unpaidCount = allBookings.filter(
+    (b) => b.status !== "cancelled" && Math.max(0, b.price_total_cents - (b.amount_paid_cents || 0)) > 0,
+  ).length;
+  const pendingCount = allBookings.filter((b) => b.status === "pending").length;
+
+  const filteredData = allBookings.filter((b) => {
+    // Mode / Status filter
+    if (filter === "today") {
+      if (!b.starts_at.startsWith(todayStr)) return false;
+    } else if (filter === "unpaid") {
+      const bal = Math.max(0, b.price_total_cents - (b.amount_paid_cents || 0));
+      if (bal <= 0 || b.status === "cancelled") return false;
+    } else if (filter !== "all") {
+      if (b.status !== filter) return false;
+    }
+
+    // Search query filter
+    const q = searchQuery.toLowerCase().trim();
+    if (q) {
+      const matchName = b.customer_name?.toLowerCase().includes(q);
+      const matchEmail = b.customer_email?.toLowerCase().includes(q);
+      const matchPhone = (b as any).customer_phone?.toLowerCase().includes(q);
+      const matchId = b.id.toLowerCase().includes(q);
+      const matchProduct = (b as any).booking_products?.name?.toLowerCase().includes(q);
+      if (!matchName && !matchEmail && !matchPhone && !matchId && !matchProduct) return false;
+    }
+
+    return true;
+  });
 
   async function handleRecordPayment(e: React.FormEvent) {
     e.preventDefault();
@@ -314,21 +354,116 @@ function BookingsAdmin() {
         </div>
       </div>
 
-      {/* Filter tabs */}
-      <div className="flex flex-wrap gap-2 pt-2">
-        {STATUSES.map((s) => (
+      {/* Search Bar & Quick Filter Tabs */}
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-white/30" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search student, email, phone, booking ID..."
+              className="w-full rounded-xl border border-white/10 bg-white/5 pl-9 pr-8 py-2 text-xs text-white placeholder-white/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2.5 top-2.5 text-white/40 hover:text-white"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+
+          <span className="text-xs font-mono text-white/40 self-center">
+            Showing {filteredData.length} of {allBookings.length} records
+          </span>
+        </div>
+
+        {/* Filter chips */}
+        <div className="flex flex-wrap gap-1.5">
           <button
-            key={s}
-            onClick={() => setFilter(s)}
-            className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all uppercase tracking-wider ${
-              filter === s
-                ? "border-primary bg-primary/20 text-primary font-bold"
-                : "border-white/10 bg-white/5 text-white/60 hover:bg-white/10"
+            type="button"
+            onClick={() => setFilter("all")}
+            className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all ${
+              filter === "all"
+                ? "border-primary bg-primary text-primary-foreground font-bold shadow-sm"
+                : "border-white/10 bg-white/5 text-white/70 hover:bg-white/10"
             }`}
           >
-            {s.replace("_", " ")}
+            All Bookings ({allBookings.length})
           </button>
-        ))}
+          <button
+            type="button"
+            onClick={() => setFilter("today")}
+            className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all flex items-center gap-1.5 ${
+              filter === "today"
+                ? "border-primary bg-primary text-primary-foreground font-bold shadow-sm"
+                : "border-white/10 bg-white/5 text-white/70 hover:bg-white/10"
+            }`}
+          >
+            <Calendar className="h-3 w-3" />
+            Today ({todayCount})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("unpaid")}
+            className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all flex items-center gap-1.5 ${
+              filter === "unpaid"
+                ? "border-amber-400 bg-amber-500 text-black font-bold shadow-sm"
+                : "border-amber-500/20 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20"
+            }`}
+          >
+            <CreditCard className="h-3 w-3" />
+            Balance Due ({unpaidCount})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("pending")}
+            className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all ${
+              filter === "pending"
+                ? "border-primary bg-primary text-primary-foreground font-bold shadow-sm"
+                : "border-white/10 bg-white/5 text-white/70 hover:bg-white/10"
+            }`}
+          >
+            Pending Approval ({pendingCount})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("confirmed")}
+            className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all ${
+              filter === "confirmed"
+                ? "border-emerald-500 bg-emerald-600 text-white font-bold shadow-sm"
+                : "border-white/10 bg-white/5 text-white/70 hover:bg-white/10"
+            }`}
+          >
+            Confirmed
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("completed")}
+            className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all ${
+              filter === "completed"
+                ? "border-blue-500 bg-blue-600 text-white font-bold shadow-sm"
+                : "border-white/10 bg-white/5 text-white/70 hover:bg-white/10"
+            }`}
+          >
+            Completed
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("cancelled")}
+            className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all ${
+              filter === "cancelled"
+                ? "border-red-500 bg-red-600 text-white font-bold shadow-sm"
+                : "border-white/10 bg-white/5 text-white/70 hover:bg-white/10"
+            }`}
+          >
+            Cancelled
+          </button>
+        </div>
       </div>
 
       {/* Table */}

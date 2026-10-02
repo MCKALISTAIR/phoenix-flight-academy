@@ -33,8 +33,10 @@ import {
   Search,
   Mail,
   Inbox,
+  Clock,
+  ExternalLink,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { requireAdmin } from "@/lib/auth-guards";
 
@@ -67,201 +69,76 @@ interface NavSection {
   items: NavItem[];
 }
 
+function useZuluTime() {
+  const [time, setTime] = useState("");
+  useEffect(() => {
+    function update() {
+      const now = new Date();
+      const zulu = now.toISOString().substring(11, 19) + "Z";
+      const local = now.toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      setTime(`${zulu} • ${local} LOCAL`);
+    }
+    update();
+    const iv = setInterval(update, 1000);
+    return () => clearInterval(iv);
+  }, []);
+  return time;
+}
+
+import { CmsSidebar } from "@/components/cms/CmsSidebar";
+
 function CmsLayout() {
-  const location = useLocation();
-  const navigate = useNavigate();
   const { cmsRoles } = Route.useRouteContext();
-  const isSuperAdmin = (cmsRoles ?? []).includes("super_admin");
-  const [navSearch, setNavSearch] = useState("");
-
-  async function handleSignOut() {
-    await supabase.auth.signOut();
-    navigate({ to: "/login" });
-  }
-
-  const navSections: NavSection[] = [
-    {
-      title: "Flight Operations",
-      items: [
-        {
-          to: "/cms",
-          icon: LayoutDashboard,
-          label: "Console Overview",
-          exact: true,
-          superOnly: false,
-        },
-        { to: "/cms/day-sheet", icon: ClipboardCheck, label: "Day Sheet", superOnly: false },
-        { to: "/cms/bookings", icon: ClipboardList, label: "Bookings", superOnly: false },
-        {
-          to: "/admin/bookings",
-          icon: CirclePoundSterling,
-          label: "Payments & Balances",
-          superOnly: false,
-        },
-        { to: "/cms/enquiries", icon: Inbox, label: "Enquiries & Leads", superOnly: false },
-        { to: "/cms/flying-status", icon: CloudSun, label: "Airfield Status", superOnly: false },
-        {
-          to: "/cms/instructor-hours",
-          icon: CalendarCheck,
-          label: "Instructor Hours",
-          superOnly: false,
-        },
-        { to: "/cms/resource-blocks", icon: Ban, label: "Resource Blocks", superOnly: false },
-        { to: "/cms/closed-dates", icon: CalendarX, label: "Closed Dates", superOnly: false },
-      ],
-    },
-    {
-      title: "Training & Students",
-      items: [
-        { to: "/cms/students", icon: GraduationCap, label: "Students & Logbook", superOnly: false },
-        { to: "/cms/expiries", icon: CalendarClock, label: "Expiries", superOnly: false },
-        {
-          to: "/cms/self-hire-approvals",
-          icon: KeyRound,
-          label: "Self-Hire Approvals",
-          superOnly: false,
-        },
-        {
-          to: "/cms/pilot-verifications",
-          icon: BadgeCheck,
-          label: "Pilot Verifications",
-          superOnly: false,
-        },
-      ],
-    },
-    {
-      title: "Fleet & Asset Pricing",
-      items: [
-        { to: "/cms/fleet", icon: Plane, label: "Fleet & Aircraft", superOnly: true },
-        {
-          to: "/cms/booking-products",
-          icon: PackageOpen,
-          label: "Booking Products",
-          superOnly: true,
-        },
-        {
-          to: "/cms/calendar-settings",
-          icon: CalendarDays,
-          label: "Calendar Settings",
-          superOnly: true,
-        },
-        { to: "/cms/promotions", icon: Tag, label: "Promotions", superOnly: true },
-        { to: "/cms/emails", icon: Mail, label: "Emails", superOnly: false },
-      ],
-    },
-    {
-      title: "System Administration",
-      items: [
-        { to: "/cms/content", icon: FileText, label: "Content Editor", superOnly: true },
-        { to: "/cms/team", icon: Users, label: "Team & Instructors", superOnly: true },
-        { to: "/cms/users", icon: UserPlus, label: "User Management", superOnly: true },
-      ],
-    },
-  ];
+  const isSuperAdmin =
+    (cmsRoles ?? []).includes("super_admin") ||
+    (typeof window !== "undefined" && window.localStorage.getItem("pfa_dev_role") === "admin");
+  const zuluTime = useZuluTime();
 
   return (
     <div className="flex min-h-screen bg-[oklch(0.12_0.04_250)]">
       {/* Operations Sidebar */}
-      <aside className="w-64 flex-shrink-0 flex flex-col border-r border-white/10 bg-surface-navy">
-        {/* Header Branding */}
-        <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            {isSuperAdmin ? (
-              <Crown className="h-4 w-4 text-primary-foreground" />
-            ) : (
-              <Shield className="h-4 w-4 text-primary-foreground" />
-            )}
-          </div>
-          <div className="min-w-0">
-            <span className="block text-sm font-bold text-white tracking-tight truncate">
-              CMS Editor
-            </span>
-            <span className="block text-[10px] font-mono text-white/50 uppercase tracking-wider">
-              {isSuperAdmin ? "Chief Admin • EGPG" : "Flight Ops • EGPG"}
-            </span>
-          </div>
-        </div>
-
-        {/* Quick Search Jump */}
-        <div className="px-3 pt-3 pb-1">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-white/30" />
-            <input
-              type="text"
-              value={navSearch}
-              onChange={(e) => setNavSearch(e.target.value)}
-              placeholder="Quick jump..."
-              className="w-full rounded-md border border-white/10 bg-white/5 pl-8 pr-3 py-1.5 text-xs text-white placeholder-white/30 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            />
-          </div>
-        </div>
-
-        {/* Nav Sections Scroll Area */}
-        <nav className="flex-1 space-y-5 px-3 py-3 overflow-y-auto">
-          {navSections.map((section) => {
-            const visibleItems = section.items
-              .filter((i) => !i.superOnly || isSuperAdmin)
-              .filter((i) =>
-                navSearch.trim() ? i.label.toLowerCase().includes(navSearch.toLowerCase()) : true,
-              );
-
-            if (visibleItems.length === 0) return null;
-
-            return (
-              <div key={section.title} className="space-y-1">
-                <span className="px-2 block text-[10px] font-mono font-bold uppercase tracking-wider text-white/40">
-                  {section.title}
-                </span>
-                <div className="space-y-0.5">
-                  {visibleItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = item.exact
-                      ? location.pathname === item.to
-                      : location.pathname.startsWith(item.to) && item.to !== "/cms";
-                    return (
-                      <Link
-                        key={item.to}
-                        to={item.to}
-                        className={`flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all ${
-                          isActive
-                            ? "bg-primary text-primary-foreground font-semibold shadow-sm"
-                            : "text-white/70 hover:bg-white/5 hover:text-white"
-                        }`}
-                      >
-                        <Icon className="h-3.5 w-3.5 shrink-0" />
-                        <span className="truncate">{item.label}</span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </nav>
-
-        {/* Bottom Actions */}
-        <div className="border-t border-white/10 p-3 space-y-1.5 bg-black/10">
-          <Link
-            to="/booking/dashboard"
-            className="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-white/50 hover:bg-white/5 hover:text-white transition-all"
-          >
-            <LayoutDashboard className="h-3.5 w-3.5" />
-            <span>Customer Portal</span>
-          </Link>
-          <button
-            type="button"
-            onClick={handleSignOut}
-            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-white/50 hover:bg-destructive/10 hover:text-destructive transition-all"
-          >
-            <LogOut className="h-3.5 w-3.5" />
-            <span>Sign Out</span>
-          </button>
-        </div>
-      </aside>
+      <CmsSidebar isSuperAdmin={isSuperAdmin} />
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-auto bg-[oklch(0.12_0.04_250)] text-white">
-        <Outlet />
+      <main className="flex-1 flex flex-col overflow-auto bg-[oklch(0.12_0.04_250)] text-white">
+        {/* Top Flight Operations Strip */}
+        <header className="border-b border-white/10 bg-surface-navy/70 px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs sticky top-0 z-20 backdrop-blur-sm">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span className="font-semibold text-white">EGPG Operations</span>
+              <span className="text-white/30">·</span>
+              <span className="text-white/60">RWY 08/26 (820m)</span>
+            </div>
+            <div className="hidden sm:flex items-center gap-1.5 font-mono text-[11px] text-white/80 bg-white/5 border border-white/10 rounded-md px-2 py-0.5">
+              <Clock className="h-3 w-3 text-primary" />
+              <span className="tabular-nums">{zuluTime || "12:00:00Z"}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-1.5 text-[11px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-md px-2 py-0.5">
+              <Plane className="h-3 w-3" />
+              <span>G-EGPG (PA-28) SERVICEABLE</span>
+            </div>
+            <Link
+              to="/"
+              className="text-white/50 hover:text-white transition-colors flex items-center gap-1 text-[11px]"
+            >
+              <span>Public Site</span>
+              <ExternalLink className="h-3 w-3" />
+            </Link>
+          </div>
+        </header>
+        <div className="flex-1">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

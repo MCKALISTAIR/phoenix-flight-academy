@@ -20,8 +20,8 @@ test("Customer attempts to submit contact enquiry on /contact", async ({ page })
   await page.waitForTimeout(4000);
 
   const toast = page.locator("[data-sonner-toast], [role='status'], .text-destructive");
-  if (await toast.isVisible()) {
-    console.log(`[CONTACT TEST TOAST]: ${await toast.textContent()}`);
+  if (await toast.first().isVisible()) {
+    console.log(`[CONTACT TEST TOAST]: ${await toast.first().textContent()}`);
   }
 
   const confirmation = page.locator("text=Message Received!, text=Thank you, text=received your message");

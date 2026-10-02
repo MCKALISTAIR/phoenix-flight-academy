@@ -92,7 +92,7 @@ const destinations = {
 
 const planes = {
   pa28: {
-    model: "Piper PA-28-181 Cherokee Archer III (G-BCDF)",
+    model: "Piper PA-28-181 Archer III (G-EGPG)",
     cruiseSpeed: 115, // kts
     fuelBurnRate: 34, // Litres/hour
   },
@@ -564,7 +564,7 @@ function CustomerDashboard() {
                     onChange={(e) => setSelectedPlane(e.target.value)}
                     className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-primary"
                   >
-                    <option value="pa28">Piper PA-28-181 Cherokee Archer III (G-BCDF)</option>
+                    <option value="pa28">Piper PA-28-181 Archer III (G-EGPG)</option>
                   </select>
                 </div>
               </div>

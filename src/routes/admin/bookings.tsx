@@ -1,7 +1,7 @@
-import { createFileRoute, useNavigate, isRedirect, redirect } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link, isRedirect, redirect } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ClipboardList, Search, RefreshCw, BadgeCheck, CirclePoundSterling, X } from "lucide-react";
+import { ClipboardList, Search, RefreshCw, BadgeCheck, CirclePoundSterling, X, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { requireAdmin } from "@/lib/auth-guards";
 import {
@@ -9,6 +9,7 @@ import {
   recordManualPayment,
   updateBookingStatus,
 } from "@/lib/bookings.functions";
+import { CmsSidebar } from "@/components/cms/CmsSidebar";
 
 export const Route = createFileRoute("/admin/bookings")({
   beforeLoad: async ({ location }) => {
@@ -150,8 +151,20 @@ function AdminBookingsPage() {
   }, [rows]);
 
   return (
-    <div className="min-h-screen bg-[oklch(0.12_0.04_250)] text-white">
-      <div className="mx-auto max-w-6xl px-6 py-10">
+    <div className="flex min-h-screen bg-[oklch(0.12_0.04_250)] text-white">
+      <CmsSidebar />
+      <main className="flex-1 overflow-auto">
+        <div className="mx-auto max-w-6xl px-6 py-10">
+          <div className="mb-4">
+            <Link
+              to="/cms/bookings"
+              className="inline-flex items-center gap-1.5 text-xs text-white/50 hover:text-white transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              <span>Flight Operations Console / Bookings</span>
+            </Link>
+          </div>
+
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
@@ -319,6 +332,7 @@ function AdminBookingsPage() {
           </table>
         </div>
       </div>
+    </main>
 
       {resolving && (
         <ResolveDialog

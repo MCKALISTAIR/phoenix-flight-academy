@@ -257,10 +257,10 @@ function StudentDetail() {
 
 function SummaryCard({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-      <div className="text-2xl font-black text-white">{value}</div>
-      <div className="text-xs text-white/40 mt-1">{label}</div>
-      {hint && <div className="text-[10px] text-white/30 mt-0.5">{hint}</div>}
+    <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+      <div className="text-2xl font-black text-white font-mono tabular-nums">{value}</div>
+      <div className="text-[11px] text-white/40 mt-1 font-semibold uppercase tracking-wider">{label}</div>
+      {hint && <div className="text-[10px] text-white/30 mt-0.5 font-mono">{hint}</div>}
     </div>
   );
 }

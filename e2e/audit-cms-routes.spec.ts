@@ -19,14 +19,16 @@ test("Audit all CMS and Staff console pages for runtime crashes", async ({ page 
     }
   });
 
-  // Login as Admin
+  // Login as Admin with hydration resilience
   await page.goto("/login", { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(2000);
 
   const adminBtn = page.getByRole("button", { name: /Admin/i }).first();
   await expect(adminBtn).toBeVisible();
-  await adminBtn.click();
-  await page.waitForURL("**/cms**", { timeout: 15000 });
+  await expect(async () => {
+    await adminBtn.click();
+    await page.waitForURL("**/cms**", { timeout: 3000 });
+  }).toPass({ timeout: 25000 });
 
   const routesToAudit = [
     { name: "Overview", path: "/cms" },
@@ -46,10 +48,14 @@ test("Audit all CMS and Staff console pages for runtime crashes", async ({ page 
     { name: "Promotions", path: "/cms/promotions" },
     { name: "Emails", path: "/cms/emails" },
     { name: "Content", path: "/cms/content" },
-    { name: "Users", path: "/cms/users" },
+    { name: "User Management", path: "/cms/users" },
   ];
 
   for (const r of routesToAudit) {
+    if (!page.url().includes("/cms")) {
+      await page.goto("/cms");
+      await page.waitForTimeout(800);
+    }
     console.log(`\n--- Auditing CMS Route: ${r.name} (${r.path}) ---`);
     const link = page.locator("aside").getByRole("link", { name: r.name });
     if (await link.isVisible()) {
